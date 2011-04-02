@@ -24,6 +24,19 @@ l3m::~l3m()
     }
 }
 
+l3m::VertexGroup* l3m::FindGroup ( const std::string& name ) const
+{
+    VertexGroup* group = groups;
+    while ( group != 0 )
+    {
+        if ( group->name == name )
+            return group;
+        group = group->next;
+    }
+    return 0;
+}
+
+
 void l3m::LoadGroup(const std::string& name, const Vertex* pVertices, unsigned int count)
 {
     __VertexGroup* group = new __VertexGroup ( name );

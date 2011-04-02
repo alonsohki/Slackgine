@@ -15,6 +15,8 @@ int main(int argc, char** argv)
     l3m model;
     model.LoadGroup("main", fVertices, Vertex::LOAD_POSITION|Vertex::LOAD_COLOR, 0, 3 );
     
+    printf ( "%f\n", model.group("main")[1].pos().x() );
+    
     return 0;
 }
 
