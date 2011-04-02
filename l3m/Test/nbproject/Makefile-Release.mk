@@ -51,13 +51,13 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=../dist/Release/OracleSolarisStudio_12.2-Linux-x86/libl3m.a
+LDLIBSOPTIONS=../dist/Release/GNU-Linux-x86/libl3m.a
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
 	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ../dist/Release/OracleSolarisStudio_12.2-Linux-x86/libl3m.a
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ../dist/Release/GNU-Linux-x86/libl3m.a
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}

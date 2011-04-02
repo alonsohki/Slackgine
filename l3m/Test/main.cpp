@@ -1,5 +1,7 @@
 #include <cstdio>
 #include <cstdlib>
+#include <cerrno>
+#include <cstring>
 #include "l3m.h"
 
 int main(int argc, char** argv)
@@ -14,9 +16,9 @@ int main(int argc, char** argv)
     
     l3m model;
     model.LoadGroup("main", fVertices, Vertex::LOAD_POSITION|Vertex::LOAD_COLOR, 0, 3 );
-    
-    printf ( "%f\n", model.group("main")[1].pos().x() );
-    
+
+    if ( ! model.SaveToFile ( "chromatic_tri.l3m" ) )
+        fprintf ( stderr, "Error al guardar el fichero: %s\n", strerror(errno) );
+
     return 0;
 }
-
