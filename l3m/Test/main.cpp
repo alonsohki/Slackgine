@@ -21,9 +21,15 @@ int main(int argc, char** argv)
     l3m model;
     Mesh* mesh = Mesh::LoadAllocating("triangle", fVertices, Vertex::LOAD_POSITION|Vertex::LOAD_COLOR, 0, 3, faces, 1 );
     model.LoadMesh(mesh, "main");
+    Mesh* mesh2 = Mesh::LoadAllocating("triangle", fVertices, Vertex::LOAD_POSITION|Vertex::LOAD_COLOR, 0, 3, faces, 1 );
+    model.LoadMesh(mesh2, "blah");
 
     if ( ! model.SaveToFile ( "chromatic_tri.l3m" ) )
         fprintf ( stderr, "Error al guardar el fichero: %s\n", strerror(errno) );
+    
+    l3m model2;
+    if ( ! model2.LoadFromFile ( "chromatic_tri.l3m" ) )
+        fprintf ( stderr, "Error al cargar el fichero: %s\n", strerror(errno) );
 
     return 0;
 }
