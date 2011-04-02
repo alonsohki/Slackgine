@@ -5,14 +5,17 @@
                    displayName="Header Files"
                    projectFiles="true">
       <itemPath>color.h</itemPath>
+      <itemPath>face.h</itemPath>
       <itemPath>l3m.h</itemPath>
       <itemPath>material.h</itemPath>
+      <itemPath>mesh.h</itemPath>
       <itemPath>vector.h</itemPath>
       <itemPath>vertex.h</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <itemPath>face.cpp</itemPath>
       <itemPath>l3m.cpp</itemPath>
       <itemPath>vertex.cpp</itemPath>
     </logicalFolder>

@@ -13,9 +13,14 @@ int main(int argc, char** argv)
         -0.5f, 0.0f, 0.0f,      0.0f, 1.0f, 0.0f, 1.0f,
         0.5f, 0.0f, 0.0f,       0.0f, 0.0f, 1.0f, 1.0f
     };
+    unsigned int faces [] =
+    {
+        0, 1, 2
+    };
     
     l3m model;
-    model.LoadGroup("main", fVertices, Vertex::LOAD_POSITION|Vertex::LOAD_COLOR, 0, 3 );
+    Mesh* mesh = Mesh::LoadAllocating("triangle", fVertices, Vertex::LOAD_POSITION|Vertex::LOAD_COLOR, 0, 3, faces, 1 );
+    model.LoadMesh(mesh, "main");
 
     if ( ! model.SaveToFile ( "chromatic_tri.l3m" ) )
         fprintf ( stderr, "Error al guardar el fichero: %s\n", strerror(errno) );

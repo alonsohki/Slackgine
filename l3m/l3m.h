@@ -2,24 +2,27 @@
 #define L3M_H
 
 #include <string>
+#include <map>
+#include <list>
 #include "vector.h"
 #include "vertex.h"
+#include "mesh.h"
 
 static const char* const L3M_BOM = "L3M\x01";
-static const float L3M_VERSION = 10.0f; // Las versiones se representan por 1/x. A más reciente, más cercano a 0.
+static const float L3M_VERSION = 0.00000001f;
+static const enum
+{
+    L3M_MACHINE_ENDIAN,
+    L3M_LOW_ENDIAN,
+    L3M_BIG_ENDIAN
+} L3M_SAVE_ENDIANNESS = L3M_LOW_ENDIAN;
 
 class l3m
 {
 private:
-    struct __VertexGroup
-    {
-        std::string     name;
-        Vertex*         vertices;
-        __VertexGroup*  next;
-
-        __VertexGroup  ( const std::string& p_name )
-        : name ( p_name ) {}
-    }*                  m_groups;
+    typedef std::list<Mesh *> meshList;
+    typedef std::map<std::string, meshList> groupMap;
+    groupMap            m_groups;
     std::string         m_type;
     
 public:
@@ -32,24 +35,21 @@ public:
     
     // Accessors
 public:
-    const Vertex*       group           ( const std::string& name ) const { VertexGroup* g = FindGroup(name); return g ? g->vertices : 0; }
-    Vertex*             group           ( const std::string& name ) { VertexGroup* g = FindGroup(name); return g ? g->vertices : 0; }
-    
     const std::string&  type            () const { return m_type; }
 protected:
     std::string&        type            () { return m_type; }
 public:
     
 public:
-    // Ficheros
+    // Files
     bool                SaveToFile      ( FILE* fp ) const;
     bool                SaveToFile      ( const char* path ) const;
-    
-    // Grupos
-    void                LoadGroup       ( const std::string& name, const Vertex* pVertices, unsigned int count );
-    void                LoadGroup       ( const std::string& name, const float* pVertices, unsigned int flags, unsigned int stride, unsigned int count );
+
+public:
+    // Grouped meshes
+    void                LoadMesh        ( Mesh* mesh, const std::string& group = "" );
 private:
-    VertexGroup*        FindGroup       ( const std::string& name ) const;
+    meshList*           FindGroup       ( const std::string& name );
 };
 
 #endif

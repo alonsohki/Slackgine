@@ -35,7 +35,8 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/vertex.o \
-	${OBJECTDIR}/l3m.o
+	${OBJECTDIR}/l3m.o \
+	${OBJECTDIR}/face.o
 
 
 # C Compiler Flags
@@ -71,6 +72,10 @@ ${OBJECTDIR}/vertex.o: vertex.cpp
 ${OBJECTDIR}/l3m.o: l3m.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	$(COMPILE.cc) -fast -g0 -o ${OBJECTDIR}/l3m.o l3m.cpp
+
+${OBJECTDIR}/face.o: face.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	$(COMPILE.cc) -fast -g0 -o ${OBJECTDIR}/face.o face.cpp
 
 # Subprojects
 .build-subprojects:
