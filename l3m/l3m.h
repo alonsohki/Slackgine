@@ -20,11 +20,54 @@ static const enum
 
 class l3m
 {
+public:
+        // Error codes
+    enum ErrorCode
+    {
+        OK = 0,
+        
+        // File saving
+        UNABLE_TO_OPEN_FILE_FOR_WRITING,
+        ERROR_WRITING_BOM,
+        ERROR_WRITING_VERSION,
+        ERROR_WRITING_TYPE,
+        ERROR_ALLOCATING_TXD_OFFSET,
+        ERROR_ALLOCATING_META_OFFSET,
+        ERROR_WRITING_NUMBER_OF_GROUPS,
+        ERROR_WRITING_GROUP_NAME,
+        ERROR_ALLOCATING_GROUP_OFFSET,
+        ERROR_WRITING_GROUP_OFFSET,
+        ERROR_WRITING_NUMBER_OF_MESHES,
+        ERROR_WRITING_MESH_NAME,
+        ERROR_ALLOCATING_MESH_OFFSET,
+        ERROR_WRITING_MESH_OFFSET,
+        ERROR_WRITING_VERTEX_COUNT,
+        ERROR_WRITING_VERTEX_DATA,
+        ERROR_WRITING_FACE_COUNT,
+        ERROR_WRITING_FACE_DATA,
+        ERROR_WRITING_TXD_OFFSET,
+        ERROR_WRITING_TXD_COUNT,
+        ERROR_WRITING_META_OFFSET,
+        ERROR_WRITING_META_COUNT,
+                
+        // FIle loading
+        UNABLE_TO_OPEN_FILE_FOR_READING,
+        ERROR_READING_BOM,
+        INVALID_BOM,
+        ERROR_READING_VERSION,
+        INVALID_VERSION,
+        
+        MAX_ERROR_CODE
+    };
+
 private:
     typedef std::list<Mesh *> meshList;
     typedef std::map<std::string, meshList> groupMap;
     groupMap            m_groups;
     std::string         m_type;
+    ErrorCode           m_errorCode;
+    int                 m_errno;
+    char                m_error [ 256 ];
     
 public:
     typedef struct __VertexGroup VertexGroup;
@@ -36,15 +79,27 @@ public:
     // Accessors
 public:
     const std::string&  type            () const { return m_type; }
+    const ErrorCode&    errorCode       () const { return m_errorCode; }
+    const int&          getErrno           () const { return m_errno; }
+    const char*         error           () const { return m_error; }
+    
 protected:
     std::string&        type            () { return m_type; }
+private:
+    ErrorCode&          errorCode       () { return m_errorCode; }
+    int&                getErrno        () { return m_errno; }
 
     // Files
 public:
-    bool                SaveToFile      ( FILE* fp ) const;
-    bool                SaveToFile      ( const char* path ) const;
-    bool                LoadFromFile    ( FILE* fp );
-    bool                LoadFromFile    ( const char* path );
+    ErrorCode           SaveToFile      ( FILE* fp );
+    ErrorCode           SaveToFile      ( const char* path );
+    ErrorCode           LoadFromFile    ( FILE* fp );
+    ErrorCode           LoadFromFile    ( const char* path );
+    
+    // Error handling
+private:
+    ErrorCode           SetError                ( ErrorCode err );
+    const char*         TranslateErrorCode      ( ErrorCode err ) const;
 
 
     // Endianness
