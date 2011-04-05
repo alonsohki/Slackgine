@@ -461,6 +461,25 @@ l3m::ErrorCode l3m::LoadFromFile ( std::istream& fp )
 
         fp.seekg ( ref2Group, std::ios::beg );
         
+        // Read out the number of meshes
+        unsigned int numMeshes;
+        FREAD32 ( &numMeshes, 1, fp, ERROR_READING_MESH_COUNT );
+        
+        for ( unsigned int j = 0; j < numMeshes; ++j )
+        {
+            // Read out the mesh name
+            std::string meshName;
+            FREAD_STR ( meshName, fp, ERROR_READING_MESH_NAME );
+            
+            // Read the mesh offset
+            long off2Mesh;
+            long refMeshBack;
+            FREAD32 ( &off2Mesh, 1, fp, ERROR_READING_MESH_OFFSET );
+            refMeshBack = fp.tellg();
+            
+            fp.seekg ( off2Mesh, std::ios::beg );
+            fp.seekg ( refMeshBack, std::ios::beg );
+        }
         
         fp.seekg ( refBack, std::ios::beg );
     }
@@ -538,6 +557,9 @@ const char* l3m::TranslateErrorCode ( l3m::ErrorCode err ) const
         case ERROR_READING_GROUP_COUNT: return "Error reading group count";
         case ERROR_READING_GROUP_NAME: return "Error reading group name";
         case ERROR_READING_GROUP_OFFSET: return "Error reading group offset";
+        case ERROR_READING_MESH_COUNT: return "Error reading mesh count";
+        case ERROR_READING_MESH_NAME: return "Error reading mesh name";
+        case ERROR_READING_MESH_OFFSET: return "Error reading mesh offset";
                 
         default: return "Unknown";
     }
