@@ -184,7 +184,7 @@ bool l3m::WriteFloat ( const float* v, uint32_t nmemb, FILE* fp ) const
 }
 size_t l3m::ReadFloat ( float* v, uint32_t nmemb, FILE* fp ) const
 {
-    return m_endian32writer ( reinterpret_cast<const uint32_t*>(v), nmemb, fp );
+    return m_endian32reader ( reinterpret_cast<uint32_t*>(v), nmemb, fp );
 }
 bool l3m::WriteStr ( const std::string& str, FILE* fp ) const
 {
@@ -369,17 +369,18 @@ bool l3m::LoadFromFile ( FILE* fp )
     size_t size;
     
     #define FREAD(data, _size, nmemb, fp) if ( ( size = ReadData(data, _size, nmemb, fp) ) != nmemb ) return false
-    #define FREAD16(data, nmemb, fp) if ( ! ( size = Read16(reinterpret_cast<uint16_t*>(data), nmemb, fp) ) != nmemb ) return false
-    #define FREAD32(data, nmemb, fp) if ( ! ( size = Read32(reinterpret_cast<uint32_t*>(data), nmemb, fp) ) != nmemb ) return false
-    #define FREADF(data, nmemb, fp) if ( ! ( size = ReadData(reinterpret_cast<char*>(data), sizeof(float), nmemb, fp) ) != nmemb ) return false
-    #define FREAD_STR(str, fp) if ( ! ( size = ReadStr(str,fp) ) != nmemb ) return false
+    #define FREAD16(data, nmemb, fp) if ( ( size = Read16(reinterpret_cast<uint16_t*>(data), nmemb, fp) ) != nmemb ) return false
+    #define FREAD32(data, nmemb, fp) if ( ( size = Read32(reinterpret_cast<uint32_t*>(data), nmemb, fp) ) != nmemb ) return false
+    #define FREADF(data, nmemb, fp) if ( ( size = ReadFloat(reinterpret_cast<float*>(data), nmemb, fp) ) != nmemb ) return false
+    #define FREAD_STR(str, fp) if ( ( size = ReadStr(str,fp) ) != nmemb ) return false
 
     // Read out the BOM marker
     FREAD ( buffer, sizeof(char), strlen(L3M_BOM), fp );
     if ( memcmp ( buffer, L3M_BOM, strlen(L3M_BOM) ) != 0 )
         return false;
+
     FREAD ( buffer, sizeof(char), 1, fp );
- 
+    
     // Choose the endianness strategy
     unsigned char thisMachineIsBigEndian = htons(0xFFF1) == 0xFFF1;
     unsigned char targetIsBigEndian = buffer[0];
@@ -397,6 +398,7 @@ bool l3m::LoadFromFile ( FILE* fp )
 
     float fVersion;
     FREADF(&fVersion, 1, fp);
-    printf ( "Versión leída: %f\n", fVersion );
+    printf("Versión leída: %f\n", fVersion);
+    
     return true;
 }
