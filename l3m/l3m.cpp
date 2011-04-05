@@ -3,6 +3,7 @@
 #include <cstring>
 #include <cstdio>
 #include <cstdlib>
+#include <fstream>
 #include "l3m.h"
 
 l3m::l3m ( const std::string& type )
@@ -30,25 +31,20 @@ void l3m::DeclareMetadata(const std::string& name)
 
 l3m::ErrorCode l3m::SaveToFile ( const char* path )
 {
-    FILE* fp = fopen ( path, "wb" );
-    ErrorCode status;
-    if ( !fp ) return SetError(UNABLE_TO_OPEN_FILE_FOR_WRITING);
-    
-    status = SaveToFile(fp);
-    fclose ( fp );
-    return status;
+    std::ofstream fp;
+    fp.open ( path, std::ios::out | std::ios::binary );
+    if ( fp.fail() )
+        return SetError(UNABLE_TO_OPEN_FILE_FOR_WRITING);
+    return SaveToFile(fp);
 }
 
 l3m::ErrorCode l3m::LoadFromFile ( const char* path )
 {
-    FILE* fp = fopen ( path, "rb" );
-    ErrorCode status;
-    if ( !fp ) return SetError(UNABLE_TO_OPEN_FILE_FOR_READING);
-    
-    status = LoadFromFile(fp);
-    fclose(fp);
-    
-    return status;
+    std::ifstream fp;
+    fp.open ( path, std::ios::in | std::ios::binary );
+    if ( fp.fail() )
+        return SetError(UNABLE_TO_OPEN_FILE_FOR_READING);
+    return LoadFromFile(fp);
 }
 
 l3m::meshList* l3m::FindGroup ( const std::string& name )
@@ -79,42 +75,42 @@ void l3m::LoadMesh(Mesh* mesh, const std::string& group)
 
 // Endianness functions
 template < typename T >
-static size_t identityWrite ( const T* v, uint32_t count, FILE* fp )
+static size_t identityWrite ( const T* v, uint32_t count, std::ostream& fp )
 {
-    return fwrite ( v, sizeof(T), count, fp );
+    fp.write(reinterpret_cast<const char*>(v), sizeof(T)*count);
+    return count;
 }
 
 template < typename T >
-static size_t identityRead ( T* v, uint32_t count, FILE* fp )
+static size_t identityRead ( T* v, uint32_t count, std::istream& fp )
 {
-    return fread ( v, sizeof(T), count, fp );
+    return fp.readsome ( reinterpret_cast<char *>(v), sizeof(T)*count ) / sizeof(T);
 }
 
-static size_t swap16Write ( const uint16_t* v, uint32_t count, FILE* fp )
+static size_t swap16Write ( const uint16_t* v, uint32_t count, std::ostream& fp )
 {
     uint16_t current;
     for ( uint32_t i = 0; i < count; ++i )
     {
         current = ( ( v[i] >> 8 ) & 0x00FF ) | ( v[i] << 8 & 0xFF00 );
-        if ( fwrite ( &current, sizeof(uint16_t), 1, fp ) < 1 )
-            return i;
+        fp.write(reinterpret_cast<const char*>(&current), sizeof(uint16_t));
     }
     return count;
 }
 
-static size_t swap16Read ( uint16_t* v, uint32_t count, FILE* fp )
+static size_t swap16Read ( uint16_t* v, uint32_t count, std::istream& fp )
 {
     uint16_t current;
     for ( uint32_t i = 0; i < count; ++i )
     {
-        if ( fread ( &current, sizeof(uint16_t), 1, fp ) < 1 )
+        if ( fp.readsome( reinterpret_cast<char*>(&current), sizeof(uint16_t)) < sizeof(uint16_t) )
             return i;
         v[i] = ( ( current >> 8 ) & 0x00FF ) | ( current << 8 & 0xFF00 );
     }
     return count;
 }
 
-static size_t swap32Write ( const uint32_t* v, uint32_t count, FILE* fp )
+static size_t swap32Write ( const uint32_t* v, uint32_t count, std::ostream& fp )
 {
     uint32_t current;
     for ( uint32_t i = 0; i < count; ++i )
@@ -123,18 +119,17 @@ static size_t swap32Write ( const uint32_t* v, uint32_t count, FILE* fp )
                    ( ( v[i] >> 8  ) & 0x0000FF00 ) |
                    ( ( v[i] << 8  ) & 0x00FF0000 ) |
                    ( ( v[i] << 24 ) & 0xFF000000 );
-        if ( fwrite ( &current, sizeof(uint32_t), 1, fp ) < 1 )
-            return i;
+        fp.write(reinterpret_cast<const char*>(&current), sizeof(uint32_t));
     }
     return count;
 }
 
-static size_t swap32Read ( uint32_t* v, uint32_t count, FILE* fp )
+static size_t swap32Read ( uint32_t* v, uint32_t count, std::istream& fp )
 {
     uint32_t current;
     for ( uint32_t i = 0; i < count; ++i )
     {
-        if ( fread ( &current, sizeof(uint32_t), 1, fp ) < 1 )
+        if ( fp.readsome ( reinterpret_cast<char*>(&current), sizeof(uint32_t) ) < sizeof(uint32_t) )
             return i;
         v[i] =  ( ( current >> 24 ) & 0x000000FF ) |
                 ( ( current >> 8  ) & 0x0000FF00 ) |
@@ -169,38 +164,38 @@ void l3m::InitializeEndianness()
     }
 }
 
-bool l3m::Write16 ( const uint16_t* v, uint32_t nmemb, FILE* fp ) const
+bool l3m::Write16 ( const uint16_t* v, uint32_t nmemb, std::ostream& fp ) const
 {
     return m_endian16writer ( v, nmemb, fp) >= nmemb;
 }
-size_t l3m::Read16 ( uint16_t* v, uint32_t nmemb, FILE* fp ) const
+size_t l3m::Read16 ( uint16_t* v, uint32_t nmemb, std::istream& fp ) const
 {
     return m_endian16reader ( v, nmemb, fp );
 }
-bool l3m::Write32 ( const uint32_t* v, uint32_t nmemb, FILE* fp ) const
+bool l3m::Write32 ( const uint32_t* v, uint32_t nmemb, std::ostream& fp ) const
 {
     return m_endian32writer ( v, nmemb, fp ) >= nmemb;
 }
-size_t l3m::Read32 ( uint32_t* v, uint32_t nmemb, FILE* fp ) const
+size_t l3m::Read32 ( uint32_t* v, uint32_t nmemb, std::istream& fp ) const
 {
     return m_endian32reader ( v, nmemb, fp );
 }
-bool l3m::WriteFloat ( const float* v, uint32_t nmemb, FILE* fp ) const
+bool l3m::WriteFloat ( const float* v, uint32_t nmemb, std::ostream& fp ) const
 {
     return m_endian32writer ( reinterpret_cast<const uint32_t*>(v), nmemb, fp ) >= nmemb;
 }
-size_t l3m::ReadFloat ( float* v, uint32_t nmemb, FILE* fp ) const
+size_t l3m::ReadFloat ( float* v, uint32_t nmemb, std::istream& fp ) const
 {
     return m_endian32reader ( reinterpret_cast<uint32_t*>(v), nmemb, fp );
 }
-bool l3m::WriteStr ( const std::string& str, FILE* fp ) const
+bool l3m::WriteStr ( const std::string& str, std::ostream& fp ) const
 {
     uint32_t length = str.length ();
     if ( !Write32 ( &length, 1, fp ) )
         return false;
     return WriteData ( str.c_str(), sizeof(char), length, fp );
 }
-size_t l3m::ReadStr ( std::string& dest, FILE* fp ) const
+size_t l3m::ReadStr ( std::string& dest, std::istream& fp ) const
 {
     uint32_t length;
     if ( Read32( &length, 1, fp ) != 1 )
@@ -216,20 +211,18 @@ size_t l3m::ReadStr ( std::string& dest, FILE* fp ) const
     return length;
 }
 
-bool l3m::WriteData ( const void* data, size_t size, unsigned int nmemb, FILE* fp ) const
+bool l3m::WriteData ( const void* data, size_t size, unsigned int nmemb, std::ostream& fp ) const
 {
-    size_t s = fwrite ( data, size, nmemb, fp );
-    if ( s < nmemb )
-        return false;
+    fp.write ( reinterpret_cast<const char*>(data), size*nmemb );
     return true;
 }
 
-size_t l3m::ReadData ( char* dest, size_t size, unsigned int nmemb, FILE* fp ) const
+size_t l3m::ReadData ( char* dest, size_t size, unsigned int nmemb, std::istream& fp ) const
 {
-    return fread ( dest, size, nmemb, fp );
+    return fp.readsome(dest, size*nmemb) / size;
 }
 
-l3m::ErrorCode l3m::SaveToFile ( FILE* fp )
+l3m::ErrorCode l3m::SaveToFile ( std::ostream& fp )
 {
     unsigned int npos = (unsigned int)-1;
     unsigned int zero = 0;
@@ -262,11 +255,11 @@ l3m::ErrorCode l3m::SaveToFile ( FILE* fp )
     FWRITE_STR ( type(), fp, ERROR_WRITING_TYPE );
 
     // Offset 2 TXD
-    long off2TXD = ftell ( fp );
+    long off2TXD = fp.tellp ();
     FWRITE32 ( &npos, 1, fp, ERROR_ALLOCATING_TXD_OFFSET );
     
     // Offset 2 Meta
-    long off2Meta = ftell ( fp );
+    long off2Meta = fp.tellp ();
     FWRITE32 ( &npos, 1, fp, ERROR_ALLOCATING_METADATAS_OFFSET );
     
     // Groups
@@ -282,7 +275,7 @@ l3m::ErrorCode l3m::SaveToFile ( FILE* fp )
         FWRITE_STR ( iter->first, fp, ERROR_WRITING_GROUP_NAME );
         
         // Save offset position
-        groupOffsetRefs[i] = ftell ( fp );
+        groupOffsetRefs[i] = fp.tellp  ();
         ++i;
         FWRITE32 ( &npos, 1, fp, ERROR_ALLOCATING_GROUP_OFFSET );
     }
@@ -292,10 +285,10 @@ l3m::ErrorCode l3m::SaveToFile ( FILE* fp )
     for ( groupMap::const_iterator iter = m_groups.begin(); iter != m_groups.end(); ++iter )
     {
         // Fill the ref
-        long ref = ftell ( fp );
-        fseek ( fp, groupOffsetRefs[group], SEEK_SET );
+        long ref = fp.tellp ();
+        fp.seekp ( groupOffsetRefs[group], std::ios::beg );
         FWRITE32 ( &ref, 1, fp, ERROR_WRITING_GROUP_OFFSET );
-        fseek ( fp, 0, SEEK_END );
+        fp.seekp ( 0, std::ios::end );
         
         // Write the meshes headers
         const meshList& meshes = iter->second;
@@ -312,7 +305,7 @@ l3m::ErrorCode l3m::SaveToFile ( FILE* fp )
             FWRITE_STR ( mesh->name(), fp, ERROR_WRITING_MESH_NAME );
             
             // Keep the mesh offset position
-            meshOffsetRefs[i] = ftell ( fp );
+            meshOffsetRefs[i] = fp.tellp ();
             ++i;
             FWRITE32 ( &npos, 1, fp, ERROR_ALLOCATING_MESH_OFFSET );
         }
@@ -326,10 +319,10 @@ l3m::ErrorCode l3m::SaveToFile ( FILE* fp )
             Mesh* mesh = *iter2;
             
             // Fill the ref
-            ref = ftell(fp);
-            fseek ( fp, meshOffsetRefs [ currentMesh ], SEEK_SET );
+            ref = fp.tellp ();
+            fp.seekp ( meshOffsetRefs [ currentMesh ], std::ios::beg );
             FWRITE32 ( &ref, 1, fp, ERROR_WRITING_MESH_OFFSET );
-            fseek ( fp, 0, SEEK_END );
+            fp.seekp ( 0, std::ios::end );
             
             // Write the vertex data
             unsigned int num = mesh->numVertices();
@@ -344,18 +337,18 @@ l3m::ErrorCode l3m::SaveToFile ( FILE* fp )
     }
     
     // Write the ref to the TXDs
-    long ref = ftell ( fp );
-    fseek ( fp, off2TXD, SEEK_SET );
+    long ref = fp.tellp ();
+    fp.seekp( off2TXD, std::ios::beg );
     FWRITE32 ( &ref, 1, fp, ERROR_WRITING_TXD_OFFSET );
-    fseek ( fp, 0, SEEK_END );
+    fp.seekp ( 0, std::ios::end );
     // TODO: Implement TXD support
     FWRITE32 ( &zero, 1, fp, ERROR_WRITING_TXD_COUNT );
     
     // Write the ref to the metadata
-    ref = ftell ( fp );
-    fseek ( fp, off2Meta, SEEK_SET );
+    ref = fp.tellp();
+    fp.seekp ( off2Meta, std::ios::beg );
     FWRITE32 ( &ref, 1, fp, ERROR_WRITING_METADATAS_OFFSET );
-    fseek ( fp, 0, SEEK_END );
+    fp.seekp ( 0, std::ios::end );
     
     // Write the metadatas
     unsigned int metadataCount = m_metadatas.size ();
@@ -369,7 +362,7 @@ l3m::ErrorCode l3m::SaveToFile ( FILE* fp )
         FWRITE_STR ( m_metadatas[i], fp, ERROR_WRITING_META_NAME );
         
         // Allocate space for the metadata offset
-        metaOffsetRefs[i] = ftell(fp);
+        metaOffsetRefs[i] = fp.tellp();
         FWRITE32 ( &npos, 1, fp, ERROR_ALLOCATING_META_OFFSET );
     }
     
@@ -377,10 +370,10 @@ l3m::ErrorCode l3m::SaveToFile ( FILE* fp )
     for ( i = 0; i < metadataCount; ++i )
     {
         // Write the ref
-        ref = ftell(fp);
-        fseek ( fp, metaOffsetRefs[i], SEEK_SET );
+        ref = fp.tellp();
+        fp.seekp ( metaOffsetRefs[i], std::ios::beg );
         FWRITE32 ( &ref, 1, fp, ERROR_WRITING_META_OFFSET );
-        fseek ( fp, 0, SEEK_END );
+        fp.seekp ( 0, std::ios::end );
         
         // Write the metadata into.
         if ( SaveMetadata ( m_metadatas[i], fp ) == false )
@@ -397,7 +390,7 @@ l3m::ErrorCode l3m::SaveToFile ( FILE* fp )
 }
 
 
-l3m::ErrorCode l3m::LoadFromFile ( FILE* fp )
+l3m::ErrorCode l3m::LoadFromFile ( std::istream& fp )
 {
     char buffer [ 1024 ];
     size_t size;
@@ -463,13 +456,13 @@ l3m::ErrorCode l3m::LoadFromFile ( FILE* fp )
     {
         FREAD_STR ( groupName, fp, ERROR_READING_GROUP_NAME );
         FREAD32 ( &ref2Group, 1, fp, ERROR_READING_GROUP_OFFSET );
-        refBack = ftell(fp);
+        refBack = fp.tellg ();
         printf ( "Group name: %s\n", groupName.c_str() );
 
-        fseek ( fp, ref2Group, SEEK_SET );
+        fp.seekg ( ref2Group, std::ios::beg );
         
         
-        fseek ( fp, refBack, SEEK_SET );
+        fp.seekg ( refBack, std::ios::beg );
     }
 
 #undef FREAD

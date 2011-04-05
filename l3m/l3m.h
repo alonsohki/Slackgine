@@ -5,6 +5,7 @@
 #include <map>
 #include <vector>
 #include <list>
+#include <iostream>
 #include <stdint.h>
 #include "vector.h"
 #include "vertex.h"
@@ -94,7 +95,7 @@ public:
 public:
     const std::string&  type            () const { return m_type; }
     const ErrorCode&    errorCode       () const { return m_errorCode; }
-    const int&          getErrno           () const { return m_errno; }
+    const int&          getErrno        () const { return m_errno; }
     const char*         error           () const { return m_error; }
     
 protected:
@@ -105,10 +106,10 @@ private:
 
     // Files
 public:
-    ErrorCode           SaveToFile      ( FILE* fp );
     ErrorCode           SaveToFile      ( const char* path );
-    ErrorCode           LoadFromFile    ( FILE* fp );
+    ErrorCode           SaveToFile      ( std::ostream& os );
     ErrorCode           LoadFromFile    ( const char* path );
+    ErrorCode           LoadFromFile    ( std::istream& is );
     
     // Error handling
 private:
@@ -118,27 +119,27 @@ private:
     // Metadatas
 protected:
     void                DeclareMetadata ( const std::string& name );
-    virtual bool        SaveMetadata    ( const std::string& name, FILE* fp ) { return true; }
-    virtual bool        LoadMetadata    ( const std::string& name, FILE* fp ) { return true; }
+    virtual bool        SaveMetadata    ( const std::string& name, std::ostream& fp ) { return true; }
+    virtual bool        LoadMetadata    ( const std::string& name, std::istream& fp ) { return true; }
 
     // Endianness
 private:
     void                InitializeEndianness ();
-    size_t (*m_endian16writer)(const uint16_t*, uint32_t, FILE*);
-    size_t (*m_endian32writer)(const uint32_t*, uint32_t, FILE*);
-    size_t (*m_endian16reader)(uint16_t*, uint32_t, FILE*);
-    size_t (*m_endian32reader)(uint32_t*, uint32_t, FILE*);
+    size_t (*m_endian16writer)(const uint16_t*, uint32_t, std::ostream&);
+    size_t (*m_endian32writer)(const uint32_t*, uint32_t, std::ostream&);
+    size_t (*m_endian16reader)(uint16_t*, uint32_t, std::istream&);
+    size_t (*m_endian32reader)(uint32_t*, uint32_t, std::istream&);
 protected:
-    bool                Write16         ( const uint16_t* v, uint32_t nmemb, FILE* fp ) const;
-    bool                Write32         ( const uint32_t* v, uint32_t nmemb, FILE* fp ) const;
-    bool                WriteFloat      ( const float* v, uint32_t nmemb, FILE* fp ) const;
-    bool                WriteStr        ( const std::string& str, FILE* fp ) const;
-    bool                WriteData       ( const void* data, size_t size, unsigned int nmemb, FILE* fp ) const;
-    size_t              Read16          ( uint16_t* v, uint32_t nmemb, FILE* fp ) const;
-    size_t              Read32          ( uint32_t* v, uint32_t nmemb, FILE* fp ) const;
-    size_t              ReadFloat       ( float* v, uint32_t nmemb, FILE* fp ) const;
-    size_t              ReadStr         ( std::string& str, FILE* fp ) const;
-    size_t              ReadData        ( char* dest, size_t size, uint32_t nmemb, FILE* fp ) const;
+    bool                Write16         ( const uint16_t* v, uint32_t nmemb, std::ostream& fp ) const;
+    bool                Write32         ( const uint32_t* v, uint32_t nmemb, std::ostream& fp ) const;
+    bool                WriteFloat      ( const float* v, uint32_t nmemb, std::ostream& fp ) const;
+    bool                WriteStr        ( const std::string& str, std::ostream& fp ) const;
+    bool                WriteData       ( const void* data, size_t size, unsigned int nmemb, std::ostream& fp ) const;
+    size_t              Read16          ( uint16_t* v, uint32_t nmemb, std::istream& fp ) const;
+    size_t              Read32          ( uint32_t* v, uint32_t nmemb, std::istream& fp ) const;
+    size_t              ReadFloat       ( float* v, uint32_t nmemb, std::istream& fp ) const;
+    size_t              ReadStr         ( std::string& str, std::istream& fp ) const;
+    size_t              ReadData        ( char* dest, size_t size, uint32_t nmemb, std::istream& fp ) const;
     
 public:
     // Grouped meshes

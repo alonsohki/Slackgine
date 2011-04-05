@@ -19,7 +19,7 @@ public:
     
     ~l3mWithDescription () {}
     
-    bool SaveMetadata( const std::string& name, FILE* fp )
+    bool SaveMetadata( const std::string& name, std::ostream& fp )
     {
         if ( name == "description" )
             return WriteStr ( m_description, fp );
