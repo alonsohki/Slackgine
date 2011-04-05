@@ -388,6 +388,9 @@ l3m::ErrorCode l3m::SaveToFile ( FILE* fp )
     }
     
 #undef FWRITE
+#undef FWRITE16
+#undef FWRITE32
+#undef FWRITEF
 #undef FWRITE_STR
     
     return SetError(OK);
@@ -398,12 +401,14 @@ l3m::ErrorCode l3m::LoadFromFile ( FILE* fp )
 {
     char buffer [ 1024 ];
     size_t size;
+    unsigned int i;
+    long refBack;
     
     #define FREAD(data, _size, nmemb, fp, err) if ( ( size = ReadData(data, _size, nmemb, fp) ) != nmemb ) return SetError(err)
     #define FREAD16(data, nmemb, fp, err) if ( ( size = Read16(reinterpret_cast<uint16_t*>(data), nmemb, fp) ) != nmemb ) return SetError(err)
     #define FREAD32(data, nmemb, fp, err) if ( ( size = Read32(reinterpret_cast<uint32_t*>(data), nmemb, fp) ) != nmemb ) return SetError(err)
     #define FREADF(data, nmemb, fp, err) if ( ( size = ReadFloat(reinterpret_cast<float*>(data), nmemb, fp) ) != nmemb ) return SetError(err)
-    #define FREAD_STR(str, fp, err) if ( ( size = ReadStr(str,fp) ) != nmemb ) return SetError(err)
+    #define FREAD_STR(str, fp, err) if ( ( size = ReadStr(str,fp) ) < 0 ) return SetError(err)
 
     // Read out the BOM marker
     FREAD ( buffer, sizeof(char), strlen(L3M_BOM), fp, ERROR_READING_BOM );
@@ -427,12 +432,52 @@ l3m::ErrorCode l3m::LoadFromFile ( FILE* fp )
         m_endian32reader = identityRead<uint32_t>;
     }
 
+    // Load and check version
     float fVersion;
     FREADF(&fVersion, 1, fp, ERROR_READING_VERSION);
     if ( fVersion > L3M_VERSION )
         return SetError ( INVALID_VERSION );
     
+    // Load and check type
+    std::string strType;
+    FREAD_STR ( strType, fp, ERROR_READING_TYPE );
+    if ( strType != type() )
+        return SetError ( INVALID_TYPE );
     
+    // Get the ref to the txds
+    long off2TXD;
+    FREAD32(&off2TXD, 1, fp, ERROR_READING_TXD_OFFSET );
+    
+    // Get the ref to the metadata
+    long off2Meta;
+    FREAD32(&off2Meta, 1, fp, ERROR_READING_METADATAS_OFFSET);
+    
+    // Load groups
+    unsigned int numGroups;
+    FREAD32(&numGroups, 1, fp, ERROR_READING_GROUP_COUNT);
+    
+    printf("%u groups\n", numGroups);
+    std::string groupName;
+    long ref2Group;
+    for ( i = 0; i < numGroups; ++i )
+    {
+        FREAD_STR ( groupName, fp, ERROR_READING_GROUP_NAME );
+        FREAD32 ( &ref2Group, 1, fp, ERROR_READING_GROUP_OFFSET );
+        refBack = ftell(fp);
+        printf ( "Group name: %s\n", groupName.c_str() );
+
+        fseek ( fp, ref2Group, SEEK_SET );
+        
+        
+        fseek ( fp, refBack, SEEK_SET );
+    }
+
+#undef FREAD
+#undef FREAD16
+#undef FREAD32
+#undef FREADF
+#undef FREAD_STR
+
     return SetError(OK);
 }
 
@@ -493,6 +538,13 @@ const char* l3m::TranslateErrorCode ( l3m::ErrorCode err ) const
         case INVALID_BOM: return "Invalid BOM";
         case ERROR_READING_VERSION: return "Error reading version";
         case INVALID_VERSION: return "Invalid version";
+        case ERROR_READING_TYPE: return "Error reading type";
+        case INVALID_TYPE: return "Invalid model type";
+        case ERROR_READING_TXD_OFFSET: return "Error reading TXDs offset";
+        case ERROR_READING_METADATAS_OFFSET: return "Error reading metadatas offset";
+        case ERROR_READING_GROUP_COUNT: return "Error reading group count";
+        case ERROR_READING_GROUP_NAME: return "Error reading group name";
+        case ERROR_READING_GROUP_OFFSET: return "Error reading group offset";
                 
         default: return "Unknown";
     }

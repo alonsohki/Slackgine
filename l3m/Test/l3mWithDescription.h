@@ -31,6 +31,9 @@ public:
         
         return false;
     }
+    
+    const std::string& description() const { return m_description; }
+    std::string& description() { return m_description; }
 };
 
 #endif	/* L3MWITHDESCRIPTION_H */

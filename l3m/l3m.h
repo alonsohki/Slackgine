@@ -61,7 +61,13 @@ public:
         INVALID_BOM,
         ERROR_READING_VERSION,
         INVALID_VERSION,
+        ERROR_READING_TYPE,
         INVALID_TYPE,
+        ERROR_READING_TXD_OFFSET,
+        ERROR_READING_METADATAS_OFFSET,
+        ERROR_READING_GROUP_COUNT,
+        ERROR_READING_GROUP_NAME,
+        ERROR_READING_GROUP_OFFSET,
         
         MAX_ERROR_CODE
     };
@@ -113,6 +119,7 @@ private:
 protected:
     void                DeclareMetadata ( const std::string& name );
     virtual bool        SaveMetadata    ( const std::string& name, FILE* fp ) { return true; }
+    virtual bool        LoadMetadata    ( const std::string& name, FILE* fp ) { return true; }
 
     // Endianness
 private:
