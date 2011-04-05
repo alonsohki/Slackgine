@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 #include <list>
 #include <stdint.h>
 #include "vector.h"
@@ -32,7 +33,7 @@ public:
         ERROR_WRITING_VERSION,
         ERROR_WRITING_TYPE,
         ERROR_ALLOCATING_TXD_OFFSET,
-        ERROR_ALLOCATING_META_OFFSET,
+        ERROR_ALLOCATING_METADATAS_OFFSET,
         ERROR_WRITING_NUMBER_OF_GROUPS,
         ERROR_WRITING_GROUP_NAME,
         ERROR_ALLOCATING_GROUP_OFFSET,
@@ -47,8 +48,12 @@ public:
         ERROR_WRITING_FACE_DATA,
         ERROR_WRITING_TXD_OFFSET,
         ERROR_WRITING_TXD_COUNT,
+        ERROR_WRITING_METADATAS_OFFSET,
+        ERROR_WRITING_METADATAS_COUNT,
+        ERROR_WRITING_META_NAME,
+        ERROR_ALLOCATING_META_OFFSET,
         ERROR_WRITING_META_OFFSET,
-        ERROR_WRITING_META_COUNT,
+        ERROR_WRITING_METADATA,
                 
         // FIle loading
         UNABLE_TO_OPEN_FILE_FOR_READING,
@@ -56,6 +61,7 @@ public:
         INVALID_BOM,
         ERROR_READING_VERSION,
         INVALID_VERSION,
+        INVALID_TYPE,
         
         MAX_ERROR_CODE
     };
@@ -68,6 +74,8 @@ private:
     ErrorCode           m_errorCode;
     int                 m_errno;
     char                m_error [ 256 ];
+    
+    std::vector<std::string>    m_metadatas;
     
 public:
     typedef struct __VertexGroup VertexGroup;
@@ -101,6 +109,10 @@ private:
     ErrorCode           SetError                ( ErrorCode err );
     const char*         TranslateErrorCode      ( ErrorCode err ) const;
 
+    // Metadatas
+protected:
+    void                DeclareMetadata ( const std::string& name );
+    virtual bool        SaveMetadata    ( const std::string& name, FILE* fp ) { return true; }
 
     // Endianness
 private:
@@ -109,6 +121,7 @@ private:
     size_t (*m_endian32writer)(const uint32_t*, uint32_t, FILE*);
     size_t (*m_endian16reader)(uint16_t*, uint32_t, FILE*);
     size_t (*m_endian32reader)(uint32_t*, uint32_t, FILE*);
+protected:
     bool                Write16         ( const uint16_t* v, uint32_t nmemb, FILE* fp ) const;
     bool                Write32         ( const uint32_t* v, uint32_t nmemb, FILE* fp ) const;
     bool                WriteFloat      ( const float* v, uint32_t nmemb, FILE* fp ) const;

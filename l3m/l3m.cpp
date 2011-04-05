@@ -23,6 +23,11 @@ l3m::~l3m()
     }
 }
 
+void l3m::DeclareMetadata(const std::string& name)
+{
+    m_metadatas.push_back ( name );
+}
+
 l3m::ErrorCode l3m::SaveToFile ( const char* path )
 {
     FILE* fp = fopen ( path, "wb" );
@@ -262,14 +267,14 @@ l3m::ErrorCode l3m::SaveToFile ( FILE* fp )
     
     // Offset 2 Meta
     long off2Meta = ftell ( fp );
-    FWRITE32 ( &npos, 1, fp, ERROR_ALLOCATING_META_OFFSET );
+    FWRITE32 ( &npos, 1, fp, ERROR_ALLOCATING_METADATAS_OFFSET );
     
     // Groups
     unsigned int numGroups = m_groups.size();
     FWRITE32 ( &numGroups, 1, fp, ERROR_WRITING_NUMBER_OF_GROUPS );
     
     // Write each group
-    long* groupOffsetRefs = new long [ m_groups.size() ];
+    long groupOffsetRefs [ m_groups.size() ];
     i = 0;
     for ( groupMap::const_iterator iter = m_groups.begin(); iter != m_groups.end(); ++iter )
     {
@@ -296,7 +301,7 @@ l3m::ErrorCode l3m::SaveToFile ( FILE* fp )
         const meshList& meshes = iter->second;
         unsigned int numMeshes = meshes.size ();
         FWRITE32 ( &numMeshes, 1, fp, ERROR_WRITING_NUMBER_OF_MESHES );
-        long* meshOffsetRefs = new long [ numMeshes ];
+        long meshOffsetRefs [ numMeshes ];
         
         i = 0;
         for ( meshList::const_iterator iter2 = meshes.begin(); iter2 != meshes.end(); ++iter2 )
@@ -336,11 +341,7 @@ l3m::ErrorCode l3m::SaveToFile ( FILE* fp )
             FWRITE32 ( &num, 1, fp, ERROR_WRITING_FACE_COUNT );
             FWRITEF ( mesh->faces(), (num * sizeof(Face)) / sizeof(unsigned int), fp, ERROR_WRITING_FACE_DATA );
         }
-        
-        delete [] meshOffsetRefs;
     }
-    delete [] groupOffsetRefs;
-    
     
     // Write the ref to the TXDs
     long ref = ftell ( fp );
@@ -353,10 +354,38 @@ l3m::ErrorCode l3m::SaveToFile ( FILE* fp )
     // Write the ref to the metadata
     ref = ftell ( fp );
     fseek ( fp, off2Meta, SEEK_SET );
-    FWRITE32 ( &ref, 1, fp, ERROR_WRITING_META_OFFSET );
+    FWRITE32 ( &ref, 1, fp, ERROR_WRITING_METADATAS_OFFSET );
     fseek ( fp, 0, SEEK_END );
-    // TODO: Implement metadata support
-    FWRITE32 ( &zero, 1, fp, ERROR_WRITING_META_COUNT );
+    
+    // Write the metadatas
+    unsigned int metadataCount = m_metadatas.size ();
+    FWRITE32 ( &metadataCount, 1, fp, ERROR_WRITING_METADATAS_COUNT );
+
+    // Allocate space for the metadata refs
+    long metaOffsetRefs [ metadataCount ];
+    for ( i = 0; i < metadataCount; ++i )
+    {
+        // Write the metadata name
+        FWRITE_STR ( m_metadatas[i], fp, ERROR_WRITING_META_NAME );
+        
+        // Allocate space for the metadata offset
+        metaOffsetRefs[i] = ftell(fp);
+        FWRITE32 ( &npos, 1, fp, ERROR_ALLOCATING_META_OFFSET );
+    }
+    
+    // Write the metadata data
+    for ( i = 0; i < metadataCount; ++i )
+    {
+        // Write the ref
+        ref = ftell(fp);
+        fseek ( fp, metaOffsetRefs[i], SEEK_SET );
+        FWRITE32 ( &ref, 1, fp, ERROR_WRITING_META_OFFSET );
+        fseek ( fp, 0, SEEK_END );
+        
+        // Write the metadata into.
+        if ( SaveMetadata ( m_metadatas[i], fp ) == false )
+                return SetError ( ERROR_WRITING_METADATA );
+    }
     
 #undef FWRITE
 #undef FWRITE_STR
@@ -431,11 +460,12 @@ const char* l3m::TranslateErrorCode ( l3m::ErrorCode err ) const
         case OK: return "Success";
         
         // File saving
+        case UNABLE_TO_OPEN_FILE_FOR_WRITING: return "Unable to open file for writing";
         case ERROR_WRITING_BOM: return "Error writing BOM";
         case ERROR_WRITING_VERSION: return "Error writing version number";
         case ERROR_WRITING_TYPE: return "Error writing model type";
         case ERROR_ALLOCATING_TXD_OFFSET: return "Error allocating space for the TXD offset";
-        case ERROR_ALLOCATING_META_OFFSET: return "Error allocating space for the meta-data offset";
+        case ERROR_ALLOCATING_METADATAS_OFFSET: return "Error allocating space for the meta-data offset";
         case ERROR_WRITING_NUMBER_OF_GROUPS: return "Error writing the number of groups";
         case ERROR_WRITING_GROUP_NAME: return "Error writing the group name";
         case ERROR_ALLOCATING_GROUP_OFFSET: return "Error allocating space for the group offset";
@@ -450,10 +480,15 @@ const char* l3m::TranslateErrorCode ( l3m::ErrorCode err ) const
         case ERROR_WRITING_FACE_DATA: return "Error writing the face Data";
         case ERROR_WRITING_TXD_OFFSET: return "Error writing the TXD offseT";
         case ERROR_WRITING_TXD_COUNT: return "Error writing the TXD count";
-        case ERROR_WRITING_META_OFFSET: return "Error writing the meta-data offset";
-        case ERROR_WRITING_META_COUNT: return "Error writing the meta-data count";
+        case ERROR_WRITING_METADATAS_OFFSET: return "Error writing metadatas offset";
+        case ERROR_WRITING_METADATAS_COUNT: return "Error writing metadatas count";
+        case ERROR_WRITING_META_NAME: return "Error writing metadata name";
+        case ERROR_ALLOCATING_META_OFFSET: return "Error allocating metadata offset";
+        case ERROR_WRITING_META_OFFSET: return "Error writing metadata offset";
+        case ERROR_WRITING_METADATA: return "Error writing metadata";
         
         // FIle loading
+        case UNABLE_TO_OPEN_FILE_FOR_READING: return "Unable to open file for reading";
         case ERROR_READING_BOM: return "Error reading BOM";
         case INVALID_BOM: return "Invalid BOM";
         case ERROR_READING_VERSION: return "Error reading version";
