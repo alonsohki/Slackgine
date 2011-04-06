@@ -32,6 +32,23 @@ public:
         return false;
     }
     
+    bool LoadMetadata ( const std::string& name, std::istream& fp )
+    {
+        if ( name == "description" )
+            return ReadStr ( m_description, fp );
+        else if ( name == "other stuff" )
+        {
+            unsigned int magicNumber;
+            if ( Read32 ( &magicNumber, 1, fp ) )
+                if ( magicNumber != 0xFABADA )
+                    fprintf(stderr, "Invalid magic number!\n" );
+                else
+                    return true;
+        }
+        
+        return false;
+    }
+    
     const std::string& description() const { return m_description; }
     std::string& description() { return m_description; }
 };

@@ -31,6 +31,8 @@ int main(int argc, char** argv)
     l3mWithDescription model2;
     if ( model2.LoadFromFile ( "chromatic_tri.l3m" ) != l3m::OK )
         fprintf ( stderr, "Error al cargar el fichero: %s\n", model2.error() );
+    
+    printf ( "Descripción leída: %s\n", model2.description().c_str() );
 
     return 0;
 }

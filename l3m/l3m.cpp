@@ -588,6 +588,34 @@ l3m::ErrorCode l3m::LoadFromFile ( std::istream& fp )
         
         fp.seekg ( refBack, std::ios::beg );
     }
+    
+    // TODO: Load TXDs
+    
+    // META-DATA
+    // Load the meta-data count
+    fp.seekg ( off2Meta, std::ios::beg );
+    unsigned int metadataCount;
+    FREAD32 ( &metadataCount, 1, fp, ERROR_READING_METADATAS_COUNT );
+    
+    for ( unsigned int i = 0; i < metadataCount; ++i )
+    {
+        // Load the metadata name
+        std::string metaName;
+        FREAD_STR ( metaName, fp, ERROR_READING_META_NAME );
+        
+        // Load the metadata offset
+        uint64_t refMeta;
+        FREAD64 ( &refMeta, 1, fp, ERROR_READING_META_OFFSET );
+
+        // Jump there!
+        refBack = fp.tellg ();
+        fp.seekg ( refMeta, std::ios::beg );
+        
+        if ( LoadMetadata ( metaName, fp ) == false )
+            return SetError ( ERROR_READING_METADATA );
+        
+        fp.seekg ( refBack, std::ios::beg );
+    }
 
 #undef FREAD
 #undef FREAD16
@@ -677,6 +705,10 @@ const char* l3m::TranslateErrorCode ( l3m::ErrorCode err ) const
         case ERROR_READING_VERTEX_DATA: return "Error reading vertex data";
         case ERROR_READING_FACE_COUNT: return "Error reading face count";
         case ERROR_READING_FACE_DATA: return "Error reading face data";
+        case ERROR_READING_METADATAS_COUNT: return "Error reading metadatas count";
+        case ERROR_READING_META_NAME: return "Error reading metadata name";
+        case ERROR_READING_META_OFFSET: return "Error reading metadata offset";
+        case ERROR_READING_METADATA: return "Error reading metadata";
                 
         default: return "Unknown";
     }
