@@ -32,6 +32,8 @@ public:
         UNABLE_TO_OPEN_FILE_FOR_WRITING,
         ERROR_WRITING_BOM,
         ERROR_WRITING_VERSION,
+        ERROR_WRITING_VERTEX_VERSION,
+        ERROR_WRITING_FACE_VERSION,
         ERROR_WRITING_TYPE,
         ERROR_ALLOCATING_TXD_OFFSET,
         ERROR_ALLOCATING_METADATAS_OFFSET,
@@ -43,6 +45,7 @@ public:
         ERROR_WRITING_MESH_NAME,
         ERROR_ALLOCATING_MESH_OFFSET,
         ERROR_WRITING_MESH_OFFSET,
+        ERROR_WRITING_POLYGON_TYPE,
         ERROR_WRITING_VERTEX_COUNT,
         ERROR_WRITING_VERTEX_DATA,
         ERROR_WRITING_FACE_COUNT,
@@ -62,6 +65,10 @@ public:
         INVALID_BOM,
         ERROR_READING_VERSION,
         INVALID_VERSION,
+        ERROR_READING_VERTEX_VERSION,
+        INVALID_VERTEX_VERSION,
+        ERROR_READING_FACE_VERSION,
+        INVALID_FACE_VERSION,
         ERROR_READING_TYPE,
         INVALID_TYPE,
         ERROR_READING_TXD_OFFSET,
@@ -72,6 +79,11 @@ public:
         ERROR_READING_MESH_COUNT,
         ERROR_READING_MESH_NAME,
         ERROR_READING_MESH_OFFSET,
+        ERROR_READING_POLYGON_TYPE,
+        ERROR_READING_VERTEX_COUNT,
+        ERROR_READING_VERTEX_DATA,
+        ERROR_READING_FACE_COUNT,
+        ERROR_READING_FACE_DATA,
         
         MAX_ERROR_CODE
     };
@@ -130,16 +142,20 @@ private:
     void                InitializeEndianness ();
     size_t (*m_endian16writer)(const uint16_t*, uint32_t, std::ostream&);
     size_t (*m_endian32writer)(const uint32_t*, uint32_t, std::ostream&);
+    size_t (*m_endian64writer)(const uint64_t*, uint32_t, std::ostream&);
     size_t (*m_endian16reader)(uint16_t*, uint32_t, std::istream&);
     size_t (*m_endian32reader)(uint32_t*, uint32_t, std::istream&);
+    size_t (*m_endian64reader)(uint64_t*, uint32_t, std::istream&);
 protected:
     bool                Write16         ( const uint16_t* v, uint32_t nmemb, std::ostream& fp ) const;
     bool                Write32         ( const uint32_t* v, uint32_t nmemb, std::ostream& fp ) const;
+    bool                Write64         ( const uint64_t* v, uint32_t nmemb, std::ostream& fp ) const;
     bool                WriteFloat      ( const float* v, uint32_t nmemb, std::ostream& fp ) const;
     bool                WriteStr        ( const std::string& str, std::ostream& fp ) const;
     bool                WriteData       ( const void* data, size_t size, unsigned int nmemb, std::ostream& fp ) const;
     size_t              Read16          ( uint16_t* v, uint32_t nmemb, std::istream& fp ) const;
     size_t              Read32          ( uint32_t* v, uint32_t nmemb, std::istream& fp ) const;
+    size_t              Read64          ( uint64_t* v, uint32_t nmemb, std::istream& fp ) const;
     size_t              ReadFloat       ( float* v, uint32_t nmemb, std::istream& fp ) const;
     size_t              ReadStr         ( std::string& str, std::istream& fp ) const;
     size_t              ReadData        ( char* dest, size_t size, uint32_t nmemb, std::istream& fp ) const;

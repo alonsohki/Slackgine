@@ -78,13 +78,18 @@ template < typename T >
 static size_t identityWrite ( const T* v, uint32_t count, std::ostream& fp )
 {
     fp.write(reinterpret_cast<const char*>(v), sizeof(T)*count);
-    return count;
+    if ( !fp.fail() )
+        return count;
+    return -1;
 }
 
 template < typename T >
 static size_t identityRead ( T* v, uint32_t count, std::istream& fp )
 {
-    return fp.readsome ( reinterpret_cast<char *>(v), sizeof(T)*count ) / sizeof(T);
+    size_t s = fp.readsome ( reinterpret_cast<char *>(v), sizeof(T)*count ) / sizeof(T);
+    if ( ! fp.fail() )
+        return s;
+    return -1;
 }
 
 static size_t swap16Write ( const uint16_t* v, uint32_t count, std::ostream& fp )
@@ -94,6 +99,8 @@ static size_t swap16Write ( const uint16_t* v, uint32_t count, std::ostream& fp 
     {
         current = ( ( v[i] >> 8 ) & 0x00FF ) | ( v[i] << 8 & 0xFF00 );
         fp.write(reinterpret_cast<const char*>(&current), sizeof(uint16_t));
+        if ( fp.fail() )
+            return i;
     }
     return count;
 }
@@ -120,6 +127,8 @@ static size_t swap32Write ( const uint32_t* v, uint32_t count, std::ostream& fp 
                    ( ( v[i] << 8  ) & 0x00FF0000 ) |
                    ( ( v[i] << 24 ) & 0xFF000000 );
         fp.write(reinterpret_cast<const char*>(&current), sizeof(uint32_t));
+        if ( fp.fail() )
+            return i;
     }
     return count;
 }
@@ -135,6 +144,45 @@ static size_t swap32Read ( uint32_t* v, uint32_t count, std::istream& fp )
                 ( ( current >> 8  ) & 0x0000FF00 ) |
                 ( ( current << 8  ) & 0x00FF0000 ) |
                 ( ( current << 24 ) & 0xFF000000 );
+    }
+    return count;
+}
+
+static size_t swap64Write ( const uint64_t* v, uint32_t count, std::ostream& fp )
+{
+    uint64_t current;
+    for ( uint32_t i = 0; i < count; ++i )
+    {
+        current =  ( ( v[i] >> 56 ) & 0x00000000000000FF ) |
+                   ( ( v[i] >> 40 ) & 0x000000000000FF00 ) |
+                   ( ( v[i] >> 24 ) & 0x0000000000FF0000 ) |
+                   ( ( v[i] >> 8  ) & 0x00000000FF000000 ) |
+                   ( ( v[i] << 8  ) & 0x000000FF00000000 ) |
+                   ( ( v[i] << 24 ) & 0x0000FF0000000000 ) |
+                   ( ( v[i] << 40 ) & 0x00FF000000000000 ) |
+                   ( ( v[i] << 56 ) & 0xFF00000000000000 );
+        fp.write(reinterpret_cast<const char*>(&current), sizeof(uint64_t));
+        if ( fp.fail() )
+            return i;
+    }
+    return count;
+}
+
+static size_t swap64Read ( uint64_t* v, uint32_t count, std::istream& fp )
+{
+    uint64_t current;
+    for ( uint32_t i = 0; i < count; ++i )
+    {
+        if ( fp.readsome ( reinterpret_cast<char*>(&current), sizeof(uint64_t) ) < sizeof(uint64_t) )
+            return i;
+        v[i] =  ( ( current >> 56 ) & 0x00000000000000FF ) |
+                ( ( current >> 40 ) & 0x000000000000FF00 ) |
+                ( ( current >> 24 ) & 0x0000000000FF0000 ) |
+                ( ( current >> 8  ) & 0x00000000FF000000 ) |
+                ( ( current << 8  ) & 0x000000FF00000000 ) |
+                ( ( current << 24 ) & 0x0000FF0000000000 ) |
+                ( ( current << 40 ) & 0x00FF000000000000 ) |
+                ( ( current << 56 ) & 0xFF00000000000000 );
     }
     return count;
 }
@@ -156,11 +204,13 @@ void l3m::InitializeEndianness()
     {
         m_endian16writer = swap16Write;
         m_endian32writer = swap32Write;
+        m_endian64writer = swap64Write;
     }
     else
     {
         m_endian16writer = identityWrite<uint16_t>;
         m_endian32writer = identityWrite<uint32_t>;
+        m_endian64writer = identityWrite<uint64_t>;
     }
 }
 
@@ -179,6 +229,14 @@ bool l3m::Write32 ( const uint32_t* v, uint32_t nmemb, std::ostream& fp ) const
 size_t l3m::Read32 ( uint32_t* v, uint32_t nmemb, std::istream& fp ) const
 {
     return m_endian32reader ( v, nmemb, fp );
+}
+bool l3m::Write64 ( const uint64_t* v, uint32_t nmemb, std::ostream& fp ) const
+{
+    return m_endian64writer ( v, nmemb, fp ) >= nmemb;
+}
+size_t l3m::Read64 ( uint64_t* v, uint32_t nmemb, std::istream& fp ) const
+{
+    return m_endian64reader ( v, nmemb, fp );
 }
 bool l3m::WriteFloat ( const float* v, uint32_t nmemb, std::ostream& fp ) const
 {
@@ -224,13 +282,13 @@ size_t l3m::ReadData ( char* dest, size_t size, unsigned int nmemb, std::istream
 
 l3m::ErrorCode l3m::SaveToFile ( std::ostream& fp )
 {
-    unsigned int npos = (unsigned int)-1;
-    unsigned int zero = 0;
+    uint64_t npos = (uint64_t)-1;
     unsigned int i;
     
     #define FWRITE(data, size, nmemb, fp, err) if ( ! WriteData(data, size, nmemb, fp) ) return SetError(err)
     #define FWRITE16(data, nmemb, fp, err) if ( ! Write16(reinterpret_cast<uint16_t*>(data), nmemb, fp) ) return SetError(err)
     #define FWRITE32(data, nmemb, fp, err) if ( ! Write32(reinterpret_cast<uint32_t*>(data), nmemb, fp) ) return SetError(err)
+    #define FWRITE64(data, nmemb, fp, err) if ( ! Write64(reinterpret_cast<uint64_t*>(data), nmemb, fp) ) return SetError(err)
     #define FWRITEF(data, nmemb, fp, err) if ( ! WriteData(reinterpret_cast<float*>(data), sizeof(float), nmemb, fp) ) return SetError(err)
     #define FWRITE_STR(str, fp, err) if ( ! WriteStr(str,fp) ) return SetError(err)
 
@@ -250,24 +308,28 @@ l3m::ErrorCode l3m::SaveToFile ( std::ostream& fp )
     // Versión
     float fVersion = L3M_VERSION;
     FWRITEF ( &fVersion, 1, fp, ERROR_WRITING_VERSION );
+    unsigned int vertexVersion = Vertex::VERSION;
+    FWRITE32 ( &vertexVersion, 1, fp, ERROR_WRITING_VERTEX_VERSION );
+    unsigned int faceVersion = Face::VERSION;
+    FWRITE32 ( &faceVersion, 1, fp, ERROR_WRITING_FACE_VERSION );
     
     // Type
     FWRITE_STR ( type(), fp, ERROR_WRITING_TYPE );
 
     // Offset 2 TXD
-    long off2TXD = fp.tellp ();
-    FWRITE32 ( &npos, 1, fp, ERROR_ALLOCATING_TXD_OFFSET );
+    uint64_t off2TXD = fp.tellp ();
+    FWRITE64 ( &npos, 1, fp, ERROR_ALLOCATING_TXD_OFFSET );
     
     // Offset 2 Meta
-    long off2Meta = fp.tellp ();
-    FWRITE32 ( &npos, 1, fp, ERROR_ALLOCATING_METADATAS_OFFSET );
+    uint64_t off2Meta = fp.tellp ();
+    FWRITE64 ( &npos, 1, fp, ERROR_ALLOCATING_METADATAS_OFFSET );
     
     // Groups
     unsigned int numGroups = m_groups.size();
     FWRITE32 ( &numGroups, 1, fp, ERROR_WRITING_NUMBER_OF_GROUPS );
     
     // Write each group
-    long groupOffsetRefs [ m_groups.size() ];
+    uint64_t groupOffsetRefs [ m_groups.size() ];
     i = 0;
     for ( groupMap::const_iterator iter = m_groups.begin(); iter != m_groups.end(); ++iter )
     {
@@ -277,7 +339,7 @@ l3m::ErrorCode l3m::SaveToFile ( std::ostream& fp )
         // Save offset position
         groupOffsetRefs[i] = fp.tellp  ();
         ++i;
-        FWRITE32 ( &npos, 1, fp, ERROR_ALLOCATING_GROUP_OFFSET );
+        FWRITE64 ( &npos, 1, fp, ERROR_ALLOCATING_GROUP_OFFSET );
     }
     
     // For each group, write its meshes and fill the ref
@@ -285,16 +347,16 @@ l3m::ErrorCode l3m::SaveToFile ( std::ostream& fp )
     for ( groupMap::const_iterator iter = m_groups.begin(); iter != m_groups.end(); ++iter )
     {
         // Fill the ref
-        long ref = fp.tellp ();
+        uint64_t ref = fp.tellp ();
         fp.seekp ( groupOffsetRefs[group], std::ios::beg );
-        FWRITE32 ( &ref, 1, fp, ERROR_WRITING_GROUP_OFFSET );
+        FWRITE64 ( &ref, 1, fp, ERROR_WRITING_GROUP_OFFSET );
         fp.seekp ( 0, std::ios::end );
         
         // Write the meshes headers
         const meshList& meshes = iter->second;
         unsigned int numMeshes = meshes.size ();
         FWRITE32 ( &numMeshes, 1, fp, ERROR_WRITING_NUMBER_OF_MESHES );
-        long meshOffsetRefs [ numMeshes ];
+        uint64_t meshOffsetRefs [ numMeshes ];
         
         i = 0;
         for ( meshList::const_iterator iter2 = meshes.begin(); iter2 != meshes.end(); ++iter2 )
@@ -307,7 +369,7 @@ l3m::ErrorCode l3m::SaveToFile ( std::ostream& fp )
             // Keep the mesh offset position
             meshOffsetRefs[i] = fp.tellp ();
             ++i;
-            FWRITE32 ( &npos, 1, fp, ERROR_ALLOCATING_MESH_OFFSET );
+            FWRITE64 ( &npos, 1, fp, ERROR_ALLOCATING_MESH_OFFSET );
         }
         
         
@@ -321,8 +383,11 @@ l3m::ErrorCode l3m::SaveToFile ( std::ostream& fp )
             // Fill the ref
             ref = fp.tellp ();
             fp.seekp ( meshOffsetRefs [ currentMesh ], std::ios::beg );
-            FWRITE32 ( &ref, 1, fp, ERROR_WRITING_MESH_OFFSET );
+            FWRITE64 ( &ref, 1, fp, ERROR_WRITING_MESH_OFFSET );
             fp.seekp ( 0, std::ios::end );
+            
+            // Write the polygon type
+            FWRITE32 ( &(mesh->polyType()), 1, fp, ERROR_WRITING_POLYGON_TYPE );
             
             // Write the vertex data
             unsigned int num = mesh->numVertices();
@@ -332,22 +397,27 @@ l3m::ErrorCode l3m::SaveToFile ( std::ostream& fp )
             // Write the face data
             num = mesh->numFaces();
             FWRITE32 ( &num, 1, fp, ERROR_WRITING_FACE_COUNT );
-            FWRITEF ( mesh->faces(), (num * sizeof(Face)) / sizeof(unsigned int), fp, ERROR_WRITING_FACE_DATA );
+            FWRITE32 ( mesh->faces(), (num * sizeof(Face)) / sizeof(unsigned int), fp, ERROR_WRITING_FACE_DATA );
+            
+            ++currentMesh;
         }
+        
+        ++group;
     }
     
     // Write the ref to the TXDs
-    long ref = fp.tellp ();
+    uint64_t ref = fp.tellp ();
     fp.seekp( off2TXD, std::ios::beg );
-    FWRITE32 ( &ref, 1, fp, ERROR_WRITING_TXD_OFFSET );
+    FWRITE64 ( &ref, 1, fp, ERROR_WRITING_TXD_OFFSET );
     fp.seekp ( 0, std::ios::end );
     // TODO: Implement TXD support
-    FWRITE32 ( &zero, 1, fp, ERROR_WRITING_TXD_COUNT );
+    ref = 0;
+    FWRITE64 ( &ref, 1, fp, ERROR_WRITING_TXD_COUNT );
     
     // Write the ref to the metadata
     ref = fp.tellp();
     fp.seekp ( off2Meta, std::ios::beg );
-    FWRITE32 ( &ref, 1, fp, ERROR_WRITING_METADATAS_OFFSET );
+    FWRITE64 ( &ref, 1, fp, ERROR_WRITING_METADATAS_OFFSET );
     fp.seekp ( 0, std::ios::end );
     
     // Write the metadatas
@@ -363,7 +433,7 @@ l3m::ErrorCode l3m::SaveToFile ( std::ostream& fp )
         
         // Allocate space for the metadata offset
         metaOffsetRefs[i] = fp.tellp();
-        FWRITE32 ( &npos, 1, fp, ERROR_ALLOCATING_META_OFFSET );
+        FWRITE64 ( &npos, 1, fp, ERROR_ALLOCATING_META_OFFSET );
     }
     
     // Write the metadata data
@@ -372,7 +442,7 @@ l3m::ErrorCode l3m::SaveToFile ( std::ostream& fp )
         // Write the ref
         ref = fp.tellp();
         fp.seekp ( metaOffsetRefs[i], std::ios::beg );
-        FWRITE32 ( &ref, 1, fp, ERROR_WRITING_META_OFFSET );
+        FWRITE64 ( &ref, 1, fp, ERROR_WRITING_META_OFFSET );
         fp.seekp ( 0, std::ios::end );
         
         // Write the metadata into.
@@ -395,13 +465,14 @@ l3m::ErrorCode l3m::LoadFromFile ( std::istream& fp )
     char buffer [ 1024 ];
     size_t size;
     unsigned int i;
-    long refBack;
+    uint64_t refBack;
     
-    #define FREAD(data, _size, nmemb, fp, err) if ( ( size = ReadData(data, _size, nmemb, fp) ) != nmemb ) return SetError(err)
-    #define FREAD16(data, nmemb, fp, err) if ( ( size = Read16(reinterpret_cast<uint16_t*>(data), nmemb, fp) ) != nmemb ) return SetError(err)
-    #define FREAD32(data, nmemb, fp, err) if ( ( size = Read32(reinterpret_cast<uint32_t*>(data), nmemb, fp) ) != nmemb ) return SetError(err)
-    #define FREADF(data, nmemb, fp, err) if ( ( size = ReadFloat(reinterpret_cast<float*>(data), nmemb, fp) ) != nmemb ) return SetError(err)
-    #define FREAD_STR(str, fp, err) if ( ( size = ReadStr(str,fp) ) < 0 ) return SetError(err)
+    #define FREAD(data, _size, nmemb, fp, err) if ( ( ( size = ReadData(data, _size, (nmemb), fp) ) != (nmemb) ) || fp.fail() ) return SetError(err)
+    #define FREAD16(data, nmemb, fp, err) if ( ( ( size = Read16(reinterpret_cast<uint16_t*>(data), (nmemb), fp) ) != (nmemb) ) || fp.fail() ) return SetError(err)
+    #define FREAD32(data, nmemb, fp, err) if ( ( ( size = Read32(reinterpret_cast<uint32_t*>(data), (nmemb), fp) ) != (nmemb) ) || fp.fail() ) return SetError(err)
+    #define FREAD64(data, nmemb, fp, err) if ( ( ( size = Read64(reinterpret_cast<uint64_t*>(data), (nmemb), fp) ) != (nmemb) ) || fp.fail() ) return SetError(err)
+    #define FREADF(data, nmemb, fp, err) if ( ( ( size = ReadFloat(reinterpret_cast<float*>(data), (nmemb), fp) ) != (nmemb) ) || fp.fail() ) return SetError(err)
+    #define FREAD_STR(str, fp, err) if ( ( ( size = ReadStr(str,fp) ) < 0 ) || fp.fail() ) return SetError(err)
 
     // Read out the BOM marker
     FREAD ( buffer, sizeof(char), strlen(L3M_BOM), fp, ERROR_READING_BOM );
@@ -418,11 +489,13 @@ l3m::ErrorCode l3m::LoadFromFile ( std::istream& fp )
     {
         m_endian16reader = swap16Read;
         m_endian32reader = swap32Read;
+        m_endian64reader = swap64Read;
     }
     else
     {
         m_endian16reader = identityRead<uint16_t>;
         m_endian32reader = identityRead<uint32_t>;
+        m_endian64reader = identityRead<uint64_t>;
     }
 
     // Load and check version
@@ -430,6 +503,14 @@ l3m::ErrorCode l3m::LoadFromFile ( std::istream& fp )
     FREADF(&fVersion, 1, fp, ERROR_READING_VERSION);
     if ( fVersion > L3M_VERSION )
         return SetError ( INVALID_VERSION );
+    unsigned int vertexVersion;
+    FREAD32(&vertexVersion, 1, fp, ERROR_READING_VERTEX_VERSION);
+    if ( vertexVersion > Vertex::VERSION )
+        return SetError ( INVALID_VERTEX_VERSION );
+    unsigned int faceVersion;
+    FREAD32(&faceVersion, 1, fp, ERROR_READING_FACE_VERSION);
+    if ( faceVersion > Face::VERSION )
+        return SetError ( INVALID_FACE_VERSION );
     
     // Load and check type
     std::string strType;
@@ -438,26 +519,24 @@ l3m::ErrorCode l3m::LoadFromFile ( std::istream& fp )
         return SetError ( INVALID_TYPE );
     
     // Get the ref to the txds
-    long off2TXD;
-    FREAD32(&off2TXD, 1, fp, ERROR_READING_TXD_OFFSET );
+    uint64_t off2TXD;
+    FREAD64(&off2TXD, 1, fp, ERROR_READING_TXD_OFFSET );
     
     // Get the ref to the metadata
-    long off2Meta;
-    FREAD32(&off2Meta, 1, fp, ERROR_READING_METADATAS_OFFSET);
+    uint64_t off2Meta;
+    FREAD64(&off2Meta, 1, fp, ERROR_READING_METADATAS_OFFSET);
     
     // Load groups
     unsigned int numGroups;
     FREAD32(&numGroups, 1, fp, ERROR_READING_GROUP_COUNT);
     
-    printf("%u groups\n", numGroups);
     std::string groupName;
-    long ref2Group;
+    uint64_t ref2Group;
     for ( i = 0; i < numGroups; ++i )
     {
         FREAD_STR ( groupName, fp, ERROR_READING_GROUP_NAME );
-        FREAD32 ( &ref2Group, 1, fp, ERROR_READING_GROUP_OFFSET );
+        FREAD64 ( &ref2Group, 1, fp, ERROR_READING_GROUP_OFFSET );
         refBack = fp.tellg ();
-        printf ( "Group name: %s\n", groupName.c_str() );
 
         fp.seekg ( ref2Group, std::ios::beg );
         
@@ -471,13 +550,39 @@ l3m::ErrorCode l3m::LoadFromFile ( std::istream& fp )
             std::string meshName;
             FREAD_STR ( meshName, fp, ERROR_READING_MESH_NAME );
             
+            // Create the Mesh
+            Mesh* mesh = new Mesh ( meshName );
+            
             // Read the mesh offset
-            long off2Mesh;
-            long refMeshBack;
-            FREAD32 ( &off2Mesh, 1, fp, ERROR_READING_MESH_OFFSET );
+            uint64_t off2Mesh;
+            uint64_t refMeshBack;
+            FREAD64 ( &off2Mesh, 1, fp, ERROR_READING_MESH_OFFSET );
             refMeshBack = fp.tellg();
             
             fp.seekg ( off2Mesh, std::ios::beg );
+            
+            // Read the polygon type
+            FREAD32 ( &(mesh->polyType()), 1, fp, ERROR_READING_POLYGON_TYPE );
+            
+            // Read the vertex count
+            unsigned int vertexCount;
+            FREAD32 ( &vertexCount, 1, fp, ERROR_READING_VERTEX_COUNT );
+            
+            // Read the vertices
+            Vertex* vertices = Vertex::Allocate ( vertexCount );
+            FREADF (vertices->base(), vertexCount * (sizeof(Vertex) / sizeof(float)), fp, ERROR_READING_VERTEX_DATA );
+            
+            // Read the face count
+            unsigned int faceCount;
+            FREAD32 ( &faceCount, 1, fp, ERROR_READING_FACE_COUNT );
+            
+            // Read the faces
+            Face* faces = Face::Allocate ( faceCount );
+            FREAD32 ( faces->base(), faceCount * (sizeof(Face) / sizeof(unsigned int)), fp, ERROR_READING_FACE_DATA );
+            
+            // Load the mesh
+            mesh->Set(vertices, vertexCount, faces, faceCount, mesh->polyType());
+            
             fp.seekg ( refMeshBack, std::ios::beg );
         }
         
@@ -520,6 +625,8 @@ const char* l3m::TranslateErrorCode ( l3m::ErrorCode err ) const
         case UNABLE_TO_OPEN_FILE_FOR_WRITING: return "Unable to open file for writing";
         case ERROR_WRITING_BOM: return "Error writing BOM";
         case ERROR_WRITING_VERSION: return "Error writing version number";
+        case ERROR_WRITING_VERTEX_VERSION: return "Error writing vertex version number";
+        case ERROR_WRITING_FACE_VERSION: return "Error writing face version number";
         case ERROR_WRITING_TYPE: return "Error writing model type";
         case ERROR_ALLOCATING_TXD_OFFSET: return "Error allocating space for the TXD offset";
         case ERROR_ALLOCATING_METADATAS_OFFSET: return "Error allocating space for the meta-data offset";
@@ -531,6 +638,7 @@ const char* l3m::TranslateErrorCode ( l3m::ErrorCode err ) const
         case ERROR_WRITING_MESH_NAME: return "Error writing the mesh name";
         case ERROR_ALLOCATING_MESH_OFFSET: return "Error allocating space for the mesh offset";
         case ERROR_WRITING_MESH_OFFSET: return "Error writing the mesh offset";
+        case ERROR_WRITING_POLYGON_TYPE: return "Error writing the mesh polygon type";
         case ERROR_WRITING_VERTEX_COUNT: return "Error writing the vertex count";
         case ERROR_WRITING_VERTEX_DATA: return "Error writing the vertex data";
         case ERROR_WRITING_FACE_COUNT: return "Error writing the face count";
@@ -550,6 +658,10 @@ const char* l3m::TranslateErrorCode ( l3m::ErrorCode err ) const
         case INVALID_BOM: return "Invalid BOM";
         case ERROR_READING_VERSION: return "Error reading version";
         case INVALID_VERSION: return "Invalid version";
+        case ERROR_READING_VERTEX_VERSION: return "Error reading vertex version";
+        case INVALID_VERTEX_VERSION: return "Invalid vertex version";
+        case ERROR_READING_FACE_VERSION: return "Error reading face version";
+        case INVALID_FACE_VERSION: return "Invalid face version";
         case ERROR_READING_TYPE: return "Error reading type";
         case INVALID_TYPE: return "Invalid model type";
         case ERROR_READING_TXD_OFFSET: return "Error reading TXDs offset";
@@ -560,6 +672,11 @@ const char* l3m::TranslateErrorCode ( l3m::ErrorCode err ) const
         case ERROR_READING_MESH_COUNT: return "Error reading mesh count";
         case ERROR_READING_MESH_NAME: return "Error reading mesh name";
         case ERROR_READING_MESH_OFFSET: return "Error reading mesh offset";
+        case ERROR_READING_POLYGON_TYPE: return "Error reading the mesh polygon type";
+        case ERROR_READING_VERTEX_COUNT: return "Error reading vertex count";
+        case ERROR_READING_VERTEX_DATA: return "Error reading vertex data";
+        case ERROR_READING_FACE_COUNT: return "Error reading face count";
+        case ERROR_READING_FACE_DATA: return "Error reading face data";
                 
         default: return "Unknown";
     }

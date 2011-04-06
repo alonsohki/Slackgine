@@ -50,16 +50,21 @@ void Vertex::Load ( const float* source, unsigned int flags, unsigned int stride
     }
 }
 
+Vertex* Vertex::Allocate ( unsigned int count )
+{
+    return (Vertex *)malloc(sizeof(Vertex)*count);
+}
+
 Vertex* Vertex::LoadAllocating ( const float* source, unsigned int flags, unsigned int stride, unsigned int count )
 {
-    Vertex* vertices = (Vertex*)malloc(sizeof(Vertex)*count);
+    Vertex* vertices = Allocate(count);
     vertices->Load ( source, flags, stride, count );
     return vertices;
 }
 
 Vertex* Vertex::LoadAllocating ( const Vertex* source, unsigned int count )
 {
-    Vertex* vertices = (Vertex*)malloc(sizeof(Vertex)*count);
+    Vertex* vertices = Allocate(count);
     vertices->Load ( source, count );
     return vertices;
 }
