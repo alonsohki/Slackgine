@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <cerrno>
 #include <cstring>
-#include "l3m.h"
+#include "l3m/l3m.h"
 #include "l3mWithDescription.h"
 
 int main(int argc, char** argv)

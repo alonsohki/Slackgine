@@ -2,7 +2,7 @@
 #define	L3MWITHDESCRIPTION_H
 
 #include <string>
-#include "l3m.h"
+#include "l3m/l3m.h"
 
 class l3mWithDescription : public l3m
 {

@@ -22,7 +22,7 @@ AS=as
 
 # Macros
 CND_PLATFORM=GNU-Linux-x86
-CND_CONF=Release
+CND_CONF=Debug
 CND_DISTDIR=dist
 CND_BUILDDIR=build
 
@@ -51,13 +51,13 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=../dist/Release/GNU-Linux-x86/libl3m.a
+LDLIBSOPTIONS=../l3m/dist/Debug/GNU-Linux-x86/libl3m.a
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
 	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ../dist/Release/GNU-Linux-x86/libl3m.a
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ../l3m/dist/Debug/GNU-Linux-x86/libl3m.a
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
@@ -66,11 +66,11 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ${OBJECTFILES}
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -g -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
 
 # Subprojects
 .build-subprojects:
-	cd .. && ${MAKE}  -f Makefile CONF=Release
+	cd ../l3m && ${MAKE}  -f Makefile CONF=Debug
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
@@ -79,7 +79,7 @@ ${OBJECTDIR}/main.o: main.cpp
 
 # Subprojects
 .clean-subprojects:
-	cd .. && ${MAKE}  -f Makefile CONF=Release clean
+	cd ../l3m && ${MAKE}  -f Makefile CONF=Debug clean
 
 # Enable dependency checking
 .dep.inc: .depcheck-impl
