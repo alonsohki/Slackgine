@@ -29,13 +29,13 @@ void l3m::DeclareMetadata(const std::string& name)
     m_metadatas.push_back ( name );
 }
 
-l3m::ErrorCode l3m::SaveToFile ( const char* path )
+l3m::ErrorCode l3m::SaveToFile ( const char* path, unsigned int flags )
 {
     std::ofstream fp;
     fp.open ( path, std::ios::out | std::ios::binary );
     if ( fp.fail() )
         return SetError(UNABLE_TO_OPEN_FILE_FOR_WRITING);
-    return SaveToFile(fp);
+    return SaveToFile(fp, flags);
 }
 
 l3m::ErrorCode l3m::LoadFromFile ( const char* path )
@@ -280,7 +280,7 @@ size_t l3m::ReadData ( char* dest, size_t size, unsigned int nmemb, std::istream
     return fp.readsome(dest, size*nmemb) / size;
 }
 
-l3m::ErrorCode l3m::SaveToFile ( std::ostream& fp )
+l3m::ErrorCode l3m::SaveToFile ( std::ostream& fp, unsigned int flags )
 {
     uint64_t npos = (uint64_t)-1;
     unsigned int i;
@@ -304,6 +304,9 @@ l3m::ErrorCode l3m::SaveToFile ( std::ostream& fp )
     else
         targetIsBigEndian = ( L3M_SAVE_ENDIANNESS == L3M_BIG_ENDIAN );
     FWRITE ( &targetIsBigEndian, sizeof(unsigned char), 1, fp, ERROR_WRITING_BOM );
+    
+    // Write the file flags.
+    FWRITE32 ( &flags, 1, fp, ERROR_WRITING_FLAGS );
     
     // Versión
     float fVersion = L3M_VERSION;
@@ -497,6 +500,10 @@ l3m::ErrorCode l3m::LoadFromFile ( std::istream& fp )
         m_endian32reader = identityRead<uint32_t>;
         m_endian64reader = identityRead<uint64_t>;
     }
+    
+    // Read the flags
+    unsigned int flags;
+    FREAD32(&flags, 1, fp, ERROR_READING_FLAGS);
 
     // Load and check version
     float fVersion;
@@ -652,6 +659,7 @@ const char* l3m::TranslateErrorCode ( l3m::ErrorCode err ) const
         // File saving
         case UNABLE_TO_OPEN_FILE_FOR_WRITING: return "Unable to open file for writing";
         case ERROR_WRITING_BOM: return "Error writing BOM";
+        case ERROR_WRITING_FLAGS: return "Error writing flags";
         case ERROR_WRITING_VERSION: return "Error writing version number";
         case ERROR_WRITING_VERTEX_VERSION: return "Error writing vertex version number";
         case ERROR_WRITING_FACE_VERSION: return "Error writing face version number";
@@ -684,6 +692,7 @@ const char* l3m::TranslateErrorCode ( l3m::ErrorCode err ) const
         case UNABLE_TO_OPEN_FILE_FOR_READING: return "Unable to open file for reading";
         case ERROR_READING_BOM: return "Error reading BOM";
         case INVALID_BOM: return "Invalid BOM";
+        case ERROR_READING_FLAGS: return "Error reading flags";
         case ERROR_READING_VERSION: return "Error reading version";
         case INVALID_VERSION: return "Invalid version";
         case ERROR_READING_VERTEX_VERSION: return "Error reading vertex version";

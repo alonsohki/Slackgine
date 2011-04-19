@@ -23,7 +23,13 @@ static const enum
 class l3m
 {
 public:
-        // Error codes
+    // Save flags
+    enum SaveFlags
+    {
+        SAVE_COMPRESSED         = 0x001
+    };
+    
+    // Error codes
     enum ErrorCode
     {
         OK = 0,
@@ -31,6 +37,7 @@ public:
         // File saving
         UNABLE_TO_OPEN_FILE_FOR_WRITING,
         ERROR_WRITING_BOM,
+        ERROR_WRITING_FLAGS,
         ERROR_WRITING_VERSION,
         ERROR_WRITING_VERTEX_VERSION,
         ERROR_WRITING_FACE_VERSION,
@@ -63,6 +70,7 @@ public:
         UNABLE_TO_OPEN_FILE_FOR_READING,
         ERROR_READING_BOM,
         INVALID_BOM,
+        ERROR_READING_FLAGS,
         ERROR_READING_VERSION,
         INVALID_VERSION,
         ERROR_READING_VERTEX_VERSION,
@@ -125,8 +133,8 @@ private:
 
     // Files
 public:
-    ErrorCode           SaveToFile      ( const char* path );
-    ErrorCode           SaveToFile      ( std::ostream& os );
+    ErrorCode           SaveToFile      ( const char* path, unsigned int flags = 0 );
+    ErrorCode           SaveToFile      ( std::ostream& os, unsigned int flags = 0 );
     ErrorCode           LoadFromFile    ( const char* path );
     ErrorCode           LoadFromFile    ( std::istream& is );
     
