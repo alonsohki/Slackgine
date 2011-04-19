@@ -28,6 +28,11 @@ void Vertex::Load ( const float* source, unsigned int flags, unsigned int stride
                 memcpy ( &dest->m_color, source, sizeof(float)*4 );
                 source += 4;
             }
+            if ( flags & LOAD_TEX2D )
+            {
+                memcpy ( &dest->m_tex2d, source, sizeof(float)*2 );
+                source += 2;
+            }
             source += stride;
             ++dest;
             --count;
@@ -38,8 +43,8 @@ void Vertex::Load ( const float* source, unsigned int flags, unsigned int stride
         Vertex* dest = this;
         while ( count > 0 )
         {
-            memcpy ( dest, source, sizeof(float)*10 );
-            source += 10 + stride;
+            memcpy ( dest, source, sizeof(float)*12 );
+            source += 12 + stride;
             ++dest;
             --count;
         }

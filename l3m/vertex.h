@@ -15,7 +15,8 @@ public:
         LOAD_POSITION   = 0x01,
         LOAD_NORMAL     = 0x02,
         LOAD_COLOR      = 0x04,
-        LOAD_ALL        = LOAD_POSITION|LOAD_NORMAL|LOAD_COLOR
+        LOAD_TEX2D      = 0x08,
+        LOAD_ALL        = LOAD_POSITION|LOAD_NORMAL|LOAD_COLOR|LOAD_TEX2D
     };
     
 private:
@@ -24,6 +25,7 @@ private:
     Vector3     m_pos;
     Vector3     m_norm;
     Color       m_color;
+    Vector2     m_tex2d;
     
     // Accessors
 public:
