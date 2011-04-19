@@ -51,13 +51,15 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=../l3m/dist/Debug/GNU-Linux-x86/libl3m.a
+LDLIBSOPTIONS=../l3m/dist/Debug/GNU-Linux-x86/libl3m.a ../Renderer/dist/Debug/GNU-Linux-x86/librenderer.a
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
 	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ../l3m/dist/Debug/GNU-Linux-x86/libl3m.a
+
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ../Renderer/dist/Debug/GNU-Linux-x86/librenderer.a
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
@@ -71,6 +73,7 @@ ${OBJECTDIR}/main.o: main.cpp
 # Subprojects
 .build-subprojects:
 	cd ../l3m && ${MAKE}  -f Makefile CONF=Debug
+	cd ../Renderer && ${MAKE}  -f Makefile CONF=Debug
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
@@ -80,6 +83,7 @@ ${OBJECTDIR}/main.o: main.cpp
 # Subprojects
 .clean-subprojects:
 	cd ../l3m && ${MAKE}  -f Makefile CONF=Debug clean
+	cd ../Renderer && ${MAKE}  -f Makefile CONF=Debug clean
 
 # Enable dependency checking
 .dep.inc: .depcheck-impl
