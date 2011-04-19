@@ -34,6 +34,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/extensible_entity.o \
 	${OBJECTDIR}/renderer.o \
 	${OBJECTDIR}/entity.o
 
@@ -63,6 +64,11 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/librenderer.a: ${OBJECTFILES}
 	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/librenderer.a
 	${AR} -rv ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/librenderer.a ${OBJECTFILES} 
 	$(RANLIB) ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/librenderer.a
+
+${OBJECTDIR}/extensible_entity.o: extensible_entity.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/extensible_entity.o extensible_entity.cpp
 
 ${OBJECTDIR}/renderer.o: renderer.cpp 
 	${MKDIR} -p ${OBJECTDIR}
