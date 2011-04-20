@@ -100,9 +100,10 @@ public:
         MAX_ERROR_CODE
     };
 
-private:
+public:
     typedef std::list<Mesh *> meshList;
     typedef std::map<std::string, meshList> groupMap;
+private:
     groupMap            m_groups;
     std::string         m_type;
     ErrorCode           m_errorCode;
@@ -175,6 +176,7 @@ protected:
 public:
     // Grouped meshes
     void                LoadMesh        ( Mesh* mesh, const std::string& group = "" );
+    const groupMap&     GetGroups       () const { return m_groups; }
 private:
     meshList*           FindGroup       ( const std::string& name );
 };

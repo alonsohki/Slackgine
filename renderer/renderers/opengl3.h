@@ -21,8 +21,21 @@ public:
         return true;
     }
     
-    bool RenderEntity ( const Entity* pEntity )
+    bool RenderEntity ( const Entity* entity )
     {
+        const l3m* model = entity->GetModel ();
+        if ( model )
+        {
+            const l3m::groupMap& groups = model->GetGroups();
+            for ( l3m::groupMap::const_iterator i = groups.begin(); i != groups.end(); ++i )
+            {
+                const l3m::meshList& meshes = i->second;
+                for ( l3m::meshList::const_iterator j = meshes.begin(); j != meshes.end(); ++j )
+                {
+                    const Mesh* mesh = *j;
+                }
+            }
+        }
         return true;
     }
     

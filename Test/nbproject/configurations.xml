@@ -50,13 +50,17 @@
                             OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a">
               </makeArtifact>
             </linkerLibProjectItem>
+            <linkerOptionItem>`pkg-config --libs gl`</linkerOptionItem>
+            <linkerOptionItem>`pkg-config --libs glu`</linkerOptionItem>
+            <linkerOptionItem>`pkg-config --libs glew`</linkerOptionItem>
+            <linkerOptionItem>-lglut</linkerOptionItem>
             <linkerLibProjectItem>
-              <makeArtifact PL="../Renderer"
+              <makeArtifact PL="../renderer"
                             CT="3"
                             CN="Debug"
                             AC="true"
                             BL="true"
-                            WD="../Renderer"
+                            WD="../renderer"
                             BC="${MAKE}  -f Makefile CONF=Debug"
                             CC="${MAKE}  -f Makefile CONF=Debug clean"
                             OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/librenderer.a">
@@ -101,13 +105,17 @@
                             OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a">
               </makeArtifact>
             </linkerLibProjectItem>
+            <linkerOptionItem>`pkg-config --libs gl`</linkerOptionItem>
+            <linkerOptionItem>`pkg-config --libs glu`</linkerOptionItem>
+            <linkerOptionItem>`pkg-config --libs glew`</linkerOptionItem>
+            <linkerOptionItem>-lglut</linkerOptionItem>
             <linkerLibProjectItem>
-              <makeArtifact PL="../Renderer"
+              <makeArtifact PL="../renderer"
                             CT="3"
                             CN="Release"
                             AC="false"
                             BL="true"
-                            WD="../Renderer"
+                            WD="../renderer"
                             BC="${MAKE}  -f Makefile CONF=Release"
                             CC="${MAKE}  -f Makefile CONF=Release clean"
                             OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/librenderer.a">

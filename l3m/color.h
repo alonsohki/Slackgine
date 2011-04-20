@@ -4,33 +4,33 @@
 class Color
 {
 private:
-    typedef struct { float fR, fG, fB, fA; } __s4f;
+    typedef struct { unsigned char ucR, ucG, ucB, ucA; } __s4b;
     union
     {
-        float v [ 4 ];
-        __s4f s;
+        unsigned char v [ 4 ];
+        __s4b s;
     };
     
 public:
     Color ()
     {
-        r() = 0.0f;
-        g() = 0.0f;
-        b() = 0.0f;
-        a() = 0.0f;
+        r() = 0;
+        g() = 0;
+        b() = 0;
+        a() = 0;
     }
     
     // Accessors
 public:
-    const float& r() const { return s.fR; }
-    const float& g() const { return s.fG; }
-    const float& b() const { return s.fB; }
-    const float& a() const { return s.fA; }
+    const unsigned char& r() const { return s.ucR; }
+    const unsigned char& g() const { return s.ucG; }
+    const unsigned char& b() const { return s.ucB; }
+    const unsigned char& a() const { return s.ucA; }
     
-    float& r() { return s.fR; }
-    float& g() { return s.fG; }
-    float& b() { return s.fB; }
-    float& a() { return s.fA; }
+    unsigned char& r() { return s.ucR; }
+    unsigned char& g() { return s.ucG; }
+    unsigned char& b() { return s.ucB; }
+    unsigned char& a() { return s.ucA; }
 };
 
 #endif

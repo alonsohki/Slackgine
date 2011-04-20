@@ -51,7 +51,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=../l3m/dist/Debug/GNU-Linux-x86/libl3m.a ../Renderer/dist/Debug/GNU-Linux-x86/librenderer.a
+LDLIBSOPTIONS=../l3m/dist/Debug/GNU-Linux-x86/libl3m.a `pkg-config --libs gl` `pkg-config --libs glu` `pkg-config --libs glew` -lglut ../renderer/dist/Debug/GNU-Linux-x86/librenderer.a  
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -59,7 +59,7 @@ LDLIBSOPTIONS=../l3m/dist/Debug/GNU-Linux-x86/libl3m.a ../Renderer/dist/Debug/GN
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ../l3m/dist/Debug/GNU-Linux-x86/libl3m.a
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ../Renderer/dist/Debug/GNU-Linux-x86/librenderer.a
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ../renderer/dist/Debug/GNU-Linux-x86/librenderer.a
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
@@ -68,12 +68,12 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ${OBJECTFILES}
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -g -I.. `pkg-config --cflags gl` `pkg-config --cflags glu` `pkg-config --cflags glew`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
 
 # Subprojects
 .build-subprojects:
 	cd ../l3m && ${MAKE}  -f Makefile CONF=Debug
-	cd ../Renderer && ${MAKE}  -f Makefile CONF=Debug
+	cd ../renderer && ${MAKE}  -f Makefile CONF=Debug
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
@@ -83,7 +83,7 @@ ${OBJECTDIR}/main.o: main.cpp
 # Subprojects
 .clean-subprojects:
 	cd ../l3m && ${MAKE}  -f Makefile CONF=Debug clean
-	cd ../Renderer && ${MAKE}  -f Makefile CONF=Debug clean
+	cd ../renderer && ${MAKE}  -f Makefile CONF=Debug clean
 
 # Enable dependency checking
 .dep.inc: .depcheck-impl
