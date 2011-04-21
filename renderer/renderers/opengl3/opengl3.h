@@ -15,16 +15,16 @@ public:
         return instance;
     }
     
-    static IShader* CreateShader ( const char* file )
+    static IShader* CreateShader ( IShader::Type type, const char* file )
     {
-        IShader* shader = new OpenGL3_Shader ();
+        IShader* shader = new OpenGL3_Shader ( type );
         shader->Load ( file );
         return shader;
     }
     
-    static IShader* CreateShader ( std::istream& fp )
+    static IShader* CreateShader ( IShader::Type type, std::istream& fp )
     {
-        IShader* shader = new OpenGL3_Shader ();
+        IShader* shader = new OpenGL3_Shader ( type );
         shader->Load ( fp );
         return shader;
     }

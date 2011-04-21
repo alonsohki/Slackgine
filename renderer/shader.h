@@ -7,6 +7,14 @@
 class IShader
 {
 public:
+    enum Type
+    {
+        VERTEX_SHADER,
+        FRAGMENT_SHADER,
+        GEOMETRY_SHADER
+    };
+
+public:
     virtual             ~IShader        () {}
     
     bool                Load            ( const char* file )
