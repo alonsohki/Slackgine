@@ -23,6 +23,9 @@ static const enum
 class l3m
 {
 public:
+    class IRendererData { public: virtual ~IRendererData() {} };
+
+public:
     // Save flags
     enum SaveFlags
     {
@@ -109,6 +112,7 @@ private:
     ErrorCode           m_errorCode;
     int                 m_errno;
     char                m_error [ 256 ];
+    IRendererData*      m_rendererData;
     
     std::vector<std::string>    m_metadatas;
     
@@ -125,6 +129,8 @@ public:
     const ErrorCode&    errorCode       () const { return m_errorCode; }
     const int&          getErrno        () const { return m_errno; }
     const char*         error           () const { return m_error; }
+    IRendererData*      rendererData    () const { return m_rendererData; }
+    IRendererData*&     rendererData    () { return m_rendererData; }
     
 protected:
     std::string&        type            () { return m_type; }

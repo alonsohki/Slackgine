@@ -2,7 +2,6 @@
 #include <cstdlib>
 #include <cerrno>
 #include <cstring>
-#include <GL/glut.h>
 #include "l3m/l3m.h"
 #include "l3mWithDescription.h"
 #include "renderer/renderer.h"
@@ -48,7 +47,7 @@ int main(int argc, char** argv)
     
     glutDisplayFunc ( display );
     
-    if ( ! IRenderer::GetRenderer ()->Initialize() )
+    if ( ! Renderer::Instance ()->Initialize() )
         fprintf ( stderr, "Error al inicializar el renderer.\n" );
     else
         glutMainLoop ();
@@ -60,7 +59,7 @@ int main(int argc, char** argv)
 
 void display ( void )
 {
-    IRenderer* renderer = IRenderer::GetRenderer ();
+    IRenderer* renderer = Renderer::Instance ();
     
     if ( renderer && renderer->BeginScene() )
     {

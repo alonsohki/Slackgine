@@ -8,6 +8,7 @@
 
 l3m::l3m ( const std::string& type )
 : m_type ( type )
+, m_rendererData ( 0 )
 {
     InitializeEndianness ();
     SetError ( OK );
@@ -22,6 +23,9 @@ l3m::~l3m()
             delete *iter2;
         }
     }
+    
+    if ( m_rendererData != 0 )
+        delete m_rendererData;
 }
 
 void l3m::DeclareMetadata(const std::string& name)

@@ -1,7 +1,7 @@
-#ifndef OPENGL3_H
-#define	OPENGL3_H
+#ifndef OPENGL3_RENDERER_H
+#define	OPENGL3_RENDERER_H
 
-#include "../renderer.h"
+#include "../../renderer.h"
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include <GL/glext.h>
@@ -9,6 +9,14 @@
 
 class OpenGL3_Renderer : public IRenderer
 {
+private:
+    enum
+    {
+        POSITION        = 0,
+        NORMAL          = 1,
+        TEX2D           = 2
+    };
+
 public:
     bool Initialize ()
     {
@@ -21,7 +29,7 @@ public:
         return true;
     }
     
-    bool RenderEntity ( const Entity* entity )
+    bool RenderEntity ( Entity* entity )
     {
         const l3m* model = entity->GetModel ();
         if ( model )
@@ -46,5 +54,6 @@ public:
     }
 };
 
-#endif
+
+#endif	/* OPENGL3_RENDERER_H */
 
