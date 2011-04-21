@@ -68,6 +68,9 @@ public:
     {
         return m_handler > 0 && m_loaded;
     }
+    
+    GLuint&             handler () { return m_handler; }
+    const GLuint&       handler () const { return m_handler; }
 };
 
 #endif	/* OPENGL3_SHADER_H */
