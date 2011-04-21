@@ -60,7 +60,9 @@ public:
     
     bool Use ()
     {
-        return true;
+        if ( Ok() )
+            glUseProgram ( m_handler );
+        return Ok ();
     }
     
     bool Ok () const
