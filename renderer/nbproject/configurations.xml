@@ -17,9 +17,11 @@
                    kind="ROOT">
       <logicalFolder name="f1" displayName="OpenGL3" projectFiles="true" kind="ROOT">
         <itemPath>renderers/opengl3/opengl3.h</itemPath>
+        <itemPath>renderers/opengl3/program.cpp</itemPath>
         <itemPath>renderers/opengl3/program.h</itemPath>
         <itemPath>renderers/opengl3/renderer.cpp</itemPath>
         <itemPath>renderers/opengl3/renderer.h</itemPath>
+        <itemPath>renderers/opengl3/shader.cpp</itemPath>
         <itemPath>renderers/opengl3/shader.h</itemPath>
       </logicalFolder>
       <itemPath>renderers/renderer_selection.h</itemPath>
