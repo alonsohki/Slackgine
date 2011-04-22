@@ -25,7 +25,7 @@ int main(int argc, char** argv)
     };
     
     l3mWithDescription model ( "Triángulo cromático demostrativo de la interpolación de colores de OpenGL" );;
-    Mesh* mesh = Mesh::LoadAllocating("triangle", fVertices, Vertex::LOAD_POSITION, 0, 3, faces, 1 );
+    Mesh* mesh = Mesh::LoadAllocating("triangle", fVertices, Vertex::LOAD_POSITION, 0, 3, faces, 3 );
     model.LoadMesh(mesh, "main");
 
     if ( model.SaveToFile ( "chromatic_tri.l3m" ) != l3m::OK )

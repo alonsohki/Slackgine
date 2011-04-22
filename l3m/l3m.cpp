@@ -318,8 +318,6 @@ l3m::ErrorCode l3m::SaveToFile ( std::ostream& fp, unsigned int flags )
     FWRITEF ( &fVersion, 1, fp, ERROR_WRITING_VERSION );
     unsigned int vertexVersion = Vertex::VERSION;
     FWRITE32 ( &vertexVersion, 1, fp, ERROR_WRITING_VERTEX_VERSION );
-    unsigned int faceVersion = Face::VERSION;
-    FWRITE32 ( &faceVersion, 1, fp, ERROR_WRITING_FACE_VERSION );
     
     // Type
     FWRITE_STR ( type(), fp, ERROR_WRITING_TYPE );
@@ -402,10 +400,10 @@ l3m::ErrorCode l3m::SaveToFile ( std::ostream& fp, unsigned int flags )
             FWRITE32 ( &num, 1, fp, ERROR_WRITING_VERTEX_COUNT );
             FWRITEF ( mesh->vertices(), (num * sizeof(Vertex)) / sizeof(float), fp, ERROR_WRITING_VERTEX_DATA );
             
-            // Write the face data
-            num = mesh->numFaces();
-            FWRITE32 ( &num, 1, fp, ERROR_WRITING_FACE_COUNT );
-            FWRITE32 ( mesh->faces(), (num * sizeof(Face)) / sizeof(unsigned int), fp, ERROR_WRITING_FACE_DATA );
+            // Write the index data
+            num = mesh->numIndices();
+            FWRITE32 ( &num, 1, fp, ERROR_WRITING_INDEX_COUNT );
+            FWRITE32 ( mesh->indices(), (num * sizeof(unsigned int)) / sizeof(unsigned int), fp, ERROR_WRITING_INDEX_DATA );
             
             ++currentMesh;
         }
@@ -519,10 +517,6 @@ l3m::ErrorCode l3m::LoadFromFile ( std::istream& fp )
     FREAD32(&vertexVersion, 1, fp, ERROR_READING_VERTEX_VERSION);
     if ( vertexVersion > Vertex::VERSION )
         return SetError ( INVALID_VERTEX_VERSION );
-    unsigned int faceVersion;
-    FREAD32(&faceVersion, 1, fp, ERROR_READING_FACE_VERSION);
-    if ( faceVersion > Face::VERSION )
-        return SetError ( INVALID_FACE_VERSION );
     
     // Load and check type
     std::string strType;
@@ -584,16 +578,16 @@ l3m::ErrorCode l3m::LoadFromFile ( std::istream& fp )
             Vertex* vertices = Vertex::Allocate ( vertexCount );
             FREADF (vertices->base(), vertexCount * (sizeof(Vertex) / sizeof(float)), fp, ERROR_READING_VERTEX_DATA );
             
-            // Read the face count
-            unsigned int faceCount;
-            FREAD32 ( &faceCount, 1, fp, ERROR_READING_FACE_COUNT );
+            // Read the index count
+            unsigned int indexCount;
+            FREAD32 ( &indexCount, 1, fp, ERROR_READING_INDEX_COUNT );
             
-            // Read the faces
-            Face* faces = Face::Allocate ( faceCount );
-            FREAD32 ( faces->base(), faceCount * (sizeof(Face) / sizeof(unsigned int)), fp, ERROR_READING_FACE_DATA );
+            // Read the indices
+            unsigned int* indices = (unsigned int *)malloc(sizeof(unsigned int)*indexCount);
+            FREAD32 ( indices, indexCount, fp, ERROR_READING_INDEX_DATA );
             
             // Load the mesh
-            mesh->Set(vertices, vertexCount, faces, faceCount, mesh->polyType());
+            mesh->Set(vertices, vertexCount, indices, indexCount, mesh->polyType());
             
             fp.seekg ( refMeshBack, std::ios::beg );
         }
@@ -667,7 +661,6 @@ const char* l3m::TranslateErrorCode ( l3m::ErrorCode err ) const
         case ERROR_WRITING_FLAGS: return "Error writing flags";
         case ERROR_WRITING_VERSION: return "Error writing version number";
         case ERROR_WRITING_VERTEX_VERSION: return "Error writing vertex version number";
-        case ERROR_WRITING_FACE_VERSION: return "Error writing face version number";
         case ERROR_WRITING_TYPE: return "Error writing model type";
         case ERROR_ALLOCATING_TXD_OFFSET: return "Error allocating space for the TXD offset";
         case ERROR_ALLOCATING_METADATAS_OFFSET: return "Error allocating space for the meta-data offset";
@@ -682,8 +675,8 @@ const char* l3m::TranslateErrorCode ( l3m::ErrorCode err ) const
         case ERROR_WRITING_POLYGON_TYPE: return "Error writing the mesh polygon type";
         case ERROR_WRITING_VERTEX_COUNT: return "Error writing the vertex count";
         case ERROR_WRITING_VERTEX_DATA: return "Error writing the vertex data";
-        case ERROR_WRITING_FACE_COUNT: return "Error writing the face count";
-        case ERROR_WRITING_FACE_DATA: return "Error writing the face Data";
+        case ERROR_WRITING_INDEX_COUNT: return "Error writing the index count";
+        case ERROR_WRITING_INDEX_DATA: return "Error writing the index data";
         case ERROR_WRITING_TXD_OFFSET: return "Error writing the TXD offseT";
         case ERROR_WRITING_TXD_COUNT: return "Error writing the TXD count";
         case ERROR_WRITING_METADATAS_OFFSET: return "Error writing metadatas offset";
@@ -702,8 +695,6 @@ const char* l3m::TranslateErrorCode ( l3m::ErrorCode err ) const
         case INVALID_VERSION: return "Invalid version";
         case ERROR_READING_VERTEX_VERSION: return "Error reading vertex version";
         case INVALID_VERTEX_VERSION: return "Invalid vertex version";
-        case ERROR_READING_FACE_VERSION: return "Error reading face version";
-        case INVALID_FACE_VERSION: return "Invalid face version";
         case ERROR_READING_TYPE: return "Error reading type";
         case INVALID_TYPE: return "Invalid model type";
         case ERROR_READING_TXD_OFFSET: return "Error reading TXDs offset";
@@ -717,8 +708,8 @@ const char* l3m::TranslateErrorCode ( l3m::ErrorCode err ) const
         case ERROR_READING_POLYGON_TYPE: return "Error reading the mesh polygon type";
         case ERROR_READING_VERTEX_COUNT: return "Error reading vertex count";
         case ERROR_READING_VERTEX_DATA: return "Error reading vertex data";
-        case ERROR_READING_FACE_COUNT: return "Error reading face count";
-        case ERROR_READING_FACE_DATA: return "Error reading face data";
+        case ERROR_READING_INDEX_COUNT: return "Error reading index count";
+        case ERROR_READING_INDEX_DATA: return "Error reading index data";
         case ERROR_READING_METADATAS_COUNT: return "Error reading metadatas count";
         case ERROR_READING_META_NAME: return "Error reading metadata name";
         case ERROR_READING_META_OFFSET: return "Error reading metadata offset";

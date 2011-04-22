@@ -129,11 +129,11 @@ bool OpenGL3_Renderer::SetupModel(const l3m* model)
                 eglGetError();
                 glBufferData ( GL_ARRAY_BUFFER, mesh->numVertices() * sizeof(Vertex), mesh->vertices(), GL_STATIC_DRAW );
                 eglGetError();
-                glVertexAttribPointer ( OpenGL3_Program::POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex)-sizeof(float)*3, (GLchar*)0 );
+                glVertexAttribPointer ( OpenGL3_Program::POSITION, 3, GL_FLOAT, GL_FALSE, 0, (GLchar*)0 );
                 eglGetError();
-                glVertexAttribPointer ( OpenGL3_Program::NORMAL, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex)-sizeof(float)*3, (GLchar*)(sizeof(float)*3) );
+                glVertexAttribPointer ( OpenGL3_Program::NORMAL, 3, GL_FLOAT, GL_TRUE, 0, (GLchar*)12 );
                 eglGetError();
-                glVertexAttribPointer ( OpenGL3_Program::TEX2D, 2, GL_FLOAT, GL_TRUE, sizeof(Vertex)-sizeof(float)*6, (GLchar*)(sizeof(float)*6) );
+                glVertexAttribPointer ( OpenGL3_Program::TEX2D, 2, GL_FLOAT, GL_TRUE, 0, (GLchar*)24 );
                 eglGetError();
                 glEnableVertexAttribArray ( OpenGL3_Program::POSITION );
                 eglGetError();
@@ -144,7 +144,7 @@ bool OpenGL3_Renderer::SetupModel(const l3m* model)
 
                 glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, data->m_buffers[curMesh * 2 + 1 ] );
                 eglGetError();
-                glBufferData ( GL_ELEMENT_ARRAY_BUFFER, mesh->numFaces() * sizeof(Face), mesh->faces(), GL_STATIC_DRAW );
+                glBufferData ( GL_ELEMENT_ARRAY_BUFFER, mesh->numIndices() * sizeof(unsigned int), mesh->indices(), GL_STATIC_DRAW );
                 eglGetError();
 
                 ++curMesh;
@@ -185,6 +185,7 @@ bool OpenGL3_Renderer::RenderEntity ( const Entity* entity )
             {
                 const Mesh* mesh = *j;
                 glBindVertexArray ( data->m_vaos[curMesh] );
+                eglGetError();
 
                 GLenum polyType = GL_INVALID_ENUM;
                 switch ( mesh->polyType() )
@@ -199,8 +200,8 @@ bool OpenGL3_Renderer::RenderEntity ( const Entity* entity )
                 if ( polyType != GL_INVALID_ENUM )
                 {
                     puts("Drawing elements");
-                    glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, data->m_buffers[2 * curMesh + 1] );
-                    glDrawElements ( polyType, mesh->numFaces(), GL_UNSIGNED_INT, 0 );
+                    glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, 0 );
+                    eglGetError();
                 }
 
                 ++curMesh;

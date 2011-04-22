@@ -36,7 +36,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/vertex.o \
 	${OBJECTDIR}/l3m.o \
-	${OBJECTDIR}/face.o \
+	${OBJECTDIR}/mesh.o \
 	${OBJECTDIR}/l3mFactory.o
 
 
@@ -76,10 +76,10 @@ ${OBJECTDIR}/l3m.o: l3m.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/l3m.o l3m.cpp
 
-${OBJECTDIR}/face.o: face.cpp 
+${OBJECTDIR}/mesh.o: mesh.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/face.o face.cpp
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/mesh.o mesh.cpp
 
 ${OBJECTDIR}/l3mFactory.o: l3mFactory.cpp 
 	${MKDIR} -p ${OBJECTDIR}
