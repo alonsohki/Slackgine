@@ -36,8 +36,10 @@ MY_LOCAL_MODULES += $(LOCAL_MODULE)
 # Binding
 LOCAL_PATH := $(MY_LOCAL_PATH)
 include $(CLEAR_VARS)
-LOCAL_MODULE    := hello-jni
-LOCAL_SRC_FILES := hello-jni.c
+LOCAL_MODULE    := Slackgine-jni-bind
+LOCAL_SRC_FILES := Slackgine-jni-bind.cpp
 LOCAL_STATIC_LIBRARIES := $(MY_LOCAL_MODULES)
+LOCAL_CFLAGS += -I../.. -I.. -I../../..
+LOCAL_CXXFLAGS += -I../.. -I.. -I../../..
 
 include $(BUILD_SHARED_LIBRARY)
