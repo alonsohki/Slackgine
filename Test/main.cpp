@@ -36,7 +36,7 @@ int main(int argc, char** argv)
         fprintf ( stderr, "Error al cargar el fichero: %s\n", model2.error() );
     
     printf ( "Descripción leída: %s\n", model2.description().c_str() );
-    entity = new Entity ( &model );
+    entity = new Entity ( &model2 );
     
     glutInit (&argc, argv);
     glutInitWindowSize (800, 600);

@@ -543,7 +543,7 @@ l3m::ErrorCode l3m::LoadFromFile ( std::istream& fp )
         FREAD_STR ( groupName, fp, ERROR_READING_GROUP_NAME );
         FREAD64 ( &ref2Group, 1, fp, ERROR_READING_GROUP_OFFSET );
         refBack = fp.tellg ();
-
+        
         fp.seekg ( ref2Group, std::ios::beg );
         
         // Read out the number of meshes
@@ -588,6 +588,7 @@ l3m::ErrorCode l3m::LoadFromFile ( std::istream& fp )
             
             // Load the mesh
             mesh->Set(vertices, vertexCount, indices, indexCount, mesh->polyType());
+            this->LoadMesh(mesh, groupName);
             
             fp.seekg ( refMeshBack, std::ios::beg );
         }
