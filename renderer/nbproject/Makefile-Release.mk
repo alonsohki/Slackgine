@@ -70,27 +70,27 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/librenderer.a: ${OBJECTFILES}
 ${OBJECTDIR}/renderers/opengl3/renderer.o: renderers/opengl3/renderer.cpp 
 	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/renderer.o renderers/opengl3/renderer.cpp
+	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/renderer.o renderers/opengl3/renderer.cpp
 
 ${OBJECTDIR}/extensible_entity.o: extensible_entity.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/extensible_entity.o extensible_entity.cpp
+	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/extensible_entity.o extensible_entity.cpp
 
 ${OBJECTDIR}/renderers/opengl3/program.o: renderers/opengl3/program.cpp 
 	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/program.o renderers/opengl3/program.cpp
+	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/program.o renderers/opengl3/program.cpp
 
 ${OBJECTDIR}/renderers/opengl3/shader.o: renderers/opengl3/shader.cpp 
 	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/shader.o renderers/opengl3/shader.cpp
+	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/shader.o renderers/opengl3/shader.cpp
 
 ${OBJECTDIR}/entity.o: entity.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/entity.o entity.cpp
+	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/entity.o entity.cpp
 
 # Subprojects
 .build-subprojects:

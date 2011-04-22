@@ -32,9 +32,11 @@
       </toolsSet>
       <compileType>
         <ccTool>
+          <developmentMode>0</developmentMode>
           <incDir>
             <pElem>..</pElem>
           </incDir>
+          <commandLine>-ansi -pipe</commandLine>
         </ccTool>
         <linkerTool>
           <linkerLibItems>
@@ -92,10 +94,11 @@
           <developmentMode>5</developmentMode>
         </cTool>
         <ccTool>
-          <developmentMode>5</developmentMode>
+          <developmentMode>0</developmentMode>
           <incDir>
             <pElem>..</pElem>
           </incDir>
+          <commandLine>-ansi -pipe</commandLine>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>

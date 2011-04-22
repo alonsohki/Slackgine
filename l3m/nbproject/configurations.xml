@@ -44,6 +44,7 @@
           <incDir>
             <pElem>..</pElem>
           </incDir>
+          <commandLine>-ansi -pipe</commandLine>
         </ccTool>
         <archiverTool>
         </archiverTool>
@@ -64,7 +65,7 @@
     <conf name="Release" type="3">
       <toolsSet>
         <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
-        <compilerSet>OracleSolarisStudio_12.2|OracleSolarisStudio_12.2</compilerSet>
+        <compilerSet>default</compilerSet>
       </toolsSet>
       <compileType>
         <cTool>
@@ -75,6 +76,10 @@
           <incDir>
             <pElem>..</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>-ansi</Elem>
+            <Elem>-pipe</Elem>
+          </preprocessorList>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>

@@ -14,14 +14,14 @@ GREP=grep
 NM=nm
 CCADMIN=CCadmin
 RANLIB=ranlib
-CC=cc
-CCC=CC
-CXX=CC
-FC=f95
+CC=gcc
+CCC=g++
+CXX=g++
+FC=gfortran
 AS=as
 
 # Macros
-CND_PLATFORM=OracleSolarisStudio_12.2-Linux-x86
+CND_PLATFORM=GNU-Linux-x86
 CND_CONF=Release
 CND_DISTDIR=dist
 CND_BUILDDIR=build
@@ -68,19 +68,23 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a: ${OBJECTFILES}
 
 ${OBJECTDIR}/vertex.o: vertex.cpp 
 	${MKDIR} -p ${OBJECTDIR}
-	$(COMPILE.cc) -fast -g0 -I.. -o ${OBJECTDIR}/vertex.o vertex.cpp
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/vertex.o vertex.cpp
 
 ${OBJECTDIR}/l3m.o: l3m.cpp 
 	${MKDIR} -p ${OBJECTDIR}
-	$(COMPILE.cc) -fast -g0 -I.. -o ${OBJECTDIR}/l3m.o l3m.cpp
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/l3m.o l3m.cpp
 
 ${OBJECTDIR}/mesh.o: mesh.cpp 
 	${MKDIR} -p ${OBJECTDIR}
-	$(COMPILE.cc) -fast -g0 -I.. -o ${OBJECTDIR}/mesh.o mesh.cpp
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/mesh.o mesh.cpp
 
 ${OBJECTDIR}/l3mFactory.o: l3mFactory.cpp 
 	${MKDIR} -p ${OBJECTDIR}
-	$(COMPILE.cc) -fast -g0 -I.. -o ${OBJECTDIR}/l3mFactory.o l3mFactory.cpp
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/l3mFactory.o l3mFactory.cpp
 
 # Subprojects
 .build-subprojects:
@@ -90,7 +94,6 @@ ${OBJECTDIR}/l3mFactory.o: l3mFactory.cpp
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
 	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a
-	${CCADMIN} -clean
 
 # Subprojects
 .clean-subprojects:
