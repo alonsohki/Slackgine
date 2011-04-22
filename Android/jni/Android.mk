@@ -15,14 +15,23 @@
 MY_LOCAL_PATH := $(call my-dir)
 MY_LOCAL_MODULES := 
 
-LOCAL_CFLAGS := -Wall -ansi -pipe -O3 -fno-exceptions -fno-rtti -DANDROID
+LOCAL_CFLAGS := -Wall -ansi -pipe -O3 -fno-exceptions -fno-rtti -DANDROID -I. -I..
 LOCAL_CXXFLAGS := $(LOCAL_CFLAGS)
+
+# shared
+LOCAL_PATH := $(MY_LOCAL_PATH)/../../shared
+include ../shared/Android.mk
+MY_LOCAL_MODULES += $(LOCAL_MODULE)
 
 # l3m
 LOCAL_PATH := $(MY_LOCAL_PATH)/../../l3m
 include ../l3m/Android.mk
 MY_LOCAL_MODULES += $(LOCAL_MODULE)
 
+# renderer
+LOCAL_PATH := $(MY_LOCAL_PATH)/../../renderer
+include ../renderer/Android.mk
+MY_LOCAL_MODULES += $(LOCAL_MODULE)
 
 # Binding
 LOCAL_PATH := $(MY_LOCAL_PATH)
