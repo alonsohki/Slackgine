@@ -1,6 +1,14 @@
 package es.lautech.slackgine;
 
-public class Slackgine {
+import java.*;
+
+public class Slackgine
+{
+	public Slackgine ()
+	{
+		
+	}
+	
 	native public String PruebaString ();
 
 	static {
