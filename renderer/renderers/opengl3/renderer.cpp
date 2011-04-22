@@ -129,11 +129,11 @@ bool OpenGL3_Renderer::SetupModel(const l3m* model)
                 eglGetError();
                 glBufferData ( GL_ARRAY_BUFFER, mesh->numVertices() * sizeof(Vertex), mesh->vertices(), GL_STATIC_DRAW );
                 eglGetError();
-                glVertexAttribPointer ( OpenGL3_Program::POSITION, 3, GL_FLOAT, GL_FALSE, 0, (GLchar*)0 );
+                glVertexAttribPointer ( OpenGL3_Program::POSITION, 3, GL_FLOAT, GL_FALSE, 20, (GLchar*)0 );
                 eglGetError();
-                glVertexAttribPointer ( OpenGL3_Program::NORMAL, 3, GL_FLOAT, GL_TRUE, 0, (GLchar*)12 );
+                glVertexAttribPointer ( OpenGL3_Program::NORMAL, 3, GL_FLOAT, GL_TRUE, 20, (GLchar*)12 );
                 eglGetError();
-                glVertexAttribPointer ( OpenGL3_Program::TEX2D, 2, GL_FLOAT, GL_TRUE, 0, (GLchar*)24 );
+                glVertexAttribPointer ( OpenGL3_Program::TEX2D, 2, GL_FLOAT, GL_TRUE, 24, (GLchar*)24 );
                 eglGetError();
                 glEnableVertexAttribArray ( OpenGL3_Program::POSITION );
                 eglGetError();
