@@ -74,6 +74,7 @@ ${OBJECTDIR}/main.o: main.cpp
 .build-subprojects:
 	cd ../l3m && ${MAKE}  -f Makefile CONF=Release
 	cd ../renderer && ${MAKE}  -f Makefile CONF=Release
+	cd ../shared && ${MAKE}  -f Makefile CONF=Release
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
@@ -84,6 +85,7 @@ ${OBJECTDIR}/main.o: main.cpp
 .clean-subprojects:
 	cd ../l3m && ${MAKE}  -f Makefile CONF=Release clean
 	cd ../renderer && ${MAKE}  -f Makefile CONF=Release clean
+	cd ../shared && ${MAKE}  -f Makefile CONF=Release clean
 
 # Enable dependency checking
 .dep.inc: .depcheck-impl

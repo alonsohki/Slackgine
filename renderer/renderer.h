@@ -1,6 +1,7 @@
 #ifndef RENDERER_H
 #define	RENDERER_H
 
+#include "../shared/platform.h"
 #include "entity.h"
 
 class IRenderer

@@ -95,6 +95,7 @@ ${OBJECTDIR}/entity.o: entity.cpp
 # Subprojects
 .build-subprojects:
 	cd ../l3m && ${MAKE}  -f Makefile CONF=Debug
+	cd ../shared && ${MAKE}  -f Makefile CONF=Debug
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
@@ -104,6 +105,7 @@ ${OBJECTDIR}/entity.o: entity.cpp
 # Subprojects
 .clean-subprojects:
 	cd ../l3m && ${MAKE}  -f Makefile CONF=Debug clean
+	cd ../shared && ${MAKE}  -f Makefile CONF=Debug clean
 
 # Enable dependency checking
 .dep.inc: .depcheck-impl

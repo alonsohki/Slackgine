@@ -8,8 +8,8 @@
 
 l3m::l3m ( const std::string& type )
 : m_type ( type )
-, m_rendererData ( 0 )
 , m_isDynamic ( false )
+, m_rendererData ( 0 )
 {
     InitializeEndianness ();
     SetError ( OK );
@@ -80,7 +80,7 @@ void l3m::LoadMesh(Mesh* mesh, const std::string& group)
 
 // Endianness functions
 template < typename T >
-static size_t identityWrite ( const T* v, uint32_t count, std::ostream& fp )
+static size_t identityWrite ( const T* v, u32 count, std::ostream& fp )
 {
     fp.write(reinterpret_cast<const char*>(v), sizeof(T)*count);
     if ( !fp.fail() )
@@ -89,7 +89,7 @@ static size_t identityWrite ( const T* v, uint32_t count, std::ostream& fp )
 }
 
 template < typename T >
-static size_t identityRead ( T* v, uint32_t count, std::istream& fp )
+static size_t identityRead ( T* v, u32 count, std::istream& fp )
 {
     size_t s = fp.readsome ( reinterpret_cast<char *>(v), sizeof(T)*count ) / sizeof(T);
     if ( ! fp.fail() )
@@ -97,53 +97,55 @@ static size_t identityRead ( T* v, uint32_t count, std::istream& fp )
     return -1;
 }
 
-static size_t swap16Write ( const uint16_t* v, uint32_t count, std::ostream& fp )
+static size_t swap16Write ( const u16* v, u32 count, std::ostream& fp )
 {
-    uint16_t current;
-    for ( uint32_t i = 0; i < count; ++i )
+    u16 current;
+    for ( u32 i = 0; i < count; ++i )
     {
         current = ( ( v[i] >> 8 ) & 0x00FF ) | ( v[i] << 8 & 0xFF00 );
-        fp.write(reinterpret_cast<const char*>(&current), sizeof(uint16_t));
+        fp.write(reinterpret_cast<const char*>(&current), sizeof(u16));
         if ( fp.fail() )
             return i;
     }
     return count;
 }
 
-static size_t swap16Read ( uint16_t* v, uint32_t count, std::istream& fp )
+static size_t swap16Read ( u16* v, u32 count, std::istream& fp )
 {
-    uint16_t current;
-    for ( uint32_t i = 0; i < count; ++i )
+    u16 current;
+    for ( u32 i = 0; i < count; ++i )
     {
-        if ( fp.readsome( reinterpret_cast<char*>(&current), sizeof(uint16_t)) < sizeof(uint16_t) )
+        fp.read ( reinterpret_cast<char*>(&current), sizeof(u16) );
+        if ( fp.gcount() < (ssize_t)sizeof(u16) )
             return i;
         v[i] = ( ( current >> 8 ) & 0x00FF ) | ( current << 8 & 0xFF00 );
     }
     return count;
 }
 
-static size_t swap32Write ( const uint32_t* v, uint32_t count, std::ostream& fp )
+static size_t swap32Write ( const u32* v, u32 count, std::ostream& fp )
 {
-    uint32_t current;
-    for ( uint32_t i = 0; i < count; ++i )
+    u32 current;
+    for ( u32 i = 0; i < count; ++i )
     {
         current =  ( ( v[i] >> 24 ) & 0x000000FF ) |
                    ( ( v[i] >> 8  ) & 0x0000FF00 ) |
                    ( ( v[i] << 8  ) & 0x00FF0000 ) |
                    ( ( v[i] << 24 ) & 0xFF000000 );
-        fp.write(reinterpret_cast<const char*>(&current), sizeof(uint32_t));
+        fp.write(reinterpret_cast<const char*>(&current), sizeof(u32));
         if ( fp.fail() )
             return i;
     }
     return count;
 }
 
-static size_t swap32Read ( uint32_t* v, uint32_t count, std::istream& fp )
+static size_t swap32Read ( u32* v, u32 count, std::istream& fp )
 {
-    uint32_t current;
-    for ( uint32_t i = 0; i < count; ++i )
+    u32 current;
+    for ( u32 i = 0; i < count; ++i )
     {
-        if ( fp.readsome ( reinterpret_cast<char*>(&current), sizeof(uint32_t) ) < sizeof(uint32_t) )
+        fp.read ( reinterpret_cast<char*>(&current), sizeof(u32) );
+        if ( fp.gcount() < (ssize_t)sizeof(u32) )
             return i;
         v[i] =  ( ( current >> 24 ) & 0x000000FF ) |
                 ( ( current >> 8  ) & 0x0000FF00 ) |
@@ -153,41 +155,42 @@ static size_t swap32Read ( uint32_t* v, uint32_t count, std::istream& fp )
     return count;
 }
 
-static size_t swap64Write ( const uint64_t* v, uint32_t count, std::ostream& fp )
+static size_t swap64Write ( const u64* v, u32 count, std::ostream& fp )
 {
-    uint64_t current;
-    for ( uint32_t i = 0; i < count; ++i )
+    u64 current;
+    for ( u32 i = 0; i < count; ++i )
     {
-        current =  ( ( v[i] >> 56 ) & 0x00000000000000FF ) |
-                   ( ( v[i] >> 40 ) & 0x000000000000FF00 ) |
-                   ( ( v[i] >> 24 ) & 0x0000000000FF0000 ) |
-                   ( ( v[i] >> 8  ) & 0x00000000FF000000 ) |
-                   ( ( v[i] << 8  ) & 0x000000FF00000000 ) |
-                   ( ( v[i] << 24 ) & 0x0000FF0000000000 ) |
-                   ( ( v[i] << 40 ) & 0x00FF000000000000 ) |
-                   ( ( v[i] << 56 ) & 0xFF00000000000000 );
-        fp.write(reinterpret_cast<const char*>(&current), sizeof(uint64_t));
+        current =  ( ( v[i] >> 56 ) & 0x00000000000000FFLL ) |
+                   ( ( v[i] >> 40 ) & 0x000000000000FF00LL ) |
+                   ( ( v[i] >> 24 ) & 0x0000000000FF0000LL ) |
+                   ( ( v[i] >> 8  ) & 0x00000000FF000000LL ) |
+                   ( ( v[i] << 8  ) & 0x000000FF00000000LL ) |
+                   ( ( v[i] << 24 ) & 0x0000FF0000000000LL ) |
+                   ( ( v[i] << 40 ) & 0x00FF000000000000LL ) |
+                   ( ( v[i] << 56 ) & 0xFF00000000000000LL );
+        fp.write(reinterpret_cast<const char*>(&current), sizeof(u64));
         if ( fp.fail() )
             return i;
     }
     return count;
 }
 
-static size_t swap64Read ( uint64_t* v, uint32_t count, std::istream& fp )
+static size_t swap64Read ( u64* v, u32 count, std::istream& fp )
 {
-    uint64_t current;
-    for ( uint32_t i = 0; i < count; ++i )
+    u64 current;
+    for ( u32 i = 0; i < count; ++i )
     {
-        if ( fp.readsome ( reinterpret_cast<char*>(&current), sizeof(uint64_t) ) < sizeof(uint64_t) )
+        fp.read ( reinterpret_cast<char*>(&current), sizeof(u64) );
+        if ( fp.gcount() < (ssize_t)sizeof(u64) )
             return i;
-        v[i] =  ( ( current >> 56 ) & 0x00000000000000FF ) |
-                ( ( current >> 40 ) & 0x000000000000FF00 ) |
-                ( ( current >> 24 ) & 0x0000000000FF0000 ) |
-                ( ( current >> 8  ) & 0x00000000FF000000 ) |
-                ( ( current << 8  ) & 0x000000FF00000000 ) |
-                ( ( current << 24 ) & 0x0000FF0000000000 ) |
-                ( ( current << 40 ) & 0x00FF000000000000 ) |
-                ( ( current << 56 ) & 0xFF00000000000000 );
+        v[i] =  ( ( current >> 56 ) & 0x00000000000000FFLL ) |
+                ( ( current >> 40 ) & 0x000000000000FF00LL ) |
+                ( ( current >> 24 ) & 0x0000000000FF0000LL ) |
+                ( ( current >> 8  ) & 0x00000000FF000000LL ) |
+                ( ( current << 8  ) & 0x000000FF00000000LL ) |
+                ( ( current << 24 ) & 0x0000FF0000000000LL ) |
+                ( ( current << 40 ) & 0x00FF000000000000LL ) |
+                ( ( current << 56 ) & 0xFF00000000000000LL );
     }
     return count;
 }
@@ -213,54 +216,54 @@ void l3m::InitializeEndianness()
     }
     else
     {
-        m_endian16writer = identityWrite<uint16_t>;
-        m_endian32writer = identityWrite<uint32_t>;
-        m_endian64writer = identityWrite<uint64_t>;
+        m_endian16writer = identityWrite<u16>;
+        m_endian32writer = identityWrite<u32>;
+        m_endian64writer = identityWrite<u64>;
     }
 }
 
-bool l3m::Write16 ( const uint16_t* v, uint32_t nmemb, std::ostream& fp ) const
+bool l3m::Write16 ( const u16* v, u32 nmemb, std::ostream& fp ) const
 {
     return m_endian16writer ( v, nmemb, fp) >= nmemb;
 }
-size_t l3m::Read16 ( uint16_t* v, uint32_t nmemb, std::istream& fp ) const
+size_t l3m::Read16 ( u16* v, u32 nmemb, std::istream& fp ) const
 {
     return m_endian16reader ( v, nmemb, fp );
 }
-bool l3m::Write32 ( const uint32_t* v, uint32_t nmemb, std::ostream& fp ) const
+bool l3m::Write32 ( const u32* v, u32 nmemb, std::ostream& fp ) const
 {
     return m_endian32writer ( v, nmemb, fp ) >= nmemb;
 }
-size_t l3m::Read32 ( uint32_t* v, uint32_t nmemb, std::istream& fp ) const
+size_t l3m::Read32 ( u32* v, u32 nmemb, std::istream& fp ) const
 {
     return m_endian32reader ( v, nmemb, fp );
 }
-bool l3m::Write64 ( const uint64_t* v, uint32_t nmemb, std::ostream& fp ) const
+bool l3m::Write64 ( const u64* v, u32 nmemb, std::ostream& fp ) const
 {
     return m_endian64writer ( v, nmemb, fp ) >= nmemb;
 }
-size_t l3m::Read64 ( uint64_t* v, uint32_t nmemb, std::istream& fp ) const
+size_t l3m::Read64 ( u64* v, u32 nmemb, std::istream& fp ) const
 {
     return m_endian64reader ( v, nmemb, fp );
 }
-bool l3m::WriteFloat ( const float* v, uint32_t nmemb, std::ostream& fp ) const
+bool l3m::WriteFloat ( const float* v, u32 nmemb, std::ostream& fp ) const
 {
-    return m_endian32writer ( reinterpret_cast<const uint32_t*>(v), nmemb, fp ) >= nmemb;
+    return m_endian32writer ( reinterpret_cast<const u32*>(v), nmemb, fp ) >= nmemb;
 }
-size_t l3m::ReadFloat ( float* v, uint32_t nmemb, std::istream& fp ) const
+size_t l3m::ReadFloat ( float* v, u32 nmemb, std::istream& fp ) const
 {
-    return m_endian32reader ( reinterpret_cast<uint32_t*>(v), nmemb, fp );
+    return m_endian32reader ( reinterpret_cast<u32*>(v), nmemb, fp );
 }
 bool l3m::WriteStr ( const std::string& str, std::ostream& fp ) const
 {
-    uint32_t length = str.length ();
+    u32 length = str.length ();
     if ( !Write32 ( &length, 1, fp ) )
         return false;
     return WriteData ( str.c_str(), sizeof(char), length, fp );
 }
 size_t l3m::ReadStr ( std::string& dest, std::istream& fp ) const
 {
-    uint32_t length;
+    u32 length;
     if ( Read32( &length, 1, fp ) != 1 )
         return -1;
     char* buffer = new char [ length ];
@@ -274,26 +277,26 @@ size_t l3m::ReadStr ( std::string& dest, std::istream& fp ) const
     return length;
 }
 
-bool l3m::WriteData ( const void* data, size_t size, unsigned int nmemb, std::ostream& fp ) const
+bool l3m::WriteData ( const void* data, size_t size, u32 nmemb, std::ostream& fp ) const
 {
     fp.write ( reinterpret_cast<const char*>(data), size*nmemb );
     return true;
 }
 
-size_t l3m::ReadData ( char* dest, size_t size, unsigned int nmemb, std::istream& fp ) const
+size_t l3m::ReadData ( char* dest, size_t size, u32 nmemb, std::istream& fp ) const
 {
     return fp.readsome(dest, size*nmemb) / size;
 }
 
-l3m::ErrorCode l3m::SaveToFile ( std::ostream& fp, unsigned int flags )
+l3m::ErrorCode l3m::SaveToFile ( std::ostream& fp, u32 flags )
 {
-    uint64_t npos = (uint64_t)-1;
+    u64 npos = (u64)-1;
     unsigned int i;
     
     #define FWRITE(data, size, nmemb, fp, err) if ( ! WriteData(data, size, nmemb, fp) ) return SetError(err)
-    #define FWRITE16(data, nmemb, fp, err) if ( ! Write16(reinterpret_cast<uint16_t*>(data), nmemb, fp) ) return SetError(err)
-    #define FWRITE32(data, nmemb, fp, err) if ( ! Write32(reinterpret_cast<uint32_t*>(data), nmemb, fp) ) return SetError(err)
-    #define FWRITE64(data, nmemb, fp, err) if ( ! Write64(reinterpret_cast<uint64_t*>(data), nmemb, fp) ) return SetError(err)
+    #define FWRITE16(data, nmemb, fp, err) if ( ! Write16(reinterpret_cast<u16*>(data), nmemb, fp) ) return SetError(err)
+    #define FWRITE32(data, nmemb, fp, err) if ( ! Write32(reinterpret_cast<u32*>(data), nmemb, fp) ) return SetError(err)
+    #define FWRITE64(data, nmemb, fp, err) if ( ! Write64(reinterpret_cast<u64*>(data), nmemb, fp) ) return SetError(err)
     #define FWRITEF(data, nmemb, fp, err) if ( ! WriteData(reinterpret_cast<float*>(data), sizeof(float), nmemb, fp) ) return SetError(err)
     #define FWRITE_STR(str, fp, err) if ( ! WriteStr(str,fp) ) return SetError(err)
 
@@ -301,14 +304,14 @@ l3m::ErrorCode l3m::SaveToFile ( std::ostream& fp, unsigned int flags )
     FWRITE ( L3M_BOM, sizeof(char), strlen(L3M_BOM), fp, ERROR_WRITING_BOM );
     
     // Write the BOM endianness identifier, based on the machine endianness and desired configuration
-    unsigned char thisMachineIsBigEndian = htons(0xFFF1) == 0xFFF1;
-    unsigned char targetIsBigEndian;
+    u8 thisMachineIsBigEndian = htons(0xFFF1) == 0xFFF1;
+    u8 targetIsBigEndian;
     
     if ( L3M_SAVE_ENDIANNESS == L3M_MACHINE_ENDIAN )
         targetIsBigEndian = thisMachineIsBigEndian;
     else
         targetIsBigEndian = ( L3M_SAVE_ENDIANNESS == L3M_BIG_ENDIAN );
-    FWRITE ( &targetIsBigEndian, sizeof(unsigned char), 1, fp, ERROR_WRITING_BOM );
+    FWRITE ( &targetIsBigEndian, sizeof(u8), 1, fp, ERROR_WRITING_BOM );
     
     // Write the file flags.
     FWRITE32 ( &flags, 1, fp, ERROR_WRITING_FLAGS );
@@ -316,18 +319,18 @@ l3m::ErrorCode l3m::SaveToFile ( std::ostream& fp, unsigned int flags )
     // Versión
     float fVersion = L3M_VERSION;
     FWRITEF ( &fVersion, 1, fp, ERROR_WRITING_VERSION );
-    unsigned int vertexVersion = Vertex::VERSION;
+    u32 vertexVersion = Vertex::VERSION;
     FWRITE32 ( &vertexVersion, 1, fp, ERROR_WRITING_VERTEX_VERSION );
     
     // Type
     FWRITE_STR ( type(), fp, ERROR_WRITING_TYPE );
 
     // Offset 2 TXD
-    uint64_t off2TXD = fp.tellp ();
+    u64 off2TXD = fp.tellp ();
     FWRITE64 ( &npos, 1, fp, ERROR_ALLOCATING_TXD_OFFSET );
     
     // Offset 2 Meta
-    uint64_t off2Meta = fp.tellp ();
+    u64 off2Meta = fp.tellp ();
     FWRITE64 ( &npos, 1, fp, ERROR_ALLOCATING_METADATAS_OFFSET );
     
     // Groups
@@ -335,7 +338,7 @@ l3m::ErrorCode l3m::SaveToFile ( std::ostream& fp, unsigned int flags )
     FWRITE32 ( &numGroups, 1, fp, ERROR_WRITING_NUMBER_OF_GROUPS );
     
     // Write each group
-    uint64_t groupOffsetRefs [ m_groups.size() ];
+    u64 groupOffsetRefs [ m_groups.size() ];
     i = 0;
     for ( groupMap::const_iterator iter = m_groups.begin(); iter != m_groups.end(); ++iter )
     {
@@ -349,20 +352,20 @@ l3m::ErrorCode l3m::SaveToFile ( std::ostream& fp, unsigned int flags )
     }
     
     // For each group, write its meshes and fill the ref
-    unsigned int group = 0;
+    u32 group = 0;
     for ( groupMap::const_iterator iter = m_groups.begin(); iter != m_groups.end(); ++iter )
     {
         // Fill the ref
-        uint64_t ref = fp.tellp ();
+        u64 ref = fp.tellp ();
         fp.seekp ( groupOffsetRefs[group], std::ios::beg );
         FWRITE64 ( &ref, 1, fp, ERROR_WRITING_GROUP_OFFSET );
         fp.seekp ( 0, std::ios::end );
         
         // Write the meshes headers
         const meshList& meshes = iter->second;
-        unsigned int numMeshes = meshes.size ();
+        u32 numMeshes = meshes.size ();
         FWRITE32 ( &numMeshes, 1, fp, ERROR_WRITING_NUMBER_OF_MESHES );
-        uint64_t meshOffsetRefs [ numMeshes ];
+        u64 meshOffsetRefs [ numMeshes ];
         
         i = 0;
         for ( meshList::const_iterator iter2 = meshes.begin(); iter2 != meshes.end(); ++iter2 )
@@ -380,7 +383,7 @@ l3m::ErrorCode l3m::SaveToFile ( std::ostream& fp, unsigned int flags )
         
         
         // Write the mesh data
-        unsigned int currentMesh = 0;
+        u32 currentMesh = 0;
         
         for ( meshList::const_iterator iter2 = meshes.begin(); iter2 != meshes.end(); ++iter2 )
         {
@@ -412,7 +415,7 @@ l3m::ErrorCode l3m::SaveToFile ( std::ostream& fp, unsigned int flags )
     }
     
     // Write the ref to the TXDs
-    uint64_t ref = fp.tellp ();
+    u64 ref = fp.tellp ();
     fp.seekp( off2TXD, std::ios::beg );
     FWRITE64 ( &ref, 1, fp, ERROR_WRITING_TXD_OFFSET );
     fp.seekp ( 0, std::ios::end );
@@ -427,11 +430,11 @@ l3m::ErrorCode l3m::SaveToFile ( std::ostream& fp, unsigned int flags )
     fp.seekp ( 0, std::ios::end );
     
     // Write the metadatas
-    unsigned int metadataCount = m_metadatas.size ();
+    u32 metadataCount = m_metadatas.size ();
     FWRITE32 ( &metadataCount, 1, fp, ERROR_WRITING_METADATAS_COUNT );
 
     // Allocate space for the metadata refs
-    long metaOffsetRefs [ metadataCount ];
+    u64 metaOffsetRefs [ metadataCount ];
     for ( i = 0; i < metadataCount; ++i )
     {
         // Write the metadata name
@@ -470,13 +473,13 @@ l3m::ErrorCode l3m::LoadFromFile ( std::istream& fp )
 {
     char buffer [ 1024 ];
     size_t size;
-    unsigned int i;
-    uint64_t refBack;
+    u32 i;
+    u64 refBack;
     
     #define FREAD(data, _size, nmemb, fp, err) if ( ( ( size = ReadData(data, _size, (nmemb), fp) ) != (nmemb) ) || fp.fail() ) return SetError(err)
-    #define FREAD16(data, nmemb, fp, err) if ( ( ( size = Read16(reinterpret_cast<uint16_t*>(data), (nmemb), fp) ) != (nmemb) ) || fp.fail() ) return SetError(err)
-    #define FREAD32(data, nmemb, fp, err) if ( ( ( size = Read32(reinterpret_cast<uint32_t*>(data), (nmemb), fp) ) != (nmemb) ) || fp.fail() ) return SetError(err)
-    #define FREAD64(data, nmemb, fp, err) if ( ( ( size = Read64(reinterpret_cast<uint64_t*>(data), (nmemb), fp) ) != (nmemb) ) || fp.fail() ) return SetError(err)
+    #define FREAD16(data, nmemb, fp, err) if ( ( ( size = Read16(reinterpret_cast<u16*>(data), (nmemb), fp) ) != (nmemb) ) || fp.fail() ) return SetError(err)
+    #define FREAD32(data, nmemb, fp, err) if ( ( ( size = Read32(reinterpret_cast<u32*>(data), (nmemb), fp) ) != (nmemb) ) || fp.fail() ) return SetError(err)
+    #define FREAD64(data, nmemb, fp, err) if ( ( ( size = Read64(reinterpret_cast<u64*>(data), (nmemb), fp) ) != (nmemb) ) || fp.fail() ) return SetError(err)
     #define FREADF(data, nmemb, fp, err) if ( ( ( size = ReadFloat(reinterpret_cast<float*>(data), (nmemb), fp) ) != (nmemb) ) || fp.fail() ) return SetError(err)
     #define FREAD_STR(str, fp, err) if ( ( ( size = ReadStr(str,fp) ) < 0 ) || fp.fail() ) return SetError(err)
 
@@ -488,8 +491,8 @@ l3m::ErrorCode l3m::LoadFromFile ( std::istream& fp )
     FREAD ( buffer, sizeof(char), 1, fp, ERROR_READING_BOM );
     
     // Choose the endianness strategy
-    unsigned char thisMachineIsBigEndian = htons(0xFFF1) == 0xFFF1;
-    unsigned char targetIsBigEndian = buffer[0];
+    u8 thisMachineIsBigEndian = htons(0xFFF1) == 0xFFF1;
+    u8 targetIsBigEndian = buffer[0];
     
     if ( thisMachineIsBigEndian != targetIsBigEndian )
     {
@@ -499,13 +502,13 @@ l3m::ErrorCode l3m::LoadFromFile ( std::istream& fp )
     }
     else
     {
-        m_endian16reader = identityRead<uint16_t>;
-        m_endian32reader = identityRead<uint32_t>;
-        m_endian64reader = identityRead<uint64_t>;
+        m_endian16reader = identityRead<u16>;
+        m_endian32reader = identityRead<u32>;
+        m_endian64reader = identityRead<u64>;
     }
     
     // Read the flags
-    unsigned int flags;
+    u32 flags;
     FREAD32(&flags, 1, fp, ERROR_READING_FLAGS);
 
     // Load and check version
@@ -513,7 +516,7 @@ l3m::ErrorCode l3m::LoadFromFile ( std::istream& fp )
     FREADF(&fVersion, 1, fp, ERROR_READING_VERSION);
     if ( fVersion > L3M_VERSION )
         return SetError ( INVALID_VERSION );
-    unsigned int vertexVersion;
+    u32 vertexVersion;
     FREAD32(&vertexVersion, 1, fp, ERROR_READING_VERTEX_VERSION);
     if ( vertexVersion > Vertex::VERSION )
         return SetError ( INVALID_VERTEX_VERSION );
@@ -525,19 +528,19 @@ l3m::ErrorCode l3m::LoadFromFile ( std::istream& fp )
         return SetError ( INVALID_TYPE );
     
     // Get the ref to the txds
-    uint64_t off2TXD;
+    u64 off2TXD;
     FREAD64(&off2TXD, 1, fp, ERROR_READING_TXD_OFFSET );
     
     // Get the ref to the metadata
-    uint64_t off2Meta;
+    u64 off2Meta;
     FREAD64(&off2Meta, 1, fp, ERROR_READING_METADATAS_OFFSET);
     
     // Load groups
-    unsigned int numGroups;
+    u32 numGroups;
     FREAD32(&numGroups, 1, fp, ERROR_READING_GROUP_COUNT);
     
     std::string groupName;
-    uint64_t ref2Group;
+    u64 ref2Group;
     for ( i = 0; i < numGroups; ++i )
     {
         FREAD_STR ( groupName, fp, ERROR_READING_GROUP_NAME );
@@ -547,7 +550,7 @@ l3m::ErrorCode l3m::LoadFromFile ( std::istream& fp )
         fp.seekg ( ref2Group, std::ios::beg );
         
         // Read out the number of meshes
-        unsigned int numMeshes;
+        u32 numMeshes;
         FREAD32 ( &numMeshes, 1, fp, ERROR_READING_MESH_COUNT );
         
         for ( unsigned int j = 0; j < numMeshes; ++j )
@@ -560,8 +563,8 @@ l3m::ErrorCode l3m::LoadFromFile ( std::istream& fp )
             Mesh* mesh = new Mesh ( meshName );
             
             // Read the mesh offset
-            uint64_t off2Mesh;
-            uint64_t refMeshBack;
+            u64 off2Mesh;
+            u64 refMeshBack;
             FREAD64 ( &off2Mesh, 1, fp, ERROR_READING_MESH_OFFSET );
             refMeshBack = fp.tellg();
             
@@ -571,7 +574,7 @@ l3m::ErrorCode l3m::LoadFromFile ( std::istream& fp )
             FREAD32 ( &(mesh->polyType()), 1, fp, ERROR_READING_POLYGON_TYPE );
             
             // Read the vertex count
-            unsigned int vertexCount;
+            u32 vertexCount;
             FREAD32 ( &vertexCount, 1, fp, ERROR_READING_VERTEX_COUNT );
             
             // Read the vertices
@@ -579,7 +582,7 @@ l3m::ErrorCode l3m::LoadFromFile ( std::istream& fp )
             FREADF (vertices->base(), vertexCount * (sizeof(Vertex) / sizeof(float)), fp, ERROR_READING_VERTEX_DATA );
             
             // Read the index count
-            unsigned int indexCount;
+            u32 indexCount;
             FREAD32 ( &indexCount, 1, fp, ERROR_READING_INDEX_COUNT );
             
             // Read the indices
@@ -601,17 +604,17 @@ l3m::ErrorCode l3m::LoadFromFile ( std::istream& fp )
     // META-DATA
     // Load the meta-data count
     fp.seekg ( off2Meta, std::ios::beg );
-    unsigned int metadataCount;
+    u32 metadataCount;
     FREAD32 ( &metadataCount, 1, fp, ERROR_READING_METADATAS_COUNT );
     
-    for ( unsigned int i = 0; i < metadataCount; ++i )
+    for ( u32 i = 0; i < metadataCount; ++i )
     {
         // Load the metadata name
         std::string metaName;
         FREAD_STR ( metaName, fp, ERROR_READING_META_NAME );
         
         // Load the metadata offset
-        uint64_t refMeta;
+        u64 refMeta;
         FREAD64 ( &refMeta, 1, fp, ERROR_READING_META_OFFSET );
 
         // Jump there!

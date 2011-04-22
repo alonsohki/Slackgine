@@ -4,21 +4,11 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <itemPath>color.h</itemPath>
-      <itemPath>l3m.h</itemPath>
-      <itemPath>l3mFactory.h</itemPath>
-      <itemPath>material.h</itemPath>
-      <itemPath>mesh.h</itemPath>
-      <itemPath>vector.h</itemPath>
-      <itemPath>vertex.h</itemPath>
+      <itemPath>platform.h</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <itemPath>l3m.cpp</itemPath>
-      <itemPath>l3mFactory.cpp</itemPath>
-      <itemPath>mesh.cpp</itemPath>
-      <itemPath>vertex.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
@@ -37,34 +27,17 @@
     <conf name="Debug" type="3">
       <toolsSet>
         <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
-        <compilerSet>GNU|GNU</compilerSet>
+        <compilerSet>default</compilerSet>
       </toolsSet>
       <compileType>
-        <ccTool>
-          <incDir>
-            <pElem>..</pElem>
-          </incDir>
-        </ccTool>
         <archiverTool>
         </archiverTool>
-        <requiredProjects>
-          <makeArtifact PL="../shared"
-                        CT="3"
-                        CN="Debug"
-                        AC="true"
-                        BL="false"
-                        WD="../shared"
-                        BC="${MAKE}  -f Makefile CONF=Debug"
-                        CC="${MAKE}  -f Makefile CONF=Debug clean"
-                        OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libshared.a">
-          </makeArtifact>
-        </requiredProjects>
       </compileType>
     </conf>
     <conf name="Release" type="3">
       <toolsSet>
         <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
-        <compilerSet>OracleSolarisStudio_12.2|OracleSolarisStudio_12.2</compilerSet>
+        <compilerSet>default</compilerSet>
       </toolsSet>
       <compileType>
         <cTool>
@@ -72,9 +45,6 @@
         </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>
-          <incDir>
-            <pElem>..</pElem>
-          </incDir>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>
@@ -84,18 +54,6 @@
         </asmTool>
         <archiverTool>
         </archiverTool>
-        <requiredProjects>
-          <makeArtifact PL="../shared"
-                        CT="3"
-                        CN="Release"
-                        AC="false"
-                        BL="true"
-                        WD="../shared"
-                        BC="${MAKE}  -f Makefile CONF=Release"
-                        CC="${MAKE}  -f Makefile CONF=Release clean"
-                        OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libshared.a">
-          </makeArtifact>
-        </requiredProjects>
       </compileType>
     </conf>
   </confs>

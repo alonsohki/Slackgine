@@ -68,22 +68,23 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a: ${OBJECTFILES}
 
 ${OBJECTDIR}/vertex.o: vertex.cpp 
 	${MKDIR} -p ${OBJECTDIR}
-	$(COMPILE.cc) -fast -g0 -o ${OBJECTDIR}/vertex.o vertex.cpp
+	$(COMPILE.cc) -fast -g0 -I.. -o ${OBJECTDIR}/vertex.o vertex.cpp
 
 ${OBJECTDIR}/l3m.o: l3m.cpp 
 	${MKDIR} -p ${OBJECTDIR}
-	$(COMPILE.cc) -fast -g0 -o ${OBJECTDIR}/l3m.o l3m.cpp
+	$(COMPILE.cc) -fast -g0 -I.. -o ${OBJECTDIR}/l3m.o l3m.cpp
 
 ${OBJECTDIR}/mesh.o: mesh.cpp 
 	${MKDIR} -p ${OBJECTDIR}
-	$(COMPILE.cc) -fast -g0 -o ${OBJECTDIR}/mesh.o mesh.cpp
+	$(COMPILE.cc) -fast -g0 -I.. -o ${OBJECTDIR}/mesh.o mesh.cpp
 
 ${OBJECTDIR}/l3mFactory.o: l3mFactory.cpp 
 	${MKDIR} -p ${OBJECTDIR}
-	$(COMPILE.cc) -fast -g0 -o ${OBJECTDIR}/l3mFactory.o l3mFactory.cpp
+	$(COMPILE.cc) -fast -g0 -I.. -o ${OBJECTDIR}/l3mFactory.o l3mFactory.cpp
 
 # Subprojects
 .build-subprojects:
+	cd ../shared && ${MAKE}  -f Makefile CONF=Release
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
@@ -93,6 +94,7 @@ ${OBJECTDIR}/l3mFactory.o: l3mFactory.cpp
 
 # Subprojects
 .clean-subprojects:
+	cd ../shared && ${MAKE}  -f Makefile CONF=Release clean
 
 # Enable dependency checking
 .dep.inc: .depcheck-impl
