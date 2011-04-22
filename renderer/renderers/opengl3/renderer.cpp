@@ -199,7 +199,6 @@ bool OpenGL3_Renderer::RenderEntity ( const Entity* entity )
 
                 if ( polyType != GL_INVALID_ENUM )
                 {
-                    puts("Drawing elements");
                     glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, 0 );
                     eglGetError();
                 }
