@@ -17,7 +17,7 @@ public:
     virtual void        SetupForRendering       () {}
     virtual void        CleanupAfterRendering   () {}
     
-    const l3m*          GetModel                () const { return m_model; }
+    virtual const l3m*  GetModel                () const { return m_model; }
 };
 
 #endif	/* ENTITY_H */

@@ -9,6 +9,7 @@
 l3m::l3m ( const std::string& type )
 : m_type ( type )
 , m_rendererData ( 0 )
+, m_isDynamic ( false )
 {
     InitializeEndianness ();
     SetError ( OK );

@@ -27,8 +27,6 @@ int main(int argc, char** argv)
     l3mWithDescription model ( "Triángulo cromático demostrativo de la interpolación de colores de OpenGL" );;
     Mesh* mesh = Mesh::LoadAllocating("triangle", fVertices, Vertex::LOAD_POSITION, 0, 3, faces, 1 );
     model.LoadMesh(mesh, "main");
-    Mesh* mesh2 = Mesh::LoadAllocating("triangle", fVertices, Vertex::LOAD_POSITION, 0, 3, faces, 1 );
-    model.LoadMesh(mesh2, "blah");
 
     if ( model.SaveToFile ( "chromatic_tri.l3m" ) != l3m::OK )
         fprintf ( stderr, "Error al guardar el fichero: %s\n", model.error() );
@@ -38,7 +36,7 @@ int main(int argc, char** argv)
         fprintf ( stderr, "Error al cargar el fichero: %s\n", model2.error() );
     
     printf ( "Descripción leída: %s\n", model2.description().c_str() );
-    entity = new Entity ( &model2 );
+    entity = new Entity ( &model );
     
     glutInit (&argc, argv);
     glutInitWindowSize (800, 600);
@@ -66,4 +64,6 @@ void display ( void )
         renderer->RenderEntity(entity);
         renderer->EndScene ();
     }
+    else
+        fprintf ( stderr, "Error al iniciar la escena.\n" );
 }

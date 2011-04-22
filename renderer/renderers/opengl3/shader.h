@@ -2,7 +2,7 @@
 #define	OPENGL3_SHADER_H
 
 #include <string>
-#include "../../shader.h"
+#include "opengl3.h"
 
 class OpenGL3_Shader : public IShader
 {
@@ -29,7 +29,10 @@ public:
         }
         
         if ( glType != GL_INVALID_ENUM )
+        {
             m_handler = glCreateShader ( glType );
+            eglGetError();
+        }
         else
             m_handler = 0;
     }
@@ -37,7 +40,10 @@ public:
     ~OpenGL3_Shader ()
     {
         if ( m_handler > 0 )
+        {
             glDeleteShader ( m_handler );
+            eglGetError();
+        }
     }
     
     bool Load ( std::istream& fp )
@@ -50,16 +56,19 @@ public:
         
         while ( fp.eof() == false )
         {
-            int bytes = fp.readsome( buffer, sizeof(buffer) );
-            out.append ( buffer, bytes );
+            fp.read( buffer, sizeof(buffer) );
+            out.append ( buffer, fp.gcount() );
         }
         
         const GLchar* source = static_cast < const GLchar* > ( out.c_str() );
         glShaderSource ( m_handler, 1, &source, 0 );
+        eglGetError();
         glCompileShader ( m_handler );
+        eglGetError();
         
         GLint status;
         glGetShaderiv ( m_handler, GL_COMPILE_STATUS, &status );
+        eglGetError();
         m_loaded = ( status == GL_TRUE );
         return m_loaded;
     }
