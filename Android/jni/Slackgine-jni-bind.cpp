@@ -17,7 +17,7 @@
 #include <string.h>
 #include <jni.h>
 #include "../../Test/l3mWithDescription.h"
-#include "../../renderer/renderer.h"
+#include "../../slackgine.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -70,25 +70,18 @@ Java_es_lautech_slackgine_Slackgine_PruebaString( JNIEnv* env,
 JNIEXPORT jstring JNICALL
 Java_es_lautech_slackgine_Slackgine_Render ( JNIEnv* env, jobject thiz )
 {
+    static Slackgine* context = 0;
+
     char errmsg[512];
     Entity temp ( gs_model );
     strcpy ( errmsg, "Success" );
 
-    static bool s_initialized = false;
-    if ( !s_initialized )
-    {
-        if ( !Renderer::Instance()->Initialize() )
-        {
-            char ret[512];
-            Renderer::Instance()->GetError(errmsg);
-            sprintf ( ret, "No se pudo inicializar el renderer: %s\n", errmsg );
-            return env->NewStringUTF(ret);
-        }
-    }
+    if ( context == 0 )
+        context = new Slackgine ();
 
-    if ( !Renderer::Instance()->BeginScene () || !Renderer::Instance()->RenderEntity ( &temp ) || !Renderer::Instance()->EndScene () )
+    if ( !context->renderer()->BeginScene () || !context->renderer()->RenderEntity ( &temp ) || !context->renderer()->EndScene () )
     {
-      Renderer::Instance()->GetError(errmsg);
+      context->renderer()->GetError(errmsg);
     }
     
     return env->NewStringUTF(errmsg);

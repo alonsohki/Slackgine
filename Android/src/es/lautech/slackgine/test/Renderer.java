@@ -23,7 +23,7 @@ public class Renderer implements GLSurfaceView.Renderer
 	public void onDrawFrame ( GL10 glUnused )
 	{
 		GLES20.glViewport(0, 0, m_width, m_height);
-		GLES20.glClearColor(0.35f, 0.35f, 0.35f, 1.0f );
+		GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f );
 		Slackgine.Instance().Render ();
 	}
 	
