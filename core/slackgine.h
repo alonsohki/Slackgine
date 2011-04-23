@@ -20,6 +20,8 @@ private:
 public:
                         Slackgine       ();
                         ~Slackgine      ();
+
+    bool                Initialize      ();
                 
     IRenderer*          renderer        () { return m_renderer; }
 };

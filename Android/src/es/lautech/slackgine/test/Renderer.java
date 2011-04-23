@@ -14,6 +14,7 @@ public class Renderer implements GLSurfaceView.Renderer
 {
 	public Renderer ( Context context )
 	{
+		Slackgine sg = new Slackgine ();
 	}
 	
 	public void onSurfaceCreated(GL10 glUnused, EGLConfig config)
@@ -24,7 +25,6 @@ public class Renderer implements GLSurfaceView.Renderer
 	{
 		GLES20.glViewport(0, 0, m_width, m_height);
 		GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f );
-		Slackgine.Instance().Render ();
 	}
 	
 	public void onSurfaceChanged(GL10 glUnused, int width, int height)

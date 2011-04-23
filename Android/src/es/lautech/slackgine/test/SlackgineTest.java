@@ -21,7 +21,7 @@ public class SlackgineTest extends Activity {
         View view = inflater.inflate(R.layout.main, null);
         
         TextView titulo = (TextView)view.findViewById(R.id.Titulo);
-        titulo.setText(Slackgine.Instance().PruebaString());
+        titulo.setText("Test de Slackgine");
 
         GLSurfaceView canvas = (GLSurfaceView)view.findViewById(R.id.GLCanvas);
         canvas.setEGLContextClientVersion(2);

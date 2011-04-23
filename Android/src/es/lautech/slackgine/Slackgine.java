@@ -1,23 +1,24 @@
 package es.lautech.slackgine;
 
-import java.*;
-
 public class Slackgine
 {
-	public Slackgine ()
-	{}
-	
-	native public String PruebaString ();
-	native public String Render ();
+	private long m_jniInstance;
 
-	private static Slackgine ms_instance = null;
-	public static Slackgine Instance ()
+	native private long CreateSlackgineInstance ();
+	public Slackgine ()
 	{
-		if ( ms_instance == null )
-			ms_instance = new Slackgine ();
-		return ms_instance;
+		m_jniInstance = CreateSlackgineInstance ();
 	}
 	
+	native private void DestroySlackgineInstance ( long instance );
+	protected void finalize() throws Throwable
+	{
+	    DestroySlackgineInstance ( m_jniInstance );
+	    super.finalize();
+	}
+	
+	native public Renderer renderer ();
+
 	static {
         System.loadLibrary("Slackgine-jni-bind");
     }
