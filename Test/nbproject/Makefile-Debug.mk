@@ -51,11 +51,13 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=../l3m/dist/Debug/GNU-Linux-x86/libl3m.a `pkg-config --libs gl` `pkg-config --libs glu` `pkg-config --libs glew` -lglut ../renderer/dist/Debug/GNU-Linux-x86/librenderer.a  
+LDLIBSOPTIONS=`pkg-config --libs gl` `pkg-config --libs glu` `pkg-config --libs glew` -lglut ../core/dist/Debug/GNU-Linux-x86/libcore.a ../l3m/dist/Debug/GNU-Linux-x86/libl3m.a ../renderer/dist/Debug/GNU-Linux-x86/librenderer.a  
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
 	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test
+
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ../core/dist/Debug/GNU-Linux-x86/libcore.a
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ../l3m/dist/Debug/GNU-Linux-x86/libl3m.a
 
@@ -72,9 +74,11 @@ ${OBJECTDIR}/main.o: main.cpp
 
 # Subprojects
 .build-subprojects:
+	cd ../core && ${MAKE}  -f Makefile CONF=Debug
 	cd ../l3m && ${MAKE}  -f Makefile CONF=Debug
 	cd ../renderer && ${MAKE}  -f Makefile CONF=Debug
 	cd ../shared && ${MAKE}  -f Makefile CONF=Debug
+	cd ../core && ${MAKE}  -f Makefile CONF=Debug
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
@@ -83,9 +87,11 @@ ${OBJECTDIR}/main.o: main.cpp
 
 # Subprojects
 .clean-subprojects:
+	cd ../core && ${MAKE}  -f Makefile CONF=Debug clean
 	cd ../l3m && ${MAKE}  -f Makefile CONF=Debug clean
 	cd ../renderer && ${MAKE}  -f Makefile CONF=Debug clean
 	cd ../shared && ${MAKE}  -f Makefile CONF=Debug clean
+	cd ../core && ${MAKE}  -f Makefile CONF=Debug clean
 
 # Enable dependency checking
 .dep.inc: .depcheck-impl

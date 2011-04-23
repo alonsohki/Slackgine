@@ -3,7 +3,7 @@
     <type>org.netbeans.modules.cnd.makeproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
-            <name>Test</name>
+            <name>core</name>
             <c-extensions/>
             <cpp-extensions>cpp</cpp-extensions>
             <header-extensions>h</header-extensions>
@@ -12,17 +12,16 @@
                 <make-dep-project>../shared</make-dep-project>
                 <make-dep-project>../renderer</make-dep-project>
                 <make-dep-project>../l3m</make-dep-project>
-                <make-dep-project>../core</make-dep-project>
             </make-dep-projects>
             <sourceRootList/>
             <confList>
                 <confElem>
                     <name>Debug</name>
-                    <type>1</type>
+                    <type>3</type>
                 </confElem>
                 <confElem>
                     <name>Release</name>
-                    <type>1</type>
+                    <type>3</type>
                 </confElem>
             </confList>
         </data>

@@ -48,12 +48,9 @@ break; \
 class Renderer
 {
 public:
-    static IRenderer* Instance ()
+    static IRenderer* CreateRenderer ()
     {
-        static IRenderer* instance = 0;
-        if ( instance == 0 )
-            instance = new GLES20_Renderer ();
-        return instance;
+        return new GLES20_Renderer ();
     }
     
     static IProgram* CreateProgram ()

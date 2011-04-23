@@ -34,6 +34,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/renderers/opengl3/opengl3.o \
 	${OBJECTDIR}/renderers/opengl3/renderer.o \
 	${OBJECTDIR}/extensible_entity.o \
 	${OBJECTDIR}/renderers/opengl3/program.o \
@@ -66,6 +67,11 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/librenderer.a: ${OBJECTFILES}
 	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/librenderer.a
 	${AR} -rv ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/librenderer.a ${OBJECTFILES} 
 	$(RANLIB) ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/librenderer.a
+
+${OBJECTDIR}/renderers/opengl3/opengl3.o: renderers/opengl3/opengl3.cpp 
+	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/opengl3.o renderers/opengl3/opengl3.cpp
 
 ${OBJECTDIR}/renderers/opengl3/renderer.o: renderers/opengl3/renderer.cpp 
 	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3

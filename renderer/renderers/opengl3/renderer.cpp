@@ -218,7 +218,5 @@ bool OpenGL3_Renderer::RenderEntity ( const Entity* entity )
 
 bool OpenGL3_Renderer::EndScene()
 {
-    glutSwapBuffers();
-    eglGetError();
     return true;
 }

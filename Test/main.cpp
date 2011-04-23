@@ -2,13 +2,13 @@
 #include <cstdlib>
 #include <cerrno>
 #include <cstring>
-#include "l3m/l3m.h"
+#include "slackgine.h"
 #include "l3mWithDescription.h"
-#include "renderer/renderer.h"
 
 void display ( void );
 
 static Entity* entity = 0;
+static Slackgine* sg = 0;
 
 int main(int argc, char** argv)
 {
@@ -44,11 +44,7 @@ int main(int argc, char** argv)
     glutCreateWindow ("Slackgine test");
     
     glutDisplayFunc ( display );
-    
-    if ( ! Renderer::Instance ()->Initialize() )
-        fprintf ( stderr, "Error al inicializar el renderer.\n" );
-    else
-        glutMainLoop ();
+    glutMainLoop ();
     
     delete entity;
     
@@ -57,12 +53,15 @@ int main(int argc, char** argv)
 
 void display ( void )
 {
-    IRenderer* renderer = Renderer::Instance ();
+    if ( sg == 0 )
+        sg = new Slackgine ();
     
-    if ( renderer && renderer->BeginScene() )
+    if ( sg->renderer()->BeginScene() )
     {
-        renderer->RenderEntity(entity);
-        renderer->EndScene ();
+        sg->renderer()->RenderEntity(entity);
+        sg->renderer()->EndScene ();
+        
+        glutSwapBuffers ();
     }
     else
         fprintf ( stderr, "Error al iniciar la escena.\n" );
