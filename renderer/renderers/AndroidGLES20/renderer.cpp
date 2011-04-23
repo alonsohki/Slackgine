@@ -41,8 +41,8 @@ bool GLES20_Renderer::Initialize()
     // Initialize the main shaders
     static const char* const s_defaultVertexShader =
         "attribute vec4 in_Position;\n"
-//        "attribute vec3 in_Normal;\n"
-//        "attribute vec2 in_Tex2D;\n"
+        "attribute vec3 in_Normal;\n"
+        "attribute vec2 in_Tex2D;\n"
         "\n"
         "void main(void)\n"
         "{\n"
@@ -171,10 +171,7 @@ bool GLES20_Renderer::RenderEntity ( const Entity* entity )
 
                 if ( polyType != GL_INVALID_ENUM )
                 {
-                    glBindBuffer(GL_ARRAY_BUFFER, 0);
-                                        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
-
-//glBindBuffer ( GL_ARRAY_BUFFER, data->m_buffers[curMesh * 2] );
+                    glBindBuffer ( GL_ARRAY_BUFFER, data->m_buffers[curMesh * 2] );
                     eglGetError();
 
                     glEnableVertexAttribArray ( GLES20_Program::POSITION );
@@ -184,17 +181,16 @@ bool GLES20_Renderer::RenderEntity ( const Entity* entity )
                     glEnableVertexAttribArray ( GLES20_Program::TEX2D );
                     eglGetError();
 
-                    const float* vertices = mesh->vertices ()->base();
-                    glVertexAttribPointer ( GLES20_Program::POSITION, 3, GL_FLOAT, GL_FALSE, 20, vertices );
+                    glVertexAttribPointer ( GLES20_Program::POSITION, 3, GL_FLOAT, GL_FALSE, 20, (const char *)0);
                     eglGetError();
-                    glVertexAttribPointer ( GLES20_Program::NORMAL, 3, GL_FLOAT, GL_TRUE, 20, vertices+3 );
+                    glVertexAttribPointer ( GLES20_Program::NORMAL, 3, GL_FLOAT, GL_TRUE, 20, (const char *)12 );
                     eglGetError();
-                    glVertexAttribPointer ( GLES20_Program::TEX2D, 2, GL_FLOAT, GL_TRUE, 24, vertices + 6 );
+                    glVertexAttribPointer ( GLES20_Program::TEX2D, 2, GL_FLOAT, GL_TRUE, 24, (const char *)24 );
                     eglGetError();
 
-                    //glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, data->m_buffers[curMesh * 2 + 1 ] );
+                    glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, data->m_buffers[curMesh * 2 + 1 ] );
                     eglGetError();
-                    glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, mesh->indices() );
+                    glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, 0 );
                     eglGetError();
                 }
 

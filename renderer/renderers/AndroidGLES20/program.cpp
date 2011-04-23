@@ -4,7 +4,6 @@ GLES20_Program::GLES20_Program ()
 : m_linked ( false )
 {
     m_handler = glCreateProgram ();
-    LOGI("Se ha generado el programa %u\n", m_handler);
     eglGetError();
     if ( m_handler == 0 )
         strcpy ( m_error, "Invalid handler" );
@@ -71,7 +70,6 @@ bool GLES20_Program::Use ()
 {
     if ( Ok() )
     {
-        LOGI("El programa es %u\n", m_handler);
         glUseProgram ( m_handler );
         eglGetError();
     }
