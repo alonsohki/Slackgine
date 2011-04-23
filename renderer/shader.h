@@ -26,6 +26,7 @@ public:
     }
     virtual bool        Load            ( std::istream& fp ) = 0;
     virtual bool        Ok              () const = 0;
+    virtual void        GetError        ( char* dest ) const = 0;
 };
 
 #include "renderers/renderer_selection.h"

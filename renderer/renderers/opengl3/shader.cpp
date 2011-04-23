@@ -21,10 +21,14 @@ OpenGL3_Shader::OpenGL3_Shader ( IShader::Type type )
     if ( glType != GL_INVALID_ENUM )
     {
         m_handler = glCreateShader ( glType );
+        strcpy ( m_error, "Success" );
         eglGetError();
     }
     else
+    {
         m_handler = 0;
+        strcpy ( m_error, "Invalid or unsupported shader type" );
+    }
 }
 
 OpenGL3_Shader::~OpenGL3_Shader()
@@ -60,5 +64,9 @@ bool OpenGL3_Shader::Load ( std::istream& fp )
     glGetShaderiv ( m_handler, GL_COMPILE_STATUS, &status );
     eglGetError();
     m_loaded = ( status == GL_TRUE );
+    
+    if ( !m_loaded )
+        glGetShaderInfoLog(m_handler, sizeof(m_error), 0, m_error );
+    
     return m_loaded;
 }

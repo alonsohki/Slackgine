@@ -15,7 +15,7 @@
 MY_LOCAL_PATH := $(call my-dir)
 MY_LOCAL_MODULES := 
 
-LOCAL_CFLAGS := -Wall -ansi -pipe -O3 -fno-exceptions -fno-rtti -DANDROID -I. -I..
+LOCAL_CFLAGS := -Wall -ansi -pipe -O3 -fno-exceptions -fno-rtti -DANDROID -I. -I.. -DDEBUG
 LOCAL_CXXFLAGS := $(LOCAL_CFLAGS)
 
 # shared
@@ -41,5 +41,6 @@ LOCAL_SRC_FILES := Slackgine-jni-bind.cpp
 LOCAL_STATIC_LIBRARIES := $(MY_LOCAL_MODULES)
 LOCAL_CFLAGS += -I../.. -I.. -I../../..
 LOCAL_CXXFLAGS += -I../.. -I.. -I../../..
+LOCAL_LDLIBS := -lGLESv2 -llog
 
 include $(BUILD_SHARED_LIBRARY)

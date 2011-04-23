@@ -4,7 +4,10 @@ GLES20_Program::GLES20_Program ()
 : m_linked ( false )
 {
     m_handler = glCreateProgram ();
+    LOGI("Se ha generado el programa %u\n", m_handler);
     eglGetError();
+    if ( m_handler == 0 )
+        strcpy ( m_error, "Invalid handler" );
 }
 
 GLES20_Program::~GLES20_Program()
@@ -56,10 +59,11 @@ bool GLES20_Program::Link()
     GLint linked;
     glGetProgramiv ( m_handler, GL_LINK_STATUS, &linked );
     eglGetError();
-    if ( linked == GL_TRUE )
-        m_linked = true;
-    else
-        m_linked = false;
+    m_linked = !!linked;
+
+    if ( !m_linked )
+        glGetShaderInfoLog ( m_handler, sizeof(m_error), 0, m_error );
+
     return m_linked;
 }
 
@@ -67,8 +71,10 @@ bool GLES20_Program::Use ()
 {
     if ( Ok() )
     {
+        LOGI("El programa es %u\n", m_handler);
         glUseProgram ( m_handler );
         eglGetError();
     }
     return Ok ();
 }
+

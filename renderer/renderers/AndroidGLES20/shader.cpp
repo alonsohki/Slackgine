@@ -22,9 +22,16 @@ GLES20_Shader::GLES20_Shader ( IShader::Type type )
     {
         m_handler = glCreateShader ( glType );
         eglGetError();
+        if ( m_handler > 0 )
+            strcpy ( m_error, "Success" );
+        else
+            strcpy ( m_error, "Invalid handler" );
     }
     else
+    {
         m_handler = 0;
+        strcpy ( m_error, "Invalid or unsupported shader type" );
+    }
 }
 
 GLES20_Shader::~GLES20_Shader()
@@ -59,6 +66,15 @@ bool GLES20_Shader::Load ( std::istream& fp )
     GLint status;
     glGetShaderiv ( m_handler, GL_COMPILE_STATUS, &status );
     eglGetError();
-    m_loaded = ( status == GL_TRUE );
+    m_loaded = !!status;
+
+    if ( !m_loaded )
+    {
+        GLint length;
+        glGetShaderiv ( m_handler, GL_INFO_LOG_LENGTH, &length );
+        glGetShaderInfoLog ( m_handler, length, &length, m_error );
+    }
+
     return m_loaded;
 }
+

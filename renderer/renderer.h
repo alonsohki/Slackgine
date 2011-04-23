@@ -13,6 +13,8 @@ public:
     virtual bool        BeginScene      () = 0;
     virtual bool        RenderEntity    ( const Entity* pEntity ) = 0;
     virtual bool        EndScene        () = 0;
+    
+    virtual void        GetError        ( char* dest ) const = 0;
 };
 
 #include "renderers/renderer_selection.h"

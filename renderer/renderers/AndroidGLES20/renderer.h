@@ -10,6 +10,7 @@ private:
     IShader*    m_vertexShader;
     IShader*    m_fragmentShader;
     IProgram*   m_program;
+    char        m_error [ 512 ];
 
 public:
                 GLES20_Renderer        ();
@@ -17,9 +18,12 @@ public:
     
     bool        Initialize              ();
     bool        SetupModel              ( const l3m* model );
+
     bool        BeginScene              ();
     bool        RenderEntity            ( const Entity* entity );
     bool        EndScene                ();
+
+    void        GetError                ( char* dest ) const { strcpy(dest, m_error); }
 };
 
 

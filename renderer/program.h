@@ -14,6 +14,7 @@ public:
     virtual bool        Use             ( ) = 0;
     
     virtual bool        Ok              ( ) const = 0;
+    virtual void        GetError        ( char* dest ) const = 0;
 };
 
 #endif	/* PROGRAM_H */

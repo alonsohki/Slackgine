@@ -17,11 +17,14 @@
 #include <string.h>
 #include <jni.h>
 #include "../../Test/l3mWithDescription.h"
+#include "../../renderer/renderer.h"
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
+
+static l3mWithDescription* gs_model;
 
 /* This is a trivial JNI example where we use a native method
  * to return a new VM String. See the corresponding Java source
@@ -54,14 +57,41 @@ Java_es_lautech_slackgine_Slackgine_PruebaString( JNIEnv* env,
         sprintf ( ret, "Error al guardar el fichero: %s\n", model.error() );
     else
     {
-    l3mWithDescription model2;
-    if ( model2.LoadFromFile ( "/sdcard/chromatic_tri.l3m" ) != l3m::OK )
-        sprintf ( ret, "Error al cargar el fichero: %s\n", model2.error() );
+    gs_model = new l3mWithDescription ();
+    if ( gs_model->LoadFromFile ( "/sdcard/chromatic_tri.l3m" ) != l3m::OK )
+        sprintf ( ret, "Error al cargar el fichero: %s\n", gs_model->error() );
     else
-      sprintf ( ret, "Descripción leída: %s\n", model2.description().c_str() );
+      sprintf ( ret, "Descripción leída: %s\n", gs_model->description().c_str() );
     }
 
   return env->NewStringUTF(ret);
+}
+
+JNIEXPORT jstring JNICALL
+Java_es_lautech_slackgine_Slackgine_Render ( JNIEnv* env, jobject thiz )
+{
+    char errmsg[512];
+    Entity temp ( gs_model );
+    strcpy ( errmsg, "Success" );
+
+    static bool s_initialized = false;
+    if ( !s_initialized )
+    {
+        if ( !Renderer::Instance()->Initialize() )
+        {
+            char ret[512];
+            Renderer::Instance()->GetError(errmsg);
+            sprintf ( ret, "No se pudo inicializar el renderer: %s\n", errmsg );
+            return env->NewStringUTF(ret);
+        }
+    }
+
+    if ( !Renderer::Instance()->BeginScene () || !Renderer::Instance()->RenderEntity ( &temp ) || !Renderer::Instance()->EndScene () )
+    {
+      Renderer::Instance()->GetError(errmsg);
+    }
+    
+    return env->NewStringUTF(errmsg);
 }
 
 #ifdef __cplusplus

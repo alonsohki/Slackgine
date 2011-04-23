@@ -1,3 +1,4 @@
+#include <sstream>
 #include "opengl3.h"
 
 struct RendererData : public l3m::IRendererData
@@ -31,6 +32,7 @@ OpenGL3_Renderer::OpenGL3_Renderer()
 , m_fragmentShader(0)
 , m_program(0)
 {
+    strcpy ( m_error, "Success" );
 }
 
 OpenGL3_Renderer::~OpenGL3_Renderer()
@@ -73,14 +75,18 @@ bool OpenGL3_Renderer::Initialize()
     m_vertexShader = new OpenGL3_Shader (IShader::VERTEX_SHADER);
     m_fragmentShader = new OpenGL3_Shader (IShader::FRAGMENT_SHADER);
 
-    if ( !m_vertexShader->Load (vertexShaderSource) || !m_fragmentShader->Load ( fragmentShaderSource ) )
-        return false;
-    if ( !m_program->AttachShader(m_vertexShader) || !m_program->AttachShader(m_fragmentShader) )
-        return false;
-    if ( !m_program->Link() )
-        return false;
+    strcpy ( m_error, "Success" );
+    
+    if ( !m_vertexShader->Load (vertexShaderSource) )
+        m_vertexShader->GetError ( m_error );
+    else if ( !m_fragmentShader->Load ( fragmentShaderSource ) )
+        m_fragmentShader->GetError( m_error );
+    else if ( !m_program->AttachShader(m_vertexShader) || !m_program->AttachShader(m_fragmentShader) )
+        m_program->GetError ( m_error );
+    else if ( !m_program->Link() )
+        m_program->GetError( m_error );
 
-    return true;
+    return ( strcmp(m_error, "Success") == 0 );
 }
 
 bool OpenGL3_Renderer::SetupModel(const l3m* model)

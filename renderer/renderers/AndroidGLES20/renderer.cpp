@@ -23,6 +23,7 @@ GLES20_Renderer::GLES20_Renderer()
 , m_fragmentShader(0)
 , m_program(0)
 {
+    strcpy ( m_error, "Success" );
 }
 
 GLES20_Renderer::~GLES20_Renderer()
@@ -39,19 +40,20 @@ bool GLES20_Renderer::Initialize()
 {
     // Initialize the main shaders
     static const char* const s_defaultVertexShader =
-        "in vec3 in_Position;\n"
-        "in vec3 in_Normal;\n"
-        "in vec2 in_Tex2D;\n"
+        "attribute vec4 in_Position;\n"
+//        "attribute vec3 in_Normal;\n"
+//        "attribute vec2 in_Tex2D;\n"
         "\n"
         "void main(void)\n"
         "{\n"
-        "       gl_Position = vec4(in_Position, 1.0);\n"
+        "       gl_Position = in_Position;\n"
         "}\n";
 
     static const char* const s_defaultFragmentShader =
+        "precision mediump float;\n"
         "void main(void)\n"
         "{\n"
-        "       gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n"
+        "       gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n"
         "}\n";
 
     std::istringstream vertexShaderSource ( s_defaultVertexShader );
@@ -61,14 +63,19 @@ bool GLES20_Renderer::Initialize()
     m_vertexShader = new GLES20_Shader (IShader::VERTEX_SHADER);
     m_fragmentShader = new GLES20_Shader (IShader::FRAGMENT_SHADER);
 
-    if ( !m_vertexShader->Load (vertexShaderSource) || !m_fragmentShader->Load ( fragmentShaderSource ) )
-        return false;
-    if ( !m_program->AttachShader(m_vertexShader) || !m_program->AttachShader(m_fragmentShader) )
-        return false;
-    if ( !m_program->Link() )
-        return false;
+    strcpy ( m_error, "Success" );
+    if ( !m_vertexShader->Load (vertexShaderSource) )
+        m_vertexShader->GetError ( m_error );
+    else if ( !m_fragmentShader->Load ( fragmentShaderSource ) )
+        m_fragmentShader->GetError ( m_error );
+    else if ( !m_program->AttachShader(m_vertexShader) )
+        strcpy ( m_error, "Error attaching the main vertex shader" );
+    else if ( !m_program->AttachShader(m_fragmentShader) )
+        strcpy ( m_error, "Error attaching the main fragment shader" );
+    else if ( !m_program->Link() )
+        m_program->GetError ( m_error );
 
-    return true;
+    return ( strcmp ( m_error, "Success" ) == 0 );
 }
 
 bool GLES20_Renderer::SetupModel(const l3m* model)
@@ -164,14 +171,12 @@ bool GLES20_Renderer::RenderEntity ( const Entity* entity )
 
                 if ( polyType != GL_INVALID_ENUM )
                 {
-                    glBindBuffer ( GL_ARRAY_BUFFER, data->m_buffers[curMesh * 2] );
+                    glBindBuffer(GL_ARRAY_BUFFER, 0);
+                                        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
+
+//glBindBuffer ( GL_ARRAY_BUFFER, data->m_buffers[curMesh * 2] );
                     eglGetError();
-                    glVertexAttribPointer ( GLES20_Program::POSITION, 3, GL_FLOAT, GL_FALSE, 20, (void*)0 );
-                    eglGetError();
-                    glVertexAttribPointer ( GLES20_Program::NORMAL, 3, GL_FLOAT, GL_TRUE, 20, (void*)12 );
-                    eglGetError();
-                    glVertexAttribPointer ( GLES20_Program::TEX2D, 2, GL_FLOAT, GL_TRUE, 24, (void*)24 );
-                    eglGetError();
+
                     glEnableVertexAttribArray ( GLES20_Program::POSITION );
                     eglGetError();
                     glEnableVertexAttribArray ( GLES20_Program::NORMAL );
@@ -179,10 +184,17 @@ bool GLES20_Renderer::RenderEntity ( const Entity* entity )
                     glEnableVertexAttribArray ( GLES20_Program::TEX2D );
                     eglGetError();
 
-                    glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, data->m_buffers[curMesh * 2 + 1 ] );
+                    const float* vertices = mesh->vertices ()->base();
+                    glVertexAttribPointer ( GLES20_Program::POSITION, 3, GL_FLOAT, GL_FALSE, 20, vertices );
+                    eglGetError();
+                    glVertexAttribPointer ( GLES20_Program::NORMAL, 3, GL_FLOAT, GL_TRUE, 20, vertices+3 );
+                    eglGetError();
+                    glVertexAttribPointer ( GLES20_Program::TEX2D, 2, GL_FLOAT, GL_TRUE, 24, vertices + 6 );
                     eglGetError();
 
-                    glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, 0 );
+                    //glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, data->m_buffers[curMesh * 2 + 1 ] );
+                    eglGetError();
+                    glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, mesh->indices() );
                     eglGetError();
                 }
 

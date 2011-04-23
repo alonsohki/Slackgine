@@ -5,6 +5,7 @@ OpenGL3_Program::OpenGL3_Program ()
 {
     m_handler = glCreateProgram ();
     eglGetError();
+    strcpy ( m_error, "Success" );
 }
 
 OpenGL3_Program::~OpenGL3_Program()
@@ -56,10 +57,11 @@ bool OpenGL3_Program::Link()
     GLint linked;
     glGetProgramiv ( m_handler, GL_LINK_STATUS, &linked );
     eglGetError();
-    if ( linked == GL_TRUE )
-        m_linked = true;
-    else
-        m_linked = false;
+    m_linked = ( linked == GL_TRUE );
+
+    if ( !m_linked )
+        glGetShaderInfoLog ( m_handler, sizeof(m_error), 0, m_error );
+    
     return m_linked;
 }
 

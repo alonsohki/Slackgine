@@ -1,6 +1,7 @@
 #ifndef OPENGL3_PROGRAM_H
 #define	OPENGL3_PROGRAM_H
 
+#include <cstring>
 #include "opengl3.h"
 
 class OpenGL3_Program : public IProgram
@@ -16,6 +17,7 @@ public:
 private:
     GLuint      m_handler;
     bool        m_linked;
+    char        m_error [ 512 ];
     
 public:
                         OpenGL3_Program         ();
@@ -27,6 +29,7 @@ public:
     bool                Use                     ();
     
     bool                Ok                      () const { return m_linked && m_handler > 0; }
+    void                GetError                ( char* dest ) const { strcpy(dest, m_error); }
     
     GLuint&             handler                 () { return m_handler; }
     const GLuint&       handler                 () const { return m_handler; }

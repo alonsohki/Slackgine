@@ -4,4 +4,13 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
+	<TextView android:text="" android:id="@+id/Titulo"
+	          android:layout_width="wrap_content"
+	          android:layout_height="wrap_content">
+	</TextView>
+	<android.opengl.GLSurfaceView android:id="@+id/GLCanvas"
+								  android:layout_width="wrap_content"
+								  android:layout_height="wrap_content">
+	</android.opengl.GLSurfaceView>
+
 </LinearLayout>

@@ -2,6 +2,7 @@ package es.lautech.slackgine.test;
 
 import android.app.Activity;
 import android.content.Context;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,15 +19,13 @@ public class SlackgineTest extends Activity {
         super.onCreate(savedInstanceState);
         LayoutInflater inflater = (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.main, null);
-        TextView valueTV = new TextView(this);
-        Slackgine sg = new Slackgine ();
-        valueTV.setText(sg.PruebaString());
-        valueTV.setId(5);
-        valueTV.setLayoutParams(new LayoutParams(
-                LayoutParams.FILL_PARENT,
-                LayoutParams.WRAP_CONTENT));
+        
+        TextView titulo = (TextView)view.findViewById(R.id.Titulo);
+        titulo.setText(Slackgine.Instance().PruebaString());
 
-        ((LinearLayout) view).addView(valueTV);
+        GLSurfaceView canvas = (GLSurfaceView)view.findViewById(R.id.GLCanvas);
+        canvas.setEGLContextClientVersion(2);
+        canvas.setRenderer(new Renderer(this));
         
         setContentView(view);
     }
