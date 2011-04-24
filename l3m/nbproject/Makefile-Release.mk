@@ -34,8 +34,8 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/vertex.o \
 	${OBJECTDIR}/l3m.o \
+	${OBJECTDIR}/vertex.o \
 	${OBJECTDIR}/mesh.o \
 	${OBJECTDIR}/l3mFactory.o
 
@@ -66,15 +66,15 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a: ${OBJECTFILES}
 	${AR} -rv ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a ${OBJECTFILES} 
 	$(RANLIB) ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a
 
-${OBJECTDIR}/vertex.o: vertex.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/vertex.o vertex.cpp
-
 ${OBJECTDIR}/l3m.o: l3m.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/l3m.o l3m.cpp
+
+${OBJECTDIR}/vertex.o: vertex.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/vertex.o vertex.cpp
 
 ${OBJECTDIR}/mesh.o: mesh.cpp 
 	${MKDIR} -p ${OBJECTDIR}
