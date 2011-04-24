@@ -1,8 +1,8 @@
 #ifndef RENDERER_H
 #define	RENDERER_H
 
-#include "../shared/platform.h"
-#include "entity.h"
+#include "shared/platform.h"
+#include "core/entity.h"
 
 class IRenderer
 {

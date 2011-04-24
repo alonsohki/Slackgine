@@ -51,7 +51,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=`pkg-config --libs gl` `pkg-config --libs glu` `pkg-config --libs glew` -lglut ../core/dist/Debug/GNU-Linux-x86/libcore.a ../l3m/dist/Debug/GNU-Linux-x86/libl3m.a ../renderer/dist/Debug/GNU-Linux-x86/librenderer.a  
+LDLIBSOPTIONS=`pkg-config --libs gl` `pkg-config --libs glu` `pkg-config --libs glew` -lglut ../core/dist/Debug/GNU-Linux-x86/libcore.a ../l3m/dist/Debug/GNU-Linux-x86/libl3m.a ../renderer/dist/Debug/GNU-Linux-x86/librenderer.a ../math/dist/Debug/GNU-Linux-x86/libmath.a  
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -62,6 +62,8 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ../core/dist/Debug/GNU-Linux-x8
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ../l3m/dist/Debug/GNU-Linux-x86/libl3m.a
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ../renderer/dist/Debug/GNU-Linux-x86/librenderer.a
+
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ../math/dist/Debug/GNU-Linux-x86/libmath.a
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
@@ -77,8 +79,10 @@ ${OBJECTDIR}/main.o: main.cpp
 	cd ../core && ${MAKE}  -f Makefile CONF=Debug
 	cd ../l3m && ${MAKE}  -f Makefile CONF=Debug
 	cd ../renderer && ${MAKE}  -f Makefile CONF=Debug
+	cd ../math && ${MAKE}  -f Makefile CONF=Debug
 	cd ../shared && ${MAKE}  -f Makefile CONF=Debug
 	cd ../core && ${MAKE}  -f Makefile CONF=Debug
+	cd ../math && ${MAKE}  -f Makefile CONF=Debug
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
@@ -90,8 +94,10 @@ ${OBJECTDIR}/main.o: main.cpp
 	cd ../core && ${MAKE}  -f Makefile CONF=Debug clean
 	cd ../l3m && ${MAKE}  -f Makefile CONF=Debug clean
 	cd ../renderer && ${MAKE}  -f Makefile CONF=Debug clean
+	cd ../math && ${MAKE}  -f Makefile CONF=Debug clean
 	cd ../shared && ${MAKE}  -f Makefile CONF=Debug clean
 	cd ../core && ${MAKE}  -f Makefile CONF=Debug clean
+	cd ../math && ${MAKE}  -f Makefile CONF=Debug clean
 
 # Enable dependency checking
 .dep.inc: .depcheck-impl

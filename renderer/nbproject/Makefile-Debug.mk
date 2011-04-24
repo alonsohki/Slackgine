@@ -36,10 +36,8 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/renderers/opengl3/opengl3.o \
 	${OBJECTDIR}/renderers/opengl3/renderer.o \
-	${OBJECTDIR}/extensible_entity.o \
 	${OBJECTDIR}/renderers/opengl3/program.o \
-	${OBJECTDIR}/renderers/opengl3/shader.o \
-	${OBJECTDIR}/entity.o
+	${OBJECTDIR}/renderers/opengl3/shader.o
 
 
 # C Compiler Flags
@@ -78,11 +76,6 @@ ${OBJECTDIR}/renderers/opengl3/renderer.o: renderers/opengl3/renderer.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -g -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/renderer.o renderers/opengl3/renderer.cpp
 
-${OBJECTDIR}/extensible_entity.o: extensible_entity.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -g -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/extensible_entity.o extensible_entity.cpp
-
 ${OBJECTDIR}/renderers/opengl3/program.o: renderers/opengl3/program.cpp 
 	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3
 	${RM} $@.d
@@ -93,15 +86,8 @@ ${OBJECTDIR}/renderers/opengl3/shader.o: renderers/opengl3/shader.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -g -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/shader.o renderers/opengl3/shader.cpp
 
-${OBJECTDIR}/entity.o: entity.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -g -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/entity.o entity.cpp
-
 # Subprojects
 .build-subprojects:
-	cd ../l3m && ${MAKE}  -f Makefile CONF=Debug
-	cd ../shared && ${MAKE}  -f Makefile CONF=Debug
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
@@ -110,8 +96,6 @@ ${OBJECTDIR}/entity.o: entity.cpp
 
 # Subprojects
 .clean-subprojects:
-	cd ../l3m && ${MAKE}  -f Makefile CONF=Debug clean
-	cd ../shared && ${MAKE}  -f Makefile CONF=Debug clean
 
 # Enable dependency checking
 .dep.inc: .depcheck-impl

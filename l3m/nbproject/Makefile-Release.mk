@@ -88,7 +88,6 @@ ${OBJECTDIR}/l3mFactory.o: l3mFactory.cpp
 
 # Subprojects
 .build-subprojects:
-	cd ../shared && ${MAKE}  -f Makefile CONF=Release
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
@@ -97,7 +96,6 @@ ${OBJECTDIR}/l3mFactory.o: l3mFactory.cpp
 
 # Subprojects
 .clean-subprojects:
-	cd ../shared && ${MAKE}  -f Makefile CONF=Release clean
 
 # Enable dependency checking
 .dep.inc: .depcheck-impl

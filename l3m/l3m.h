@@ -8,7 +8,7 @@
 #include <iostream>
 #include <stdint.h>
 #include "../shared/platform.h"
-#include "vector.h"
+#include "math/vector.h"
 #include "vertex.h"
 #include "mesh.h"
 

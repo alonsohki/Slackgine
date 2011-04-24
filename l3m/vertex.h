@@ -1,7 +1,7 @@
 #ifndef VERTEX_H
 #define VERTEX_H
 
-#include "vector.h"
+#include "math/vector.h"
 #include "color.h"
 #include "material.h"
 

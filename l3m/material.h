@@ -2,7 +2,6 @@
 #define MATERIAL_H
 
 #include "color.h"
-#include "vector.h"
 
 class Material
 {

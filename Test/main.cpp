@@ -54,7 +54,10 @@ int main(int argc, char** argv)
 void display ( void )
 {
     if ( sg == 0 )
+    {
         sg = new Slackgine ();
+        sg->Initialize ();
+    }
     
     if ( sg->renderer()->BeginScene() )
     {

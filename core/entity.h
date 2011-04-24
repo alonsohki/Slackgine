@@ -1,7 +1,7 @@
 #ifndef ENTITY_H
 #define	ENTITY_H
 
-#include "matrix.h"
+#include "math/matrix.h"
 #include "l3m/l3m.h"
 
 class Entity

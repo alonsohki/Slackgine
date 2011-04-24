@@ -4,11 +4,15 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <itemPath>entity.h</itemPath>
+      <itemPath>extensible_entity.h</itemPath>
       <itemPath>slackgine.h</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <itemPath>entity.cpp</itemPath>
+      <itemPath>extensible_entity.cpp</itemPath>
       <itemPath>slackgine.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
@@ -44,7 +48,7 @@
                         CT="3"
                         CN="Debug"
                         AC="true"
-                        BL="true"
+                        BL="false"
                         WD="../shared"
                         BC="${MAKE}  -f Makefile CONF=Debug"
                         CC="${MAKE}  -f Makefile CONF=Debug clean"
@@ -54,7 +58,7 @@
                         CT="3"
                         CN="Debug"
                         AC="true"
-                        BL="true"
+                        BL="false"
                         WD="../renderer"
                         BC="${MAKE}  -f Makefile CONF=Debug"
                         CC="${MAKE}  -f Makefile CONF=Debug clean"
@@ -64,11 +68,21 @@
                         CT="3"
                         CN="Debug"
                         AC="true"
-                        BL="true"
+                        BL="false"
                         WD="../l3m"
                         BC="${MAKE}  -f Makefile CONF=Debug"
                         CC="${MAKE}  -f Makefile CONF=Debug clean"
                         OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a">
+          </makeArtifact>
+          <makeArtifact PL="../math"
+                        CT="3"
+                        CN="Debug"
+                        AC="true"
+                        BL="false"
+                        WD="../math"
+                        BC="${MAKE}  -f Makefile CONF=Debug"
+                        CC="${MAKE}  -f Makefile CONF=Debug clean"
+                        OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libmath.a">
           </makeArtifact>
         </requiredProjects>
       </compileType>
@@ -102,7 +116,7 @@
                         CT="3"
                         CN="Release"
                         AC="false"
-                        BL="true"
+                        BL="false"
                         WD="../l3m"
                         BC="${MAKE}  -f Makefile CONF=Release"
                         CC="${MAKE}  -f Makefile CONF=Release clean"
@@ -112,7 +126,7 @@
                         CT="3"
                         CN="Release"
                         AC="false"
-                        BL="true"
+                        BL="false"
                         WD="../renderer"
                         BC="${MAKE}  -f Makefile CONF=Release"
                         CC="${MAKE}  -f Makefile CONF=Release clean"
@@ -122,11 +136,21 @@
                         CT="3"
                         CN="Release"
                         AC="false"
-                        BL="true"
+                        BL="false"
                         WD="../shared"
                         BC="${MAKE}  -f Makefile CONF=Release"
                         CC="${MAKE}  -f Makefile CONF=Release clean"
                         OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libshared.a">
+          </makeArtifact>
+          <makeArtifact PL="../math"
+                        CT="3"
+                        CN="Release"
+                        AC="false"
+                        BL="false"
+                        WD="../math"
+                        BC="${MAKE}  -f Makefile CONF=Release"
+                        CC="${MAKE}  -f Makefile CONF=Release clean"
+                        OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libmath.a">
           </makeArtifact>
         </requiredProjects>
       </compileType>

@@ -23,6 +23,11 @@ LOCAL_PATH := $(MY_LOCAL_PATH)/../../shared
 include ../shared/Android.mk
 MY_LOCAL_MODULES += $(LOCAL_MODULE)
 
+# math
+LOCAL_PATH := $(MY_LOCAL_PATH)/../../math
+include ../math/Android.mk
+MY_LOCAL_MODULES += $(LOCAL_MODULE)
+
 # core
 LOCAL_PATH := $(MY_LOCAL_PATH)/../../core
 include ../core/Android.mk

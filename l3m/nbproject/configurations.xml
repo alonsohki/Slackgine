@@ -9,7 +9,6 @@
       <itemPath>l3mFactory.h</itemPath>
       <itemPath>material.h</itemPath>
       <itemPath>mesh.h</itemPath>
-      <itemPath>vector.h</itemPath>
       <itemPath>vertex.h</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
@@ -59,6 +58,16 @@
                         CC="${MAKE}  -f Makefile CONF=Debug clean"
                         OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libshared.a">
           </makeArtifact>
+          <makeArtifact PL="../math"
+                        CT="3"
+                        CN="Debug"
+                        AC="true"
+                        BL="false"
+                        WD="../math"
+                        BC="${MAKE}  -f Makefile CONF=Debug"
+                        CC="${MAKE}  -f Makefile CONF=Debug clean"
+                        OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libmath.a">
+          </makeArtifact>
         </requiredProjects>
       </compileType>
     </conf>
@@ -94,11 +103,21 @@
                         CT="3"
                         CN="Release"
                         AC="false"
-                        BL="true"
+                        BL="false"
                         WD="../shared"
                         BC="${MAKE}  -f Makefile CONF=Release"
                         CC="${MAKE}  -f Makefile CONF=Release clean"
                         OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libshared.a">
+          </makeArtifact>
+          <makeArtifact PL="../math"
+                        CT="3"
+                        CN="Release"
+                        AC="false"
+                        BL="false"
+                        WD="../math"
+                        BC="${MAKE}  -f Makefile CONF=Release"
+                        CC="${MAKE}  -f Makefile CONF=Release clean"
+                        OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libmath.a">
           </makeArtifact>
         </requiredProjects>
       </compileType>
