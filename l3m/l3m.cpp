@@ -100,7 +100,8 @@ static size_t identityWrite ( const T* v, u32 count, std::ostream& fp )
 template < typename T >
 static size_t identityRead ( T* v, u32 count, std::istream& fp )
 {
-    size_t s = fp.readsome ( reinterpret_cast<char *>(v), sizeof(T)*count ) / sizeof(T);
+    fp.read ( reinterpret_cast<char *>(v), sizeof(T)*count );
+    size_t s = fp.gcount () / sizeof(T);
     if ( ! fp.fail() )
         return s;
     return -1;
@@ -294,7 +295,8 @@ bool l3m::WriteData ( const void* data, size_t size, u32 nmemb, std::ostream& fp
 
 size_t l3m::ReadData ( char* dest, size_t size, u32 nmemb, std::istream& fp ) const
 {
-    return fp.readsome(dest, size*nmemb) / size;
+    fp.read ( dest, size*nmemb );
+    return fp.gcount () / size;
 }
 
 l3m::ErrorCode l3m::Save ( std::ostream& fp, u32 flags )

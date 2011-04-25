@@ -34,18 +34,16 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/vertex.o \
-	${OBJECTDIR}/l3m.o \
-	${OBJECTDIR}/mesh.o \
-	${OBJECTDIR}/l3mFactory.o
+	${OBJECTDIR}/jni/Slackgine.o \
+	${OBJECTDIR}/jni/l3m.o
 
 
 # C Compiler Flags
 CFLAGS=
 
 # CC Compiler Flags
-CCFLAGS=-ansi -pipe
-CXXFLAGS=-ansi -pipe
+CCFLAGS=
+CXXFLAGS=
 
 # Fortran Compiler Flags
 FFLAGS=
@@ -58,33 +56,21 @@ LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libAndroid.so
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a: ${OBJECTFILES}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libAndroid.so: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a
-	${AR} -rv ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a ${OBJECTFILES} 
-	$(RANLIB) ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a
+	${LINK.cc} -shared -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libAndroid.so -fPIC ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
-${OBJECTDIR}/vertex.o: vertex.cpp 
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/jni/Slackgine.o: jni/Slackgine.cpp 
+	${MKDIR} -p ${OBJECTDIR}/jni
 	${RM} $@.d
-	$(COMPILE.cc) -g -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/vertex.o vertex.cpp
+	$(COMPILE.cc) -g -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/jni/Slackgine.o jni/Slackgine.cpp
 
-${OBJECTDIR}/l3m.o: l3m.cpp 
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/jni/l3m.o: jni/l3m.cpp 
+	${MKDIR} -p ${OBJECTDIR}/jni
 	${RM} $@.d
-	$(COMPILE.cc) -g -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/l3m.o l3m.cpp
-
-${OBJECTDIR}/mesh.o: mesh.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -g -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/mesh.o mesh.cpp
-
-${OBJECTDIR}/l3mFactory.o: l3mFactory.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -g -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/l3mFactory.o l3mFactory.cpp
+	$(COMPILE.cc) -g -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/jni/l3m.o jni/l3m.cpp
 
 # Subprojects
 .build-subprojects:
@@ -92,7 +78,7 @@ ${OBJECTDIR}/l3mFactory.o: l3mFactory.cpp
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a
+	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libAndroid.so
 
 # Subprojects
 .clean-subprojects:
