@@ -29,6 +29,7 @@
                    displayName="Important Files"
                    projectFiles="false"
                    kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Android.mk</itemPath>
       <itemPath>Makefile</itemPath>
     </logicalFolder>
     <itemPath>program.h</itemPath>
