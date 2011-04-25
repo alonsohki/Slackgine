@@ -9,8 +9,8 @@ class jni_streambuffer : public std::basic_streambuf<T, std::char_traits<T> >
 {
     T _inputBuffer [ N ];
     T _outputBuffer [ N ];
-    typedef std::char_traits<T> _Tr;
-    typedef std::basic_streambuf<T, std::char_traits<T> > _T_parent;
+    typedef typename std::char_traits<T> _Tr;
+    typedef typename std::basic_streambuf<T, std::char_traits<T> > _T_parent;
     JNIEnv* m_env;
     jobject m_istream;
     jmethodID m_inputMethod;
@@ -28,6 +28,7 @@ public:
         
         if ( m_istream )
         {
+            LOGI("Tenemos un istream");
             jclass InputStreamClass = m_env->FindClass("java.io.InputStream");
             m_inputMethod = m_env->GetMethodID(InputStreamClass, "read", "([BII)I" );
         }
@@ -52,15 +53,25 @@ protected:
             WriteToJavaStream ( _T_parent::pbase(), (_T_parent::pptr () - _T_parent::pbase ()) * sizeof(T) );
         }
     }
-    
-    virtual int underflow ( int c )
+
+    virtual int showmanyc ()
     {
+        LOGI("showmanyc");
+        return sizeof(_inputBuffer);
+    }
+    
+    virtual int underflow ()
+    {
+        LOGI("Nos llaman a underflow");
+        
         if ( m_istream == 0 )
             return _Tr::eof();
         
+        LOGI("Nos llegan a pedir leer algo\n");
         int size = ReadFromJavaStream ( _inputBuffer, sizeof(_inputBuffer) );
         if ( size < 0 )
             return _Tr::eof();
+        LOGI("Y leemos: %s\n", _inputBuffer);
 
         _T_parent::setg ( _inputBuffer, _inputBuffer, &_inputBuffer[N - 1] );
         

@@ -399,6 +399,11 @@ l3m::ErrorCode l3m::Save ( std::ostream& fp, u32 flags )
     return SetError(OK);
 }
 
+#include <jni.h>
+#include <android/log.h>
+#define  LOG_TAG    "libSlackgine-jni-bindings"
+#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
+#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 
 l3m::ErrorCode l3m::Load ( std::istream& fp )
 {
@@ -415,6 +420,7 @@ l3m::ErrorCode l3m::Load ( std::istream& fp )
 
     // Read out the BOM marker
     FREAD ( buffer, sizeof(char), strlen(L3M_BOM), fp, ERROR_READING_BOM );
+    LOGI ( "Se ha leído -%s- y se esperaba -%s-\n", buffer, L3M_BOM );
     if ( memcmp ( buffer, L3M_BOM, strlen(L3M_BOM) ) != 0 )
         return SetError(INVALID_BOM);
 

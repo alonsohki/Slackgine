@@ -35,7 +35,8 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/jni/Slackgine.o \
-	${OBJECTDIR}/jni/l3m.o
+	${OBJECTDIR}/jni/l3m.o \
+	${OBJECTDIR}/jni/STLiostream.o
 
 
 # C Compiler Flags
@@ -71,6 +72,11 @@ ${OBJECTDIR}/jni/l3m.o: jni/l3m.cpp
 	${MKDIR} -p ${OBJECTDIR}/jni
 	${RM} $@.d
 	$(COMPILE.cc) -g -I/soft/dev/android-ndk/platforms/android-8/arch-arm/usr/include -I.. -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/jni/l3m.o jni/l3m.cpp
+
+${OBJECTDIR}/jni/STLiostream.o: jni/STLiostream.cpp 
+	${MKDIR} -p ${OBJECTDIR}/jni
+	${RM} $@.d
+	$(COMPILE.cc) -g -I/soft/dev/android-ndk/platforms/android-8/arch-arm/usr/include -I.. -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/jni/STLiostream.o jni/STLiostream.cpp
 
 # Subprojects
 .build-subprojects:

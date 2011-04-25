@@ -21,18 +21,21 @@ public class SlackgineTest extends Activity {
         LayoutInflater inflater = (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.main, null);
         
-        TextView titulo = (TextView)view.findViewById(R.id.Titulo);
-        titulo.setText("Test de Slackgine");
-
         GLSurfaceView canvas = (GLSurfaceView)view.findViewById(R.id.GLCanvas);
         canvas.setEGLContextClientVersion(2);
         canvas.setRenderer(new Renderer(this));
         
         setContentView(view);
         
-        l3m model = new l3m ();
+        l3mWithDescription model = new l3mWithDescription ( "" );
         try {
-			model.Save( new FileOutputStream("/sdcard/javatest.txt") );
+			if ( !model.Load( new FileInputStream("/sdcard/chromatic_tri.l3m") ) )
+				Log.e ( "SlackgineTest", "Unable to load the model: " + model.error() );
+			else
+			{
+		        TextView titulo = (TextView)view.findViewById(R.id.Titulo);
+		        titulo.setText(model.description());
+			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

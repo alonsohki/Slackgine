@@ -136,8 +136,6 @@ public:
     const char*         error           () const { return m_error; }
     IRendererData*&     rendererData    () const { return m_rendererData; }
     
-protected:
-    std::string&        type            () { return m_type; }
 private:
     ErrorCode&          errorCode       () { return m_errorCode; }
     int&                getErrno        () { return m_errno; }
