@@ -172,47 +172,44 @@ bool OpenGL3_Renderer::BeginScene ()
     return true;
 }
 
-bool OpenGL3_Renderer::RenderEntity ( const Entity* entity )
+bool OpenGL3_Renderer::Render ( const l3m* model )
 {
-    const l3m* model = entity->GetModel ();
-    if ( model )
+    l3m::IRendererData* data_ = model->rendererData();
+    if ( !data_ && !SetupModel(model) )
+        return false;
+    RendererData* data = static_cast<RendererData*>(model->rendererData ());
+
+    unsigned int curMesh = 0;
+    const l3m::groupMap& groups = model->GetGroups();
+    for ( l3m::groupMap::const_iterator i = groups.begin(); i != groups.end(); ++i )
     {
-        l3m::IRendererData* data_ = model->rendererData();
-        if ( !data_ && !SetupModel(model) )
-            return false;
-        RendererData* data = static_cast<RendererData*>(model->rendererData ());
-
-        unsigned int curMesh = 0;
-        const l3m::groupMap& groups = model->GetGroups();
-        for ( l3m::groupMap::const_iterator i = groups.begin(); i != groups.end(); ++i )
+        const l3m::meshList& meshes = i->second;
+        for ( l3m::meshList::const_iterator j = meshes.begin(); j != meshes.end(); ++j )
         {
-            const l3m::meshList& meshes = i->second;
-            for ( l3m::meshList::const_iterator j = meshes.begin(); j != meshes.end(); ++j )
+            const Mesh* mesh = *j;
+            glBindVertexArray ( data->m_vaos[curMesh] );
+            eglGetError();
+
+            GLenum polyType = GL_INVALID_ENUM;
+            switch ( mesh->polyType() )
             {
-                const Mesh* mesh = *j;
-                glBindVertexArray ( data->m_vaos[curMesh] );
-                eglGetError();
-
-                GLenum polyType = GL_INVALID_ENUM;
-                switch ( mesh->polyType() )
-                {
-                    case Mesh::TRIANGLES: polyType = GL_TRIANGLES; break;
-                    case Mesh::TRIANGLE_STRIP: polyType = GL_TRIANGLE_STRIP; break;
-                    case Mesh::TRIANGLE_FAN: polyType = GL_TRIANGLE_FAN; break;
-                    case Mesh::QUADS: polyType = GL_QUADS; break;
-                    default: break;
-                }
-
-                if ( polyType != GL_INVALID_ENUM )
-                {
-                    glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, 0 );
-                    eglGetError();
-                }
-
-                ++curMesh;
+                case Mesh::TRIANGLES: polyType = GL_TRIANGLES; break;
+                case Mesh::TRIANGLE_STRIP: polyType = GL_TRIANGLE_STRIP; break;
+                case Mesh::TRIANGLE_FAN: polyType = GL_TRIANGLE_FAN; break;
+                case Mesh::QUADS: polyType = GL_QUADS; break;
+                default: break;
             }
+
+            if ( polyType != GL_INVALID_ENUM )
+            {
+                glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, 0 );
+                eglGetError();
+            }
+
+            ++curMesh;
         }
     }
+    
     return true;
 }
 

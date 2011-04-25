@@ -61,7 +61,7 @@ void display ( void )
     
     if ( sg->renderer()->BeginScene() )
     {
-        sg->renderer()->RenderEntity(entity);
+        entity->Update ( sg );
         sg->renderer()->EndScene ();
         
         glutSwapBuffers ();

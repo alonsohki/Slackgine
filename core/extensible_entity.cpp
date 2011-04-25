@@ -30,14 +30,9 @@ IEntityExtension* ExtensibleEntity::GetExtension ( const char* name ) const
     return 0;
 }
 
-void ExtensibleEntity::SetupForRendering()
+void ExtensibleEntity::Update(Slackgine* ctx)
 {
     for ( std::vector<IEntityExtension*>::const_iterator i = m_extensions.begin(); i != m_extensions.end(); ++i )
-        (*i)->Execute ( this );
-}
-
-void ExtensibleEntity::CleanupAfterRendering()
-{
-    for ( std::vector<IEntityExtension*>::const_iterator i = m_extensions.begin(); i != m_extensions.end(); ++i )
-        (*i)->Cleanup ( this );
+        (*i)->Update ( this, ctx );
+    Entity::Update (ctx);
 }

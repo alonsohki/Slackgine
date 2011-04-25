@@ -2,6 +2,7 @@
 #define	EXTENSIBLE_ENTITY_H
 
 #include <vector>
+#include "slackgine.h"
 #include "entity.h"
 
 class ExtensibleEntity;
@@ -14,8 +15,7 @@ public:
     virtual const char* GetName                 () = 0;
     
     virtual void        Initialize              ( ExtensibleEntity* entity ) = 0;
-    virtual void        Execute                 ( ExtensibleEntity* entity ) = 0;
-    virtual void        Cleanup                 ( ExtensibleEntity* entity ) = 0;
+    virtual void        Update                  ( ExtensibleEntity* entity, Slackgine* ctx ) = 0;
 };
 
 class ExtensibleEntity : public Entity
@@ -30,8 +30,7 @@ public:
     bool                RegisterExtension       ( IEntityExtension* pExtension );
     IEntityExtension*   GetExtension            ( const char* name ) const;
                 
-    void                SetupForRendering       ();
-    void                CleanupAfterRendering   ();
+    void                Update                  ( Slackgine* ctx );
 };
 
 #endif	/* EXTENSIBLE_ENTITY_H */

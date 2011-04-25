@@ -12,6 +12,8 @@
 #include "l3m/l3m.h"
 #include "shared/platform.h"
 
+class IRenderer;
+
 class Slackgine
 {
 private:

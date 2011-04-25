@@ -20,7 +20,7 @@ public:
     bool        SetupModel              ( const l3m* model );
     
     bool        BeginScene              ();
-    bool        RenderEntity            ( const Entity* entity );
+    bool        Render                  ( const l3m* model );
     bool        EndScene                ();
     
     void        GetError                ( char* dest ) const { strcpy(dest, m_error); }
