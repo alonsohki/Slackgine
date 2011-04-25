@@ -299,8 +299,8 @@ size_t l3m::ReadData ( char* dest, size_t size, u32 nmemb, std::istream& fp ) co
 
 l3m::ErrorCode l3m::Save ( std::ostream& fp, u32 flags )
 {
-    u64 npos = (u64)-1;
-    unsigned int i;
+    u32 zero = 0;
+    u32 i;
     
     #define FWRITE(data, size, nmemb, fp, err) if ( ! WriteData(data, size, nmemb, fp) ) return SetError(err)
     #define FWRITE16(data, nmemb, fp, err) if ( ! Write16(reinterpret_cast<u16*>(data), nmemb, fp) ) return SetError(err)
@@ -334,75 +334,27 @@ l3m::ErrorCode l3m::Save ( std::ostream& fp, u32 flags )
     // Type
     FWRITE_STR ( type(), fp, ERROR_WRITING_TYPE );
 
-    // Offset 2 TXD
-    u64 off2TXD = fp.tellp ();
-    FWRITE64 ( &npos, 1, fp, ERROR_ALLOCATING_TXD_OFFSET );
-    
-    // Offset 2 Meta
-    u64 off2Meta = fp.tellp ();
-    FWRITE64 ( &npos, 1, fp, ERROR_ALLOCATING_METADATAS_OFFSET );
-    
     // Groups
     unsigned int numGroups = m_groups.size();
     FWRITE32 ( &numGroups, 1, fp, ERROR_WRITING_NUMBER_OF_GROUPS );
     
     // Write each group
-    u64 groupOffsetRefs [ m_groups.size() ];
-    i = 0;
     for ( groupMap::const_iterator iter = m_groups.begin(); iter != m_groups.end(); ++iter )
     {
         // Group name
         FWRITE_STR ( iter->first, fp, ERROR_WRITING_GROUP_NAME );
-        
-        // Save offset position
-        groupOffsetRefs[i] = fp.tellp  ();
-        ++i;
-        FWRITE64 ( &npos, 1, fp, ERROR_ALLOCATING_GROUP_OFFSET );
-    }
-    
-    // For each group, write its meshes and fill the ref
-    u32 group = 0;
-    for ( groupMap::const_iterator iter = m_groups.begin(); iter != m_groups.end(); ++iter )
-    {
-        // Fill the ref
-        u64 ref = fp.tellp ();
-        fp.seekp ( groupOffsetRefs[group], std::ios::beg );
-        FWRITE64 ( &ref, 1, fp, ERROR_WRITING_GROUP_OFFSET );
-        fp.seekp ( 0, std::ios::end );
-        
+
         // Write the meshes headers
         const meshList& meshes = iter->second;
         u32 numMeshes = meshes.size ();
         FWRITE32 ( &numMeshes, 1, fp, ERROR_WRITING_NUMBER_OF_MESHES );
-        u64 meshOffsetRefs [ numMeshes ];
         
-        i = 0;
         for ( meshList::const_iterator iter2 = meshes.begin(); iter2 != meshes.end(); ++iter2 )
         {
             Mesh* mesh = *iter2;
             
             // Write the mesh name
             FWRITE_STR ( mesh->name(), fp, ERROR_WRITING_MESH_NAME );
-            
-            // Keep the mesh offset position
-            meshOffsetRefs[i] = fp.tellp ();
-            ++i;
-            FWRITE64 ( &npos, 1, fp, ERROR_ALLOCATING_MESH_OFFSET );
-        }
-        
-        
-        // Write the mesh data
-        u32 currentMesh = 0;
-        
-        for ( meshList::const_iterator iter2 = meshes.begin(); iter2 != meshes.end(); ++iter2 )
-        {
-            Mesh* mesh = *iter2;
-            
-            // Fill the ref
-            ref = fp.tellp ();
-            fp.seekp ( meshOffsetRefs [ currentMesh ], std::ios::beg );
-            FWRITE64 ( &ref, 1, fp, ERROR_WRITING_MESH_OFFSET );
-            fp.seekp ( 0, std::ios::end );
             
             // Write the polygon type
             FWRITE32 ( &(mesh->polyType()), 1, fp, ERROR_WRITING_POLYGON_TYPE );
@@ -416,54 +368,22 @@ l3m::ErrorCode l3m::Save ( std::ostream& fp, u32 flags )
             num = mesh->numIndices();
             FWRITE32 ( &num, 1, fp, ERROR_WRITING_INDEX_COUNT );
             FWRITE32 ( mesh->indices(), (num * sizeof(unsigned int)) / sizeof(unsigned int), fp, ERROR_WRITING_INDEX_DATA );
-            
-            ++currentMesh;
         }
-        
-        ++group;
     }
     
-    // Write the ref to the TXDs
-    u64 ref = fp.tellp ();
-    fp.seekp( off2TXD, std::ios::beg );
-    FWRITE64 ( &ref, 1, fp, ERROR_WRITING_TXD_OFFSET );
-    fp.seekp ( 0, std::ios::end );
     // TODO: Implement TXD support
-    ref = 0;
-    FWRITE64 ( &ref, 1, fp, ERROR_WRITING_TXD_COUNT );
-    
-    // Write the ref to the metadata
-    ref = fp.tellp();
-    fp.seekp ( off2Meta, std::ios::beg );
-    FWRITE64 ( &ref, 1, fp, ERROR_WRITING_METADATAS_OFFSET );
-    fp.seekp ( 0, std::ios::end );
+    FWRITE32 ( &zero, 1, fp, ERROR_WRITING_TXD_COUNT );
     
     // Write the metadatas
     u32 metadataCount = m_metadatas.size ();
     FWRITE32 ( &metadataCount, 1, fp, ERROR_WRITING_METADATAS_COUNT );
 
-    // Allocate space for the metadata refs
-    u64 metaOffsetRefs [ metadataCount ];
     for ( i = 0; i < metadataCount; ++i )
     {
         // Write the metadata name
         FWRITE_STR ( m_metadatas[i], fp, ERROR_WRITING_META_NAME );
-        
-        // Allocate space for the metadata offset
-        metaOffsetRefs[i] = fp.tellp();
-        FWRITE64 ( &npos, 1, fp, ERROR_ALLOCATING_META_OFFSET );
-    }
-    
-    // Write the metadata data
-    for ( i = 0; i < metadataCount; ++i )
-    {
-        // Write the ref
-        ref = fp.tellp();
-        fp.seekp ( metaOffsetRefs[i], std::ios::beg );
-        FWRITE64 ( &ref, 1, fp, ERROR_WRITING_META_OFFSET );
-        fp.seekp ( 0, std::ios::end );
-        
-        // Write the metadata into.
+
+        // Write the metadata info
         if ( SaveMetadata ( m_metadatas[i], fp ) == false )
                 return SetError ( ERROR_WRITING_METADATA );
     }
@@ -483,7 +403,6 @@ l3m::ErrorCode l3m::Load ( std::istream& fp )
     char buffer [ 1024 ];
     size_t size;
     u32 i;
-    u64 refBack;
     
     #define FREAD(data, _size, nmemb, fp, err) if ( ( ( size = ReadData(data, _size, (nmemb), fp) ) != (nmemb) ) || fp.fail() ) return SetError(err)
     #define FREAD16(data, nmemb, fp, err) if ( ( ( size = Read16(reinterpret_cast<u16*>(data), (nmemb), fp) ) != (nmemb) ) || fp.fail() ) return SetError(err)
@@ -536,28 +455,15 @@ l3m::ErrorCode l3m::Load ( std::istream& fp )
     if ( strType != type() )
         return SetError ( INVALID_TYPE );
     
-    // Get the ref to the txds
-    u64 off2TXD;
-    FREAD64(&off2TXD, 1, fp, ERROR_READING_TXD_OFFSET );
-    
-    // Get the ref to the metadata
-    u64 off2Meta;
-    FREAD64(&off2Meta, 1, fp, ERROR_READING_METADATAS_OFFSET);
-    
     // Load groups
     u32 numGroups;
     FREAD32(&numGroups, 1, fp, ERROR_READING_GROUP_COUNT);
     
     std::string groupName;
-    u64 ref2Group;
     for ( i = 0; i < numGroups; ++i )
     {
         FREAD_STR ( groupName, fp, ERROR_READING_GROUP_NAME );
-        FREAD64 ( &ref2Group, 1, fp, ERROR_READING_GROUP_OFFSET );
-        refBack = fp.tellg ();
-        
-        fp.seekg ( ref2Group, std::ios::beg );
-        
+
         // Read out the number of meshes
         u32 numMeshes;
         FREAD32 ( &numMeshes, 1, fp, ERROR_READING_MESH_COUNT );
@@ -570,14 +476,6 @@ l3m::ErrorCode l3m::Load ( std::istream& fp )
             
             // Create the Mesh
             Mesh* mesh = new Mesh ( meshName );
-            
-            // Read the mesh offset
-            u64 off2Mesh;
-            u64 refMeshBack;
-            FREAD64 ( &off2Mesh, 1, fp, ERROR_READING_MESH_OFFSET );
-            refMeshBack = fp.tellg();
-            
-            fp.seekg ( off2Mesh, std::ios::beg );
             
             // Read the polygon type
             FREAD32 ( &(mesh->polyType()), 1, fp, ERROR_READING_POLYGON_TYPE );
@@ -601,18 +499,15 @@ l3m::ErrorCode l3m::Load ( std::istream& fp )
             // Load the mesh
             mesh->Set(vertices, vertexCount, indices, indexCount, mesh->polyType());
             this->LoadMesh(mesh, groupName);
-            
-            fp.seekg ( refMeshBack, std::ios::beg );
         }
-        
-        fp.seekg ( refBack, std::ios::beg );
     }
     
     // TODO: Load TXDs
+    u32 txdCount;
+    FREAD32 ( &txdCount, 1, fp, ERROR_READING_TXD_COUNT );
     
     // META-DATA
     // Load the meta-data count
-    fp.seekg ( off2Meta, std::ios::beg );
     u32 metadataCount;
     FREAD32 ( &metadataCount, 1, fp, ERROR_READING_METADATAS_COUNT );
     
@@ -622,18 +517,8 @@ l3m::ErrorCode l3m::Load ( std::istream& fp )
         std::string metaName;
         FREAD_STR ( metaName, fp, ERROR_READING_META_NAME );
         
-        // Load the metadata offset
-        u64 refMeta;
-        FREAD64 ( &refMeta, 1, fp, ERROR_READING_META_OFFSET );
-
-        // Jump there!
-        refBack = fp.tellg ();
-        fp.seekg ( refMeta, std::ios::beg );
-        
         if ( LoadMetadata ( metaName, fp ) == false )
             return SetError ( ERROR_READING_METADATA );
-        
-        fp.seekg ( refBack, std::ios::beg );
     }
 
 #undef FREAD
@@ -724,6 +609,7 @@ const char* l3m::TranslateErrorCode ( l3m::ErrorCode err ) const
         case ERROR_READING_INDEX_COUNT: return "Error reading index count";
         case ERROR_READING_INDEX_DATA: return "Error reading index data";
         case ERROR_READING_METADATAS_COUNT: return "Error reading metadatas count";
+        case ERROR_READING_TXD_COUNT: return "Error reading TXD count";
         case ERROR_READING_META_NAME: return "Error reading metadata name";
         case ERROR_READING_META_OFFSET: return "Error reading metadata offset";
         case ERROR_READING_METADATA: return "Error reading metadata";
