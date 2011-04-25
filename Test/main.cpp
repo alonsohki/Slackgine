@@ -3,6 +3,7 @@
 #include <cerrno>
 #include <cstring>
 #include "slackgine.h"
+#include "l3m/l3m.h"
 #include "l3mWithDescription.h"
 
 void display ( void );

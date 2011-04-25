@@ -16,6 +16,7 @@
  */
 #include <jni.h>
 #include "slackgine.h"
+#include "stl_jni_bind.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -23,8 +24,8 @@ extern "C"
     JNIEXPORT jlong    JNICALL   Java_es_lautech_slackgine_l3m_Createl3mInstance(JNIEnv*, jobject);
     JNIEXPORT jlong    JNICALL   Java_es_lautech_slackgine_l3m_Createl3mInstance_type(JNIEnv*, jobject, jstring);
     JNIEXPORT void     JNICALL   Java_es_lautech_slackgine_l3m_Destroyl3mInstance(JNIEnv*, jobject, jlong);
-    JNIEXPORT jboolean JNICALL   Java_es_lautech_slackgine_l3m_InternalLoad(JNIEnv*, jobject, jbyteArray, jint); 
-    JNIEXPORT jboolean JNICALL   Java_es_lautech_slackgine_l3m_InternalSave(JNIEnv*, jobject, jobject);
+    JNIEXPORT jboolean JNICALL   Java_es_lautech_slackgine_l3m_Load(JNIEnv*, jobject, jobject); 
+    JNIEXPORT jboolean JNICALL   Java_es_lautech_slackgine_l3m_Save(JNIEnv*, jobject, jobject);
 }
 #endif
 
@@ -69,35 +70,19 @@ Java_es_lautech_slackgine_l3m_Destroyl3mInstance ( JNIEnv* env, jobject thiz, jl
 }
 
 JNIEXPORT jboolean JNICALL
-Java_es_lautech_slackgine_l3m_InternalLoad ( JNIEnv* env, jobject thiz, jbyteArray bytes, jint size )
+Java_es_lautech_slackgine_l3m_Load ( JNIEnv* env, jobject thiz, jobject is )
 {
     javal3m* instance = Getl3m ( env, thiz );
-    jbyte* data = env->GetByteArrayElements ( bytes, 0 );
-    std::istringstream stream ( (char *)data, size );
-    if ( instance->Load ( stream ) == l3m::OK )
-    {
-        env->ReleaseByteArrayElements ( bytes, data, 0 );
-        return true;
-    }
-    return false;
+    jni_istream<char> stream ( env, is );
+    
+    return ( instance->Load ( stream ) == l3m::OK );
 }
 
 JNIEXPORT jboolean JNICALL
-Java_es_lautech_slackgine_l3m_InternalSave ( JNIEnv* env, jobject thiz, jobject internal_os )
+Java_es_lautech_slackgine_l3m_Save ( JNIEnv* env, jobject thiz, jobject os )
 {
     javal3m* instance = Getl3m ( env, thiz );
-    jclass ByteArrayOutputStreamClass = env->FindClass ( "java.io.ByteArrayOutputStream" );
-    jmethodID writeID = env->GetMethodID ( ByteArrayOutputStreamClass, "write", "([BII)V" );
-    
-    std::ostringstream os;
-    if ( instance->Save ( os ) == l3m::OK )
-    {
-        jbyteArray array = env->NewByteArray ( os.str().size () );
-        env->SetByteArrayRegion ( array, 0, os.str().size(), (const jbyte *)os.str().c_str() );
-        env->CallVoidMethod ( internal_os, writeID, array, 0, os.str().size() );
-        return true;
-    }
-
-    return false;
+    jni_ostream<char> stream ( env, os );
+    return ( instance->Save ( stream ) == l3m::OK );
 }
 

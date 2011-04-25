@@ -65,12 +65,12 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libAndroid.so: ${OBJECTFILES}
 ${OBJECTDIR}/jni/Slackgine.o: jni/Slackgine.cpp 
 	${MKDIR} -p ${OBJECTDIR}/jni
 	${RM} $@.d
-	$(COMPILE.cc) -g -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/jni/Slackgine.o jni/Slackgine.cpp
+	$(COMPILE.cc) -g -I/soft/dev/android-ndk/platforms/android-8/arch-arm/usr/include -I.. -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/jni/Slackgine.o jni/Slackgine.cpp
 
 ${OBJECTDIR}/jni/l3m.o: jni/l3m.cpp 
 	${MKDIR} -p ${OBJECTDIR}/jni
 	${RM} $@.d
-	$(COMPILE.cc) -g -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/jni/l3m.o jni/l3m.cpp
+	$(COMPILE.cc) -g -I/soft/dev/android-ndk/platforms/android-8/arch-arm/usr/include -I.. -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/jni/l3m.o jni/l3m.cpp
 
 # Subprojects
 .build-subprojects:

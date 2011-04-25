@@ -6,6 +6,7 @@
       <itemPath>jni/Application.mk</itemPath>
       <itemPath>jni/Slackgine.cpp</itemPath>
       <itemPath>jni/l3m.cpp</itemPath>
+      <itemPath>jni/stl_jni_bind.h</itemPath>
     </logicalFolder>
     <logicalFolder name="src" displayName="src" projectFiles="true">
       <logicalFolder name="es" displayName="es" projectFiles="true">
@@ -43,6 +44,14 @@
       </toolsSet>
       <compileType>
       </compileType>
+      <folder path="jni">
+        <ccTool>
+          <incDir>
+            <pElem>/soft/dev/android-ndk/platforms/android-8/arch-arm/usr/include</pElem>
+            <pElem>..</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
     </conf>
     <conf name="Release" type="2">
       <toolsSet>
@@ -63,6 +72,14 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
+      <folder path="jni">
+        <ccTool>
+          <incDir>
+            <pElem>/soft/dev/android-ndk/platforms/android-8/arch-arm/usr/include</pElem>
+            <pElem>..</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
     </conf>
   </confs>
 </configurationDescriptor>

@@ -32,7 +32,7 @@ public class SlackgineTest extends Activity {
         
         l3m model = new l3m ();
         try {
-			model.Load( new FileInputStream("/sdcard/chromatic_tri.l3m") );
+			model.Save( new FileOutputStream("/sdcard/javatest.txt") );
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
