@@ -121,7 +121,10 @@ public:
     typedef struct __VertexGroup VertexGroup;
 
 public:
-                l3m ( const std::string& type = "default" );
+                l3m ();
+protected:
+                l3m ( const std::string& type );
+public:
     virtual     ~l3m();
     
     // Accessors
@@ -140,10 +143,10 @@ private:
 
     // Files
 public:
-    ErrorCode           SaveToFile      ( const char* path, unsigned int flags = 0 );
-    ErrorCode           SaveToFile      ( std::ostream& os, unsigned int flags = 0 );
-    ErrorCode           LoadFromFile    ( const char* path );
-    ErrorCode           LoadFromFile    ( std::istream& is );
+    ErrorCode           Save            ( const char* path, unsigned int flags = 0 );
+    ErrorCode           Save            ( std::ostream& os, unsigned int flags = 0 );
+    ErrorCode           Load            ( const char* path );
+    ErrorCode           Load            ( std::istream& is );
     
     // Error handling
 private:

@@ -28,11 +28,11 @@ int main(int argc, char** argv)
     Mesh* mesh = Mesh::LoadAllocating("triangle", fVertices, Vertex::LOAD_POSITION, 0, 3, faces, 3 );
     model.LoadMesh(mesh, "main");
 
-    if ( model.SaveToFile ( "chromatic_tri.l3m" ) != l3m::OK )
+    if ( model.Save ( "chromatic_tri.l3m" ) != l3m::OK )
         fprintf ( stderr, "Error al guardar el fichero: %s\n", model.error() );
     
     l3mWithDescription model2;
-    if ( model2.LoadFromFile ( "chromatic_tri.l3m" ) != l3m::OK )
+    if ( model2.Load ( "chromatic_tri.l3m" ) != l3m::OK )
         fprintf ( stderr, "Error al cargar el fichero: %s\n", model2.error() );
     
     printf ( "Descripción leída: %s\n", model2.description().c_str() );

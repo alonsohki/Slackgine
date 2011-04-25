@@ -1,5 +1,6 @@
 package es.lautech.slackgine.test;
 
+import java.io.*;
 import android.app.Activity;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
@@ -28,5 +29,13 @@ public class SlackgineTest extends Activity {
         canvas.setRenderer(new Renderer(this));
         
         setContentView(view);
+        
+        l3m model = new l3m ();
+        try {
+			model.Load( new FileInputStream("/sdcard/chromatic_tri.l3m") );
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 }

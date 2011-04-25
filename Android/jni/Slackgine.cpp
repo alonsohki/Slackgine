@@ -29,12 +29,8 @@ extern "C"
 static Slackgine* GetSlackgine ( JNIEnv* env, jobject thiz )
 {
     jclass SlackgineClass = env->FindClass ( "es.lautech.slackgine.Slackgine" );
-    if ( SlackgineClass )
-    {
-        jfieldID instanceFieldID = env->GetFieldID ( SlackgineClass, "m_jniInstance", "J" );
-        return reinterpret_cast < Slackgine *> ( env->GetLongField ( thiz, instanceFieldID ) );
-    }
-    return 0;
+    jfieldID instanceFieldID = env->GetFieldID ( SlackgineClass, "m_jniInstance", "J" );
+    return reinterpret_cast < Slackgine *> ( env->GetLongField ( thiz, instanceFieldID ) );
 }
 
 JNIEXPORT jlong JNICALL
@@ -55,18 +51,13 @@ JNIEXPORT jobject JNICALL
 Java_es_lautech_slackgine_Slackgine_renderer ( JNIEnv* env, jobject thiz )
 {
     Slackgine* sg = GetSlackgine ( env, thiz );
-
     jclass RendererClass = env->FindClass ( "es.lautech.slackgine.Renderer" );
-    if ( sg && RendererClass )
-    {
-        jmethodID InitID = env->GetMethodID ( RendererClass, "<init>", "()V" );
-        jobject instance = env->NewObject ( RendererClass, InitID );
+    jmethodID InitID = env->GetMethodID ( RendererClass, "<init>", "()V" );
+    jobject instance = env->NewObject ( RendererClass, InitID );
         
-        jfieldID instanceFieldID = env->GetFieldID ( RendererClass, "m_jniInstance", "J" );
-        env->SetLongField ( instance, instanceFieldID, reinterpret_cast<jlong>(sg->renderer()) );
+    jfieldID instanceFieldID = env->GetFieldID ( RendererClass, "m_jniInstance", "J" );
+    env->SetLongField ( instance, instanceFieldID, reinterpret_cast<jlong>(sg->renderer()) );
 
-        return instance;
-    }
-    return 0;
+    return instance;
 }
 

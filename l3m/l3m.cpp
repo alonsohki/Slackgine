@@ -6,6 +6,15 @@
 #include <fstream>
 #include "l3m.h"
 
+l3m::l3m ()
+: m_type ( "default" )
+, m_isDynamic ( false )
+, m_rendererData ( 0 )
+{
+    InitializeEndianness ();
+    SetError ( OK );
+}
+
 l3m::l3m ( const std::string& type )
 : m_type ( type )
 , m_isDynamic ( false )
@@ -34,22 +43,22 @@ void l3m::DeclareMetadata(const std::string& name)
     m_metadatas.push_back ( name );
 }
 
-l3m::ErrorCode l3m::SaveToFile ( const char* path, unsigned int flags )
+l3m::ErrorCode l3m::Save ( const char* path, unsigned int flags )
 {
     std::ofstream fp;
     fp.open ( path, std::ios::out | std::ios::binary );
     if ( fp.fail() )
         return SetError(UNABLE_TO_OPEN_FILE_FOR_WRITING);
-    return SaveToFile(fp, flags);
+    return Save(fp, flags);
 }
 
-l3m::ErrorCode l3m::LoadFromFile ( const char* path )
+l3m::ErrorCode l3m::Load ( const char* path )
 {
     std::ifstream fp;
     fp.open ( path, std::ios::in | std::ios::binary );
     if ( fp.fail() )
         return SetError(UNABLE_TO_OPEN_FILE_FOR_READING);
-    return LoadFromFile(fp);
+    return Load(fp);
 }
 
 l3m::meshList* l3m::FindGroup ( const std::string& name )
@@ -288,7 +297,7 @@ size_t l3m::ReadData ( char* dest, size_t size, u32 nmemb, std::istream& fp ) co
     return fp.readsome(dest, size*nmemb) / size;
 }
 
-l3m::ErrorCode l3m::SaveToFile ( std::ostream& fp, u32 flags )
+l3m::ErrorCode l3m::Save ( std::ostream& fp, u32 flags )
 {
     u64 npos = (u64)-1;
     unsigned int i;
@@ -469,7 +478,7 @@ l3m::ErrorCode l3m::SaveToFile ( std::ostream& fp, u32 flags )
 }
 
 
-l3m::ErrorCode l3m::LoadFromFile ( std::istream& fp )
+l3m::ErrorCode l3m::Load ( std::istream& fp )
 {
     char buffer [ 1024 ];
     size_t size;

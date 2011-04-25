@@ -9,7 +9,6 @@ class IRenderer
 {
 public:
     virtual bool        Initialize      () = 0;
-    virtual bool        SetupModel      ( const l3m* model ) = 0;
     
     virtual bool        BeginScene      () = 0;
     virtual bool        Render          ( const l3m* model ) = 0;

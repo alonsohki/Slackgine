@@ -28,7 +28,8 @@ struct RendererData : public l3m::IRendererData
 };
 
 OpenGL3_Renderer::OpenGL3_Renderer()
-: m_vertexShader(0)
+: m_initialized(false)
+, m_vertexShader(0)
 , m_fragmentShader(0)
 , m_program(0)
 {
@@ -47,6 +48,9 @@ OpenGL3_Renderer::~OpenGL3_Renderer()
 
 bool OpenGL3_Renderer::Initialize()
 {
+    if ( m_initialized )
+        return true;
+
     // Initialize GLEW
     if ( glewInit () != 0 )
             return false;
@@ -86,7 +90,8 @@ bool OpenGL3_Renderer::Initialize()
     else if ( !m_program->Link() )
         m_program->GetError( m_error );
 
-    return ( strcmp(m_error, "Success") == 0 );
+    m_initialized = ( strcmp(m_error, "Success") == 0 );
+    return m_initialized;
 }
 
 bool OpenGL3_Renderer::SetupModel(const l3m* model)

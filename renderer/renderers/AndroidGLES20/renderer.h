@@ -7,6 +7,7 @@
 class GLES20_Renderer : public IRenderer
 {
 private:
+    bool        m_initialized;
     IShader*    m_vertexShader;
     IShader*    m_fragmentShader;
     IProgram*   m_program;

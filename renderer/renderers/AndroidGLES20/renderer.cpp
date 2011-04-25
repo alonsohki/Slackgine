@@ -19,7 +19,8 @@ struct RendererData : public l3m::IRendererData
 };
 
 GLES20_Renderer::GLES20_Renderer()
-: m_vertexShader(0)
+: m_initialized(false)
+, m_vertexShader(0)
 , m_fragmentShader(0)
 , m_program(0)
 {
@@ -38,6 +39,9 @@ GLES20_Renderer::~GLES20_Renderer()
 
 bool GLES20_Renderer::Initialize()
 {
+    if ( m_initialized )
+        return true;
+
     // Initialize the main shaders
     static const char* const s_defaultVertexShader =
         "attribute vec4 in_Position;\n"
@@ -75,7 +79,8 @@ bool GLES20_Renderer::Initialize()
     else if ( !m_program->Link() )
         m_program->GetError ( m_error );
 
-    return ( strcmp ( m_error, "Success" ) == 0 );
+    m_initialized = ( strcmp ( m_error, "Success" ) == 0 );
+    return m_initialized;
 }
 
 bool GLES20_Renderer::SetupModel(const l3m* model)
