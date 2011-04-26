@@ -71,6 +71,7 @@ public:
                 
         // FIle loading
         UNABLE_TO_OPEN_FILE_FOR_READING,
+        INVALID_STREAM,
         ERROR_READING_BOM,
         INVALID_BOM,
         ERROR_READING_FLAGS,

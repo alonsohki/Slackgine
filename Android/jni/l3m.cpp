@@ -120,7 +120,7 @@ JNIEXPORT jboolean JNICALL
 Java_es_lautech_slackgine_l3m_Load ( JNIEnv* env, jobject thiz, jobject is )
 {
     javal3m* instance = Getl3m ( env, thiz );
-    jni_istream<char> stream ( env, is );
+    jni_istream<char, false> stream ( env, is );
     return ( instance->Load ( stream ) == l3m::OK );
 }
 
@@ -128,7 +128,7 @@ JNIEXPORT jboolean JNICALL
 Java_es_lautech_slackgine_l3m_Save ( JNIEnv* env, jobject thiz, jobject os )
 {
     javal3m* instance = Getl3m ( env, thiz );
-    jni_ostream<char> stream ( env, os );
+    jni_ostream<char, false> stream ( env, os );
     return ( instance->Save ( stream ) == l3m::OK );
 }
 
@@ -160,7 +160,7 @@ JNIEXPORT jint JNICALL
 Java_es_lautech_slackgine_l3m_Read16 ( JNIEnv* env, jobject thiz, jshortArray array, jint nmemb, jobject is )
 {
     javal3m* instance = Getl3m ( env, thiz );
-    jni_istream<char> stream ( env, is );
+    jni_istream<char, false> stream ( env, is );
     
     jshort* elems = env->GetShortArrayElements(array, 0);
     jint bytes = instance->Read16((u16*)elems, nmemb, stream);
@@ -173,7 +173,7 @@ JNIEXPORT jint JNICALL
 Java_es_lautech_slackgine_l3m_Read32 ( JNIEnv* env, jobject thiz, jintArray array, jint nmemb, jobject is )
 {
     javal3m* instance = Getl3m ( env, thiz );
-    jni_istream<char> stream ( env, is );
+    jni_istream<char, false> stream ( env, is );
     
     jint* elems = env->GetIntArrayElements(array, 0);
     jint bytes = instance->Read32((u32*)elems, nmemb, stream);
@@ -186,7 +186,7 @@ JNIEXPORT jint JNICALL
 Java_es_lautech_slackgine_l3m_Read64 ( JNIEnv* env, jobject thiz, jlongArray array, jint nmemb, jobject is )
 {
     javal3m* instance = Getl3m ( env, thiz );
-    jni_istream<char> stream ( env, is );
+    jni_istream<char, false> stream ( env, is );
     
     jlong* elems = env->GetLongArrayElements(array, 0);
     jint bytes = instance->Read64((u64*)elems, nmemb, stream);
@@ -199,7 +199,7 @@ JNIEXPORT jint JNICALL
 Java_es_lautech_slackgine_l3m_ReadFloat ( JNIEnv* env, jobject thiz, jfloatArray array, jint nmemb, jobject is )
 {
     javal3m* instance = Getl3m ( env, thiz );
-    jni_istream<char> stream ( env, is );
+    jni_istream<char, false> stream ( env, is );
     
     jfloat* elems = env->GetFloatArrayElements(array, 0);
     jint bytes = instance->ReadFloat((float*)elems, nmemb, stream);
@@ -212,7 +212,7 @@ JNIEXPORT jstring JNICALL
 Java_es_lautech_slackgine_l3m_ReadStr ( JNIEnv* env, jobject thiz, jobject is )
 {
     javal3m* instance = Getl3m ( env, thiz );
-    jni_istream<char> stream ( env, is );
+    jni_istream<char, false> stream ( env, is );
     
     std::string temp;
     instance->ReadStr(temp, stream);
@@ -223,11 +223,80 @@ JNIEXPORT jint JNICALL
 Java_es_lautech_slackgine_l3m_ReadData ( JNIEnv* env, jobject thiz, jbyteArray array, jint size, jint nmemb, jobject is )
 {
     javal3m* instance = Getl3m ( env, thiz );
-    jni_istream<char> stream ( env, is );
+    jni_istream<char, false> stream ( env, is );
     
     jbyte* elems = env->GetByteArrayElements(array, 0);
     jint bytes = instance->ReadData((char*)elems, size, nmemb, stream);
     env->ReleaseByteArrayElements(array, elems, 0);
     
     return bytes;
+}
+
+JNIEXPORT jboolean JNICALL
+Java_es_lautech_slackgine_l3m_Write16 ( JNIEnv* env, jobject thiz, jshortArray array, jint nmemb, jobject os )
+{
+    javal3m* instance = Getl3m ( env, thiz );
+    jni_ostream<char, false> stream ( env, os );
+    
+    jboolean isCopy;
+    jshort* elems = env->GetShortArrayElements(array, &isCopy);
+    bool state = instance->Write16((const u16*)elems, nmemb, stream);
+    env->ReleaseShortArrayElements(array, elems, isCopy ? JNI_ABORT : 0);
+    
+    return state;
+}
+
+JNIEXPORT jboolean JNICALL
+Java_es_lautech_slackgine_l3m_Write32 ( JNIEnv* env, jobject thiz, jintArray array, jint nmemb, jobject os )
+{
+    javal3m* instance = Getl3m ( env, thiz );
+    jni_ostream<char, false> stream ( env, os );
+    
+    jboolean isCopy;
+    jint* elems = env->GetIntArrayElements(array, &isCopy);
+    bool state = instance->Write32((const u32*)elems, nmemb, stream);
+    env->ReleaseIntArrayElements(array, elems, isCopy ? JNI_ABORT : 0);
+    
+    return state;
+}
+
+JNIEXPORT jboolean JNICALL
+Java_es_lautech_slackgine_l3m_Write64 ( JNIEnv* env, jobject thiz, jlongArray array, jint nmemb, jobject os )
+{
+    javal3m* instance = Getl3m ( env, thiz );
+    jni_ostream<char, false> stream ( env, os );
+    
+    jboolean isCopy;
+    jlong* elems = env->GetLongArrayElements(array, &isCopy);
+    bool state = instance->Write64((const u64*)elems, nmemb, stream);
+    env->ReleaseLongArrayElements(array, elems, isCopy ? JNI_ABORT : 0);
+    
+    return state;
+}
+
+JNIEXPORT jboolean JNICALL
+Java_es_lautech_slackgine_l3m_WriteStr ( JNIEnv* env, jobject thiz, jstring str, jobject os )
+{
+    javal3m* instance = Getl3m ( env, thiz );
+    jni_ostream<char, false> stream ( env, os );
+    
+    const char* elems = env->GetStringUTFChars(str, 0);
+    bool state = instance->WriteStr((const char*)elems, stream);
+    env->ReleaseStringUTFChars(str, elems);
+    
+    return true;
+}
+
+JNIEXPORT jboolean JNICALL
+Java_es_lautech_slackgine_l3m_WriteData ( JNIEnv* env, jobject thiz, jbyteArray array, jint size, jint nmemb, jobject os )
+{
+    javal3m* instance = Getl3m ( env, thiz );
+    jni_ostream<char, false> stream ( env, os );
+    
+    jboolean isCopy;
+    jbyte* elems = env->GetByteArrayElements(array, &isCopy);
+    bool state = instance->WriteData((const char*)elems, size, nmemb, stream);
+    env->ReleaseByteArrayElements(array, elems, isCopy ? JNI_ABORT : 0);
+    
+    return state;
 }

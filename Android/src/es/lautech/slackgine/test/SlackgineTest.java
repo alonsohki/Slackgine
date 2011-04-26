@@ -29,16 +29,21 @@ public class SlackgineTest extends Activity {
         
         l3mWithDescription model = new l3mWithDescription ( "" );
         try {
-			if ( !model.Load( new FileInputStream("/sdcard/chromatic_tri.l3m") ) )
+        	FileInputStream is = new FileInputStream("/sdcard/chromatic_tri.l3m");
+			if ( !model.Load( is ) )
 				Log.e ( "SlackgineTest", "Unable to load the model: " + model.error() );
 			else
 			{
 		        TextView titulo = (TextView)view.findViewById(R.id.Titulo);
 		        titulo.setText(model.description());
 			}
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+			FileOutputStream os = new FileOutputStream("/sdcard/copia.l3m");
+			if ( !model.Save(os))
+				Log.e ( "SlackgineTest", "Unable to save the model :" + model.error() );
+        }
+        catch ( IOException e )
+        {
 		}
     }
 }

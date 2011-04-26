@@ -271,13 +271,15 @@ bool l3m::WriteStr ( const std::string& str, std::ostream& fp ) const
         return false;
     return WriteData ( str.c_str(), sizeof(char), length, fp );
 }
+
 size_t l3m::ReadStr ( std::string& dest, std::istream& fp ) const
 {
     u32 length;
     if ( Read32( &length, 1, fp ) != 1 )
         return -1;
     char* buffer = new char [ length ];
-    if ( ReadData ( buffer, sizeof(char), length, fp ) != length )
+    size_t readLength = ReadData ( buffer, sizeof(char), length, fp );
+    if ( readLength != length )
     {
         delete [] buffer;
         return -1;
@@ -399,17 +401,14 @@ l3m::ErrorCode l3m::Save ( std::ostream& fp, u32 flags )
     return SetError(OK);
 }
 
-#include <jni.h>
-#include <android/log.h>
-#define  LOG_TAG    "libSlackgine-jni-bindings"
-#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
-#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
-
 l3m::ErrorCode l3m::Load ( std::istream& fp )
 {
     char buffer [ 1024 ];
     size_t size;
     u32 i;
+    
+    if ( fp.fail() || fp.eof() )
+        return SetError(INVALID_STREAM);
     
     #define FREAD(data, _size, nmemb, fp, err) if ( ( ( size = ReadData(data, _size, (nmemb), fp) ) != (nmemb) ) || fp.fail() ) return SetError(err)
     #define FREAD16(data, nmemb, fp, err) if ( ( ( size = Read16(reinterpret_cast<u16*>(data), (nmemb), fp) ) != (nmemb) ) || fp.fail() ) return SetError(err)
@@ -420,7 +419,6 @@ l3m::ErrorCode l3m::Load ( std::istream& fp )
 
     // Read out the BOM marker
     FREAD ( buffer, sizeof(char), strlen(L3M_BOM), fp, ERROR_READING_BOM );
-    LOGI ( "Se ha leído -%s- y se esperaba -%s-\n", buffer, L3M_BOM );
     if ( memcmp ( buffer, L3M_BOM, strlen(L3M_BOM) ) != 0 )
         return SetError(INVALID_BOM);
 
@@ -534,7 +532,7 @@ l3m::ErrorCode l3m::Load ( std::istream& fp )
 #undef FREAD32
 #undef FREADF
 #undef FREAD_STR
-
+    
     return SetError(OK);
 }
 
@@ -594,6 +592,7 @@ const char* l3m::TranslateErrorCode ( l3m::ErrorCode err ) const
         
         // FIle loading
         case UNABLE_TO_OPEN_FILE_FOR_READING: return "Unable to open file for reading";
+        case INVALID_STREAM: return "Invalid stream";
         case ERROR_READING_BOM: return "Error reading BOM";
         case INVALID_BOM: return "Invalid BOM";
         case ERROR_READING_FLAGS: return "Error reading flags";

@@ -26,7 +26,8 @@ public class l3mWithDescription extends l3m
 			return true;
 		}
 		else if ( name.compareTo("other stuff") == 0 )
-		{
+		{ 
+			
 			int[] magicNumber = new int[1];
 			if ( Read32 ( magicNumber, 1, stream ) > 0 )
 			{
@@ -50,6 +51,14 @@ public class l3mWithDescription extends l3m
 	
 	protected boolean SaveMetadata ( String name, OutputStream stream )
 	{
+		if ( name.compareTo("description") == 0 )
+			return WriteStr ( m_description, stream );
+		else if ( name.compareTo("other stuff") == 0 )
+		{
+			int[] magicNumber = new int[1];
+			magicNumber[0] = 0xFABADA;
+			return Write32 ( magicNumber, 1, stream );
+		}
 		return true;
 	}
 	
