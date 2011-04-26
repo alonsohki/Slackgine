@@ -21,9 +21,10 @@ public class SlackgineTest extends Activity {
         LayoutInflater inflater = (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.main, null);
         
+        Renderer renderer = new Renderer(this);
         GLSurfaceView canvas = (GLSurfaceView)view.findViewById(R.id.GLCanvas);
         canvas.setEGLContextClientVersion(2);
-        canvas.setRenderer(new Renderer(this));
+        canvas.setRenderer(renderer);
         
         setContentView(view);
         
@@ -36,11 +37,8 @@ public class SlackgineTest extends Activity {
 			{
 		        TextView titulo = (TextView)view.findViewById(R.id.Titulo);
 		        titulo.setText(model.description());
+		        renderer.SetModel ( model );
 			}
-			
-			FileOutputStream os = new FileOutputStream("/sdcard/copia.l3m");
-			if ( !model.Save(os))
-				Log.e ( "SlackgineTest", "Unable to save the model :" + model.error() );
         }
         catch ( IOException e )
         {

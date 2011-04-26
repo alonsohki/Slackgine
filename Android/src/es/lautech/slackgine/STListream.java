@@ -9,6 +9,10 @@ public class STListream extends java.io.InputStream
 	// Pointer to the C++ instance
 	private long m_jniInstance;
 	
+	private STListream ()
+	{
+	}
+	
 	// Functions
 	native public int read ( byte[] data, int start, int count );
 	public int read ( byte[] data )

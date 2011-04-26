@@ -9,6 +9,10 @@ public class STLostream extends java.io.OutputStream
 	// Pointer to the C++ instance
 	private long m_jniInstance;
 	
+	private STLostream ()
+	{
+	}
+	
 	// Functions
 	native public void write ( byte[] data, int start, int count );
 	public void write ( byte[] data )

@@ -4,9 +4,10 @@
 #ifdef __cplusplus
 extern "C"
 {
-    JNIEXPORT jlong JNICALL   Java_es_lautech_slackgine_Slackgine_CreateSlackgineInstance(JNIEnv*, jobject);
-    JNIEXPORT void JNICALL    Java_es_lautech_slackgine_Slackgine_DestroySlackgineInstance(JNIEnv*, jobject, jlong instance);
-    JNIEXPORT jobject JNICALL Java_es_lautech_slackgine_Slackgine_renderer(JNIEnv*, jobject);
+    JNIEXPORT jlong     JNICALL    Java_es_lautech_slackgine_Slackgine_CreateSlackgineInstance(JNIEnv*, jobject);
+    JNIEXPORT void      JNICALL    Java_es_lautech_slackgine_Slackgine_DestroySlackgineInstance(JNIEnv*, jobject, jlong instance);
+    JNIEXPORT jboolean  JNICALL    Java_es_lautech_slackgine_Slackgine_Initialize(JNIEnv*, jobject);
+    JNIEXPORT jobject   JNICALL    Java_es_lautech_slackgine_Slackgine_renderer(JNIEnv*, jobject);
 }
 #endif
 
@@ -29,6 +30,13 @@ Java_es_lautech_slackgine_Slackgine_DestroySlackgineInstance ( JNIEnv* env, jobj
 {
     Slackgine* instance = reinterpret_cast<Slackgine *>(instance_);
     delete instance;
+}
+
+JNIEXPORT jboolean JNICALL
+Java_es_lautech_slackgine_Slackgine_Initialize ( JNIEnv* env, jobject thiz )
+{
+    Slackgine* sg = GetSlackgine ( env, thiz );
+    return sg->Initialize ();
 }
 
 JNIEXPORT jobject JNICALL

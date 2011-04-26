@@ -47,7 +47,7 @@ MY_LOCAL_MODULES += $(LOCAL_MODULE)
 LOCAL_PATH := $(MY_LOCAL_PATH)
 include $(CLEAR_VARS)
 LOCAL_MODULE    := Slackgine-jni-bind
-LOCAL_SRC_FILES := Slackgine.cpp l3m.cpp STLiostream.cpp
+LOCAL_SRC_FILES := Slackgine.cpp l3m.cpp STLiostream.cpp Renderer.cpp
 LOCAL_STATIC_LIBRARIES := $(MY_LOCAL_MODULES)
 LOCAL_CFLAGS += -I../.. -I.. -I../../..
 LOCAL_CXXFLAGS += -I../.. -I.. -I../../..

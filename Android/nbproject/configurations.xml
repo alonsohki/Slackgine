@@ -4,8 +4,10 @@
     <logicalFolder name="jni" displayName="jni" projectFiles="true">
       <itemPath>jni/Android.mk</itemPath>
       <itemPath>jni/Application.mk</itemPath>
+      <itemPath>jni/Renderer.cpp</itemPath>
       <itemPath>jni/STLiostream.cpp</itemPath>
       <itemPath>jni/Slackgine.cpp</itemPath>
+      <itemPath>jni/javal3m.h</itemPath>
       <itemPath>jni/l3m.cpp</itemPath>
       <itemPath>jni/stl_jni_bind.h</itemPath>
     </logicalFolder>
