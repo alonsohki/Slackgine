@@ -34,6 +34,9 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/_ext/278521276/program.o \
+	${OBJECTDIR}/_ext/278521276/renderer.o \
+	${OBJECTDIR}/_ext/278521276/shader.o \
 	${OBJECTDIR}/jni/Slackgine.o \
 	${OBJECTDIR}/jni/l3m.o \
 	${OBJECTDIR}/jni/Renderer.o \
@@ -63,6 +66,21 @@ LDLIBSOPTIONS=
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libAndroid.so: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -shared -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libAndroid.so -fPIC ${OBJECTFILES} ${LDLIBSOPTIONS} 
+
+${OBJECTDIR}/_ext/278521276/program.o: ../renderer/renderers/AndroidGLES20/program.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/278521276
+	${RM} $@.d
+	$(COMPILE.cc) -g -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/278521276/program.o ../renderer/renderers/AndroidGLES20/program.cpp
+
+${OBJECTDIR}/_ext/278521276/renderer.o: ../renderer/renderers/AndroidGLES20/renderer.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/278521276
+	${RM} $@.d
+	$(COMPILE.cc) -g -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/278521276/renderer.o ../renderer/renderers/AndroidGLES20/renderer.cpp
+
+${OBJECTDIR}/_ext/278521276/shader.o: ../renderer/renderers/AndroidGLES20/shader.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/278521276
+	${RM} $@.d
+	$(COMPILE.cc) -g -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/278521276/shader.o ../renderer/renderers/AndroidGLES20/shader.cpp
 
 ${OBJECTDIR}/jni/Slackgine.o: jni/Slackgine.cpp 
 	${MKDIR} -p ${OBJECTDIR}/jni

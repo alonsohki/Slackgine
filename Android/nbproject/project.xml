@@ -12,6 +12,7 @@
             <sourceRootList>
                 <sourceRootElem>src</sourceRootElem>
                 <sourceRootElem>jni</sourceRootElem>
+                <sourceRootElem>../renderer/renderers/AndroidGLES20</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>
