@@ -10,33 +10,25 @@ public:
     static bool Import ( TiXmlDocument&, l3m&, const char** err = 0 );
     
 private:
-#if 0
+    template < typename T >
     struct Source
     {
-        struct IArray
+        Source() : count(0), array(0) {}
+        Source(const Source& Right) { operator=(Right); }
+        Source& operator=(const Source& Right)
         {
-            virtual ~IArray () {}
-            virtual void* GetData () = 0;
-        };
-        template<typename T> struct Array : public IArray
-        {
-            Array () : count(0), data(0) {}
-            Array ( const Array& Right )
-            {
-                count = Right.count;
-                data = new T [ count ];
-                memcpy ( data, Right.data, count*sizeof(T) );
-            }
-            ~Array () { delete [] data; }
-            void* GetData () { return data; }
-            u32 count;
-            T* data;
-        };
+            id = Right.id;
+            count = Right.count;
+            array = new T[count];
+            memcpy(array, Right.array, sizeof(T)*count);
+            return *this;
+        }
+        ~Source () { delete [] array; }
         
         std::string id;
-        std::map<std::string, IArray* > arrays;
+        u32 count;
+        T* array;
     };
-#endif
 };
 
 #endif	/* COLLADA_IMPORT_H */

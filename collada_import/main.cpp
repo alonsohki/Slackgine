@@ -7,6 +7,7 @@
 #include "l3m/l3mFactory.h"
 #include "strategy.h"
 #include "collada.h"
+#include "model_optimizer.h"
 
 int main(int argc, char** argv)
 {
@@ -86,6 +87,8 @@ int main(int argc, char** argv)
         return -1;
     }
     
+    // Optimise the model
+    ModelOptimizer::Optimize ( model );
     
     if ( !strategy->ParseData(xml, *model) )
     {
