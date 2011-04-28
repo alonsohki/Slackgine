@@ -31,15 +31,15 @@ public:
 public:
     u32 abgr () const
     {
-        return ( m_value >> 24 ) & 0x000000FF
-             | ( m_value >> 8  ) & 0x0000FF00
-             | ( m_value << 8  ) & 0x00FF0000
-             | ( m_value << 24 ) & 0xFF000000;
+        return ( ( m_value >> 24 ) & 0x000000FF )
+             | ( ( m_value >> 8  ) & 0x0000FF00 )
+             | ( ( m_value << 8  ) & 0x00FF0000 )
+             | ( ( m_value << 24 ) & 0xFF000000 );
     }
     u32 argb () const
     {
-        return ( m_value >> 8  ) & 0x00FFFFFF
-             | ( m_value << 24 ) & 0xFF000000;
+        return ( ( m_value >> 8  ) & 0x00FFFFFF )
+             | ( ( m_value << 24 ) & 0xFF000000 );
     }
 
     const u8& r() const { return m_members[detectBigEndian() ? 3 : 0]; }

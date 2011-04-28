@@ -93,11 +93,10 @@ bool GLES20_Renderer::SetupModel(const l3m* model)
 
     // Count the number of meshes.
     unsigned int numMeshes = 0;
-    const l3m::groupMap& groups = model->GetGroups();
-    for ( l3m::groupMap::const_iterator i = groups.begin(); i != groups.end(); ++i )
+    const l3m::geometryList& geometries = model->geometries();
+    for ( l3m::geometryList::const_iterator i = geometries.begin(); i != geometries.end(); ++i )
     {
-        const l3m::meshList& meshes = i->second;
-        numMeshes += meshes.size();
+        numMeshes += (*i)->meshes().size();
     }
 
     if ( numMeshes > 0 )
@@ -111,10 +110,12 @@ bool GLES20_Renderer::SetupModel(const l3m* model)
 
         // Setup the vaos
         unsigned int curMesh = 0;
-        for ( l3m::groupMap::const_iterator i = groups.begin(); i != groups.end(); ++i )
+        for ( l3m::geometryList::const_iterator i = geometries.begin(); i != geometries.end(); ++i )
         {
-            const l3m::meshList& meshes = i->second;
-            for ( l3m::meshList::const_iterator j = meshes.begin(); j != meshes.end(); ++j )
+            const Geometry* geometry = *i;
+            
+            const Geometry::meshList& meshes = geometry->meshes();
+            for ( Geometry::meshList::const_iterator j = meshes.begin(); j != meshes.end(); ++j )
             {
                 Mesh* mesh = *j;
                 glBindBuffer ( GL_ARRAY_BUFFER, data->m_buffers[curMesh * 2] );
@@ -154,11 +155,13 @@ bool GLES20_Renderer::Render ( const l3m* model )
     RendererData* data = static_cast<RendererData*>(model->rendererData ());
 
     unsigned int curMesh = 0;
-    const l3m::groupMap& groups = model->GetGroups();
-    for ( l3m::groupMap::const_iterator i = groups.begin(); i != groups.end(); ++i )
+    const l3m::geometryList& geometries = model->geometries();
+    for ( l3m::geometryList::const_iterator i = geometries.begin(); i != geometries.end(); ++i )
     {
-        const l3m::meshList& meshes = i->second;
-        for ( l3m::meshList::const_iterator j = meshes.begin(); j != meshes.end(); ++j )
+        const Geometry* geometry = *i;
+        
+        const Geometry::meshList& meshes = geometry->meshes();
+        for ( Geometry::meshList::const_iterator j = meshes.begin(); j != meshes.end(); ++j )
         {
             const Mesh* mesh = *j;
 

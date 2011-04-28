@@ -5,7 +5,6 @@
 #include <cstdlib>
 #include "vertex.h"
 #include "material.h"
-#include "math/matrix.h"
 
 class Mesh
 {
@@ -25,7 +24,6 @@ private:
     unsigned int*       m_indices;
     unsigned int        m_numIndices;
     PolygonType         m_polyType;
-    Matrix              m_matrix;
     Material            m_material;
     
 public:
@@ -45,14 +43,12 @@ public:
     const unsigned int&         numVertices     () const { return m_numVertices; }
     const unsigned int&         numIndices      () const { return m_numIndices; }
     const PolygonType&          polyType        () const { return m_polyType; }
-    const Matrix&               matrix          () const { return m_matrix; }
     const Material&             material        () const { return m_material; }
     
     std::string&                name            () { return m_name; }
     Vertex*&                    vertices        () { return m_vertices; }
     unsigned int*&              indices         () { return m_indices; }
     PolygonType&                polyType        () { return m_polyType; }
-    Matrix&                     matrix          () { return m_matrix; }
     Material&                   material        () { return m_material; }
 
     // Loads the vertex and face data, allocating space for it.

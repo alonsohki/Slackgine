@@ -26,13 +26,8 @@ l3m::l3m ( const std::string& type )
 
 l3m::~l3m()
 {
-    for ( groupMap::iterator iter = m_groups.begin (); iter != m_groups.end(); ++iter )
-    {
-        for ( meshList::iterator iter2 = iter->second.begin(); iter2 != iter->second.end(); ++iter2 )
-        {
-            delete *iter2;
-        }
-    }
+    for ( geometryList::iterator iter = m_geometries.begin(); iter != m_geometries.end(); ++iter )
+        delete *iter;
     
     if ( m_rendererData != 0 )
         delete m_rendererData;
@@ -61,27 +56,27 @@ l3m::ErrorCode l3m::Load ( const char* path )
     return Load(fp);
 }
 
-l3m::meshList* l3m::FindGroup ( const std::string& name )
+Geometry* l3m::FindGeometry ( const std::string& name )
 {
-    l3m::groupMap::iterator iter = m_groups.find ( name );
-    if ( iter != m_groups.end () )
-        return &(iter->second);
+    for ( geometryList::iterator iter = m_geometries.begin ();
+          iter != m_geometries.end();
+          ++iter )
+    {
+        if ( (*iter)->name() == name )
+            return *iter;
+    }
     return 0;
 }
 
-void l3m::LoadMesh(Mesh* mesh, const std::string& group)
+void l3m::LoadMesh(Mesh* mesh, const std::string& geometryName )
 {
-    meshList* list = FindGroup ( group );
-    if ( list == 0 )
+    Geometry* geometry = FindGeometry ( geometryName );
+    if ( geometry == 0 )
     {
-        meshList newList;
-        newList.push_back ( mesh );
-        m_groups.insert ( groupMap::value_type(group, newList) );
+        geometry = new Geometry ( geometryName );
+        m_geometries.push_back ( geometry );
     }
-    else
-    {
-        list->push_back ( mesh );
-    }
+    geometry->LoadMesh ( mesh );
 }
 
 
@@ -307,10 +302,10 @@ l3m::ErrorCode l3m::Save ( std::ostream& fp, u32 flags )
     u32 i;
     
     #define FWRITE(data, size, nmemb, fp, err) if ( ! WriteData(data, size, nmemb, fp) ) return SetError(err)
-    #define FWRITE16(data, nmemb, fp, err) if ( ! Write16(reinterpret_cast<u16*>(data), nmemb, fp) ) return SetError(err)
-    #define FWRITE32(data, nmemb, fp, err) if ( ! Write32(reinterpret_cast<u32*>(data), nmemb, fp) ) return SetError(err)
-    #define FWRITE64(data, nmemb, fp, err) if ( ! Write64(reinterpret_cast<u64*>(data), nmemb, fp) ) return SetError(err)
-    #define FWRITEF(data, nmemb, fp, err) if ( ! WriteData(reinterpret_cast<float*>(data), sizeof(float), nmemb, fp) ) return SetError(err)
+    #define FWRITE16(data, nmemb, fp, err) if ( ! Write16(reinterpret_cast<const u16*>(data), nmemb, fp) ) return SetError(err)
+    #define FWRITE32(data, nmemb, fp, err) if ( ! Write32(reinterpret_cast<const u32*>(data), nmemb, fp) ) return SetError(err)
+    #define FWRITE64(data, nmemb, fp, err) if ( ! Write64(reinterpret_cast<const u64*>(data), nmemb, fp) ) return SetError(err)
+    #define FWRITEF(data, nmemb, fp, err) if ( ! WriteData(reinterpret_cast<const float*>(data), sizeof(float), nmemb, fp) ) return SetError(err)
     #define FWRITE_STR(str, fp, err) if ( ! WriteStr(str,fp) ) return SetError(err)
 
     // BOM
@@ -338,22 +333,27 @@ l3m::ErrorCode l3m::Save ( std::ostream& fp, u32 flags )
     // Write the file flags.
     FWRITE32 ( &flags, 1, fp, ERROR_WRITING_FLAGS );
 
-    // Groups
-    unsigned int numGroups = m_groups.size();
-    FWRITE32 ( &numGroups, 1, fp, ERROR_WRITING_NUMBER_OF_GROUPS );
+    // Geometries
+    unsigned int numGeometries = m_geometries.size();
+    FWRITE32 ( &numGeometries, 1, fp, ERROR_WRITING_NUMBER_OF_GEOMETRIES );
     
-    // Write each group
-    for ( groupMap::const_iterator iter = m_groups.begin(); iter != m_groups.end(); ++iter )
+    // Write each geometry
+    for ( geometryList::const_iterator iter = m_geometries.begin(); iter != m_geometries.end(); ++iter )
     {
-        // Group name
-        FWRITE_STR ( iter->first, fp, ERROR_WRITING_GROUP_NAME );
+        const Geometry* geometry = *iter;
+        
+        // Geometry name
+        FWRITE_STR ( geometry->name(), fp, ERROR_WRITING_GEOMETRY_NAME );
+        
+        // Geometry matrix
+        FWRITEF ( geometry->matrix().vector(), 16, fp, ERROR_WRITING_GEOMETRY_MATRIX );
 
         // Write the meshes headers
-        const meshList& meshes = iter->second;
+        const Geometry::meshList& meshes = geometry->meshes();
         u32 numMeshes = meshes.size ();
         FWRITE32 ( &numMeshes, 1, fp, ERROR_WRITING_NUMBER_OF_MESHES );
         
-        for ( meshList::const_iterator iter2 = meshes.begin(); iter2 != meshes.end(); ++iter2 )
+        for ( Geometry::meshList::const_iterator iter2 = meshes.begin(); iter2 != meshes.end(); ++iter2 )
         {
             Mesh* mesh = *iter2;
             
@@ -362,9 +362,6 @@ l3m::ErrorCode l3m::Save ( std::ostream& fp, u32 flags )
             
             // Write the polygon type
             FWRITE32 ( &(mesh->polyType()), 1, fp, ERROR_WRITING_POLYGON_TYPE );
-            
-            // Write the matrix
-            FWRITEF ( mesh->matrix().vector(), 16, fp, ERROR_WRITING_MESH_MATRIX );
             
             // Write the material data
             const Material& mat = mesh->material();
@@ -412,9 +409,9 @@ l3m* l3m::CreateAndLoad ( std::istream& fp, ErrorCode* code )
 {
 #define SET_ERROR(x) if ( code != 0 ) *code = x ;
     char buffer [ 256 ];
-    size_t (*endian16reader)(uint16_t*, uint32_t, std::istream&);
-    size_t (*endian32reader)(uint32_t*, uint32_t, std::istream&);
-    size_t (*endian64reader)(uint64_t*, uint32_t, std::istream&);
+    size_t (*endian16reader)(u16*, u32, std::istream&);
+    size_t (*endian32reader)(u32*, u32, std::istream&);
+    size_t (*endian64reader)(u64*, u32, std::istream&);
     
     // Choose the endianness strategy
     fp.read ( buffer, sizeof(char)*strlen(L3M_BOM) );
@@ -468,9 +465,9 @@ l3m* l3m::CreateAndLoad ( std::istream& fp, ErrorCode* code )
     }
     
     // Load the type
-    u32 strLength;
+    i32 strLength;
     std::string strType;
-    if ( endian32reader(&strLength, 1, fp) != 1 )
+    if ( endian32reader((u32*)&strLength, 1, fp) != 1 )
     {
         SET_ERROR ( ERROR_READING_TYPE );
         return 0;
@@ -503,7 +500,6 @@ l3m::ErrorCode l3m::Load ( std::istream& fp )
 {
     char buffer [ 2 ];
     size_t size;
-    u32 i;
     bool doEndianSwapping;
     
     if ( fp.fail() || fp.eof() )
@@ -583,14 +579,20 @@ l3m::ErrorCode l3m::InternalLoad ( std::istream& fp, bool doEndianSwapping )
     u32 flags;
     FREAD32(&flags, 1, fp, ERROR_READING_FLAGS);
 
-    // Load groups
-    u32 numGroups;
-    FREAD32(&numGroups, 1, fp, ERROR_READING_GROUP_COUNT);
+    // Load geometries
+    u32 numGeometries;
+    FREAD32(&numGeometries, 1, fp, ERROR_READING_GEOMETRY_COUNT);
     
-    std::string groupName;
-    for ( i = 0; i < numGroups; ++i )
+    std::string geometryName;
+    for ( i = 0; i < numGeometries; ++i )
     {
-        FREAD_STR ( groupName, fp, ERROR_READING_GROUP_NAME );
+        // Load the geometry name
+        FREAD_STR ( geometryName, fp, ERROR_READING_GEOMETRY_NAME );
+        Geometry* geometry = new Geometry ( geometryName );
+        this->m_geometries.push_back ( geometry );
+        
+        // Load the geometry matrix
+        FREADF ( geometry->matrix().vector(), 16, fp, ERROR_READING_GEOMETRY_MATRIX );
 
         // Read out the number of meshes
         u32 numMeshes;
@@ -607,9 +609,6 @@ l3m::ErrorCode l3m::InternalLoad ( std::istream& fp, bool doEndianSwapping )
             
             // Read the polygon type
             FREAD32 ( &(mesh->polyType()), 1, fp, ERROR_READING_POLYGON_TYPE );
-            
-            // Read the matrix
-            FREADF ( mesh->matrix().vector(), 16, fp, ERROR_READING_MESH_MATRIX );
             
             // Read the material
             FREAD32 ( &(mesh->material()), 4, fp, ERROR_READING_MATERIAL_COLORS );
@@ -632,7 +631,7 @@ l3m::ErrorCode l3m::InternalLoad ( std::istream& fp, bool doEndianSwapping )
             
             // Load the mesh
             mesh->Set(vertices, vertexCount, indices, indexCount, mesh->polyType());
-            this->LoadMesh(mesh, groupName);
+            geometry->LoadMesh(mesh);
         }
     }
     
@@ -694,12 +693,12 @@ const char* l3m::TranslateErrorCode ( l3m::ErrorCode err )
         case ERROR_WRITING_VERSION: return "Error writing version number";
         case ERROR_WRITING_VERTEX_VERSION: return "Error writing vertex version number";
         case ERROR_WRITING_TYPE: return "Error writing model type";
-        case ERROR_WRITING_NUMBER_OF_GROUPS: return "Error writing the number of groups";
-        case ERROR_WRITING_GROUP_NAME: return "Error writing the group name";
+        case ERROR_WRITING_NUMBER_OF_GEOMETRIES: return "Error writing the number of geometries";
+        case ERROR_WRITING_GEOMETRY_NAME: return "Error writing the geometry name";
+        case ERROR_WRITING_GEOMETRY_MATRIX: return "Error writing the geometry matrix";
         case ERROR_WRITING_NUMBER_OF_MESHES: return "Error writing the number of meshes";
         case ERROR_WRITING_MESH_NAME: return "Error writing the mesh name";
         case ERROR_WRITING_POLYGON_TYPE: return "Error writing the mesh polygon type";
-        case ERROR_WRITING_MESH_MATRIX: return "Error writing the mesh matrix";
         case ERROR_WRITING_MATERIAL_COLORS: return "Error writing the mesh material colors";
         case ERROR_WRITING_VERTEX_COUNT: return "Error writing the vertex count";
         case ERROR_WRITING_VERTEX_DATA: return "Error writing the vertex data";
@@ -722,12 +721,12 @@ const char* l3m::TranslateErrorCode ( l3m::ErrorCode err )
         case INVALID_VERTEX_VERSION: return "Invalid vertex version";
         case ERROR_READING_TYPE: return "Error reading type";
         case INVALID_TYPE: return "Invalid model type";
-        case ERROR_READING_GROUP_COUNT: return "Error reading group count";
-        case ERROR_READING_GROUP_NAME: return "Error reading group name";
+        case ERROR_READING_GEOMETRY_COUNT: return "Error reading geometry count";
+        case ERROR_READING_GEOMETRY_NAME: return "Error reading geometry name";
+        case ERROR_READING_GEOMETRY_MATRIX: return "Error reading the geometry matrix";
         case ERROR_READING_MESH_COUNT: return "Error reading mesh count";
         case ERROR_READING_MESH_NAME: return "Error reading mesh name";
         case ERROR_READING_POLYGON_TYPE: return "Error reading the mesh polygon type";
-        case ERROR_READING_MESH_MATRIX: return "Error reading the mesh matrix";
         case ERROR_READING_MATERIAL_COLORS: return "Error reading the mesh material colors";
         case ERROR_READING_VERTEX_COUNT: return "Error reading vertex count";
         case ERROR_READING_VERTEX_DATA: return "Error reading vertex data";

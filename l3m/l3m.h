@@ -11,6 +11,7 @@
 #include "math/vector.h"
 #include "vertex.h"
 #include "mesh.h"
+#include "geometry.h"
 
 static const char* const L3M_BOM = "L3M\x01";
 static const float L3M_VERSION = 0.79f;
@@ -45,12 +46,12 @@ public:
         ERROR_WRITING_VERSION,
         ERROR_WRITING_VERTEX_VERSION,
         ERROR_WRITING_TYPE,
-        ERROR_WRITING_NUMBER_OF_GROUPS,
-        ERROR_WRITING_GROUP_NAME,
+        ERROR_WRITING_NUMBER_OF_GEOMETRIES,
+        ERROR_WRITING_GEOMETRY_NAME,
+        ERROR_WRITING_GEOMETRY_MATRIX,
         ERROR_WRITING_NUMBER_OF_MESHES,
         ERROR_WRITING_MESH_NAME,
         ERROR_WRITING_POLYGON_TYPE,
-        ERROR_WRITING_MESH_MATRIX,
         ERROR_WRITING_MATERIAL_COLORS,
         ERROR_WRITING_VERTEX_COUNT,
         ERROR_WRITING_VERTEX_DATA,
@@ -73,12 +74,12 @@ public:
         INVALID_VERTEX_VERSION,
         ERROR_READING_TYPE,
         INVALID_TYPE,
-        ERROR_READING_GROUP_COUNT,
-        ERROR_READING_GROUP_NAME,
+        ERROR_READING_GEOMETRY_COUNT,
+        ERROR_READING_GEOMETRY_NAME,
+        ERROR_READING_GEOMETRY_MATRIX,
         ERROR_READING_MESH_COUNT,
         ERROR_READING_MESH_NAME,
         ERROR_READING_POLYGON_TYPE,
-        ERROR_READING_MESH_MATRIX,
         ERROR_READING_MATERIAL_COLORS,
         ERROR_READING_VERTEX_COUNT,
         ERROR_READING_VERTEX_DATA,
@@ -93,10 +94,9 @@ public:
     };
 
 public:
-    typedef std::list<Mesh *> meshList;
-    typedef std::map<std::string, meshList> groupMap;
+    typedef std::list<Geometry*> geometryList;
 private:
-    groupMap            m_groups;
+    geometryList        m_geometries;
     std::string         m_type;
     ErrorCode           m_errorCode;
     int                 m_errno;
@@ -108,8 +108,6 @@ private:
     
     std::vector<std::string>    m_metadatas;
     
-public:
-    typedef struct __VertexGroup VertexGroup;
 
 public:
                 l3m ();
@@ -125,6 +123,8 @@ public:
     const int&          getErrno        () const { return m_errno; }
     const char*         error           () const { return m_error; }
     IRendererData*&     rendererData    () const { return m_rendererData; }
+    const geometryList& geometries      () const { return m_geometries; }
+    geometryList&       geometries      () { return m_geometries; }
     
 private:
     ErrorCode&          errorCode       () { return m_errorCode; }
@@ -179,11 +179,9 @@ protected:
     size_t              ReadData        ( char* dest, size_t size, u32 nmemb, std::istream& fp ) const;
     
 public:
-    // Grouped meshes
-    void                LoadMesh        ( Mesh* mesh, const std::string& group = "" );
-    const groupMap&     GetGroups       () const { return m_groups; }
+    void                LoadMesh        ( Mesh* mesh, const std::string& geometryName = "" );
 private:
-    meshList*           FindGroup       ( const std::string& name );
+    Geometry*           FindGeometry    ( const std::string& name );
     
     // Dynamic models
 public:

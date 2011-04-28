@@ -104,11 +104,11 @@ bool OpenGL3_Renderer::SetupModel(const l3m* model)
 
     // Count the number of meshes.
     unsigned int numMeshes = 0;
-    const l3m::groupMap& groups = model->GetGroups();
-    for ( l3m::groupMap::const_iterator i = groups.begin(); i != groups.end(); ++i )
+    const l3m::geometryList& geometries = model->geometries();
+    for ( l3m::geometryList::const_iterator i = geometries.begin(); i != geometries.end(); ++i )
     {
-        const l3m::meshList& meshes = i->second;
-        numMeshes += meshes.size();
+        const Geometry* geometry = *i;
+        numMeshes += geometry->meshes().size();
     }
 
     if ( numMeshes > 0 )
@@ -127,10 +127,10 @@ bool OpenGL3_Renderer::SetupModel(const l3m* model)
 
         // Setup the vaos
         unsigned int curMesh = 0;
-        for ( l3m::groupMap::const_iterator i = groups.begin(); i != groups.end(); ++i )
+        for ( l3m::geometryList::const_iterator i = geometries.begin(); i != geometries.end(); ++i )
         {
-            const l3m::meshList& meshes = i->second;
-            for ( l3m::meshList::const_iterator j = meshes.begin(); j != meshes.end(); ++j )
+            const Geometry* geometry = *i;
+            for ( Geometry::meshList::const_iterator j = geometry->meshes().begin(); j != geometry->meshes().end(); ++j )
             {
                 Mesh* mesh = *j;
                 glBindVertexArray ( data->m_vaos[curMesh] );
@@ -185,11 +185,13 @@ bool OpenGL3_Renderer::Render ( const l3m* model )
     RendererData* data = static_cast<RendererData*>(model->rendererData ());
 
     unsigned int curMesh = 0;
-    const l3m::groupMap& groups = model->GetGroups();
-    for ( l3m::groupMap::const_iterator i = groups.begin(); i != groups.end(); ++i )
+    const l3m::geometryList& geometries = model->geometries();
+    for ( l3m::geometryList::const_iterator i = geometries.begin(); i != geometries.end(); ++i )
     {
-        const l3m::meshList& meshes = i->second;
-        for ( l3m::meshList::const_iterator j = meshes.begin(); j != meshes.end(); ++j )
+        const Geometry* geometry = *i;
+        
+        const Geometry::meshList& meshes = geometry->meshes();;
+        for ( Geometry::meshList::const_iterator j = meshes.begin(); j != meshes.end(); ++j )
         {
             const Mesh* mesh = *j;
             glBindVertexArray ( data->m_vaos[curMesh] );
