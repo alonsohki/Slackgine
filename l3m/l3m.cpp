@@ -56,6 +56,17 @@ l3m::ErrorCode l3m::Load ( const char* path )
     return Load(fp);
 }
 
+Geometry* l3m::CreateGeometry ( const std::string& name )
+{
+    Geometry* geometry = FindGeometry ( name );
+    if ( !geometry )
+    {
+        geometry = new Geometry ( name );
+        m_geometries.push_back ( geometry );
+    }
+    return geometry;
+}
+
 Geometry* l3m::FindGeometry ( const std::string& name )
 {
     for ( geometryList::iterator iter = m_geometries.begin ();
@@ -375,7 +386,7 @@ l3m::ErrorCode l3m::Save ( std::ostream& fp, u32 flags )
             // Write the index data
             num = mesh->numIndices();
             FWRITE32 ( &num, 1, fp, ERROR_WRITING_INDEX_COUNT );
-            FWRITE32 ( mesh->indices(), (num * sizeof(unsigned int)) / sizeof(unsigned int), fp, ERROR_WRITING_INDEX_DATA );
+            FWRITE32 ( mesh->indices(), (num * sizeof(u32)) / sizeof(u32), fp, ERROR_WRITING_INDEX_DATA );
         }
     }
     

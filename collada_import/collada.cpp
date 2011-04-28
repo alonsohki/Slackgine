@@ -19,7 +19,8 @@ bool Collada::Import ( TiXmlDocument& xml, l3m& model, const char** err )
     {
         const char* name = geometry->Attribute("id");
         if ( !name ) name = "";
-        
+        Geometry* geometry = model.CreateGeometry(name);
+
         // Load each mesh
         for ( TiXmlElement* mesh = geometry->FirstChildElement("mesh");
               mesh != 0;
