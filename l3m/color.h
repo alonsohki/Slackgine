@@ -1,23 +1,25 @@
 #ifndef COLOR_H
 #define COLOR_H
 
+#include "shared/platform.h"
+
 class Color
 {
 private:
-    typedef struct { unsigned char ucR, ucG, ucB, ucA; } __s4b;
+    typedef struct { u8 ucR, ucG, ucB, ucA; } __s4b;
     union
     {
-        unsigned char v [ 4 ];
+        u8    v [ 4 ];
         __s4b s;
     };
     
 public:
-    Color ()
+    Color ( u8 R = 255, u8 G = 255, u8 B = 255, u8 A = 255 )
     {
-        r() = 0;
-        g() = 0;
-        b() = 0;
-        a() = 0;
+        r() = R;
+        g() = G;
+        b() = B;
+        a() = A;
     }
     
     // Accessors
