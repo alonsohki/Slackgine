@@ -6,6 +6,7 @@
 #include "l3m/l3m.h"
 #include "l3m/l3mFactory.h"
 #include "strategy.h"
+#include "collada_import.h"
 
 int main(int argc, char** argv)
 {
@@ -77,7 +78,14 @@ int main(int argc, char** argv)
         return -1;
     }
     
-    // TODO: Load the model data
+    // Load the model data
+    const char* err;
+    if ( !collada_import(xml, *model, &err) )
+    {
+        fprintf(stderr, "Unable to load the collada model: %s.\n", err );
+        return -1;
+    }
+    
     
     if ( !strategy->ParseData(xml, *model) )
     {
