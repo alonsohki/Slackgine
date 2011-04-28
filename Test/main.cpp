@@ -13,6 +13,9 @@ static Slackgine* sg = 0;
 
 int main(int argc, char** argv)
 {
+    if ( !l3mWithDescription::SignInFactory() )
+        fprintf ( stderr, "No se ha podido registrar el l3m con descripción en la factoría\n" );
+    
     float fVertices [] =
     {
         // Position  
@@ -37,6 +40,16 @@ int main(int argc, char** argv)
         fprintf ( stderr, "Error al cargar el fichero: %s\n", model2.error() );
     
     printf ( "Descripción leída: %s\n", model2.description().c_str() );
+    
+    l3m::ErrorCode err;
+    l3m* model3 = l3mFactory::CreateAndLoad( "chromatic_tri.l3m", &err );
+    if ( !model3 || err != l3m::OK )
+        fprintf ( stderr, "Error al cargar el fichero: %s\n", l3m::TranslateErrorCode(err) );
+    else
+    {
+        printf("Tipo de modelo leído: %s\n", model3->type().c_str() );
+    }
+
     entity = new Entity ( &model2 );
     
     glutInit (&argc, argv);

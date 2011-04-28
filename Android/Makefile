@@ -56,7 +56,7 @@ build: .build-post
 .build-pre:
 
 .build-post:
-	NDK_PROJECT_PATH="`pwd`" /soft/dev/android-ndk/ndk-build
+	NDK_DEBUG=1 NDK_PROJECT_PATH="`pwd`" /soft/dev/android-ndk/ndk-build
 
 
 # clean
@@ -65,7 +65,7 @@ clean: .clean-post
 .clean-pre:
 
 .clean-post:
-	NDK_PROJECT_PATH="`pwd`" /soft/dev/android-ndk/ndk-build clean
+	NDK_DEBUG=1 NDK_PROJECT_PATH="`pwd`" /soft/dev/android-ndk/ndk-build clean
 
 
 # clobber
@@ -75,7 +75,7 @@ clobber: .clobber-post
 # Add your pre 'clobber' code here...
 
 .clobber-post:
-    NDK_PROJECT_PATH="`pwd`" /soft/dev/android-ndk/ndk-build clobber
+	NDK_DEBUG=1 NDK_PROJECT_PATH="`pwd`" /soft/dev/android-ndk/ndk-build clobber
 
 
 # all
@@ -85,7 +85,7 @@ all: .all-post
 # Add your pre 'all' code here...
 
 .all-post:
-	NDK_PROJECT_PATH="`pwd`" /soft/dev/android-ndk/ndk-build all
+	NDK_DEBUG=1 NDK_PROJECT_PATH="`pwd`" /soft/dev/android-ndk/ndk-build all
 
 
 # build tests

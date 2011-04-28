@@ -147,11 +147,18 @@ public:
     ErrorCode           Save            ( std::ostream& os, unsigned int flags = 0 );
     ErrorCode           Load            ( const char* path );
     ErrorCode           Load            ( std::istream& is );
+private:
+    friend class l3mFactory;
+    static l3m*         CreateAndLoad   ( std::istream& is, ErrorCode* errcode = 0 );
+    
+private:
+    ErrorCode           InternalLoad    ( std::istream& is, bool doEndianSwapping );
     
     // Error handling
 private:
     ErrorCode           SetError                ( ErrorCode err );
-    const char*         TranslateErrorCode      ( ErrorCode err ) const;
+public:
+    static const char*  TranslateErrorCode      ( ErrorCode err );
 
     // Metadatas
 protected:
@@ -162,25 +169,25 @@ protected:
     // Endianness
 private:
     void                InitializeEndianness ();
-    size_t (*m_endian16writer)(const uint16_t*, uint32_t, std::ostream&);
-    size_t (*m_endian32writer)(const uint32_t*, uint32_t, std::ostream&);
-    size_t (*m_endian64writer)(const uint64_t*, uint32_t, std::ostream&);
-    size_t (*m_endian16reader)(uint16_t*, uint32_t, std::istream&);
-    size_t (*m_endian32reader)(uint32_t*, uint32_t, std::istream&);
-    size_t (*m_endian64reader)(uint64_t*, uint32_t, std::istream&);
+    size_t (*m_endian16writer)(const u16*, u32, std::ostream&);
+    size_t (*m_endian32writer)(const u32*, u32, std::ostream&);
+    size_t (*m_endian64writer)(const u64*, u32, std::ostream&);
+    size_t (*m_endian16reader)(u16*, u32, std::istream&);
+    size_t (*m_endian32reader)(u32*, u32, std::istream&);
+    size_t (*m_endian64reader)(u64*, u32, std::istream&);
 protected:
-    bool                Write16         ( const uint16_t* v, uint32_t nmemb, std::ostream& fp ) const;
-    bool                Write32         ( const uint32_t* v, uint32_t nmemb, std::ostream& fp ) const;
-    bool                Write64         ( const uint64_t* v, uint32_t nmemb, std::ostream& fp ) const;
-    bool                WriteFloat      ( const float* v, uint32_t nmemb, std::ostream& fp ) const;
+    bool                Write16         ( const u16* v, u32 nmemb, std::ostream& fp ) const;
+    bool                Write32         ( const u32* v, u32 nmemb, std::ostream& fp ) const;
+    bool                Write64         ( const u64* v, u32 nmemb, std::ostream& fp ) const;
+    bool                WriteFloat      ( const float* v, u32 nmemb, std::ostream& fp ) const;
     bool                WriteStr        ( const std::string& str, std::ostream& fp ) const;
     bool                WriteData       ( const void* data, size_t size, unsigned int nmemb, std::ostream& fp ) const;
-    size_t              Read16          ( uint16_t* v, uint32_t nmemb, std::istream& fp ) const;
-    size_t              Read32          ( uint32_t* v, uint32_t nmemb, std::istream& fp ) const;
-    size_t              Read64          ( uint64_t* v, uint32_t nmemb, std::istream& fp ) const;
-    size_t              ReadFloat       ( float* v, uint32_t nmemb, std::istream& fp ) const;
+    size_t              Read16          ( u16* v, u32 nmemb, std::istream& fp ) const;
+    size_t              Read32          ( u32* v, u32 nmemb, std::istream& fp ) const;
+    size_t              Read64          ( u64* v, u32 nmemb, std::istream& fp ) const;
+    size_t              ReadFloat       ( float* v, u32 nmemb, std::istream& fp ) const;
     size_t              ReadStr         ( std::string& str, std::istream& fp ) const;
-    size_t              ReadData        ( char* dest, size_t size, uint32_t nmemb, std::istream& fp ) const;
+    size_t              ReadData        ( char* dest, size_t size, u32 nmemb, std::istream& fp ) const;
     
 public:
     // Grouped meshes

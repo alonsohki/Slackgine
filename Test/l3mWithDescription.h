@@ -3,11 +3,17 @@
 
 #include <string>
 #include "l3m/l3m.h"
+#include "l3m/l3mFactory.h"
 
 class l3mWithDescription : public l3m
 {
+    // Factory stuff
+    private: static l3m* FactoryInstantiator () { return new l3mWithDescription (); }
+    public:  static bool SignInFactory () { return l3mFactory::RegisterType("descriptable", FactoryInstantiator ); }
+
+
+private:
     std::string m_description;
-    
 public:
     l3mWithDescription ( const std::string& desc = "" )
     : l3m ( "descriptable" )

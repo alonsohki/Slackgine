@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <fstream>
 #include "l3m.h"
+#include "l3mFactory.h"
 
 l3m::l3m ()
 : m_type ( "default" )
@@ -326,9 +327,6 @@ l3m::ErrorCode l3m::Save ( std::ostream& fp, u32 flags )
         targetIsBigEndian = ( L3M_SAVE_ENDIANNESS == L3M_BIG_ENDIAN );
     FWRITE ( &targetIsBigEndian, sizeof(u8), 1, fp, ERROR_WRITING_BOM );
     
-    // Write the file flags.
-    FWRITE32 ( &flags, 1, fp, ERROR_WRITING_FLAGS );
-    
     // Versión
     float fVersion = L3M_VERSION;
     FWRITEF ( &fVersion, 1, fp, ERROR_WRITING_VERSION );
@@ -337,6 +335,9 @@ l3m::ErrorCode l3m::Save ( std::ostream& fp, u32 flags )
     
     // Type
     FWRITE_STR ( type(), fp, ERROR_WRITING_TYPE );
+
+    // Write the file flags.
+    FWRITE32 ( &flags, 1, fp, ERROR_WRITING_FLAGS );
 
     // Groups
     unsigned int numGroups = m_groups.size();
@@ -401,11 +402,103 @@ l3m::ErrorCode l3m::Save ( std::ostream& fp, u32 flags )
     return SetError(OK);
 }
 
+l3m* l3m::CreateAndLoad ( std::istream& fp, ErrorCode* code )
+{
+#define SET_ERROR(x) if ( code != 0 ) *code = x ;
+    char buffer [ 256 ];
+    size_t (*endian16reader)(uint16_t*, uint32_t, std::istream&);
+    size_t (*endian32reader)(uint32_t*, uint32_t, std::istream&);
+    size_t (*endian64reader)(uint64_t*, uint32_t, std::istream&);
+    
+    // Choose the endianness strategy
+    fp.read ( buffer, sizeof(char)*strlen(L3M_BOM) );
+    if ( memcmp ( buffer, L3M_BOM, strlen(L3M_BOM) ) != 0 )
+    {
+        SET_ERROR(INVALID_BOM);
+        return 0;
+    }
+
+    // Check for endianness swapping
+    fp.read ( buffer, sizeof(char) );
+    u8 thisMachineIsBigEndian = htons(0xFFF1) == 0xFFF1;
+    u8 targetIsBigEndian = buffer[0];
+    bool doEndianSwapping = ( thisMachineIsBigEndian != targetIsBigEndian );
+    if ( doEndianSwapping )
+    {
+        endian16reader = swap16Read;
+        endian32reader = swap32Read;
+        endian64reader = swap64Read;
+    }
+    else
+    {
+        endian16reader = identityRead<u16>;
+        endian32reader = identityRead<u32>;
+        endian64reader = identityRead<u64>;
+    }
+    
+    // Load and check version
+    float fVersion;
+    if ( endian32reader((u32 *)&fVersion, 1, fp) != 1 )
+    {
+        SET_ERROR ( ERROR_READING_VERSION );
+        return 0;
+    }
+    if ( fVersion > L3M_VERSION )
+    {
+        SET_ERROR ( INVALID_VERSION );
+        return 0;
+    }
+    
+    u32 vertexVersion;
+    if ( endian32reader(&vertexVersion, 1, fp) != 1 )
+    {
+        SET_ERROR ( ERROR_READING_VERTEX_VERSION );
+        return 0;
+    }
+    if ( vertexVersion > Vertex::VERSION )
+    {
+        SET_ERROR ( INVALID_VERTEX_VERSION );
+        return 0;
+    }
+    
+    // Load the type
+    u32 strLength;
+    std::string strType;
+    if ( endian32reader(&strLength, 1, fp) != 1 )
+    {
+        SET_ERROR ( ERROR_READING_TYPE );
+        return 0;
+    }
+    char* temp = new char [ strLength ] ();
+    fp.read ( temp, strLength );
+    if ( fp.gcount() != strLength )
+    {
+        SET_ERROR ( ERROR_READING_TYPE );
+        return 0;
+    }
+    strType.assign ( temp, strLength );
+    delete [] temp;
+    
+    // Generate an instance of this type
+    l3m* instance = l3mFactory::CreateOfType(strType);
+    if ( !instance )
+    {
+        SET_ERROR ( INVALID_TYPE );
+        return 0;
+    }
+    
+    ErrorCode err = instance->InternalLoad ( fp, doEndianSwapping );
+    SET_ERROR ( err );
+    return instance;
+#undef SET_ERROR
+}
+
 l3m::ErrorCode l3m::Load ( std::istream& fp )
 {
-    char buffer [ 1024 ];
+    char buffer [ 2 ];
     size_t size;
     u32 i;
+    bool doEndianSwapping;
     
     if ( fp.fail() || fp.eof() )
         return SetError(INVALID_STREAM);
@@ -433,18 +526,16 @@ l3m::ErrorCode l3m::Load ( std::istream& fp )
         m_endian16reader = swap16Read;
         m_endian32reader = swap32Read;
         m_endian64reader = swap64Read;
+        doEndianSwapping = true;
     }
     else
     {
         m_endian16reader = identityRead<u16>;
         m_endian32reader = identityRead<u32>;
         m_endian64reader = identityRead<u64>;
+        doEndianSwapping = false;
     }
     
-    // Read the flags
-    u32 flags;
-    FREAD32(&flags, 1, fp, ERROR_READING_FLAGS);
-
     // Load and check version
     float fVersion;
     FREADF(&fVersion, 1, fp, ERROR_READING_VERSION);
@@ -461,6 +552,31 @@ l3m::ErrorCode l3m::Load ( std::istream& fp )
     if ( strType != type() )
         return SetError ( INVALID_TYPE );
     
+    return InternalLoad ( fp, doEndianSwapping );
+}
+
+l3m::ErrorCode l3m::InternalLoad ( std::istream& fp, bool doEndianSwapping )
+{
+    size_t size;
+    u32 i;
+    
+    if ( doEndianSwapping )
+    {
+        m_endian16reader = swap16Read;
+        m_endian32reader = swap32Read;
+        m_endian64reader = swap64Read;
+    }
+    else
+    {
+        m_endian16reader = identityRead<u16>;
+        m_endian32reader = identityRead<u32>;
+        m_endian64reader = identityRead<u64>;
+    }
+
+    // Read the flags
+    u32 flags;
+    FREAD32(&flags, 1, fp, ERROR_READING_FLAGS);
+
     // Load groups
     u32 numGroups;
     FREAD32(&numGroups, 1, fp, ERROR_READING_GROUP_COUNT);
@@ -553,7 +669,7 @@ l3m::ErrorCode l3m::SetError ( l3m::ErrorCode err )
     return err;
 }
 
-const char* l3m::TranslateErrorCode ( l3m::ErrorCode err ) const
+const char* l3m::TranslateErrorCode ( l3m::ErrorCode err )
 {
     switch ( err )
     {
