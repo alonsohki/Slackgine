@@ -1,4 +1,3 @@
-#include <arpa/inet.h>
 #include <cerrno>
 #include <cstring>
 #include <cstdio>
@@ -209,7 +208,7 @@ static size_t swap64Read ( u64* v, u32 count, std::istream& fp )
 void l3m::InitializeEndianness()
 {
     // Check if this machine is big endian
-    unsigned char thisMachineIsBigEndian = htons(0xFFF1) == 0xFFF1;
+    unsigned char thisMachineIsBigEndian = detectBigEndian ();
     
     // Check if we must write big endian files
     unsigned char targetIsBigEndian;
@@ -318,7 +317,7 @@ l3m::ErrorCode l3m::Save ( std::ostream& fp, u32 flags )
     FWRITE ( L3M_BOM, sizeof(char), strlen(L3M_BOM), fp, ERROR_WRITING_BOM );
     
     // Write the BOM endianness identifier, based on the machine endianness and desired configuration
-    u8 thisMachineIsBigEndian = htons(0xFFF1) == 0xFFF1;
+    u8 thisMachineIsBigEndian = detectBigEndian ();
     u8 targetIsBigEndian;
     
     if ( L3M_SAVE_ENDIANNESS == L3M_MACHINE_ENDIAN )
@@ -363,6 +362,13 @@ l3m::ErrorCode l3m::Save ( std::ostream& fp, u32 flags )
             
             // Write the polygon type
             FWRITE32 ( &(mesh->polyType()), 1, fp, ERROR_WRITING_POLYGON_TYPE );
+            
+            // Write the matrix
+            FWRITEF ( mesh->matrix().vector(), 16, fp, ERROR_WRITING_MESH_MATRIX );
+            
+            // Write the material data
+            const Material& mat = mesh->material();
+            FWRITE32 ( (u32*)&mat, 4, fp, ERROR_WRITING_MATERIAL_COLORS );
             
             // Write the vertex data
             unsigned int num = mesh->numVertices();
@@ -420,7 +426,7 @@ l3m* l3m::CreateAndLoad ( std::istream& fp, ErrorCode* code )
 
     // Check for endianness swapping
     fp.read ( buffer, sizeof(char) );
-    u8 thisMachineIsBigEndian = htons(0xFFF1) == 0xFFF1;
+    u8 thisMachineIsBigEndian = detectBigEndian();
     u8 targetIsBigEndian = buffer[0];
     bool doEndianSwapping = ( thisMachineIsBigEndian != targetIsBigEndian );
     if ( doEndianSwapping )
@@ -518,7 +524,7 @@ l3m::ErrorCode l3m::Load ( std::istream& fp )
     FREAD ( buffer, sizeof(char), 1, fp, ERROR_READING_BOM );
     
     // Choose the endianness strategy
-    u8 thisMachineIsBigEndian = htons(0xFFF1) == 0xFFF1;
+    u8 thisMachineIsBigEndian = detectBigEndian ();
     u8 targetIsBigEndian = buffer[0];
     
     if ( thisMachineIsBigEndian != targetIsBigEndian )
@@ -602,6 +608,12 @@ l3m::ErrorCode l3m::InternalLoad ( std::istream& fp, bool doEndianSwapping )
             // Read the polygon type
             FREAD32 ( &(mesh->polyType()), 1, fp, ERROR_READING_POLYGON_TYPE );
             
+            // Read the matrix
+            FREADF ( mesh->matrix().vector(), 16, fp, ERROR_READING_MESH_MATRIX );
+            
+            // Read the material
+            FREAD32 ( &(mesh->material()), 4, fp, ERROR_READING_MATERIAL_COLORS );
+            
             // Read the vertex count
             u32 vertexCount;
             FREAD32 ( &vertexCount, 1, fp, ERROR_READING_VERTEX_COUNT );
@@ -682,28 +694,20 @@ const char* l3m::TranslateErrorCode ( l3m::ErrorCode err )
         case ERROR_WRITING_VERSION: return "Error writing version number";
         case ERROR_WRITING_VERTEX_VERSION: return "Error writing vertex version number";
         case ERROR_WRITING_TYPE: return "Error writing model type";
-        case ERROR_ALLOCATING_TXD_OFFSET: return "Error allocating space for the TXD offset";
-        case ERROR_ALLOCATING_METADATAS_OFFSET: return "Error allocating space for the meta-data offset";
         case ERROR_WRITING_NUMBER_OF_GROUPS: return "Error writing the number of groups";
         case ERROR_WRITING_GROUP_NAME: return "Error writing the group name";
-        case ERROR_ALLOCATING_GROUP_OFFSET: return "Error allocating space for the group offset";
-        case ERROR_WRITING_GROUP_OFFSET: return "Error writing the group offset";
         case ERROR_WRITING_NUMBER_OF_MESHES: return "Error writing the number of meshes";
         case ERROR_WRITING_MESH_NAME: return "Error writing the mesh name";
-        case ERROR_ALLOCATING_MESH_OFFSET: return "Error allocating space for the mesh offset";
-        case ERROR_WRITING_MESH_OFFSET: return "Error writing the mesh offset";
         case ERROR_WRITING_POLYGON_TYPE: return "Error writing the mesh polygon type";
+        case ERROR_WRITING_MESH_MATRIX: return "Error writing the mesh matrix";
+        case ERROR_WRITING_MATERIAL_COLORS: return "Error writing the mesh material colors";
         case ERROR_WRITING_VERTEX_COUNT: return "Error writing the vertex count";
         case ERROR_WRITING_VERTEX_DATA: return "Error writing the vertex data";
         case ERROR_WRITING_INDEX_COUNT: return "Error writing the index count";
         case ERROR_WRITING_INDEX_DATA: return "Error writing the index data";
-        case ERROR_WRITING_TXD_OFFSET: return "Error writing the TXD offseT";
         case ERROR_WRITING_TXD_COUNT: return "Error writing the TXD count";
-        case ERROR_WRITING_METADATAS_OFFSET: return "Error writing metadatas offset";
         case ERROR_WRITING_METADATAS_COUNT: return "Error writing metadatas count";
         case ERROR_WRITING_META_NAME: return "Error writing metadata name";
-        case ERROR_ALLOCATING_META_OFFSET: return "Error allocating metadata offset";
-        case ERROR_WRITING_META_OFFSET: return "Error writing metadata offset";
         case ERROR_WRITING_METADATA: return "Error writing metadata";
         
         // FIle loading
@@ -718,15 +722,13 @@ const char* l3m::TranslateErrorCode ( l3m::ErrorCode err )
         case INVALID_VERTEX_VERSION: return "Invalid vertex version";
         case ERROR_READING_TYPE: return "Error reading type";
         case INVALID_TYPE: return "Invalid model type";
-        case ERROR_READING_TXD_OFFSET: return "Error reading TXDs offset";
-        case ERROR_READING_METADATAS_OFFSET: return "Error reading metadatas offset";
         case ERROR_READING_GROUP_COUNT: return "Error reading group count";
         case ERROR_READING_GROUP_NAME: return "Error reading group name";
-        case ERROR_READING_GROUP_OFFSET: return "Error reading group offset";
         case ERROR_READING_MESH_COUNT: return "Error reading mesh count";
         case ERROR_READING_MESH_NAME: return "Error reading mesh name";
-        case ERROR_READING_MESH_OFFSET: return "Error reading mesh offset";
         case ERROR_READING_POLYGON_TYPE: return "Error reading the mesh polygon type";
+        case ERROR_READING_MESH_MATRIX: return "Error reading the mesh matrix";
+        case ERROR_READING_MATERIAL_COLORS: return "Error reading the mesh material colors";
         case ERROR_READING_VERTEX_COUNT: return "Error reading vertex count";
         case ERROR_READING_VERTEX_DATA: return "Error reading vertex data";
         case ERROR_READING_INDEX_COUNT: return "Error reading index count";
@@ -734,7 +736,6 @@ const char* l3m::TranslateErrorCode ( l3m::ErrorCode err )
         case ERROR_READING_METADATAS_COUNT: return "Error reading metadatas count";
         case ERROR_READING_TXD_COUNT: return "Error reading TXD count";
         case ERROR_READING_META_NAME: return "Error reading metadata name";
-        case ERROR_READING_META_OFFSET: return "Error reading metadata offset";
         case ERROR_READING_METADATA: return "Error reading metadata";
                 
         default: return "Unknown";

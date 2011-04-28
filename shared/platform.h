@@ -1,3 +1,6 @@
+#ifndef PLATFORM_H
+#define PLATFORM_H
+
 #if defined(__arm__)
 typedef bool b8;
 typedef char i8;
@@ -29,4 +32,12 @@ typedef int i32;
 typedef unsigned int u32;
 typedef long long i64;
 typedef unsigned long long u64;
+#endif
+
+static inline bool detectBigEndian ()
+{
+    static union { const u16 w; const u8 v[2]; } const u = { 1 };
+    return ( u.v[0] == 0 );
+}
+
 #endif
