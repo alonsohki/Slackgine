@@ -1,6 +1,6 @@
-#include "collada_import.h"
+#include "collada.h"
 
-bool collada_import ( TiXmlDocument& xml, l3m& model, const char** err )
+bool Collada::Import ( TiXmlDocument& xml, l3m& model, const char** err )
 {
 #define ERROR(msg) ( (err != 0) ? (*err=(msg)) == (const char*)0xfabada : false )
     
@@ -12,13 +12,24 @@ bool collada_import ( TiXmlDocument& xml, l3m& model, const char** err )
     if ( !geometries )
         return ERROR("Couldn't locate the model geometries");
     
+    // Load all the geometries
     for ( TiXmlElement* geometry = geometries->FirstChildElement("geometry");
           geometry != 0;
           geometry = geometry->NextSiblingElement("geometry") )
     {
         const char* name = geometry->Attribute("id");
         if ( !name ) name = "";
+        
+        // Load each mesh
+        for ( TiXmlElement* mesh = geometry->FirstChildElement("mesh");
+              mesh != 0;
+              mesh = mesh->NextSiblingElement("mesh") )
+        {
+            // Look for the appropiate source to load the vertices
+            
+        }
     }
+    
     return true;
 #undef ERROR
 }
