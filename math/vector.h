@@ -40,11 +40,11 @@ private:
     };
     
 public:
-    Vector3 ()
+    Vector3 ( float fX = 0.0f, float fY = 0.0f, float fZ = 0.0f )
     {
-        x() = 0.0f;
-        y() = 0.0f;
-        z() = 0.0f;
+        x() = fX;
+        y() = fY;
+        z() = fZ;
     }
     
     const float& x() const { return s.fX; }

@@ -63,13 +63,22 @@ bool OpenGL3_Renderer::Initialize()
         "\n"
         "void main(void)\n"
         "{\n"
-        "       gl_Position = vec4(in_Position, 1.0);\n"
+        " float s = 10;\n"
+        " float l = -s; float r = s; float b = -s; float t = s; float n = s; float f = -s;\n"
+        " mat4 ortho = mat4(vec4( 2/(r-l),     0,            0,            0 ),"
+                           "vec4( 0,           2/(t-b),      0,            0 ),"
+                           "vec4( 0,           0,            (-2)/(f-n),   0 ),"
+                           "vec4(-(r+l)/(r-l), -(t+b)/(t-b), -(f+n)/(f-n), 1));\n"
+        " mat4 rot1 = mat4(vec4(cos(-1), sin(-1), 0, 0), vec4(-sin(-1), cos(-1), 0, 0), vec4(0, 0,1,0), vec4(0,0,0,1));\n"
+        " mat4 rot2 = mat4(vec4(cos(-1), 0, -sin(-1), 0), vec4(0, 1, 0, 0), vec4(sin(-1),0,cos(-1),0), vec4(0,0,0,1));\n"
+        "       gl_Position = vec4(in_Position, 1.0) * ortho;\n"
         "}\n";
 
     static const char* const s_defaultFragmentShader =
         "void main(void)\n"
         "{\n"
-        "       gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);\n"
+        " vec3 rgb = vec3(gl_FragCoord.xy, gl_FragCoord.z * 1000);\n"
+        "       gl_FragColor = vec4(normalize(rgb), 1);\n"
         "}\n";
 
     std::istringstream vertexShaderSource ( s_defaultVertexShader );
@@ -133,6 +142,7 @@ bool OpenGL3_Renderer::SetupModel(const l3m* model)
             for ( Geometry::meshList::const_iterator j = geometry->meshes().begin(); j != geometry->meshes().end(); ++j )
             {
                 Mesh* mesh = *j;
+                
                 glBindVertexArray ( data->m_vaos[curMesh] );
                 eglGetError();
 
@@ -140,11 +150,11 @@ bool OpenGL3_Renderer::SetupModel(const l3m* model)
                 eglGetError();
                 glBufferData ( GL_ARRAY_BUFFER, mesh->numVertices() * sizeof(Vertex), mesh->vertices(), GL_STATIC_DRAW );
                 eglGetError();
-                glVertexAttribPointer ( OpenGL3_Program::POSITION, 3, GL_FLOAT, GL_FALSE, 20, (GLchar*)0 );
+                glVertexAttribPointer ( OpenGL3_Program::POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLchar*)0 );
                 eglGetError();
-                glVertexAttribPointer ( OpenGL3_Program::NORMAL, 3, GL_FLOAT, GL_TRUE, 20, (GLchar*)12 );
+                glVertexAttribPointer ( OpenGL3_Program::NORMAL, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), (GLchar*)12 );
                 eglGetError();
-                glVertexAttribPointer ( OpenGL3_Program::TEX2D, 2, GL_FLOAT, GL_TRUE, 24, (GLchar*)24 );
+                glVertexAttribPointer ( OpenGL3_Program::TEX2D, 2, GL_FLOAT, GL_TRUE, sizeof(Vertex), (GLchar*)24 );
                 eglGetError();
                 glEnableVertexAttribArray ( OpenGL3_Program::POSITION );
                 eglGetError();
@@ -173,6 +183,9 @@ bool OpenGL3_Renderer::BeginScene ()
 
     if ( !m_program->Use () )
         return false;
+    
+    glEnable ( GL_DEPTH_TEST );
+    glCullFace ( GL_BACK );
 
     return true;
 }
@@ -191,12 +204,10 @@ bool OpenGL3_Renderer::Render ( const l3m* model )
         const Geometry* geometry = *i;
         
         const Geometry::meshList& meshes = geometry->meshes();;
-        for ( Geometry::meshList::const_iterator j = meshes.begin(); j != meshes.end(); ++j )
+        for ( Geometry::meshList::const_iterator j = meshes.begin(); j != meshes.end(); ++j, ++curMesh )
         {
             const Mesh* mesh = *j;
-            glBindVertexArray ( data->m_vaos[curMesh] );
-            eglGetError();
-
+            
             GLenum polyType = GL_INVALID_ENUM;
             switch ( mesh->polyType() )
             {
@@ -209,11 +220,11 @@ bool OpenGL3_Renderer::Render ( const l3m* model )
 
             if ( polyType != GL_INVALID_ENUM )
             {
-                glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, 0 );
+                glBindVertexArray ( data->m_vaos[curMesh] );
+                eglGetError();
+                glDrawElements ( GL_TRIANGLES, mesh->numIndices(), GL_UNSIGNED_INT, 0 );
                 eglGetError();
             }
-
-            ++curMesh;
         }
     }
     

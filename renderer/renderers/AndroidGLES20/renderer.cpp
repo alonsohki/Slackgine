@@ -186,11 +186,11 @@ bool GLES20_Renderer::Render ( const l3m* model )
                 glEnableVertexAttribArray ( GLES20_Program::TEX2D );
                 eglGetError();
 
-                glVertexAttribPointer ( GLES20_Program::POSITION, 3, GL_FLOAT, GL_FALSE, 20, (const char *)0);
+                glVertexAttribPointer ( GLES20_Program::POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const char *)0);
                 eglGetError();
-                glVertexAttribPointer ( GLES20_Program::NORMAL, 3, GL_FLOAT, GL_TRUE, 20, (const char *)12 );
+                glVertexAttribPointer ( GLES20_Program::NORMAL, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), (const char *)12 );
                 eglGetError();
-                glVertexAttribPointer ( GLES20_Program::TEX2D, 2, GL_FLOAT, GL_TRUE, 24, (const char *)24 );
+                glVertexAttribPointer ( GLES20_Program::TEX2D, 2, GL_FLOAT, GL_TRUE, sizeof(Vertex), (const char *)24 );
                 eglGetError();
 
                 glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, data->m_buffers[curMesh * 2 + 1 ] );

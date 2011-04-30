@@ -35,11 +35,11 @@ int main(int argc, char** argv)
     if ( model.Save ( "chromatic_tri.l3m" ) != l3m::OK )
         fprintf ( stderr, "Error al guardar el fichero: %s\n", model.error() );
     
-    l3mWithDescription model2;
-    if ( model2.Load ( "chromatic_tri.l3m" ) != l3m::OK )
+    l3m model2;
+    if ( model2.Load ( "../collada_import/spherecube.l3m" ) != l3m::OK )
         fprintf ( stderr, "Error al cargar el fichero: %s\n", model2.error() );
     
-    printf ( "Descripción leída: %s\n", model2.description().c_str() );
+    //printf ( "Descripción leída: %s\n", model2.description().c_str() );
     
     l3m::ErrorCode err;
     l3m* model3 = l3mFactory::CreateAndLoad( "chromatic_tri.l3m", &err );
@@ -54,7 +54,7 @@ int main(int argc, char** argv)
     
     glutInit (&argc, argv);
     glutInitWindowSize (800, 600);
-    glutInitDisplayMode ( GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
+    glutInitDisplayMode ( GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH );
     glutCreateWindow ("Slackgine test");
     
     glutDisplayFunc ( display );
