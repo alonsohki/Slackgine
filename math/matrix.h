@@ -1,6 +1,7 @@
 #ifndef MATRIX_H
 #define	MATRIX_H
 
+#include <cmath>
 #include <cstring>
 #include "shared/platform.h"
 #include "vector.h"
@@ -43,6 +44,41 @@ public:
     bool operator!= ( const Matrix& m ) const
     {
         return memcmp ( v, m.v, sizeof(m.v) ) != 0;
+    }
+    
+    // Transformation matrices
+    static Matrix Translate ( f32 x, f32 y, f32 z )
+    {
+        Matrix ret;
+        ret.m[3][0] = x;
+        ret.m[3][1] = y;
+        ret.m[3][2] = z;
+        return ret;
+    }
+    static Matrix Scale ( f32 scale )
+    {
+        Matrix ret;
+        ret.m[0][0] = scale;
+        ret.m[1][1] = scale;
+        ret.m[2][2] = scale;
+        return ret;
+    }
+    static Matrix Rotate ( f32 angle, f32 x, f32 y, f32 z )
+    {
+        f32 c = cos(angle);
+        f32 s = sin(angle);
+        f32 norm = sqrt(x*x+y*y+z*z);
+        x /= norm;
+        y /= norm;
+        z /= norm;
+        Matrix ret;
+        
+        ret.v[0] = x*x*(1-c)+c;   ret.v[1] = y*x*(1-c)+z*s; ret.v[2] = x*z*(1-c)-y*s; ret.v[3] = 0;
+        ret.v[4] = x*y*(1-c)-z*s; ret.v[5] = y*y*(1-c)+c;   ret.v[6] = y*z*(1-c)+x*s; ret.v[7] = 0;
+        ret.v[8] = x*z*(1-c)+y*s; ret.v[9] = y*z*(1-c)-x*s; ret.v[10] = z*z*(1-c)+c;  ret.v[11] = 0;
+        ret.v[12] = 0;            ret.v[13] = 0;            ret.v[14] = 0;            ret.v[15] = 1;
+        
+        return ret;
     }
     
     // Operations
