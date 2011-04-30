@@ -124,6 +124,7 @@ public:
     const char*         error           () const { return m_error; }
     IRendererData*&     rendererData    () const { return m_rendererData; }
     const geometryList& geometries      () const { return m_geometries; }
+    geometryList&       geometries      () { return m_geometries; }
     
 private:
     ErrorCode&          errorCode       () { return m_errorCode; }

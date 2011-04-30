@@ -25,6 +25,29 @@ private:
     Vector3     m_norm;
     Vector2     m_tex2d;
     
+public:
+    Vertex () {}
+    ~Vertex () {}
+    
+    Vertex ( const Vertex& Right )
+    {
+        operator= ( Right );
+    }
+    
+    Vertex& operator= ( const Vertex& Right )
+    {
+        *this = Right;
+    }
+    
+    bool operator== ( const Vertex& Right ) const
+    {
+        return memcmp ( this, &Right, sizeof(Vertex) ) == 0;
+    }
+    bool operator!= ( const Vertex& Right ) const
+    {
+        return !operator==(Right);
+    }
+    
     // Accessors
 public:
     const Vector3&      pos     () const { return m_pos; }
@@ -38,7 +61,6 @@ public:
     float*              base    () { return reinterpret_cast<float *>(&pos()); }
     
 public:
-                        Vertex          () {}
     void                Load            ( const float* source, unsigned int flags, unsigned int stride, unsigned int count = 1 );
     void                Load            ( const Vertex* source, unsigned int count ) { Load ( reinterpret_cast<const float *>(source), LOAD_ALL, 0, count); }
     

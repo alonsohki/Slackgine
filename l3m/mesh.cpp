@@ -46,11 +46,17 @@ void Mesh::Load(const float* pVertices, unsigned int flags, unsigned int stride,
 
 void Mesh::Set(Vertex* pVertices, unsigned int vertexCount, unsigned int* pIndices, unsigned int indexCount, PolygonType polyType)
 {
-    FreeVertices ();
-    FreeIndices ();
-    m_vertices = pVertices;
+    if ( pVertices != m_vertices )
+    {
+        FreeVertices ();
+        m_vertices = pVertices;
+    }
+    if ( pIndices != m_indices )
+    {
+        FreeIndices ();
+        m_indices = pIndices;
+    }
     m_numVertices = vertexCount;
-    m_indices = pIndices;
     m_numIndices = indexCount;
     m_polyType = polyType;
 }
