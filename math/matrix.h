@@ -1,6 +1,7 @@
 #ifndef MATRIX_H
 #define	MATRIX_H
 
+#include <sstream>
 #include <cmath>
 #include <cstring>
 #include "shared/platform.h"
@@ -20,11 +21,19 @@ private:
 public:
     Matrix ( )
     {
-        LoadIdentity ();
     }
     
     f32*              vector  () { return v; }
     const f32*        vector  () const { return v; }
+    
+    // To string
+    std::string toString () const
+    {
+        std::ostringstream os;
+        for ( u8 i = 0; i < 4; ++i )
+            os << m[0][i] << "\t" << m[1][i] << "\t" << m[2][i] << "\t" << m[3][i] << "\n";
+        return os.str ();
+    }
     
     // Copy, assignment, compare.
     Matrix ( const Matrix& m )
@@ -36,6 +45,15 @@ public:
         memcpy ( v, m.v, sizeof(m.v) );
         return *this;
     }
+    Matrix ( const f32* vec )
+    {
+        operator= ( vec );
+    }
+    Matrix& operator= ( const float* vec )
+    {
+        memcpy ( v, vec, sizeof(v) );
+        return *this;
+    }
     
     bool operator== ( const Matrix& m ) const
     {
@@ -44,41 +62,6 @@ public:
     bool operator!= ( const Matrix& m ) const
     {
         return memcmp ( v, m.v, sizeof(m.v) ) != 0;
-    }
-    
-    // Transformation matrices
-    static Matrix Translate ( f32 x, f32 y, f32 z )
-    {
-        Matrix ret;
-        ret.m[3][0] = x;
-        ret.m[3][1] = y;
-        ret.m[3][2] = z;
-        return ret;
-    }
-    static Matrix Scale ( f32 scale )
-    {
-        Matrix ret;
-        ret.m[0][0] = scale;
-        ret.m[1][1] = scale;
-        ret.m[2][2] = scale;
-        return ret;
-    }
-    static Matrix Rotate ( f32 angle, f32 x, f32 y, f32 z )
-    {
-        f32 c = cos(angle);
-        f32 s = sin(angle);
-        f32 norm = sqrt(x*x+y*y+z*z);
-        x /= norm;
-        y /= norm;
-        z /= norm;
-        Matrix ret;
-        
-        ret.v[0] = x*x*(1-c)+c;   ret.v[1] = y*x*(1-c)+z*s; ret.v[2] = x*z*(1-c)-y*s; ret.v[3] = 0;
-        ret.v[4] = x*y*(1-c)-z*s; ret.v[5] = y*y*(1-c)+c;   ret.v[6] = y*z*(1-c)+x*s; ret.v[7] = 0;
-        ret.v[8] = x*z*(1-c)+y*s; ret.v[9] = y*z*(1-c)-x*s; ret.v[10] = z*z*(1-c)+c;  ret.v[11] = 0;
-        ret.v[12] = 0;            ret.v[13] = 0;            ret.v[14] = 0;            ret.v[15] = 1;
-        
-        return ret;
     }
     
     // Operations
@@ -275,6 +258,88 @@ public:
         }
         
         return Vector3(res);
+    }
+};
+
+class IdentityMatrix : public Matrix
+{
+public:
+    IdentityMatrix ()
+    {
+        static f32 const s_identity[] = { 1.0f, 0.0f, 0.0f, 0.0f,
+                                          0.0f, 1.0f, 0.0f, 0.0f,
+                                          0.0f, 0.0f, 1.0f, 0.0f,
+                                          0.0f, 0.0f, 0.0f, 1.0f };
+        Matrix::operator= ( s_identity );
+    }
+};
+
+class TranslationMatrix : public Matrix
+{
+public:
+    TranslationMatrix ( f32 x, f32 y, f32 z )
+    {
+        f32 v [ 16 ] = { 1.0f, 0.0f, 0.0f, 0.0f,
+                         0.0f, 1.0f, 0.0f, 0.0f,
+                         0.0f, 0.0f, 1.0f, 0.0f,
+                         x, y, z, 1.0f };
+        Matrix::operator= ( v );
+    }
+};
+
+class ScalingMatrix : public Matrix
+{
+public:
+    ScalingMatrix ( f32 scale )
+    {
+        f32 v [ 16 ] = { scale, 0.0f, 0.0f, 0.0f,
+                         0.0f, scale, 0.0f, 0.0f,
+                         0.0f, 0.0f, scale, 0.0f,
+                         0.0f, 0.0f, 0.0f, 1.0f };
+        Matrix::operator= ( v );
+    }
+};
+
+
+class RotationMatrix : public Matrix
+{
+public:
+    RotationMatrix ( f32 angle, f32 x, f32 y, f32 z )
+    {
+        f32 v [ 16 ];
+        f32 c = cos(angle);
+        f32 s = sin(angle);
+        f32 norm = sqrt(x*x+y*y+z*z);
+        x /= norm;
+        y /= norm;
+        z /= norm;
+        
+        v[0] = x*x*(1-c)+c;   v[1] = y*x*(1-c)+z*s; v[2] = x*z*(1-c)-y*s; v[3] = 0;
+        v[4] = x*y*(1-c)-z*s; v[5] = y*y*(1-c)+c;   v[6] = y*z*(1-c)+x*s; v[7] = 0;
+        v[8] = x*z*(1-c)+y*s; v[9] = y*z*(1-c)-x*s; v[10] = z*z*(1-c)+c;  v[11] = 0;
+        v[12] = 0;            v[13] = 0;            v[14] = 0;            v[15] = 1;
+        
+        Matrix::operator= ( v );
+    }
+};
+
+class OrthographicMatrix : public Matrix
+{
+public:
+    OrthographicMatrix ( f32 left, f32 right, f32 top, f32 bottom, f32 near, f32 far )
+    {
+        const f32& l = left; const f32& r = right;
+        const f32& t = top; const f32& b = bottom;
+        const f32& n = near; const f32& f = far;
+        f32 v [ 16 ] =
+        {
+            2.0f/(r-l), 0.0f, 0.0f, 0.0f,
+            0.0f, 2.0f/(t-b), 0.0f, 0.0f,
+            0.0f, 0.0f, 2.0f/(n-f), 0.0f,
+            -(r+l)/(r-l), -(t+b)/(t-b), -(n+f)/(n-f), 1.0f
+        };
+        
+        Matrix::operator= ( v );
     }
 };
 

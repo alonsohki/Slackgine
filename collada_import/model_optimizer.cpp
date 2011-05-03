@@ -41,5 +41,5 @@ static void DeleteDuplicates ( l3m* source )
 void ModelOptimizer::Optimize(l3m* source)
 {
     fprintf ( stderr, "Optimising model...\n" );
-    DeleteDuplicates ( source );
+    //DeleteDuplicates ( source );
 }

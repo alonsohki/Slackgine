@@ -61,24 +61,23 @@ bool OpenGL3_Renderer::Initialize()
         "in vec3 in_Normal;\n"
         "in vec2 in_Tex2D;\n"
         "\n"
+        "uniform mat4 un_Matrix;\n"
+        "uniform mat4 un_NormalMatrix;\n"
+        "\n"
+        "varying vec3 ex_Normal;\n"
         "void main(void)\n"
         "{\n"
-        " float s = 10;\n"
-        " float l = -s; float r = s; float b = -s; float t = s; float n = s; float f = -s;\n"
-        " mat4 ortho = mat4(vec4( 2/(r-l),     0,            0,            0 ),"
-                           "vec4( 0,           2/(t-b),      0,            0 ),"
-                           "vec4( 0,           0,            (-2)/(f-n),   0 ),"
-                           "vec4(-(r+l)/(r-l), -(t+b)/(t-b), -(f+n)/(f-n), 1));\n"
-        " mat4 rot1 = mat4(vec4(cos(-1), sin(-1), 0, 0), vec4(-sin(-1), cos(-1), 0, 0), vec4(0, 0,1,0), vec4(0,0,0,1));\n"
-        " mat4 rot2 = mat4(vec4(cos(-1), 0, -sin(-1), 0), vec4(0, 1, 0, 0), vec4(sin(-1),0,cos(-1),0), vec4(0,0,0,1));\n"
-        "       gl_Position = vec4(in_Position, 1.0) * ortho;\n"
+        "    gl_Position = vec4(in_Position, 1.0) * un_Matrix;\n"
+        "    ex_Normal = vec4(in_Normal, 1.0) * un_NormalMatrix;\n"
         "}\n";
 
     static const char* const s_defaultFragmentShader =
+        "varying vec3 ex_Normal;\n"
+        "\n"
         "void main(void)\n"
         "{\n"
-        " vec3 rgb = vec3(gl_FragCoord.xy, gl_FragCoord.z * 1000);\n"
-        "       gl_FragColor = vec4(normalize(rgb), 1);\n"
+        " ex_Normal = ex_Normal + vec4(0.15, 0.15, 0.15, 0);\n"
+        "    gl_FragColor = vec4(ex_Normal, 1.0);\n"
         "}\n";
 
     std::istringstream vertexShaderSource ( s_defaultVertexShader );
@@ -154,7 +153,7 @@ bool OpenGL3_Renderer::SetupModel(const l3m* model)
                 eglGetError();
                 glVertexAttribPointer ( OpenGL3_Program::NORMAL, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), (GLchar*)12 );
                 eglGetError();
-                glVertexAttribPointer ( OpenGL3_Program::TEX2D, 2, GL_FLOAT, GL_TRUE, sizeof(Vertex), (GLchar*)24 );
+                glVertexAttribPointer ( OpenGL3_Program::TEX2D, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLchar*)24 );
                 eglGetError();
                 glEnableVertexAttribArray ( OpenGL3_Program::POSITION );
                 eglGetError();
@@ -176,7 +175,7 @@ bool OpenGL3_Renderer::SetupModel(const l3m* model)
     return true;
 }
 
-bool OpenGL3_Renderer::BeginScene ()
+bool OpenGL3_Renderer::BeginScene ( const Matrix& matProjection, const Matrix& matLookat )
 {
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     eglGetError();
@@ -187,21 +186,27 @@ bool OpenGL3_Renderer::BeginScene ()
     glEnable ( GL_DEPTH_TEST );
     glCullFace ( GL_BACK );
 
+    m_matrix = matProjection * matLookat;
+    
     return true;
 }
 
-bool OpenGL3_Renderer::Render ( const l3m* model )
+bool OpenGL3_Renderer::Render ( const l3m* model, const Matrix& mat )
 {
     l3m::IRendererData* data_ = model->rendererData();
     if ( !data_ && !SetupModel(model) )
         return false;
     RendererData* data = static_cast<RendererData*>(model->rendererData ());
+    
+    Matrix matModelview = m_matrix * mat;
 
     unsigned int curMesh = 0;
     const l3m::geometryList& geometries = model->geometries();
     for ( l3m::geometryList::const_iterator i = geometries.begin(); i != geometries.end(); ++i )
     {
         const Geometry* geometry = *i;
+        Matrix matGeometry = matModelview * geometry->matrix();
+        Matrix matNormals = Matrix::Transpose(Matrix::Invert(mat * geometry->matrix()));
         
         const Geometry::meshList& meshes = geometry->meshes();;
         for ( Geometry::meshList::const_iterator j = meshes.begin(); j != meshes.end(); ++j, ++curMesh )
@@ -220,9 +225,22 @@ bool OpenGL3_Renderer::Render ( const l3m* model )
 
             if ( polyType != GL_INVALID_ENUM )
             {
-                glBindVertexArray ( data->m_vaos[curMesh] );
+                //glBindVertexArray ( data->m_vaos[curMesh] );
+                glBindVertexArray ( 0 );
+                glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, 0 );
+                glBindBuffer ( GL_ARRAY_BUFFER, 0 );
+                const float* vertices = mesh->vertices()->base();
+                glVertexAttribPointer ( OpenGL3_Program::POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), &vertices[0] );
+                glVertexAttribPointer ( OpenGL3_Program::NORMAL, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), &vertices[3] );
+                glVertexAttribPointer ( OpenGL3_Program::TEX2D, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), &vertices[6] );
+                glEnableVertexAttribArray ( OpenGL3_Program::POSITION );
                 eglGetError();
-                glDrawElements ( GL_TRIANGLES, mesh->numIndices(), GL_UNSIGNED_INT, 0 );
+                glEnableVertexAttribArray ( OpenGL3_Program::NORMAL );
+                eglGetError();
+                glEnableVertexAttribArray ( OpenGL3_Program::TEX2D );
+                m_program->SetUniform("un_Matrix", matGeometry);
+                m_program->SetUniform("un_NormalMatrix", matNormals);
+                glDrawElements ( GL_TRIANGLES, mesh->numIndices(), GL_UNSIGNED_INT, mesh->indices() );
                 eglGetError();
             }
         }
@@ -233,5 +251,6 @@ bool OpenGL3_Renderer::Render ( const l3m* model )
 
 bool OpenGL3_Renderer::EndScene()
 {
+    glutSwapBuffers ();
     return true;
 }

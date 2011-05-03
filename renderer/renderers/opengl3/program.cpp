@@ -74,3 +74,58 @@ bool OpenGL3_Program::Use ()
     }
     return Ok ();
 }
+
+bool OpenGL3_Program::SetUniform(const std::string& name, f32 value)
+{
+    GLint loc = glGetUniformLocation ( handler(), name.c_str() );
+    eglGetError();
+    if ( loc == -1 )
+        return false;
+    glUniform1f ( loc, value );
+    eglGetError();
+    return true;
+}
+
+bool OpenGL3_Program::SetUniform(const std::string& name, i32 value)
+{
+    GLint loc = glGetUniformLocation ( handler(), name.c_str() );
+    eglGetError();
+    if ( loc == -1 )
+        return false;
+    glUniform1i ( loc, value );
+    eglGetError();
+    return true;
+}
+
+bool OpenGL3_Program::SetUniform(const std::string& name, const Vector2& vec)
+{
+    GLint loc = glGetUniformLocation ( handler(), name.c_str() );
+    eglGetError();
+    if ( loc == -1 )
+        return false;
+    glUniform2fv ( loc, 2, vec.vector() );
+    eglGetError();
+    return true;
+}
+
+bool OpenGL3_Program::SetUniform(const std::string& name, const Vector3& vec)
+{
+    GLint loc = glGetUniformLocation ( handler(), name.c_str() );
+    eglGetError();
+    if ( loc == -1 )
+        return false;
+    glUniform3fv ( loc, 3, vec.vector() );
+    eglGetError();
+    return true;
+}
+
+bool OpenGL3_Program::SetUniform(const std::string& name, const Matrix& mat)
+{
+    GLint loc = glGetUniformLocation ( handler(), name.c_str() );
+    eglGetError();
+    if ( loc == -1 )
+        return false;
+    glUniformMatrix4fv ( loc, 1, GL_TRUE, mat.vector() );
+    eglGetError();
+    return true;
+}

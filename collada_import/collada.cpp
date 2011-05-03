@@ -209,7 +209,7 @@ bool Collada::Import ( TiXmlDocument& xml, l3m& model, const char** err )
                 float values[4];
                 const char* p;
                 char* p2;
-                Matrix matTransform;
+                Matrix matTransform = IdentityMatrix ();
                 
 #define FETCH_VALUES(x,n) p = (x)->FirstChild()->Value(); \
                 values[0] = strtof(p, &p2); \
@@ -223,17 +223,17 @@ bool Collada::Import ( TiXmlDocument& xml, l3m& model, const char** err )
                     if ( !strcmp(transform->Value(), "translate") )
                     {
                         FETCH_VALUES(transform, 3);
-                        matTransform = Matrix::Translate(values[0], values[1], values[2]) * matTransform;
+                        matTransform = TranslationMatrix(values[0], values[1], values[2]) * matTransform;
                     }
                     else if ( !strcmp(node->Value(), "rotate") )
                     {
                         FETCH_VALUES(transform, 4);
-                        matTransform *= Matrix::Rotate(values[3], values[0], values[1], values[2]);
+                        matTransform *= RotationMatrix(values[3], values[0], values[1], values[2]);
                     }
                     else if ( !strcmp(node->Value(), "scale") )
                     {
                         FETCH_VALUES(transform, 1);
-                        matTransform *= Matrix::Scale(values[0]);
+                        matTransform *= ScalingMatrix(values[0]);
                     }
                 }
                 

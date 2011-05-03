@@ -3,6 +3,7 @@
 
 #include <cstring>
 #include "opengl3.h"
+#include "math/matrix.h"
 
 class OpenGL3_Renderer : public IRenderer
 {
@@ -12,6 +13,7 @@ private:
     IShader*    m_fragmentShader;
     IProgram*   m_program;
     char        m_error [ 512 ];
+    Matrix      m_matrix;
 
 public:
                 OpenGL3_Renderer        ();
@@ -20,8 +22,8 @@ public:
     bool        Initialize              ();
     bool        SetupModel              ( const l3m* model );
     
-    bool        BeginScene              ();
-    bool        Render                  ( const l3m* model );
+    bool        BeginScene              ( const Matrix& matProjection = IdentityMatrix(), const Matrix& matLookat = IdentityMatrix() );
+    bool        Render                  ( const l3m* model, const Matrix& mat = IdentityMatrix() );
     bool        EndScene                ();
     
     void        GetError                ( char* dest ) const { strcpy(dest, m_error); }

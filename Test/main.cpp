@@ -73,13 +73,25 @@ void display ( void )
         sg->Initialize ();
     }
     
-    if ( sg->renderer()->BeginScene() )
+    static float fRotX = -3.141592f/2;
+    static float fRotY = 0;
+    static float fTransX = 0;
+    static float fTransDir = 1;
+    fRotX += 3.141592f/1024;
+    fRotY += 3.151592f/8192;
+    
+    if ( fTransX > 2.5f )
+        fTransDir = -1;
+    else if ( fTransX < -2.5f )
+        fTransDir = 1;
+    fTransX += fTransDir * 0.002;
+    
+    if ( sg->renderer()->BeginScene( OrthographicMatrix(-50, 50, 50, -50, 50, -50), TranslationMatrix(fTransX,0,0)*RotationMatrix(fRotX,1,0,0)*RotationMatrix(fRotY,0,1,0) ) )
     {
         entity->Update ( sg );
         sg->renderer()->EndScene ();
-        
-        glutSwapBuffers ();
     }
     else
         fprintf ( stderr, "Error al iniciar la escena.\n" );
+    glutPostRedisplay ();
 }

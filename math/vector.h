@@ -24,9 +24,11 @@ public:
     
     const f32& x() const { return s.fX; }
     const f32& y() const { return s.fY; }
+    const f32* vector() const { return v; }
     
     f32& x() { return s.fX; }
     f32& y() { return s.fY; }
+    f32* vector() { return v; }
 };
 
 

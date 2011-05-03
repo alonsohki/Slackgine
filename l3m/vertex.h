@@ -36,7 +36,9 @@ public:
     
     Vertex& operator= ( const Vertex& Right )
     {
-        *this = Right;
+        m_pos = Right.m_pos;
+        m_norm = Right.m_norm;
+        m_tex2d = Right.m_tex2d;
     }
     
     bool operator== ( const Vertex& Right ) const
