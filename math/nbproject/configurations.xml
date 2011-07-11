@@ -13,6 +13,7 @@
       <itemPath>Makefile</itemPath>
     </logicalFolder>
     <itemPath>matrix.h</itemPath>
+    <itemPath>util.h</itemPath>
     <itemPath>vector.h</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>

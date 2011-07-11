@@ -298,6 +298,15 @@ public:
                          0.0f, 0.0f, 0.0f, 1.0f };
         Matrix::operator= ( v );
     }
+    
+    ScalingMatrix ( f32 x, f32 y, f32 z )
+    {
+        f32 v [ 16 ] = { x, 0.0f, 0.0f, 0.0f,
+                         0.0f, y, 0.0f, 0.0f,
+                         0.0f, 0.0f, z, 0.0f,
+                         0.0f, 0.0f, 0.0f, 1.0f };
+        Matrix::operator= ( v );
+    }
 };
 
 

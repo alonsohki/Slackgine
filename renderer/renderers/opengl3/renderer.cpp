@@ -184,7 +184,8 @@ bool OpenGL3_Renderer::BeginScene ( const Matrix& matProjection, const Matrix& m
         return false;
     
     glEnable ( GL_DEPTH_TEST );
-    glCullFace ( GL_BACK );
+    glDisable ( GL_CULL_FACE );
+    //glCullFace ( GL_BACK );
 
     m_matrix = matProjection * matLookat;
     
@@ -225,14 +226,7 @@ bool OpenGL3_Renderer::Render ( const l3m* model, const Matrix& mat )
 
             if ( polyType != GL_INVALID_ENUM )
             {
-                //glBindVertexArray ( data->m_vaos[curMesh] );
-                glBindVertexArray ( 0 );
-                glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, 0 );
-                glBindBuffer ( GL_ARRAY_BUFFER, 0 );
-                const float* vertices = mesh->vertices()->base();
-                glVertexAttribPointer ( OpenGL3_Program::POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), &vertices[0] );
-                glVertexAttribPointer ( OpenGL3_Program::NORMAL, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), &vertices[3] );
-                glVertexAttribPointer ( OpenGL3_Program::TEX2D, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), &vertices[6] );
+                glBindVertexArray ( data->m_vaos[curMesh] );
                 glEnableVertexAttribArray ( OpenGL3_Program::POSITION );
                 eglGetError();
                 glEnableVertexAttribArray ( OpenGL3_Program::NORMAL );
@@ -240,7 +234,7 @@ bool OpenGL3_Renderer::Render ( const l3m* model, const Matrix& mat )
                 glEnableVertexAttribArray ( OpenGL3_Program::TEX2D );
                 m_program->SetUniform("un_Matrix", matGeometry);
                 m_program->SetUniform("un_NormalMatrix", matNormals);
-                glDrawElements ( GL_TRIANGLES, mesh->numIndices(), GL_UNSIGNED_INT, mesh->indices() );
+                glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, 0 );
                 eglGetError();
             }
         }

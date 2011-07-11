@@ -38,17 +38,6 @@ int main(int argc, char** argv)
     l3m model2;
     if ( model2.Load ( "../collada_import/spherecube.l3m" ) != l3m::OK )
         fprintf ( stderr, "Error al cargar el fichero: %s\n", model2.error() );
-    
-    //printf ( "Descripción leída: %s\n", model2.description().c_str() );
-    
-    l3m::ErrorCode err;
-    l3m* model3 = l3mFactory::CreateAndLoad( "chromatic_tri.l3m", &err );
-    if ( !model3 || err != l3m::OK )
-        fprintf ( stderr, "Error al cargar el fichero: %s\n", l3m::TranslateErrorCode(err) );
-    else
-    {
-        printf("Tipo de modelo leído: %s\n", model3->type().c_str() );
-    }
 
     entity = new Entity ( &model2 );
     
@@ -86,7 +75,7 @@ void display ( void )
         fTransDir = 1;
     fTransX += fTransDir * 0.002;
     
-    if ( sg->renderer()->BeginScene( OrthographicMatrix(-50, 50, 50, -50, 50, -50), TranslationMatrix(fTransX,0,0)*RotationMatrix(fRotX,1,0,0)*RotationMatrix(fRotY,0,1,0) ) )
+    if ( sg->renderer()->BeginScene( OrthographicMatrix(-10, 10, 10, -10, 10, -10), TranslationMatrix(fTransX,0,0)*RotationMatrix(fRotX,1,0,0)*RotationMatrix(fRotY,0,1,0) ) )
     {
         entity->Update ( sg );
         sg->renderer()->EndScene ();

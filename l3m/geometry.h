@@ -17,6 +17,7 @@ private:
 public:
     Geometry ( const std::string& name )
     : m_name ( name )
+    , m_matrix ( IdentityMatrix() )
     {
     }
     

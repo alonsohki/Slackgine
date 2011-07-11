@@ -1,4 +1,5 @@
 #include "collada.h"
+#include "math/util.h"
 
 bool Collada::Import ( TiXmlDocument& xml, l3m& model, const char** err )
 {
@@ -13,6 +14,7 @@ bool Collada::Import ( TiXmlDocument& xml, l3m& model, const char** err )
         return ERROR("Couldn't locate the model geometries");
     
     // Load all the geometries
+    u32 curGeometry = 0;
     for ( TiXmlElement* geometry = geometries->FirstChildElement("geometry");
           geometry != 0;
           geometry = geometry->NextSiblingElement("geometry") )
@@ -20,7 +22,8 @@ bool Collada::Import ( TiXmlDocument& xml, l3m& model, const char** err )
         const char* name = geometry->Attribute("id");
         if ( !name ) name = "";
         Geometry* g = model.CreateGeometry(name);
-
+        ++curGeometry;
+        
         // Load each mesh
         for ( TiXmlElement* mesh = geometry->FirstChildElement("mesh");
               mesh != 0;
@@ -69,7 +72,7 @@ bool Collada::Import ( TiXmlDocument& xml, l3m& model, const char** err )
             int polyCount = atoi(polys->Attribute("count"));
             
             // Find the offsets and sources
-            enum InputType { NONE, VERTEX, NORMAL, TEX };
+            enum InputType { NONE, VERTEX, NORMAL, TEXCOORD, COLOR };
             int offsets [ 10 ];
             Source<float>* sources [ 4 ];
             
@@ -84,6 +87,8 @@ bool Collada::Import ( TiXmlDocument& xml, l3m& model, const char** err )
                 const char* semantic = input->Attribute("semantic");
                 if ( !strcmp(semantic, "VERTEX") ) type = VERTEX;
                 else if ( !strcmp(semantic, "NORMAL") ) type = NORMAL;
+                else if ( !strcmp(semantic, "TEXCOORD") ) type = TEXCOORD;
+                else if ( !strcmp(semantic, "COLOR") ) type = COLOR;
                 
                 if ( type != NONE )
                 {
@@ -148,6 +153,10 @@ bool Collada::Import ( TiXmlDocument& xml, l3m& model, const char** err )
                                 break;
                             case NORMAL:
                                 curVertex->norm() = Vector3 ( src->array[index*3], src->array[index*3+1], src->array[index*3+2] );
+                                break;
+                            case TEXCOORD:
+                                break;
+                            case COLOR:
                                 break;
                         }
                     }
@@ -223,17 +232,17 @@ bool Collada::Import ( TiXmlDocument& xml, l3m& model, const char** err )
                     if ( !strcmp(transform->Value(), "translate") )
                     {
                         FETCH_VALUES(transform, 3);
-                        matTransform = TranslationMatrix(values[0], values[1], values[2]) * matTransform;
+                        matTransform *= TranslationMatrix(values[0], values[1], values[2]);
                     }
-                    else if ( !strcmp(node->Value(), "rotate") )
+                    else if ( !strcmp(transform->Value(), "rotate") )
                     {
                         FETCH_VALUES(transform, 4);
-                        matTransform *= RotationMatrix(values[3], values[0], values[1], values[2]);
+                        matTransform *= RotationMatrix(deg2rad(values[3]), values[0], values[1], values[2]);
                     }
-                    else if ( !strcmp(node->Value(), "scale") )
+                    else if ( !strcmp(transform->Value(), "scale") )
                     {
-                        FETCH_VALUES(transform, 1);
-                        matTransform *= ScalingMatrix(values[0]);
+                        FETCH_VALUES(transform, 3);
+                        matTransform *= ScalingMatrix(values[0], values[1], values[2]);
                     }
                 }
                 
