@@ -11,11 +11,13 @@ static void DeleteDuplicates ( l3m* source )
         for ( Geometry::meshList::iterator j = (*i)->meshes().begin(); j != (*i)->meshes().end(); ++j )
         {
             Mesh* mesh = *j;
-            for ( u32 k = 0; k < mesh->numVertices(); ++k )
+            numClonesLevel = 0;
+
+            for ( u32 k = 0; k < mesh->numVertices() - numClonesLevel; ++k )
             {
-                Vertex& cur = mesh->vertices()[k];
-                numClonesLevel = 0;
-                for ( u32 check = k + 1; check < mesh->numVertices(); ++check )
+                const Vertex& cur = mesh->vertices()[k];
+
+                for ( u32 check = k + 1; check < mesh->numVertices() - numClonesLevel; ++check )
                 {
                     if ( mesh->vertices()[check] == cur )
                     {
@@ -25,13 +27,17 @@ static void DeleteDuplicates ( l3m* source )
                         for ( u32 idx = 0; idx < mesh->numIndices(); ++idx )
                             if ( mesh->indices()[idx] == check )
                                 mesh->indices()[idx] = k;
+                            else if ( mesh->indices()[idx] > check )
+                                mesh->indices()[idx]--;
                     }
                     else if ( numClonesLevel > 0 )
                         mesh->vertices()[check-numClonesLevel] = mesh->vertices()[check];
                 }
-                numClones += numClonesLevel;
-                mesh->Set ( mesh->vertices(), mesh->numVertices() - numClonesLevel, mesh->indices(), mesh->numIndices(), mesh->polyType() );
             }
+
+            if ( numClonesLevel > 0 )
+                mesh->Set ( mesh->vertices(), mesh->numVertices() - numClonesLevel, mesh->indices(), mesh->numIndices(), mesh->polyType() );
+            numClones += numClonesLevel;
         }
     }
     
