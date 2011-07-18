@@ -8,10 +8,18 @@ namespace l3m
 class IComponent
 {
 public:
-    virtual ~IComponent () {}
+                        IComponent      ( const char* type, float version ): m_type ( type ), m_version ( version ) {}
+    virtual             ~IComponent     () {}
     
-    virtual bool        Load            ( const l3m::IOStream& fp );
-    virtual bool        Save            ( const l3m::IOStream& fp );
+    virtual bool        Load            ( l3m::IStream& fp, float version ) = 0;
+    virtual bool        Save            ( l3m::OStream& fp ) = 0;
+    
+    const char*         type            () const { return m_type; }
+    float               version         () const { return m_version; }
+    
+private:
+    const char*         m_type;
+    float               m_version;
 };
 
 }

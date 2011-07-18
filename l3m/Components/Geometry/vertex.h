@@ -9,8 +9,6 @@ namespace l3m
 class Vertex
 {
 public:
-    static const unsigned int VERSION = 0;
-    
     enum
     {
         LOAD_POSITION   = 0x01,

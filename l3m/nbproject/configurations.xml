@@ -14,6 +14,8 @@
         <itemPath>Components/Geometry/vertex.h</itemPath>
       </logicalFolder>
       <itemPath>Components/components.h</itemPath>
+      <itemPath>Components/factory.cpp</itemPath>
+      <itemPath>Components/factory.h</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"

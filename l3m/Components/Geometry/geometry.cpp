@@ -2,7 +2,7 @@
 
 using namespace l3m;
 
-bool Geometry::Load(l3m::IStream& fp)
+bool Geometry::Load(l3m::IStream& fp, float version)
 {
     return true;
 }

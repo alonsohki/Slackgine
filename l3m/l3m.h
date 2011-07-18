@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <vector>
 #include "l3mComponent.h"
 #include "l3mStream.h"
 
@@ -12,6 +13,17 @@ namespace l3m
 class Model
 {
 public:
+    virtual     ~Model          ()
+    {
+        for ( std::vector<IComponent*>::const_iterator iter = m_vecComponents.begin();
+              iter != m_vecComponents.end();
+              ++iter )
+        {
+            delete *iter;
+        }
+        m_vecComponents.clear ();
+    }
+                
     bool        Load            ( const char* filepath )
     {
         std::fstream fp;
@@ -29,8 +41,11 @@ public:
         return Load ( fp );
     }
     
-    bool        Load            ( const std::istream& fp );
-    bool        Save            ( const std::ostream& fp );
+    bool        Load            ( std::istream& fp );
+    bool        Save            ( std::ostream& fp );
+    
+private:
+    std::vector<IComponent*>    m_vecComponents;
 };
 
 

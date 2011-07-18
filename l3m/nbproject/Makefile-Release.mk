@@ -39,6 +39,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/Components/Geometry/geometry.o \
 	${OBJECTDIR}/l3mStream.o \
 	${OBJECTDIR}/Components/Geometry/mesh.o \
+	${OBJECTDIR}/Components/factory.o \
 	${OBJECTDIR}/Components/Geometry/vertex.o
 
 
@@ -92,6 +93,11 @@ ${OBJECTDIR}/Components/Geometry/mesh.o: Components/Geometry/mesh.cpp
 	${MKDIR} -p ${OBJECTDIR}/Components/Geometry
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/Geometry/mesh.o Components/Geometry/mesh.cpp
+
+${OBJECTDIR}/Components/factory.o: Components/factory.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Components
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/factory.o Components/factory.cpp
 
 ${OBJECTDIR}/Components/Geometry/vertex.o: Components/Geometry/vertex.cpp 
 	${MKDIR} -p ${OBJECTDIR}/Components/Geometry

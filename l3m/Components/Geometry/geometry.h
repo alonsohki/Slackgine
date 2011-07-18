@@ -21,8 +21,14 @@ private:
     meshList            m_meshes;
     
 public:
+    static IComponent* Create ()
+    {
+        return new Geometry ( "" );
+    }
+    
     Geometry ( const std::string& name )
-    : m_name ( name )
+    : IComponent ( "geometry", 1.0f )
+    , m_name ( name )
     , m_matrix ( IdentityMatrix() )
     {
     }
@@ -33,7 +39,7 @@ public:
             delete *iter;
     }
     
-    bool        Load            ( l3m::IStream& fp );
+    bool        Load            ( l3m::IStream& fp, float version );
     bool        Save            ( l3m::OStream& fp );
     
     void LoadMesh ( Mesh* mesh )

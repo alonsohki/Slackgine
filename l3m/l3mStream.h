@@ -51,6 +51,8 @@ public:
     size_t      ReadStr         ( std::string& str );
     size_t      ReadData        ( char* data, u32 size, u32 nmemb );
     
+    u32         flags           () const { return m_flags; }
+    
 private:
     void        SetupFlags    ();
     size_t (*m_endian16writer)(const u16*, u32, std::ostream&);
@@ -70,13 +72,13 @@ private:
 class IStream : public IOStream
 {
 public:
-    IStream ( std::istream* istream ) : IOStream ( istream, 0 ) {}
+    IStream ( std::istream* istream, u32 flags = NONE ) : IOStream ( istream, 0, flags ) {}
 };
 
 class OStream : public IOStream
 {
 public:
-    OStream ( std::ostream* ostream ) : IOStream ( 0, ostream ) {}
+    OStream ( std::ostream* ostream, u32 flags = NONE ) : IOStream ( 0, ostream, flags ) {}
 };
 
 }
