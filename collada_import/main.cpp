@@ -4,7 +4,6 @@
 #include <fstream>
 #include "tinyxml/tinyxml.h"
 #include "l3m/l3m.h"
-#include "l3m/l3mFactory.h"
 #include "strategy.h"
 #include "collada.h"
 #include "model_optimizer.h"
@@ -18,16 +17,9 @@ int main(int argc, char** argv)
     std::istream* input = &std::cin;;
     std::ostream* output = &std::cout;
     
-    if ( argc < 2 )
+    if ( argc >= 2 )
     {
-        fprintf(stderr, "Usage: %s <model type> [input file] [output file]\n", argv[0]);
-        return -1;
-    }
-    const char* type = argv[1];
-    
-    if ( argc >= 3 )
-    {
-        fp_in.open ( argv[2] );
+        fp_in.open ( argv[1] );
         if ( fp_in.fail() )
         {
             fprintf(stderr, "Unable to open the input file\n" );
@@ -36,9 +28,9 @@ int main(int argc, char** argv)
         input = &fp_in;
     }
     
-    if ( argc >= 4 )
+    if ( argc >= 3 )
     {
-        fp_out.open ( argv[3] );
+        fp_out.open ( argv[2] );
         if ( fp_out.fail() )
         {
             fprintf(stderr, "Unable to open the output file\n" );
@@ -52,7 +44,8 @@ int main(int argc, char** argv)
         input->read ( buffer, sizeof(buffer) );
         data.append ( buffer, input->gcount() );
     }
-    
+
+#if 0
     // Register all the strategies
     IStrategy* strategy = IStrategy::GetStrategy ( type );
     if ( !strategy )
@@ -60,6 +53,7 @@ int main(int argc, char** argv)
         fprintf(stderr, "Couldn't find a strategy for the type '%s'\n", type);
         return -1;
     }
+#endif
     
     // Parse the XML document
     TiXmlDocument xml;
@@ -72,39 +66,25 @@ int main(int argc, char** argv)
     }
     
     // Load the model
-    l3mComponent* model = l3mFactory::CreateOfType(type);
-    if ( !model )
-    {
-        fprintf(stderr, "Unknown l3m type: %s\n", type);
-        return -1;
-    }
-    
-    // Load the model data
+    l3m::Model model;
     const char* err;
-    if ( !Collada::Import(xml, *model, &err) )
+    if ( !Collada::Import(xml, model, &err) )
     {
         fprintf(stderr, "Unable to load the collada model: %s.\n", err );
         return -1;
     }
     
     // Optimise the model
-    ModelOptimizer::Optimize ( model );
-    
-    if ( !strategy->ParseData(xml, *model) )
-    {
-        fprintf(stderr, "Unable to load the specific data for the type %s\n", type);
-        return -1;
-    }
+    ModelOptimizer::Optimize ( &model );
     
     // Save the model
-    if ( model->Save(*output) != l3mComponent::OK )
+    if ( model.Save(*output) == false )
     {
-        fprintf(stderr, "Unable to save the model data: %s\n", model->error() );
+        fprintf(stderr, "Unable to save the model data: %s\n", "TODO" );
         return -1;
     }
     
     // Cleanup
-    delete model;
     IStrategy::CleanupStrategies();
 
     return 0;

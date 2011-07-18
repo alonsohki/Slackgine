@@ -1,7 +1,8 @@
 #include <cstdio>
 #include "model_optimizer.h"
 
-static void DeleteDuplicates ( l3mComponent* source )
+#if 0
+static void DeleteDuplicates ( l3m::Model* source )
 {
     u32 numClones = 0;
     u32 numClonesLevel;
@@ -43,8 +44,9 @@ static void DeleteDuplicates ( l3mComponent* source )
     
     fprintf ( stderr, "* Removed %u duplicates\n", numClones );
 }
+#endif
 
-void ModelOptimizer::Optimize(l3mComponent* source)
+void ModelOptimizer::Optimize(l3m::Model* source)
 {
     fprintf ( stderr, "Optimising model...\n" );
     //DeleteDuplicates ( source );

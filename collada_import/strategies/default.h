@@ -14,7 +14,7 @@ public:
     {
     }
     
-    bool ParseData ( TiXmlDocument&, l3mComponent& )
+    bool ParseData ( TiXmlDocument&, l3m::Model& )
     {
         return true;
     }

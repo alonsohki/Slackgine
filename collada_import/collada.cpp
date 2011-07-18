@@ -1,7 +1,9 @@
 #include "collada.h"
 #include "math/util.h"
 
-bool Collada::Import ( TiXmlDocument& xml, l3mComponent& model, const char** err )
+using namespace l3m;
+
+bool Collada::Import ( TiXmlDocument& xml, l3m::Model& model, const char** err )
 {
 #define ERROR(msg) ( (err != 0) ? (*err=(msg)) == (const char*)0xfabada : false )
     
@@ -21,7 +23,8 @@ bool Collada::Import ( TiXmlDocument& xml, l3mComponent& model, const char** err
     {
         const char* name = geometry->Attribute("id");
         if ( !name ) name = "";
-        Geometry* g = model.CreateGeometry(name);
+        Geometry* g = model.CreateComponent<Geometry>("geometry");
+        g->name() = name;
         ++curGeometry;
         
         // Load each mesh
@@ -196,7 +199,7 @@ bool Collada::Import ( TiXmlDocument& xml, l3mComponent& model, const char** err
     
     
     
-    
+#if 0
     // Process the visual scene
     TiXmlElement* visualScene = collada->FirstChildElement("library_visual_scenes");
     if ( !visualScene )
@@ -251,7 +254,7 @@ bool Collada::Import ( TiXmlDocument& xml, l3mComponent& model, const char** err
             }
         }
     }
-    
+#endif    
     return true;
 #undef ERROR
 }

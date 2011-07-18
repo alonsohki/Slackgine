@@ -6,6 +6,7 @@
 #include <vector>
 #include "l3mComponent.h"
 #include "l3mStream.h"
+#include "Components/factory.h"
 
 namespace l3m
 {
@@ -43,6 +44,14 @@ public:
     
     bool        Load            ( std::istream& fp );
     bool        Save            ( std::ostream& fp );
+    
+    template < class T >
+    T*          CreateComponent ( const std::string& type )
+    {
+        IComponent* component = ComponentFactory::Create( type );
+        m_vecComponents.push_back(component);
+        return static_cast<T*>(component);
+    }
     
 private:
     std::vector<IComponent*>    m_vecComponents;

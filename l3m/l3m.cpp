@@ -60,6 +60,8 @@ bool Model::Load(std::istream& fp)
             return false;
         if ( component->Load ( is, version ) == false )
             return false;
+        
+        m_vecComponents.push_back ( component );
     }
     
     return true;
