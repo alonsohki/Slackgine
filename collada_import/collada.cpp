@@ -1,5 +1,6 @@
 #include "collada.h"
 #include "math/util.h"
+#include "strategy.h"
 
 using namespace l3m;
 
@@ -11,6 +12,19 @@ bool Collada::Import ( TiXmlDocument& xml, l3m::Model& model, const char** err )
     if ( !collada )
         return ERROR("Couldn't find the root node");
     
+    for ( TiXmlElement* elements = collada->FirstChildElement(); elements != 0; elements = elements->NextSiblingElement() )
+    {
+        IStrategy* strategy = IStrategy::GetStrategy(elements->Value());
+        if ( strategy != 0 )
+        {
+            if ( !strategy->ParseData(*elements, model, err ) )
+                return ERROR(*err);
+        }
+    }
+    
+    return true;
+    
+#if 0
     TiXmlElement* geometries = collada->FirstChildElement("library_geometries");
     if ( !geometries )
         return ERROR("Couldn't locate the model geometries");
@@ -257,4 +271,6 @@ bool Collada::Import ( TiXmlDocument& xml, l3m::Model& model, const char** err )
 #endif    
     return true;
 #undef ERROR
+    
+#endif
 }

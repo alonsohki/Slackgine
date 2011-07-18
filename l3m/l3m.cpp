@@ -87,17 +87,17 @@ bool Model::Save(std::ostream& fp)
     // Flags
     u32 flags = os.flags() & ~IOStream::ENDIAN_SWAPPING;
     if ( os.Write32 ( &flags, 1 ) != 1 )
-        return false;
+        return SetError ( "Unable to write the stream flags" );
     
     // Versión
     float fVersion = L3M_VERSION;
-    if ( !os.WriteFloat ( &fVersion, 1 ) != 1 )
-        return false;
+    if ( os.WriteFloat ( &fVersion, 1 ) != 1 )
+        return SetError ( "Unable to write the L3M version" );
     
     // Number of components
     u32 numComponents = m_vecComponents.size ();
-    if ( !os.Write32 ( &numComponents, 1 ) != 1 )
-        return false;
+    if ( os.Write32 ( &numComponents, 1 ) != 1 )
+        return SetError ( "Unable to write the number of components" );
     
     // Write each component
     for ( u32 i = 0; i < numComponents; ++i )
@@ -108,11 +108,11 @@ bool Model::Save(std::ostream& fp)
         // Write the component version
         float version = m_vecComponents[i]->version();
         if ( os.WriteFloat ( &version, 1 ) != 1 )
-            return false;
+            return SetError ( "Unable to write the component version" );
         
         // Write the component
         if ( !m_vecComponents[i]->Save ( os ) )
-            return false;
+            return SetError ( m_vecComponents[i]->error() );
     }
     
     return true;

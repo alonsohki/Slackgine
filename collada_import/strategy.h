@@ -8,7 +8,7 @@ class IStrategy
 {
 public:
     virtual             ~IStrategy              () {}
-    virtual bool        ParseData               ( TiXmlDocument& document, l3m::Model& model ) = 0;
+    virtual bool        ParseData               ( TiXmlElement& element, l3m::Model& model, const char** err ) = 0;
     
     
 public:

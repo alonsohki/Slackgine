@@ -1,5 +1,5 @@
 #include "strategy.h"
-#include "strategies/default.h"
+#include "strategies/geometries.h"
 
 IStrategy::mapType IStrategy::ms_strategies;
 
@@ -8,7 +8,7 @@ void IStrategy::InitializeStrategies()
     if ( ms_strategies.size() > 0 )
         return;
     
-    ms_strategies["default"] = new DefaultStrategy ();
+    ms_strategies["library_geometries"] = new GeometriesStrategy ();
 }
 
 void IStrategy::CleanupStrategies()

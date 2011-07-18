@@ -45,16 +45,6 @@ int main(int argc, char** argv)
         data.append ( buffer, input->gcount() );
     }
 
-#if 0
-    // Register all the strategies
-    IStrategy* strategy = IStrategy::GetStrategy ( type );
-    if ( !strategy )
-    {
-        fprintf(stderr, "Couldn't find a strategy for the type '%s'\n", type);
-        return -1;
-    }
-#endif
-    
     // Parse the XML document
     TiXmlDocument xml;
     xml.Parse ( data.c_str() );
@@ -80,7 +70,7 @@ int main(int argc, char** argv)
     // Save the model
     if ( model.Save(*output) == false )
     {
-        fprintf(stderr, "Unable to save the model data: %s\n", "TODO" );
+        fprintf(stderr, "Unable to save the model data: %s\n", model.error() );
         return -1;
     }
     
