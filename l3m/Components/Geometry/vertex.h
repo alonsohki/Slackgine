@@ -1,9 +1,10 @@
-#ifndef VERTEX_H
-#define VERTEX_H
+#pragma once
 
 #include "math/vector.h"
-#include "color.h"
-#include "material.h"
+#include "shared/color.h"
+
+namespace l3m
+{
 
 class Vertex
 {
@@ -71,4 +72,4 @@ public:
     static Vertex*      LoadAllocating  ( const Vertex* source, unsigned int count );
 };
 
-#endif
+}

@@ -1,5 +1,24 @@
-#ifndef L3MCOMPONENT_H
-#define L3MCOMPONENT_H
+#pragma once
+
+#include "l3mStream.h"
+
+namespace l3m
+{
+
+class IComponent
+{
+public:
+    virtual ~IComponent () {}
+    
+    virtual bool        Load            ( const l3m::IOStream& fp );
+    virtual bool        Save            ( const l3m::IOStream& fp );
+};
+
+}
+
+#include "Components/components.h"
+
+#if 0
 
 #include <string>
 #include <map>
@@ -13,20 +32,8 @@
 #include "mesh.h"
 #include "geometry.h"
 
-static const char* const L3M_BOM = "L3M\x01";
-static const float L3M_VERSION = 0.79f;
-static const enum
-{
-    L3M_MACHINE_ENDIAN,
-    L3M_LOW_ENDIAN,
-    L3M_BIG_ENDIAN
-} L3M_SAVE_ENDIANNESS = L3M_LOW_ENDIAN;
-
 class l3mComponent
 {
-public:
-    class IRendererData { public: virtual ~IRendererData() {} };
-
 public:
     // Save flags
     enum SaveFlags
@@ -155,29 +162,6 @@ protected:
     virtual bool        SaveMetadata    ( const std::string& name, std::ostream& fp ) { return true; }
     virtual bool        LoadMetadata    ( const std::string& name, std::istream& fp ) { return true; }
 
-    // Endianness
-private:
-    void                InitializeEndianness ();
-    size_t (*m_endian16writer)(const u16*, u32, std::ostream&);
-    size_t (*m_endian32writer)(const u32*, u32, std::ostream&);
-    size_t (*m_endian64writer)(const u64*, u32, std::ostream&);
-    size_t (*m_endian16reader)(u16*, u32, std::istream&);
-    size_t (*m_endian32reader)(u32*, u32, std::istream&);
-    size_t (*m_endian64reader)(u64*, u32, std::istream&);
-protected:
-    bool                Write16         ( const u16* v, u32 nmemb, std::ostream& fp ) const;
-    bool                Write32         ( const u32* v, u32 nmemb, std::ostream& fp ) const;
-    bool                Write64         ( const u64* v, u32 nmemb, std::ostream& fp ) const;
-    bool                WriteFloat      ( const float* v, u32 nmemb, std::ostream& fp ) const;
-    bool                WriteStr        ( const std::string& str, std::ostream& fp ) const;
-    bool                WriteData       ( const void* data, size_t size, unsigned int nmemb, std::ostream& fp ) const;
-    size_t              Read16          ( u16* v, u32 nmemb, std::istream& fp ) const;
-    size_t              Read32          ( u32* v, u32 nmemb, std::istream& fp ) const;
-    size_t              Read64          ( u64* v, u32 nmemb, std::istream& fp ) const;
-    size_t              ReadFloat       ( float* v, u32 nmemb, std::istream& fp ) const;
-    size_t              ReadStr         ( std::string& str, std::istream& fp ) const;
-    size_t              ReadData        ( char* dest, size_t size, u32 nmemb, std::istream& fp ) const;
-    
 public:
     void                LoadMesh        ( Mesh* mesh, const std::string& geometryName = "" );
     Geometry*           CreateGeometry  ( const std::string& name );
@@ -188,5 +172,4 @@ public:
     bool                isDynamic       () const { return m_isDynamic; }
     void                setDynamic      ( bool dynamic ) { m_isDynamic = dynamic; }
 };
-
 #endif

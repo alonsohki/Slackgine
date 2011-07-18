@@ -1,10 +1,16 @@
-#ifndef GEOMETRY_H
-#define	GEOMETRY_H
+#pragma once
 
+#include <list>
 #include <string>
 #include "math/matrix.h"
+#include "mesh.h"
+#include "vertex.h"
+#include "l3m/l3mComponent.h"
 
-class Geometry
+namespace l3m
+{
+
+class Geometry : public IComponent
 {
 public:
     typedef std::list<Mesh *> meshList;
@@ -27,6 +33,9 @@ public:
             delete *iter;
     }
     
+    bool        Load            ( l3m::IStream& fp );
+    bool        Save            ( l3m::OStream& fp );
+    
     void LoadMesh ( Mesh* mesh )
     {
         m_meshes.push_back(mesh);
@@ -40,8 +49,9 @@ public:
     
     std::string&                name    () { return m_name; }
     Matrix&                     matrix  () { return m_matrix; }
-    meshList&                   meshes  () { return m_meshes; }
+    meshList&                   meshes  () { return m_meshes; } 
 };
 
-#endif	/* GEOMETRY_H */
+}
+
 

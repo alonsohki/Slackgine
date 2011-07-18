@@ -1,6 +1,8 @@
 #include <cstring>
 #include "mesh.h"
 
+using namespace l3m;
+
 Mesh::Mesh(const std::string& name)
 : m_name ( name )
 , m_vertices ( 0 )

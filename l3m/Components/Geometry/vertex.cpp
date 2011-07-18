@@ -2,6 +2,8 @@
 #include <cstdlib>
 #include "vertex.h"
 
+using namespace l3m;
+
 void Vertex::Load ( const float* source, unsigned int flags, unsigned int stride, unsigned int count )
 {
     // TODO: Optimizar esto, sacando los if fuera de los bucles y copiando por bloques.

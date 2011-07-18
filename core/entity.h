@@ -11,15 +11,15 @@ class Entity
 {
 private:
     Matrix              m_matrix;
-    const l3mComponent* m_model;
+    const l3m::Model*   m_model;
 
 public:
-                        Entity                  ( const l3mComponent* pModel = 0 );
-    virtual             ~Entity                 ();
+                                Entity          ( const l3m::Model* pModel = 0 );
+    virtual                     ~Entity         ();
     
-    virtual void        Update                  ( Slackgine* ctx );
+    virtual void                Update          ( Slackgine* ctx );
     
-    virtual const l3mComponent*  GetModel                () const { return m_model; }
+    virtual const l3m::Model*   GetModel        () const { return m_model; }
 };
 
 #endif	/* ENTITY_H */

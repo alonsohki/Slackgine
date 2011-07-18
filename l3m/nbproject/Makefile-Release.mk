@@ -35,9 +35,11 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/_ext/1360928567/l3mComponent.o \
-	${OBJECTDIR}/vertex.o \
-	${OBJECTDIR}/mesh.o \
-	${OBJECTDIR}/l3mFactory.o
+	${OBJECTDIR}/l3m.o \
+	${OBJECTDIR}/Components/Geometry/geometry.o \
+	${OBJECTDIR}/l3mStream.o \
+	${OBJECTDIR}/Components/Geometry/mesh.o \
+	${OBJECTDIR}/Components/Geometry/vertex.o
 
 
 # C Compiler Flags
@@ -71,20 +73,30 @@ ${OBJECTDIR}/_ext/1360928567/l3mComponent.o: ../l3m/l3mComponent.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360928567/l3mComponent.o ../l3m/l3mComponent.cpp
 
-${OBJECTDIR}/vertex.o: vertex.cpp 
+${OBJECTDIR}/l3m.o: l3m.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/vertex.o vertex.cpp
+	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/l3m.o l3m.cpp
 
-${OBJECTDIR}/mesh.o: mesh.cpp 
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/Components/Geometry/geometry.o: Components/Geometry/geometry.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Components/Geometry
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/mesh.o mesh.cpp
+	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/Geometry/geometry.o Components/Geometry/geometry.cpp
 
-${OBJECTDIR}/l3mFactory.o: l3mFactory.cpp 
+${OBJECTDIR}/l3mStream.o: l3mStream.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/l3mFactory.o l3mFactory.cpp
+	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/l3mStream.o l3mStream.cpp
+
+${OBJECTDIR}/Components/Geometry/mesh.o: Components/Geometry/mesh.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Components/Geometry
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/Geometry/mesh.o Components/Geometry/mesh.cpp
+
+${OBJECTDIR}/Components/Geometry/vertex.o: Components/Geometry/vertex.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Components/Geometry
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/Geometry/vertex.o Components/Geometry/vertex.cpp
 
 # Subprojects
 .build-subprojects:

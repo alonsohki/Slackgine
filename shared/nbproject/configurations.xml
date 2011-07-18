@@ -13,6 +13,7 @@
       <itemPath>Android.mk</itemPath>
       <itemPath>Makefile</itemPath>
     </logicalFolder>
+    <itemPath>color.h</itemPath>
     <itemPath>platform.h</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>

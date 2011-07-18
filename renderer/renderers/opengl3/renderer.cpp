@@ -1,6 +1,7 @@
 #include <sstream>
 #include "opengl3.h"
 
+#if 0
 struct RendererData : public l3mComponent::IRendererData
 {
     GLsizei         m_numvaos;
@@ -26,6 +27,7 @@ struct RendererData : public l3mComponent::IRendererData
         }
     }
 };
+#endif
 
 OpenGL3_Renderer::OpenGL3_Renderer()
 : m_initialized(false)
@@ -102,8 +104,9 @@ bool OpenGL3_Renderer::Initialize()
     return m_initialized;
 }
 
-bool OpenGL3_Renderer::SetupModel(const l3mComponent* model)
+bool OpenGL3_Renderer::SetupModel(const l3m::Model* model)
 {
+#if 0
     if ( model->rendererData() != 0 )
         return false;
 
@@ -171,7 +174,7 @@ bool OpenGL3_Renderer::SetupModel(const l3mComponent* model)
             }
         }
     }
-
+#endif
     return true;
 }
 
@@ -184,16 +187,16 @@ bool OpenGL3_Renderer::BeginScene ( const Matrix& matProjection, const Matrix& m
         return false;
     
     glEnable ( GL_DEPTH_TEST );
-    glDisable ( GL_CULL_FACE );
-    //glCullFace ( GL_BACK );
+    glCullFace ( GL_BACK );
 
     m_matrix = matProjection * matLookat;
     
     return true;
 }
 
-bool OpenGL3_Renderer::Render ( const l3mComponent* model, const Matrix& mat )
+bool OpenGL3_Renderer::Render ( const l3m::Model* model, const Matrix& mat )
 {
+#if 0
     l3mComponent::IRendererData* data_ = model->rendererData();
     if ( !data_ && !SetupModel(model) )
         return false;
@@ -239,7 +242,7 @@ bool OpenGL3_Renderer::Render ( const l3mComponent* model, const Matrix& mat )
             }
         }
     }
-    
+#endif
     return true;
 }
 
