@@ -6,7 +6,7 @@
 class ModelOptimizer
 {
 public:
-    static void Optimize ( l3m* source );
+    static void Optimize ( l3mComponent* source );
 };
 
 #endif	/* MODEL_OPTIMIZER_H */

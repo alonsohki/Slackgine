@@ -18,10 +18,10 @@ public:
                 ~GLES20_Renderer       ();
     
     bool        Initialize              ();
-    bool        SetupModel              ( const l3m* model );
+    bool        SetupModel              ( const l3mComponent* model );
 
     bool        BeginScene              ();
-    bool        Render                  ( const l3m* model );
+    bool        Render                  ( const l3mComponent* model );
     bool        EndScene                ();
 
     void        GetError                ( char* dest ) const { strcpy(dest, m_error); }

@@ -4,7 +4,6 @@
 #include <cstring>
 #include "slackgine.h"
 #include "l3m/l3m.h"
-#include "l3mWithDescription.h"
 
 void display ( void );
 
@@ -13,33 +12,11 @@ static Slackgine* sg = 0;
 
 int main(int argc, char** argv)
 {
-    if ( !l3mWithDescription::SignInFactory() )
-        fprintf ( stderr, "No se ha podido registrar el l3m con descripción en la factoría\n" );
-    
-    float fVertices [] =
-    {
-        // Position  
-        0.0f, 1.0f, 0.5f,
-        -0.5f, 0.0f, 0.5f,
-        0.5f, 0.0f, 0.5f,
-    };
-    unsigned int faces [] =
-    {
-        0, 1, 2
-    };
-    
-    l3mWithDescription model ( "Triángulo cromático demostrativo de la interpolación de colores de OpenGL" );;
-    Mesh* mesh = Mesh::LoadAllocating("triangle", fVertices, Vertex::LOAD_POSITION, 0, 3, faces, 3 );
-    model.LoadMesh(mesh, "main");
+    l3mComponent model;
+    if ( model.Load ( "../collada_import/spherecube.l3m" ) != l3mComponent::OK )
+        fprintf ( stderr, "Error al cargar el fichero: %s\n", model.error() );
 
-    if ( model.Save ( "chromatic_tri.l3m" ) != l3m::OK )
-        fprintf ( stderr, "Error al guardar el fichero: %s\n", model.error() );
-    
-    l3m model2;
-    if ( model2.Load ( "../collada_import/spherecube.l3m" ) != l3m::OK )
-        fprintf ( stderr, "Error al cargar el fichero: %s\n", model2.error() );
-
-    entity = new Entity ( &model2 );
+    entity = new Entity ( &model );
     
     glutInit (&argc, argv);
     glutInitWindowSize (800, 600);

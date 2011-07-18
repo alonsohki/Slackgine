@@ -72,7 +72,7 @@ int main(int argc, char** argv)
     }
     
     // Load the model
-    l3m* model = l3mFactory::CreateOfType(type);
+    l3mComponent* model = l3mFactory::CreateOfType(type);
     if ( !model )
     {
         fprintf(stderr, "Unknown l3m type: %s\n", type);
@@ -97,7 +97,7 @@ int main(int argc, char** argv)
     }
     
     // Save the model
-    if ( model->Save(*output) != l3m::OK )
+    if ( model->Save(*output) != l3mComponent::OK )
     {
         fprintf(stderr, "Unable to save the model data: %s\n", model->error() );
         return -1;

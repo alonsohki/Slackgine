@@ -15,8 +15,9 @@
     </logicalFolder>
     <itemPath>color.h</itemPath>
     <itemPath>geometry.h</itemPath>
-    <itemPath>l3m.cpp</itemPath>
     <itemPath>l3m.h</itemPath>
+    <itemPath>../l3m/l3mComponent.cpp</itemPath>
+    <itemPath>../l3m/l3mComponent.h</itemPath>
     <itemPath>l3mFactory.cpp</itemPath>
     <itemPath>l3mFactory.h</itemPath>
     <itemPath>material.h</itemPath>

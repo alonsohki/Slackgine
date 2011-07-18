@@ -6,7 +6,7 @@
 #include "l3m.h"
 #include "l3mFactory.h"
 
-l3m::l3m ()
+l3mComponent::l3mComponent ()
 : m_type ( "default" )
 , m_isDynamic ( false )
 , m_rendererData ( 0 )
@@ -15,7 +15,7 @@ l3m::l3m ()
     SetError ( OK );
 }
 
-l3m::l3m ( const std::string& type )
+l3mComponent::l3mComponent ( const std::string& type )
 : m_type ( type )
 , m_isDynamic ( false )
 , m_rendererData ( 0 )
@@ -24,7 +24,7 @@ l3m::l3m ( const std::string& type )
     SetError ( OK );
 }
 
-l3m::~l3m()
+l3mComponent::~l3mComponent()
 {
     for ( geometryList::iterator iter = m_geometries.begin(); iter != m_geometries.end(); ++iter )
         delete *iter;
@@ -33,12 +33,12 @@ l3m::~l3m()
         delete m_rendererData;
 }
 
-void l3m::DeclareMetadata(const std::string& name)
+void l3mComponent::DeclareMetadata(const std::string& name)
 {
     m_metadatas.push_back ( name );
 }
 
-l3m::ErrorCode l3m::Save ( const char* path, unsigned int flags )
+l3mComponent::ErrorCode l3mComponent::Save ( const char* path, unsigned int flags )
 {
     std::ofstream fp;
     fp.open ( path, std::ios::out | std::ios::binary );
@@ -47,7 +47,7 @@ l3m::ErrorCode l3m::Save ( const char* path, unsigned int flags )
     return Save(fp, flags);
 }
 
-l3m::ErrorCode l3m::Load ( const char* path )
+l3mComponent::ErrorCode l3mComponent::Load ( const char* path )
 {
     std::ifstream fp;
     fp.open ( path, std::ios::in | std::ios::binary );
@@ -56,7 +56,7 @@ l3m::ErrorCode l3m::Load ( const char* path )
     return Load(fp);
 }
 
-Geometry* l3m::CreateGeometry ( const std::string& name )
+Geometry* l3mComponent::CreateGeometry ( const std::string& name )
 {
     Geometry* geometry = FindGeometry ( name );
     if ( !geometry )
@@ -67,7 +67,7 @@ Geometry* l3m::CreateGeometry ( const std::string& name )
     return geometry;
 }
 
-Geometry* l3m::FindGeometry ( const std::string& name )
+Geometry* l3mComponent::FindGeometry ( const std::string& name )
 {
     for ( geometryList::iterator iter = m_geometries.begin ();
           iter != m_geometries.end();
@@ -79,7 +79,7 @@ Geometry* l3m::FindGeometry ( const std::string& name )
     return 0;
 }
 
-void l3m::LoadMesh(Mesh* mesh, const std::string& geometryName )
+void l3mComponent::LoadMesh(Mesh* mesh, const std::string& geometryName )
 {
     Geometry* geometry = FindGeometry ( geometryName );
     if ( geometry == 0 )
@@ -211,7 +211,7 @@ static size_t swap64Read ( u64* v, u32 count, std::istream& fp )
     return count;
 }
 
-void l3m::InitializeEndianness()
+void l3mComponent::InitializeEndianness()
 {
     // Check if this machine is big endian
     unsigned char thisMachineIsBigEndian = detectBigEndian ();
@@ -238,39 +238,39 @@ void l3m::InitializeEndianness()
     }
 }
 
-bool l3m::Write16 ( const u16* v, u32 nmemb, std::ostream& fp ) const
+bool l3mComponent::Write16 ( const u16* v, u32 nmemb, std::ostream& fp ) const
 {
     return m_endian16writer ( v, nmemb, fp) >= nmemb;
 }
-size_t l3m::Read16 ( u16* v, u32 nmemb, std::istream& fp ) const
+size_t l3mComponent::Read16 ( u16* v, u32 nmemb, std::istream& fp ) const
 {
     return m_endian16reader ( v, nmemb, fp );
 }
-bool l3m::Write32 ( const u32* v, u32 nmemb, std::ostream& fp ) const
+bool l3mComponent::Write32 ( const u32* v, u32 nmemb, std::ostream& fp ) const
 {
     return m_endian32writer ( v, nmemb, fp ) >= nmemb;
 }
-size_t l3m::Read32 ( u32* v, u32 nmemb, std::istream& fp ) const
+size_t l3mComponent::Read32 ( u32* v, u32 nmemb, std::istream& fp ) const
 {
     return m_endian32reader ( v, nmemb, fp );
 }
-bool l3m::Write64 ( const u64* v, u32 nmemb, std::ostream& fp ) const
+bool l3mComponent::Write64 ( const u64* v, u32 nmemb, std::ostream& fp ) const
 {
     return m_endian64writer ( v, nmemb, fp ) >= nmemb;
 }
-size_t l3m::Read64 ( u64* v, u32 nmemb, std::istream& fp ) const
+size_t l3mComponent::Read64 ( u64* v, u32 nmemb, std::istream& fp ) const
 {
     return m_endian64reader ( v, nmemb, fp );
 }
-bool l3m::WriteFloat ( const float* v, u32 nmemb, std::ostream& fp ) const
+bool l3mComponent::WriteFloat ( const float* v, u32 nmemb, std::ostream& fp ) const
 {
     return m_endian32writer ( reinterpret_cast<const u32*>(v), nmemb, fp ) >= nmemb;
 }
-size_t l3m::ReadFloat ( float* v, u32 nmemb, std::istream& fp ) const
+size_t l3mComponent::ReadFloat ( float* v, u32 nmemb, std::istream& fp ) const
 {
     return m_endian32reader ( reinterpret_cast<u32*>(v), nmemb, fp );
 }
-bool l3m::WriteStr ( const std::string& str, std::ostream& fp ) const
+bool l3mComponent::WriteStr ( const std::string& str, std::ostream& fp ) const
 {
     u32 length = str.length ();
     if ( !Write32 ( &length, 1, fp ) )
@@ -278,7 +278,7 @@ bool l3m::WriteStr ( const std::string& str, std::ostream& fp ) const
     return WriteData ( str.c_str(), sizeof(char), length, fp );
 }
 
-size_t l3m::ReadStr ( std::string& dest, std::istream& fp ) const
+size_t l3mComponent::ReadStr ( std::string& dest, std::istream& fp ) const
 {
     u32 length;
     if ( Read32( &length, 1, fp ) != 1 )
@@ -295,19 +295,19 @@ size_t l3m::ReadStr ( std::string& dest, std::istream& fp ) const
     return length;
 }
 
-bool l3m::WriteData ( const void* data, size_t size, u32 nmemb, std::ostream& fp ) const
+bool l3mComponent::WriteData ( const void* data, size_t size, u32 nmemb, std::ostream& fp ) const
 {
     fp.write ( reinterpret_cast<const char*>(data), size*nmemb );
     return true;
 }
 
-size_t l3m::ReadData ( char* dest, size_t size, u32 nmemb, std::istream& fp ) const
+size_t l3mComponent::ReadData ( char* dest, size_t size, u32 nmemb, std::istream& fp ) const
 {
     fp.read ( dest, size*nmemb );
     return fp.gcount () / size;
 }
 
-l3m::ErrorCode l3m::Save ( std::ostream& fp, u32 flags )
+l3mComponent::ErrorCode l3mComponent::Save ( std::ostream& fp, u32 flags )
 {
     u32 zero = 0;
     u32 i;
@@ -416,7 +416,7 @@ l3m::ErrorCode l3m::Save ( std::ostream& fp, u32 flags )
     return SetError(OK);
 }
 
-l3m* l3m::CreateAndLoad ( std::istream& fp, ErrorCode* code )
+l3mComponent* l3mComponent::CreateAndLoad ( std::istream& fp, ErrorCode* code )
 {
 #define SET_ERROR(x) if ( code != 0 ) *code = x ;
     char buffer [ 256 ];
@@ -494,7 +494,7 @@ l3m* l3m::CreateAndLoad ( std::istream& fp, ErrorCode* code )
     delete [] temp;
     
     // Generate an instance of this type
-    l3m* instance = l3mFactory::CreateOfType(strType);
+    l3mComponent* instance = l3mFactory::CreateOfType(strType);
     if ( !instance )
     {
         SET_ERROR ( INVALID_TYPE );
@@ -507,7 +507,7 @@ l3m* l3m::CreateAndLoad ( std::istream& fp, ErrorCode* code )
 #undef SET_ERROR
 }
 
-l3m::ErrorCode l3m::Load ( std::istream& fp )
+l3mComponent::ErrorCode l3mComponent::Load ( std::istream& fp )
 {
     char buffer [ 2 ];
     size_t size;
@@ -568,7 +568,7 @@ l3m::ErrorCode l3m::Load ( std::istream& fp )
     return InternalLoad ( fp, doEndianSwapping );
 }
 
-l3m::ErrorCode l3m::InternalLoad ( std::istream& fp, bool doEndianSwapping )
+l3mComponent::ErrorCode l3mComponent::InternalLoad ( std::istream& fp, bool doEndianSwapping )
 {
     size_t size;
     u32 i;
@@ -674,7 +674,7 @@ l3m::ErrorCode l3m::InternalLoad ( std::istream& fp, bool doEndianSwapping )
     return SetError(OK);
 }
 
-l3m::ErrorCode l3m::SetError ( l3m::ErrorCode err )
+l3mComponent::ErrorCode l3mComponent::SetError ( l3mComponent::ErrorCode err )
 {
     errorCode() = err;
     if ( err == OK )
@@ -691,7 +691,7 @@ l3m::ErrorCode l3m::SetError ( l3m::ErrorCode err )
     return err;
 }
 
-const char* l3m::TranslateErrorCode ( l3m::ErrorCode err )
+const char* l3mComponent::TranslateErrorCode ( l3mComponent::ErrorCode err )
 {
     switch ( err )
     {

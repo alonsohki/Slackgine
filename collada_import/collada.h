@@ -7,7 +7,7 @@
 class Collada
 {
 public:
-    static bool Import ( TiXmlDocument&, l3m&, const char** err = 0 );
+    static bool Import ( TiXmlDocument&, l3mComponent&, const char** err = 0 );
     
 private:
     template < typename T >

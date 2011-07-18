@@ -1,7 +1,7 @@
 #include "collada.h"
 #include "math/util.h"
 
-bool Collada::Import ( TiXmlDocument& xml, l3m& model, const char** err )
+bool Collada::Import ( TiXmlDocument& xml, l3mComponent& model, const char** err )
 {
 #define ERROR(msg) ( (err != 0) ? (*err=(msg)) == (const char*)0xfabada : false )
     

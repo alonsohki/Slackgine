@@ -1,12 +1,12 @@
 #include <cstdio>
 #include "model_optimizer.h"
 
-static void DeleteDuplicates ( l3m* source )
+static void DeleteDuplicates ( l3mComponent* source )
 {
     u32 numClones = 0;
     u32 numClonesLevel;
     
-    for ( l3m::geometryList::iterator i = source->geometries().begin(); i != source->geometries().end(); ++i )
+    for ( l3mComponent::geometryList::iterator i = source->geometries().begin(); i != source->geometries().end(); ++i )
     {
         for ( Geometry::meshList::iterator j = (*i)->meshes().begin(); j != (*i)->meshes().end(); ++j )
         {
@@ -44,7 +44,7 @@ static void DeleteDuplicates ( l3m* source )
     fprintf ( stderr, "* Removed %u duplicates\n", numClones );
 }
 
-void ModelOptimizer::Optimize(l3m* source)
+void ModelOptimizer::Optimize(l3mComponent* source)
 {
     fprintf ( stderr, "Optimising model...\n" );
     //DeleteDuplicates ( source );

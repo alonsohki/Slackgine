@@ -1,6 +1,6 @@
 #include "entity.h"
 
-Entity::Entity ( const l3m* pModel )
+Entity::Entity ( const l3mComponent* pModel )
 : m_model ( pModel )
 {}
 

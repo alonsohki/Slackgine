@@ -20,10 +20,10 @@ public:
                 ~OpenGL3_Renderer       ();
     
     bool        Initialize              ();
-    bool        SetupModel              ( const l3m* model );
+    bool        SetupModel              ( const l3mComponent* model );
     
     bool        BeginScene              ( const Matrix& matProjection = IdentityMatrix(), const Matrix& matLookat = IdentityMatrix() );
-    bool        Render                  ( const l3m* model, const Matrix& mat = IdentityMatrix() );
+    bool        Render                  ( const l3mComponent* model, const Matrix& mat = IdentityMatrix() );
     bool        EndScene                ();
     
     void        GetError                ( char* dest ) const { strcpy(dest, m_error); }

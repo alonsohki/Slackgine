@@ -1,5 +1,5 @@
-#ifndef L3M_H
-#define L3M_H
+#ifndef L3MCOMPONENT_H
+#define L3MCOMPONENT_H
 
 #include <string>
 #include <map>
@@ -22,7 +22,7 @@ static const enum
     L3M_BIG_ENDIAN
 } L3M_SAVE_ENDIANNESS = L3M_LOW_ENDIAN;
 
-class l3m
+class l3mComponent
 {
 public:
     class IRendererData { public: virtual ~IRendererData() {} };
@@ -110,11 +110,11 @@ private:
     
 
 public:
-                l3m ();
+                l3mComponent ();
 protected:
-                l3m ( const std::string& type );
+                l3mComponent ( const std::string& type );
 public:
-    virtual     ~l3m();
+    virtual     ~l3mComponent();
     
     // Accessors
 public:
@@ -138,7 +138,7 @@ public:
     ErrorCode           Load            ( std::istream& is );
 private:
     friend class l3mFactory;
-    static l3m*         CreateAndLoad   ( std::istream& is, ErrorCode* errcode = 0 );
+    static l3mComponent*         CreateAndLoad   ( std::istream& is, ErrorCode* errcode = 0 );
     
 private:
     ErrorCode           InternalLoad    ( std::istream& is, bool doEndianSwapping );

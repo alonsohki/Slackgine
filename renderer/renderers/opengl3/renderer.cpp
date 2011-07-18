@@ -1,7 +1,7 @@
 #include <sstream>
 #include "opengl3.h"
 
-struct RendererData : public l3m::IRendererData
+struct RendererData : public l3mComponent::IRendererData
 {
     GLsizei         m_numvaos;
     GLuint*         m_vaos;
@@ -102,7 +102,7 @@ bool OpenGL3_Renderer::Initialize()
     return m_initialized;
 }
 
-bool OpenGL3_Renderer::SetupModel(const l3m* model)
+bool OpenGL3_Renderer::SetupModel(const l3mComponent* model)
 {
     if ( model->rendererData() != 0 )
         return false;
@@ -112,8 +112,8 @@ bool OpenGL3_Renderer::SetupModel(const l3m* model)
 
     // Count the number of meshes.
     unsigned int numMeshes = 0;
-    const l3m::geometryList& geometries = model->geometries();
-    for ( l3m::geometryList::const_iterator i = geometries.begin(); i != geometries.end(); ++i )
+    const l3mComponent::geometryList& geometries = model->geometries();
+    for ( l3mComponent::geometryList::const_iterator i = geometries.begin(); i != geometries.end(); ++i )
     {
         const Geometry* geometry = *i;
         numMeshes += geometry->meshes().size();
@@ -135,7 +135,7 @@ bool OpenGL3_Renderer::SetupModel(const l3m* model)
 
         // Setup the vaos
         unsigned int curMesh = 0;
-        for ( l3m::geometryList::const_iterator i = geometries.begin(); i != geometries.end(); ++i )
+        for ( l3mComponent::geometryList::const_iterator i = geometries.begin(); i != geometries.end(); ++i )
         {
             const Geometry* geometry = *i;
             for ( Geometry::meshList::const_iterator j = geometry->meshes().begin(); j != geometry->meshes().end(); ++j )
@@ -192,9 +192,9 @@ bool OpenGL3_Renderer::BeginScene ( const Matrix& matProjection, const Matrix& m
     return true;
 }
 
-bool OpenGL3_Renderer::Render ( const l3m* model, const Matrix& mat )
+bool OpenGL3_Renderer::Render ( const l3mComponent* model, const Matrix& mat )
 {
-    l3m::IRendererData* data_ = model->rendererData();
+    l3mComponent::IRendererData* data_ = model->rendererData();
     if ( !data_ && !SetupModel(model) )
         return false;
     RendererData* data = static_cast<RendererData*>(model->rendererData ());
@@ -202,8 +202,8 @@ bool OpenGL3_Renderer::Render ( const l3m* model, const Matrix& mat )
     Matrix matModelview = m_matrix * mat;
 
     unsigned int curMesh = 0;
-    const l3m::geometryList& geometries = model->geometries();
-    for ( l3m::geometryList::const_iterator i = geometries.begin(); i != geometries.end(); ++i )
+    const l3mComponent::geometryList& geometries = model->geometries();
+    for ( l3mComponent::geometryList::const_iterator i = geometries.begin(); i != geometries.end(); ++i )
     {
         const Geometry* geometry = *i;
         Matrix matGeometry = matModelview * geometry->matrix();
