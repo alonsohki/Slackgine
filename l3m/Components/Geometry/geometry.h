@@ -17,7 +17,6 @@ public:
 
 private:
     std::string         m_name;
-    Matrix              m_matrix;
     meshList            m_meshes;
     
 public:
@@ -50,11 +49,9 @@ public:
     // Accessors
 public:
     const std::string&          name    () const { return m_name; }
-    const Matrix&               matrix  () const { return m_matrix; }
     const meshList&             meshes  () const { return m_meshes; }
     
     std::string&                name    () { return m_name; }
-    Matrix&                     matrix  () { return m_matrix; }
     meshList&                   meshes  () { return m_meshes; } 
 };
 
