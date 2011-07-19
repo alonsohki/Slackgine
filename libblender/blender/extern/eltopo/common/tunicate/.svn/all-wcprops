@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svnroot/bf-blender/!svn/ver/36420/trunk/blender/extern/eltopo/common/tunicate
+END
+neg.h
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svnroot/bf-blender/!svn/ver/36420/trunk/blender/extern/eltopo/common/tunicate/neg.h
+END
+sos_orientation.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svnroot/bf-blender/!svn/ver/36420/trunk/blender/extern/eltopo/common/tunicate/sos_orientation.cpp
+END
+tunicate.h
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/bf-blender/!svn/ver/36420/trunk/blender/extern/eltopo/common/tunicate/tunicate.h
+END
+expansion.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svnroot/bf-blender/!svn/ver/36420/trunk/blender/extern/eltopo/common/tunicate/expansion.cpp
+END
+intersection.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svnroot/bf-blender/!svn/ver/36420/trunk/blender/extern/eltopo/common/tunicate/intersection.cpp
+END
+expansion.h
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/bf-blender/!svn/ver/36420/trunk/blender/extern/eltopo/common/tunicate/expansion.h
+END
+neg.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svnroot/bf-blender/!svn/ver/36420/trunk/blender/extern/eltopo/common/tunicate/neg.cpp
+END
+sos_intersection.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svnroot/bf-blender/!svn/ver/36420/trunk/blender/extern/eltopo/common/tunicate/sos_intersection.cpp
+END
+orientation.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svnroot/bf-blender/!svn/ver/36420/trunk/blender/extern/eltopo/common/tunicate/orientation.cpp
+END

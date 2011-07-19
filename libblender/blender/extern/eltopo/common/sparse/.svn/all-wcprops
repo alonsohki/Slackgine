@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/bf-blender/!svn/ver/36420/trunk/blender/extern/eltopo/common/sparse
+END
+incomplete_qr.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svnroot/bf-blender/!svn/ver/36420/trunk/blender/extern/eltopo/common/sparse/incomplete_qr.cpp
+END
+crsolver.h
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/bf-blender/!svn/ver/36420/trunk/blender/extern/eltopo/common/sparse/crsolver.h
+END
+incomplete_qr.h
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svnroot/bf-blender/!svn/ver/36420/trunk/blender/extern/eltopo/common/sparse/incomplete_qr.h
+END
+sparsematrix.h
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svnroot/bf-blender/!svn/ver/36420/trunk/blender/extern/eltopo/common/sparse/sparsematrix.h
+END
+cgsolver.h
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/bf-blender/!svn/ver/36420/trunk/blender/extern/eltopo/common/sparse/cgsolver.h
+END
+sparsemilu.h
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/bf-blender/!svn/ver/36420/trunk/blender/extern/eltopo/common/sparse/sparsemilu.h
+END
+sparseilu.h
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svnroot/bf-blender/!svn/ver/36420/trunk/blender/extern/eltopo/common/sparse/sparseilu.h
+END

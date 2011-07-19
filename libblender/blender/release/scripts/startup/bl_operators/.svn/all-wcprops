@@ -1,0 +1,113 @@
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svnroot/bf-blender/!svn/ver/38513/trunk/blender/release/scripts/startup/bl_operators
+END
+uvcalc_follow_active.py
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svnroot/bf-blender/!svn/ver/38279/trunk/blender/release/scripts/startup/bl_operators/uvcalc_follow_active.py
+END
+sequencer.py
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svnroot/bf-blender/!svn/ver/35667/trunk/blender/release/scripts/startup/bl_operators/sequencer.py
+END
+vertexpaint_dirt.py
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svnroot/bf-blender/!svn/ver/35694/trunk/blender/release/scripts/startup/bl_operators/vertexpaint_dirt.py
+END
+mesh.py
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svnroot/bf-blender/!svn/ver/38279/trunk/blender/release/scripts/startup/bl_operators/mesh.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svnroot/bf-blender/!svn/ver/35896/trunk/blender/release/scripts/startup/bl_operators/__init__.py
+END
+add_mesh_torus.py
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svnroot/bf-blender/!svn/ver/36710/trunk/blender/release/scripts/startup/bl_operators/add_mesh_torus.py
+END
+object_quick_effects.py
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svnroot/bf-blender/!svn/ver/38016/trunk/blender/release/scripts/startup/bl_operators/object_quick_effects.py
+END
+uvcalc_lightmap.py
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svnroot/bf-blender/!svn/ver/38279/trunk/blender/release/scripts/startup/bl_operators/uvcalc_lightmap.py
+END
+object.py
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svnroot/bf-blender/!svn/ver/36320/trunk/blender/release/scripts/startup/bl_operators/object.py
+END
+uvcalc_smart_project.py
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svnroot/bf-blender/!svn/ver/38470/trunk/blender/release/scripts/startup/bl_operators/uvcalc_smart_project.py
+END
+object_randomize_transform.py
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svnroot/bf-blender/!svn/ver/35928/trunk/blender/release/scripts/startup/bl_operators/object_randomize_transform.py
+END
+nla.py
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svnroot/bf-blender/!svn/ver/37703/trunk/blender/release/scripts/startup/bl_operators/nla.py
+END
+screen_play_rendered_anim.py
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svnroot/bf-blender/!svn/ver/38279/trunk/blender/release/scripts/startup/bl_operators/screen_play_rendered_anim.py
+END
+object_align.py
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svnroot/bf-blender/!svn/ver/38513/trunk/blender/release/scripts/startup/bl_operators/object_align.py
+END
+image.py
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svnroot/bf-blender/!svn/ver/38279/trunk/blender/release/scripts/startup/bl_operators/image.py
+END
+wm.py
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svnroot/bf-blender/!svn/ver/37851/trunk/blender/release/scripts/startup/bl_operators/wm.py
+END
+presets.py
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svnroot/bf-blender/!svn/ver/38294/trunk/blender/release/scripts/startup/bl_operators/presets.py
+END
+animsys_update.py
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svnroot/bf-blender/!svn/ver/36247/trunk/blender/release/scripts/startup/bl_operators/animsys_update.py
+END

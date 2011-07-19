@@ -24,12 +24,13 @@ bool Geometry::Save(l3m::OStream& fp)
         Mesh* mesh = *iter2;
 
         // Write the mesh name
-        FWRITE_STR ( mesh->name(), fp, ERROR_WRITING_MESH_NAME );
+        if ( !fp.WriteStr ( mesh->name() ) )
+            return SetError ( "Error writing the mesh name" );
 
         // Write the polygon type
-        FWRITE32 ( &(mesh->polyType()), 1, fp, ERROR_WRITING_POLYGON_TYPE );
-
-        // Write the material data
+        if ( fp.Write32 ( &(mesh->polyType()), 1 ) != 1 )
+            return SetError ( "Error writing the mesh polygon type" );
+        
         const Material& mat = mesh->material();
         FWRITE32 ( (u32*)&mat, 4, fp, ERROR_WRITING_MATERIAL_COLORS );
 

@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svnroot/bf-blender/!svn/ver/38506/trunk/blender/source/blender/nodes/intern
+END
+SHD_util.h
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/bf-blender/!svn/ver/37054/trunk/blender/source/blender/nodes/intern/SHD_util.h
+END
+CMP_util.h
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/bf-blender/!svn/ver/35237/trunk/blender/source/blender/nodes/intern/CMP_util.h
+END
+TEX_util.h
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/bf-blender/!svn/ver/35237/trunk/blender/source/blender/nodes/intern/TEX_util.h
+END
+node_util.c
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svnroot/bf-blender/!svn/ver/35623/trunk/blender/source/blender/nodes/intern/node_util.c
+END
+node_util.h
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svnroot/bf-blender/!svn/ver/35237/trunk/blender/source/blender/nodes/intern/node_util.h
+END
+SHD_util.c
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/bf-blender/!svn/ver/38506/trunk/blender/source/blender/nodes/intern/SHD_util.c
+END
+CMP_util.c
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/bf-blender/!svn/ver/38344/trunk/blender/source/blender/nodes/intern/CMP_util.c
+END
+TEX_util.c
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/bf-blender/!svn/ver/36271/trunk/blender/source/blender/nodes/intern/TEX_util.c
+END

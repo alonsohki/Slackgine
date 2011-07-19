@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svnroot/bf-blender/!svn/ver/38410/trunk/blender/doc/python_api/rst
+END
+bge.logic.rst
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svnroot/bf-blender/!svn/ver/38135/trunk/blender/doc/python_api/rst/bge.logic.rst
+END
+bge.render.rst
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/bf-blender/!svn/ver/32445/trunk/blender/doc/python_api/rst/bge.render.rst
+END
+bge.texture.rst
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svnroot/bf-blender/!svn/ver/38205/trunk/blender/doc/python_api/rst/bge.texture.rst
+END
+bge.events.rst
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/bf-blender/!svn/ver/38217/trunk/blender/doc/python_api/rst/bge.events.rst
+END
+bge.types.rst
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svnroot/bf-blender/!svn/ver/37455/trunk/blender/doc/python_api/rst/bge.types.rst
+END
+bge.constraints.rst
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/bf-blender/!svn/ver/38410/trunk/blender/doc/python_api/rst/bge.constraints.rst
+END
+bgl.rst
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svnroot/bf-blender/!svn/ver/38378/trunk/blender/doc/python_api/rst/bgl.rst
+END
+change_log.rst
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/bf-blender/!svn/ver/37840/trunk/blender/doc/python_api/rst/change_log.rst
+END

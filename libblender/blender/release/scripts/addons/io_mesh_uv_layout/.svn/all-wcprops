@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svnroot/bf-extensions/!svn/ver/1760/trunk/py/scripts/addons/io_mesh_uv_layout
+END
+export_uv_svg.py
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svnroot/bf-extensions/!svn/ver/1709/trunk/py/scripts/addons/io_mesh_uv_layout/export_uv_svg.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/bf-extensions/!svn/ver/1719/trunk/py/scripts/addons/io_mesh_uv_layout/__init__.py
+END
+export_uv_png.py
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svnroot/bf-extensions/!svn/ver/1760/trunk/py/scripts/addons/io_mesh_uv_layout/export_uv_png.py
+END
+export_uv_eps.py
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svnroot/bf-extensions/!svn/ver/1709/trunk/py/scripts/addons/io_mesh_uv_layout/export_uv_eps.py
+END

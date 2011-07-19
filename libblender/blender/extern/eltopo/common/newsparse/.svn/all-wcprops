@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svnroot/bf-blender/!svn/ver/36420/trunk/blender/extern/eltopo/common/newsparse
+END
+sparse_matrix.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svnroot/bf-blender/!svn/ver/36420/trunk/blender/extern/eltopo/common/newsparse/sparse_matrix.cpp
+END
+dense_matrix.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svnroot/bf-blender/!svn/ver/36420/trunk/blender/extern/eltopo/common/newsparse/dense_matrix.cpp
+END
+krylov_solvers.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svnroot/bf-blender/!svn/ver/36420/trunk/blender/extern/eltopo/common/newsparse/krylov_solvers.cpp
+END
+sparse_matrix.h
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svnroot/bf-blender/!svn/ver/36420/trunk/blender/extern/eltopo/common/newsparse/sparse_matrix.h
+END
+dense_matrix.h
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svnroot/bf-blender/!svn/ver/36420/trunk/blender/extern/eltopo/common/newsparse/dense_matrix.h
+END
+krylov_solvers.h
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svnroot/bf-blender/!svn/ver/36420/trunk/blender/extern/eltopo/common/newsparse/krylov_solvers.h
+END
+linear_operator.h
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svnroot/bf-blender/!svn/ver/36420/trunk/blender/extern/eltopo/common/newsparse/linear_operator.h
+END

@@ -1,0 +1,123 @@
+10
+
+dir
+38518
+https://svn.blender.org/svnroot/bf-blender/trunk/blender/extern
+https://svn.blender.org/svnroot/bf-blender
+
+
+
+2011-07-17T09:11:13.810557Z
+38443
+campbellbarton
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+954f8c5b-7b00-dc11-b283-0030488c597c
+
+eltopo
+dir
+
+lzma
+dir
+
+lzo
+dir
+
+SConscript
+file
+
+
+
+
+2011-07-19T21:18:26.000000Z
+03a5157cfb1c8088c9657b040d1bea79
+2011-05-01T21:39:13.773231Z
+36419
+joeedh
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+598
+
+Eigen2
+dir
+
+bullet2
+dir
+
+libredcode
+dir
+
+binreloc
+dir
+
+CMakeLists.txt
+file
+
+
+
+
+2011-07-19T21:18:26.000000Z
+5faadafb7534e30291e24349983323e9
+2011-05-02T03:44:02.634191Z
+36423
+campbellbarton
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1574
+
+glew
+dir
+
+libopenjpeg
+dir
+

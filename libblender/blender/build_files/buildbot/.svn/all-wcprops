@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svnroot/bf-blender/!svn/ver/37703/trunk/blender/build_files/buildbot
+END
+slave_pack.py
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svnroot/bf-blender/!svn/ver/37703/trunk/blender/build_files/buildbot/slave_pack.py
+END
+slave_test.py
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svnroot/bf-blender/!svn/ver/35810/trunk/blender/build_files/buildbot/slave_test.py
+END
+master_unpack.py
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svnroot/bf-blender/!svn/ver/37703/trunk/blender/build_files/buildbot/master_unpack.py
+END
+master.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svnroot/bf-blender/!svn/ver/37703/trunk/blender/build_files/buildbot/master.cfg
+END
+slave_compile.py
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svnroot/bf-blender/!svn/ver/37147/trunk/blender/build_files/buildbot/slave_compile.py
+END

@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/bf-blender/!svn/ver/37659/trunk/blender/build_files/cmake/Modules
+END
+FindPythonLibsUnix.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svnroot/bf-blender/!svn/ver/37659/trunk/blender/build_files/cmake/Modules/FindPythonLibsUnix.cmake
+END
+FindOpenEXR.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svnroot/bf-blender/!svn/ver/37649/trunk/blender/build_files/cmake/Modules/FindOpenEXR.cmake
+END
+FindSndFile.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svnroot/bf-blender/!svn/ver/37649/trunk/blender/build_files/cmake/Modules/FindSndFile.cmake
+END
+FindJeMalloc.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svnroot/bf-blender/!svn/ver/37649/trunk/blender/build_files/cmake/Modules/FindJeMalloc.cmake
+END
+FindOpenJPEG.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svnroot/bf-blender/!svn/ver/37649/trunk/blender/build_files/cmake/Modules/FindOpenJPEG.cmake
+END
+FindJack.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/bf-blender/!svn/ver/37649/trunk/blender/build_files/cmake/Modules/FindJack.cmake
+END
+FindFftw3.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/bf-blender/!svn/ver/37649/trunk/blender/build_files/cmake/Modules/FindFftw3.cmake
+END
+FindSamplerate.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svnroot/bf-blender/!svn/ver/37649/trunk/blender/build_files/cmake/Modules/FindSamplerate.cmake
+END
+FindGLEW.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/bf-blender/!svn/ver/36026/trunk/blender/build_files/cmake/Modules/FindGLEW.cmake
+END
