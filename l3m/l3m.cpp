@@ -18,7 +18,7 @@ bool Model::Load(std::istream& fp)
     char BOM [ 8 ];
     fp.read ( BOM, sizeof(char)*strlen(L3M_BOM) );
     if ( memcmp ( BOM, L3M_BOM, strlen(L3M_BOM) ) != 0 )
-        return false;
+        return SetError ( "Unable to read the BOM" );
 
     // Check for endianness swapping
     u8 targetIsBigEndian;
@@ -34,15 +34,22 @@ bool Model::Load(std::istream& fp)
     IStream is ( &fp, flags );
     u32 readFlags = IOStream::NONE;
     if ( is.Read32 ( &readFlags, 1 ) != 1 )
-        return false;
+        return SetError ( "Unable to read the flags" );
     readFlags &= ~IOStream::ENDIAN_SWAPPING;
     readFlags |= flags & IOStream::ENDIAN_SWAPPING;
     is.SetFlags ( readFlags );
     
+    // Read and check the version
+    float version;
+    if ( is.ReadFloat ( &version, 1 ) != 1 )
+        return SetError ( "Unable to read the L3M version" );
+    if ( version > L3M_VERSION )
+        return SetError ( "Unsupported L3M version" );
+    
     // Read the number of components
     u32 numComponents;
     if ( is.Read32(&numComponents, 1) != 1 )
-        return false;
+        return SetError ( "Unable to read the number of components" );
     
     for ( u32 i = 0; i < numComponents; ++i )
     {
@@ -51,15 +58,14 @@ bool Model::Load(std::istream& fp)
         is.ReadStr ( type );
         
         // Read the component version
-        float version;
         if ( is.ReadFloat ( &version, 1 ) != 1 )
-            return false;
+            return SetError ( "Unable to read the component version" );
         
         IComponent* component = ComponentFactory::Create( type );
         if ( component == 0 )
-            return false;
+            return SetError ( "Unable to create a component of type '%s'", type.c_str() );
         if ( component->Load ( is, version ) == false )
-            return false;
+            return SetError ( "Unable to load a component of type '%s': %s", type.c_str(), component->error() );
         
         m_vecComponents.push_back ( component );
     }

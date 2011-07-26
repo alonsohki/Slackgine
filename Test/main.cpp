@@ -13,8 +13,11 @@ static Slackgine* sg = 0;
 int main(int argc, char** argv)
 {
     l3m::Model model;
-    if ( model.Load ( "../collada_import/spherecube.l3m" ) == false )
-        fprintf ( stderr, "Error al cargar el fichero: %s\n", "TODO" );
+    if ( model.Load ( "../import/spherecube.l3m" ) == false )
+    {
+        fprintf ( stderr, "Error al cargar el modelo: %s\n", model.error() );
+        return EXIT_FAILURE;
+    }
 
     entity = new Entity ( &model );
     

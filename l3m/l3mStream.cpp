@@ -127,12 +127,18 @@ void IOStream::SetupFlags ()
         m_endian16writer = swap16Write;
         m_endian32writer = swap32Write;
         m_endian64writer = swap64Write;
+        m_endian16reader = swap16Read;
+        m_endian32reader = swap32Read;
+        m_endian64reader = swap64Read;
     }
     else
     {
         m_endian16writer = identityWrite<u16>;
         m_endian32writer = identityWrite<u32>;
         m_endian64writer = identityWrite<u64>;
+        m_endian16reader = identityRead<u16>;
+        m_endian32reader = identityRead<u32>;
+        m_endian64reader = identityRead<u64>;
     }
     
     // TODO: Compression. Do it making a new STL stream that compresses stuff,
