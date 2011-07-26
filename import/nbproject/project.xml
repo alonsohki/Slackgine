@@ -10,6 +10,7 @@
             <sourceEncoding>UTF-8</sourceEncoding>
             <make-dep-projects>
                 <make-dep-project>../libblender</make-dep-project>
+                <make-dep-project>../l3m</make-dep-project>
             </make-dep-projects>
             <sourceRootList/>
             <confList>

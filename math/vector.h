@@ -22,6 +22,24 @@ public:
         y() = 0.0f;
     }
     
+    Vector2 ( const Vector2& vec )
+    {
+        x() = vec.x();
+        y() = vec.y();
+    }
+    
+    Vector2 ( float fX, float fY )
+    {
+        x() = fX;
+        y() = fY;
+    }
+    
+    Vector2 ( const float* f )
+    {
+        x() = f[0];
+        y() = f[1];
+    }
+    
     const f32& x() const { return s.fX; }
     const f32& y() const { return s.fY; }
     const f32* vector() const { return v; }

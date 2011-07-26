@@ -28,7 +28,6 @@ public:
     Geometry ( const std::string& name )
     : IComponent ( "geometry", 1.0f )
     , m_name ( name )
-    , m_matrix ( IdentityMatrix() )
     {
     }
     

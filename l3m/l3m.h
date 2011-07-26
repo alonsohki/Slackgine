@@ -54,6 +54,8 @@ public:
         return static_cast<T*>(component);
     }
     
+    unsigned int numComponents () const { return m_vecComponents.size(); }
+    
 private:
     bool        SetError        ( const char* msg, ... )
     {

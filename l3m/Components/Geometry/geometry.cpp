@@ -14,7 +14,7 @@ bool Geometry::Save(l3m::OStream& fp)
         return SetError ( "Error writing the geometry name" );
 
     // Write the meshes headers
-    const meshList& meshes = meshes();
+    const meshList& meshes = this->meshes();
     u32 numMeshes = meshes.size ();
     if ( fp.Write32 ( &numMeshes, 1 ) != 1 )
         return SetError ( "Error writing the number of meshes" );
@@ -24,25 +24,27 @@ bool Geometry::Save(l3m::OStream& fp)
         Mesh* mesh = *iter2;
 
         // Write the mesh name
-        if ( !fp.WriteStr ( mesh->name() ) )
+        if ( ! fp.WriteStr ( mesh->name() ) )
             return SetError ( "Error writing the mesh name" );
 
         // Write the polygon type
-        if ( fp.Write32 ( &(mesh->polyType()), 1 ) != 1 )
+        u32 polyType = mesh->polyType();
+        if ( ! fp.Write32 ( &polyType, 1 ) )
             return SetError ( "Error writing the mesh polygon type" );
         
-        const Material& mat = mesh->material();
-        FWRITE32 ( (u32*)&mat, 4, fp, ERROR_WRITING_MATERIAL_COLORS );
-
         // Write the vertex data
         unsigned int num = mesh->numVertices();
-        FWRITE32 ( &num, 1, fp, ERROR_WRITING_VERTEX_COUNT );
-        FWRITEF ( mesh->vertices(), (num * sizeof(Vertex)) / sizeof(float), fp, ERROR_WRITING_VERTEX_DATA );
+        if ( ! fp.Write32 ( &num, 1 ) )
+            return SetError ( "Error writing the vertex count" );
+        if ( ! fp.WriteFloat ( reinterpret_cast<float *>(mesh->vertices()), num*sizeof(Vertex) / sizeof(float) ) )
+            return SetError ( "Error writing the vertex data" );
 
         // Write the index data
         num = mesh->numIndices();
-        FWRITE32 ( &num, 1, fp, ERROR_WRITING_INDEX_COUNT );
-        FWRITE32 ( mesh->indices(), (num * sizeof(u32)) / sizeof(u32), fp, ERROR_WRITING_INDEX_DATA );
+        if ( ! fp.Write32( &num, 1 ) )
+            return SetError ( "Error writing the index count" );
+        if ( ! fp.Write32(mesh->indices(), num ) )
+            return SetError ( "Error writing the index data" );
     }
     
     return true;
