@@ -357,17 +357,20 @@ bool import_blender ( int argc, const char** argv, std::istream& is, l3m::Model*
     {
         is.read ( temp, sizeof(temp) );
         currentSize = is.gcount();
-        
-        if ( totalSize + currentSize > memSize )
+
+        if ( currentSize > 0 )
         {
-            memSize *= 2;
-            char* newMem = new char [ memSize ];
-            memcpy ( newMem, mem, totalSize );
-            delete [] mem;
-            mem = newMem;
+            if ( totalSize + currentSize > memSize )
+            {
+                memSize *= 2;
+                char* newMem = new char [ memSize ];
+                memcpy ( newMem, mem, totalSize );
+                delete [] mem;
+                mem = newMem;
+            }
+            memcpy ( &mem[totalSize], temp, currentSize );
+            totalSize += currentSize;
         }
-        memcpy ( &mem[totalSize], temp, currentSize );
-        totalSize += currentSize;
     }
     
     BlendFileData* data = BLO_read_from_memory(mem, totalSize, NULL);
