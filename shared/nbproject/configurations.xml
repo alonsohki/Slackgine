@@ -15,6 +15,7 @@
     </logicalFolder>
     <itemPath>color.h</itemPath>
     <itemPath>platform.h</itemPath>
+    <itemPath>util.h</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>

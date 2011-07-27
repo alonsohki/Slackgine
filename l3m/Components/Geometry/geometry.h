@@ -2,7 +2,6 @@
 
 #include <list>
 #include <string>
-#include "math/matrix.h"
 #include "mesh.h"
 #include "vertex.h"
 #include "l3m/l3mComponent.h"

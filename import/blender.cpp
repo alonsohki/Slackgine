@@ -300,16 +300,9 @@ static bool ImportGeometry ( l3m::Geometry* g, Object* ob, l3m::Model* model )
     }
 }
 
-bool import_blender ( int argc, const char** argv, const char* file, l3m::Model* model, l3m::Model* txd )
+static bool import_blender ( ::Scene* sce, l3m::Model* model )
 {
-    startup_blender(argc, argv);
-    BlendFileData* data = BLO_read_from_file(file, NULL);
-    if ( data == 0 )
-        return false;
-    
-    Scene* sce = data->curscene;
-    
-    // Export all geometries
+    // Import all geometries
     std::set<std::string> exportedGeometry;
     for ( Base* base = (Base *)sce->base.first; base != 0; base = base->next )
     {
@@ -331,6 +324,60 @@ bool import_blender ( int argc, const char** argv, const char* file, l3m::Model*
             }
         }
     }
+    
+    // Import the visual scene
+    l3m::Scene* modelScene = model->CreateComponent<l3m::Scene>("scene");
+    
 
     return true;
+}
+
+bool import_blender ( int argc, const char** argv, const char* file, l3m::Model* model )
+{
+    startup_blender(argc, argv);
+    BlendFileData* data = BLO_read_from_file(file, NULL);
+    if ( data == 0 )
+        return false;
+    
+    return import_blender ( data->curscene, model );
+}
+
+bool import_blender ( int argc, const char** argv, std::istream& is, l3m::Model* model )
+{
+    startup_blender(argc, argv);
+
+    u32 memSize = 4096;
+    char* mem = new char [ memSize ];
+    
+    char temp [ 512 ];
+    u32 totalSize = 0;
+    u32 currentSize;
+    
+    while ( !is.eof () )
+    {
+        is.read ( temp, sizeof(temp) );
+        currentSize = is.gcount();
+        
+        if ( totalSize + currentSize > memSize )
+        {
+            memSize *= 2;
+            char* newMem = new char [ memSize ];
+            memcpy ( newMem, mem, totalSize );
+            delete [] mem;
+            mem = newMem;
+        }
+        memcpy ( &mem[totalSize], temp, currentSize );
+        totalSize += currentSize;
+    }
+    
+    BlendFileData* data = BLO_read_from_memory(mem, totalSize, NULL);
+    if ( data == 0 )
+    {
+        delete [] mem;
+        return false;
+    }
+    
+    bool ret = import_blender ( data->curscene, model );
+    delete [] mem;
+    return ret;
 }

@@ -36,6 +36,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/_ext/1360928567/l3mComponent.o \
 	${OBJECTDIR}/l3m.o \
+	${OBJECTDIR}/Components/Scene/scene.o \
 	${OBJECTDIR}/Components/Geometry/geometry.o \
 	${OBJECTDIR}/l3mStream.o \
 	${OBJECTDIR}/Components/Geometry/mesh.o \
@@ -78,6 +79,11 @@ ${OBJECTDIR}/l3m.o: l3m.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/l3m.o l3m.cpp
+
+${OBJECTDIR}/Components/Scene/scene.o: Components/Scene/scene.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Components/Scene
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/Scene/scene.o Components/Scene/scene.cpp
 
 ${OBJECTDIR}/Components/Geometry/geometry.o: Components/Geometry/geometry.cpp 
 	${MKDIR} -p ${OBJECTDIR}/Components/Geometry
