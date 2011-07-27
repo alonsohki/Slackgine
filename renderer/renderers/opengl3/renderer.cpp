@@ -196,7 +196,7 @@ bool OpenGL3_Renderer::BeginScene ( const Matrix& matProjection, const Matrix& m
     return true;
 }
 
-bool OpenGL3_Renderer::Render ( const l3m::Model* model, const Matrix& mat )
+bool OpenGL3_Renderer::Render ( const Mesh* mesh, const Matrix& mat )
 {
 #if 0
     l3mComponent::IRendererData* data_ = model->rendererData();

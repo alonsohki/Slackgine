@@ -26,7 +26,7 @@ public:
     bool        SetupModel              ( const l3m::Model* model );
     
     bool        BeginScene              ( const Matrix& matProjection = IdentityMatrix(), const Matrix& matLookat = IdentityMatrix() );
-    bool        Render                  ( const l3m::Model* model, const Matrix& mat = IdentityMatrix() );
+    bool        Render                  ( const Mesh* mesh, const Matrix& mat = IdentityMatrix() );
     bool        EndScene                ();
     
     void        GetError                ( char* dest ) const { strcpy(dest, m_error); }
