@@ -12,20 +12,20 @@
 #include "l3m/l3m.h"
 #include "shared/platform.h"
 
-class IRenderer;
+namespace Renderer { class IRenderer; }
 
 class Slackgine
 {
 private:
-    IRenderer* m_renderer;
+    Renderer::IRenderer* m_renderer;
     
 public:
-                        Slackgine       ();
-                        ~Slackgine      ();
+                                Slackgine       ();
+                                ~Slackgine      ();
 
-    bool                Initialize      ();
+    bool                        Initialize      ();
                 
-    IRenderer*          renderer        () { return m_renderer; }
+    Renderer::IRenderer*        renderer        () { return m_renderer; }
 };
 
 #endif	/* SLACKGINE_H */

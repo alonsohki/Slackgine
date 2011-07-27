@@ -178,7 +178,7 @@ std::string get_material_id(Material *mat)
 	return translate_id(id_name(mat)) + "-material";
 }
 
-static void ImportVertex ( l3m::Vertex* to, MVert* from, float* uv )
+static void ImportVertex ( Renderer::Vertex* to, MVert* from, float* uv )
 {
     to->pos() = from->co;
     to->norm() = Vector3 ( from->no[0] / 32767.0f, from->no[1] / 32767.0f, from->no[2] / 32767.0f );
@@ -220,7 +220,7 @@ static bool ImportMesh ( l3m::Geometry* g, const std::string& name, u32 mat_inde
     }
     
     // Allocate space for the vertices and indices.
-    l3m::Vertex* vertexArray = new l3m::Vertex [ actualVertexCount ];
+    Renderer::Vertex* vertexArray = new Renderer::Vertex [ actualVertexCount ];
     u32* indices = new u32 [ actualVertexCount ];
     
     // Make all the indices
@@ -272,7 +272,7 @@ static bool ImportMesh ( l3m::Geometry* g, const std::string& name, u32 mat_inde
         }
     }
     
-    g->LoadMesh( l3m::Mesh::LoadAllocating(name, vertexArray->base(), l3m::Vertex::LOAD_ALL, 0, actualVertexCount, indices, actualFaceCount, l3m::Mesh::TRIANGLES ) );
+    g->LoadMesh( Renderer::Mesh::LoadAllocating(name, vertexArray->base(), Renderer::Vertex::LOAD_ALL, 0, actualVertexCount, indices, actualFaceCount, Renderer::Mesh::TRIANGLES ) );
     
     delete [] indices;
     delete [] vertexArray;

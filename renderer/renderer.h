@@ -6,6 +6,9 @@
 #include "core/entity.h"
 #include "math/matrix.h"
 
+namespace Renderer
+{
+    
 class IRenderer
 {
 public:
@@ -17,6 +20,8 @@ public:
     
     virtual void        GetError        ( char* dest ) const = 0;
 };
+
+}
 
 #include "renderers/renderer_selection.h"
 

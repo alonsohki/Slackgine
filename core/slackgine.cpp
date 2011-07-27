@@ -2,7 +2,7 @@
 
 Slackgine::Slackgine ()
 {
-    m_renderer = Renderer::CreateRenderer ();
+    m_renderer = Renderer::Factory::CreateRenderer ();
 }
 
 Slackgine::~Slackgine ()

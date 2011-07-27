@@ -1,5 +1,7 @@
 #include "opengl3.h"
 
+using namespace Renderer;
+
 OpenGL3_Program::OpenGL3_Program ()
 : m_linked ( false )
 {

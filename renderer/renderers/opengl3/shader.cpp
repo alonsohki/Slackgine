@@ -1,5 +1,7 @@
 #include "opengl3.h"
 
+using namespace Renderer;
+
 OpenGL3_Shader::OpenGL3_Shader ( IShader::Type type )
 : m_loaded ( false )
 {

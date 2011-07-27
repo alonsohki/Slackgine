@@ -1,6 +1,7 @@
 #include "geometry.h"
 
 using namespace l3m;
+using namespace Renderer;
 
 bool Geometry::Load(l3m::IStream& fp, float version)
 {

@@ -34,8 +34,10 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/vertex.o \
 	${OBJECTDIR}/renderers/opengl3/opengl3.o \
 	${OBJECTDIR}/renderers/opengl3/renderer.o \
+	${OBJECTDIR}/mesh.o \
 	${OBJECTDIR}/renderers/opengl3/program.o \
 	${OBJECTDIR}/renderers/opengl3/shader.o
 
@@ -66,6 +68,11 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/librenderer.a: ${OBJECTFILES}
 	${AR} -rv ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/librenderer.a ${OBJECTFILES} 
 	$(RANLIB) ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/librenderer.a
 
+${OBJECTDIR}/vertex.o: vertex.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/vertex.o vertex.cpp
+
 ${OBJECTDIR}/renderers/opengl3/opengl3.o: renderers/opengl3/opengl3.cpp 
 	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3
 	${RM} $@.d
@@ -75,6 +82,11 @@ ${OBJECTDIR}/renderers/opengl3/renderer.o: renderers/opengl3/renderer.cpp
 	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/renderer.o renderers/opengl3/renderer.cpp
+
+${OBJECTDIR}/mesh.o: mesh.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/mesh.o mesh.cpp
 
 ${OBJECTDIR}/renderers/opengl3/program.o: renderers/opengl3/program.cpp 
 	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3

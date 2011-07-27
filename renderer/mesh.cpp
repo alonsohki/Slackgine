@@ -1,7 +1,7 @@
 #include <cstring>
 #include "mesh.h"
 
-using namespace l3m;
+using namespace Renderer;
 
 Mesh::Mesh(const std::string& name)
 : m_name ( name )

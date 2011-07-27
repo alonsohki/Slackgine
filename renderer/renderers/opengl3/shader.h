@@ -5,6 +5,9 @@
 #include <string>
 #include "opengl3.h"
 
+namespace Renderer
+{
+    
 class OpenGL3_Shader : public IShader
 {
     bool        m_loaded;
@@ -22,6 +25,8 @@ public:
     GLuint&             handler                 () { return m_handler; }
     const GLuint&       handler                 () const { return m_handler; }
 };
+
+}
 
 #endif	/* OPENGL3_SHADER_H */
 

@@ -5,6 +5,9 @@
 #include "math/vector.h"
 #include "math/matrix.h"
 
+namespace Renderer
+{
+
 class IProgram
 {
 public:
@@ -24,6 +27,8 @@ public:
     virtual bool        Ok              ( ) const = 0;
     virtual void        GetError        ( char* dest ) const = 0;
 };
+
+}
 
 #endif	/* PROGRAM_H */
 

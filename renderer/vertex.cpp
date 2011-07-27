@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include "vertex.h"
 
-using namespace l3m;
+using namespace Renderer;
 
 void Vertex::Load ( const float* source, unsigned int flags, unsigned int stride, unsigned int count )
 {

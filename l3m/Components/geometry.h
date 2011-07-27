@@ -2,8 +2,7 @@
 
 #include <list>
 #include <string>
-#include "mesh.h"
-#include "vertex.h"
+#include "renderer/mesh.h"
 #include "l3m/l3mComponent.h"
 
 namespace l3m
@@ -12,7 +11,7 @@ namespace l3m
 class Geometry : public IComponent
 {
 public:
-    typedef std::list<Mesh *> meshList;
+    typedef std::list<Renderer::Mesh *> meshList;
 
 private:
     std::string         m_name;
@@ -39,7 +38,7 @@ public:
     bool        Load            ( l3m::IStream& fp, float version );
     bool        Save            ( l3m::OStream& fp );
     
-    void LoadMesh ( Mesh* mesh )
+    void LoadMesh ( Renderer::Mesh* mesh )
     {
         m_meshes.push_back(mesh);
     }

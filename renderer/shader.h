@@ -4,6 +4,9 @@
 #include <iostream>
 #include <fstream>
 
+namespace Renderer
+{
+    
 class IShader
 {
 public:
@@ -28,6 +31,8 @@ public:
     virtual bool        Ok              () const = 0;
     virtual void        GetError        ( char* dest ) const = 0;
 };
+
+}
 
 #include "renderers/renderer_selection.h"
 

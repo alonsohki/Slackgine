@@ -32,9 +32,13 @@
       <itemPath>Android.mk</itemPath>
       <itemPath>Makefile</itemPath>
     </logicalFolder>
+    <itemPath>mesh.cpp</itemPath>
+    <itemPath>mesh.h</itemPath>
     <itemPath>program.h</itemPath>
     <itemPath>renderer.h</itemPath>
     <itemPath>shader.h</itemPath>
+    <itemPath>vertex.cpp</itemPath>
+    <itemPath>vertex.h</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>

@@ -1,4 +1,4 @@
 #pragma once
 
-#include "Geometry/geometry.h"
-#include "Scene/scene.h"
+#include "geometry.h"
+#include "scene.h"

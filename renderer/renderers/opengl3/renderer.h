@@ -5,6 +5,9 @@
 #include "opengl3.h"
 #include "math/matrix.h"
 
+namespace Renderer
+{
+
 class OpenGL3_Renderer : public IRenderer
 {
 private:
@@ -28,6 +31,8 @@ public:
     
     void        GetError                ( char* dest ) const { strcpy(dest, m_error); }
 };
+
+}
 
 
 #endif	/* OPENGL3_RENDERER_H */

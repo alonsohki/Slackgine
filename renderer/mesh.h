@@ -5,7 +5,7 @@
 #include <cstdlib>
 #include "vertex.h"
 
-namespace l3m
+namespace Renderer
 {
 
 class Mesh

@@ -1,6 +1,8 @@
 #include <sstream>
 #include "opengl3.h"
 
+using namespace Renderer;
+
 #if 0
 struct RendererData : public l3mComponent::IRendererData
 {

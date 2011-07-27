@@ -35,13 +35,11 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/_ext/1360928567/l3mComponent.o \
+	${OBJECTDIR}/Components/geometry.o \
 	${OBJECTDIR}/l3m.o \
-	${OBJECTDIR}/Components/Scene/scene.o \
-	${OBJECTDIR}/Components/Geometry/geometry.o \
+	${OBJECTDIR}/Components/scene.o \
 	${OBJECTDIR}/l3mStream.o \
-	${OBJECTDIR}/Components/Geometry/mesh.o \
-	${OBJECTDIR}/Components/factory.o \
-	${OBJECTDIR}/Components/Geometry/vertex.o
+	${OBJECTDIR}/Components/factory.o
 
 
 # C Compiler Flags
@@ -75,40 +73,30 @@ ${OBJECTDIR}/_ext/1360928567/l3mComponent.o: ../l3m/l3mComponent.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360928567/l3mComponent.o ../l3m/l3mComponent.cpp
 
+${OBJECTDIR}/Components/geometry.o: Components/geometry.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Components
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/geometry.o Components/geometry.cpp
+
 ${OBJECTDIR}/l3m.o: l3m.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/l3m.o l3m.cpp
 
-${OBJECTDIR}/Components/Scene/scene.o: Components/Scene/scene.cpp 
-	${MKDIR} -p ${OBJECTDIR}/Components/Scene
+${OBJECTDIR}/Components/scene.o: Components/scene.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Components
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/Scene/scene.o Components/Scene/scene.cpp
-
-${OBJECTDIR}/Components/Geometry/geometry.o: Components/Geometry/geometry.cpp 
-	${MKDIR} -p ${OBJECTDIR}/Components/Geometry
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/Geometry/geometry.o Components/Geometry/geometry.cpp
+	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/scene.o Components/scene.cpp
 
 ${OBJECTDIR}/l3mStream.o: l3mStream.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/l3mStream.o l3mStream.cpp
 
-${OBJECTDIR}/Components/Geometry/mesh.o: Components/Geometry/mesh.cpp 
-	${MKDIR} -p ${OBJECTDIR}/Components/Geometry
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/Geometry/mesh.o Components/Geometry/mesh.cpp
-
 ${OBJECTDIR}/Components/factory.o: Components/factory.cpp 
 	${MKDIR} -p ${OBJECTDIR}/Components
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/factory.o Components/factory.cpp
-
-${OBJECTDIR}/Components/Geometry/vertex.o: Components/Geometry/vertex.cpp 
-	${MKDIR} -p ${OBJECTDIR}/Components/Geometry
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/Geometry/vertex.o Components/Geometry/vertex.cpp
 
 # Subprojects
 .build-subprojects:

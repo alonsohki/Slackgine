@@ -3,7 +3,7 @@
 #include <vector>
 #include "math/matrix.h"
 #include "l3m/l3mComponent.h"
-#include "l3m/Components/Geometry/geometry.h"
+#include "l3m/Components/geometry.h"
 
 namespace l3m
 {

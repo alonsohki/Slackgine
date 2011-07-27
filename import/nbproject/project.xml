@@ -9,6 +9,7 @@
             <header-extensions>h</header-extensions>
             <sourceEncoding>UTF-8</sourceEncoding>
             <make-dep-projects>
+                <make-dep-project>../renderer</make-dep-project>
                 <make-dep-project>../libblender</make-dep-project>
                 <make-dep-project>../l3m</make-dep-project>
             </make-dep-projects>

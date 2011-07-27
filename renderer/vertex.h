@@ -3,7 +3,7 @@
 #include "math/vector.h"
 #include "shared/color.h"
 
-namespace l3m
+namespace Renderer
 {
 
 class Vertex

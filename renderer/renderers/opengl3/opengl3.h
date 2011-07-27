@@ -43,7 +43,10 @@ default:                                                       break;\
 #include "program.h"
 #include "renderer.h"
 
-class Renderer
+namespace Renderer
+{
+
+class Factory
 {
 public:
     static IRenderer*   CreateRenderer  ();
@@ -51,6 +54,8 @@ public:
     static IShader*     CreateShader    ( IShader::Type type, const char* file );
     static IShader*     CreateShader    ( IShader::Type type, std::istream& fp );
 };
+
+}
 
 #endif
 
