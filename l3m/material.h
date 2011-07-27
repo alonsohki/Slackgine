@@ -1,5 +1,4 @@
-#ifndef MATERIAL_H
-#define MATERIAL_H
+#pragma once
 
 #include "color.h"
 
@@ -26,5 +25,3 @@ private:
     Color       m_specular;
     Color       m_emission;
 };
-
-#endif

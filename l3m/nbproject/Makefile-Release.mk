@@ -34,11 +34,10 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/_ext/1360928567/l3mComponent.o \
 	${OBJECTDIR}/Components/geometry.o \
-	${OBJECTDIR}/l3m.o \
 	${OBJECTDIR}/Components/scene.o \
-	${OBJECTDIR}/l3mStream.o \
+	${OBJECTDIR}/stream.o \
+	${OBJECTDIR}/model.o \
 	${OBJECTDIR}/Components/factory.o
 
 
@@ -68,30 +67,25 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a: ${OBJECTFILES}
 	${AR} -rv ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a ${OBJECTFILES} 
 	$(RANLIB) ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a
 
-${OBJECTDIR}/_ext/1360928567/l3mComponent.o: ../l3m/l3mComponent.cpp 
-	${MKDIR} -p ${OBJECTDIR}/_ext/1360928567
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1360928567/l3mComponent.o ../l3m/l3mComponent.cpp
-
 ${OBJECTDIR}/Components/geometry.o: Components/geometry.cpp 
 	${MKDIR} -p ${OBJECTDIR}/Components
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/geometry.o Components/geometry.cpp
-
-${OBJECTDIR}/l3m.o: l3m.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/l3m.o l3m.cpp
 
 ${OBJECTDIR}/Components/scene.o: Components/scene.cpp 
 	${MKDIR} -p ${OBJECTDIR}/Components
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/scene.o Components/scene.cpp
 
-${OBJECTDIR}/l3mStream.o: l3mStream.cpp 
+${OBJECTDIR}/stream.o: stream.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/l3mStream.o l3mStream.cpp
+	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/stream.o stream.cpp
+
+${OBJECTDIR}/model.o: model.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/model.o model.cpp
 
 ${OBJECTDIR}/Components/factory.o: Components/factory.cpp 
 	${MKDIR} -p ${OBJECTDIR}/Components

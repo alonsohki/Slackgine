@@ -1,6 +1,6 @@
-#ifndef ROOT_SLACKGINE_H
-#define ROOT_SLACKGINE_H
+#pragma once
 
+#include "shared/platform.h"
+#include "shared/util.h"
 #include "core/slackgine.h"
-
-#endif
+#include "core/entity.h"

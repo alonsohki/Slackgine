@@ -8,7 +8,9 @@
 namespace Renderer
 {
 
-class Mesh
+class Mesh;
+    
+class __MeshBase
 {
 public:
     enum PolygonType
@@ -28,8 +30,8 @@ private:
     PolygonType         m_polyType;
     
 public:
-    Mesh ( const std::string& name );
-    ~Mesh ();
+    __MeshBase ();
+    virtual ~__MeshBase ();
     
 private:
     void FreeVertices ();
@@ -57,15 +59,8 @@ public:
     void Set ( Vertex* pVertices, unsigned int vertexCount,
                unsigned int* pIndices, unsigned int indexCount,
                PolygonType polyType = TRIANGLES );
-    
-    static Mesh* LoadAllocating ( const std::string& name,
-                                  const float* pVertices, unsigned int flags, unsigned int stride, unsigned int vertexCount,
-                                  const unsigned int* pIndices, unsigned int indexCount, PolygonType polyType = TRIANGLES )
-    {
-        Mesh* mesh = new Mesh ( name );
-        mesh->Load ( pVertices, flags, stride, vertexCount, pIndices, indexCount, polyType );
-        return mesh;
-    }
 };
 
 }
+
+#include "renderer.h"

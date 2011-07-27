@@ -1,8 +1,8 @@
 #include <set>
 #include <string>
+#include <sstream>
 #include "blender_stuff.h"
 #include "BLO_readfile.h"
-#include "l3m/l3m.h"
 #include "DNA_armature_types.h"
 #include "DNA_object_types.h"
 #include "DNA_mesh_types.h"
@@ -11,6 +11,9 @@
 #include "BKE_customdata.h"
 #include "shared/platform.h"
 #include "math/vector.h"
+#include "l3m/l3m.h"
+#include "l3m/Components/components.h"
+#include "renderer/mesh.h"
 
 /**
 Translation map.
@@ -271,8 +274,11 @@ static bool ImportMesh ( l3m::Geometry* g, const std::string& name, u32 mat_inde
             }
         }
     }
-    
-    g->LoadMesh( Renderer::Mesh::LoadAllocating(name, vertexArray->base(), Renderer::Vertex::LOAD_ALL, 0, actualVertexCount, indices, actualFaceCount, Renderer::Mesh::TRIANGLES ) );
+
+    Renderer::Mesh* mesh = new Renderer::Mesh ();
+    mesh->Load( vertexArray->base(), Renderer::Vertex::LOAD_ALL, 0, actualVertexCount, indices, actualFaceCount, Renderer::Mesh::TRIANGLES );
+    mesh->name() = name;
+    g->LoadMesh( mesh );
     
     delete [] indices;
     delete [] vertexArray;

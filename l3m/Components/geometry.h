@@ -2,8 +2,8 @@
 
 #include <list>
 #include <string>
+#include "l3m/component.h"
 #include "renderer/mesh.h"
-#include "l3m/l3mComponent.h"
 
 namespace l3m
 {

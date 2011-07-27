@@ -17,8 +17,6 @@ public:
                                 Entity          ( const l3m::Model* pModel = 0 );
     virtual                     ~Entity         ();
     
-    virtual void                Update          ( Slackgine* ctx );
-    
     virtual const l3m::Model*   GetModel        () const { return m_model; }
 };
 

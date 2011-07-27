@@ -1,7 +1,7 @@
 #pragma once
 
 #include <map>
-#include "l3m/l3mComponent.h"
+#include "l3m/component.h"
 
 namespace l3m
 {
@@ -31,12 +31,7 @@ public:
     }
     
 private:
-    static void                 Initialize      ()
-    {
-        ms_initialized = true;
-        Register ( "geometry", Geometry::Create );
-        Register ( "scene", Scene::Create );
-    }
+    static void                 Initialize      ();
     
 private:
     static typesMap     ms_types;

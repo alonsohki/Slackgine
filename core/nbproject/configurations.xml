@@ -15,8 +15,6 @@
     </logicalFolder>
     <itemPath>entity.cpp</itemPath>
     <itemPath>entity.h</itemPath>
-    <itemPath>extensible_entity.cpp</itemPath>
-    <itemPath>extensible_entity.h</itemPath>
     <itemPath>slackgine.cpp</itemPath>
     <itemPath>slackgine.h</itemPath>
   </logicalFolder>

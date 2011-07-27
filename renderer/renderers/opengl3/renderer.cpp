@@ -106,9 +106,9 @@ bool OpenGL3_Renderer::Initialize()
     return m_initialized;
 }
 
+#if 0
 bool OpenGL3_Renderer::SetupModel(const l3m::Model* model)
 {
-#if 0
     if ( model->rendererData() != 0 )
         return false;
 
@@ -176,9 +176,9 @@ bool OpenGL3_Renderer::SetupModel(const l3m::Model* model)
             }
         }
     }
-#endif
     return true;
 }
+#endif
 
 bool OpenGL3_Renderer::BeginScene ( const Matrix& matProjection, const Matrix& matLookat )
 {

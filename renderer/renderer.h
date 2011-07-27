@@ -1,14 +1,13 @@
 #ifndef RENDERER_H
 #define	RENDERER_H
 
-#include "l3m/l3m.h"
 #include "shared/platform.h"
-#include "core/entity.h"
 #include "math/matrix.h"
+#include "mesh.h"
 
 namespace Renderer
 {
-    
+
 class IRenderer
 {
 public:

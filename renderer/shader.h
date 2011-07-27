@@ -34,7 +34,7 @@ public:
 
 }
 
-#include "renderers/renderer_selection.h"
+#include "renderer.h"
 
 #endif	/* SHADER_H */
 

@@ -43,7 +43,8 @@ bool Geometry::Load(l3m::IStream& fp, float version)
             return SetError ( "Error reading the index data" );
         
         // Create the mesh
-        Mesh* mesh = new Mesh ( name );
+        Mesh* mesh = new Mesh ();
+        mesh->name () = name;
         mesh->Set ( vertices, numVertices, indices, numIndices, polyType );
         this->LoadMesh( mesh );
     }

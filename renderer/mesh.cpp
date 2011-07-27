@@ -3,22 +3,21 @@
 
 using namespace Renderer;
 
-Mesh::Mesh(const std::string& name)
-: m_name ( name )
-, m_vertices ( 0 )
+__MeshBase::__MeshBase()
+: m_vertices ( 0 )
 , m_numVertices ( 0 )
 , m_indices ( 0 )
 , m_numIndices ( 0 )
 , m_polyType ( TRIANGLES )
 {}
 
-Mesh::~Mesh ()
+__MeshBase::~__MeshBase ()
 {
     FreeVertices ();
     FreeIndices ();
 }
 
-void Mesh::FreeVertices()
+void __MeshBase::FreeVertices()
 {
     if ( m_vertices != 0 )
         free ( m_vertices );
@@ -26,7 +25,7 @@ void Mesh::FreeVertices()
     m_numVertices = 0;
 }
 
-void Mesh::FreeIndices()
+void __MeshBase::FreeIndices()
 {
     if ( m_indices != 0 )
         free ( m_indices );
@@ -34,7 +33,7 @@ void Mesh::FreeIndices()
     m_numIndices = 0;
 }
 
-void Mesh::Load(const float* pVertices, unsigned int flags, unsigned int stride, unsigned int vertexCount, const unsigned int* pIndices, unsigned int indexCount, PolygonType polyType)
+void __MeshBase::Load(const float* pVertices, unsigned int flags, unsigned int stride, unsigned int vertexCount, const unsigned int* pIndices, unsigned int indexCount, PolygonType polyType)
 {
     FreeVertices ();
     FreeIndices ();
@@ -46,7 +45,7 @@ void Mesh::Load(const float* pVertices, unsigned int flags, unsigned int stride,
     m_polyType = polyType;
 }
 
-void Mesh::Set(Vertex* pVertices, unsigned int vertexCount, unsigned int* pIndices, unsigned int indexCount, PolygonType polyType)
+void __MeshBase::Set(Vertex* pVertices, unsigned int vertexCount, unsigned int* pIndices, unsigned int indexCount, PolygonType polyType)
 {
     if ( pVertices != m_vertices )
     {

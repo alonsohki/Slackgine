@@ -1,4 +1,4 @@
-#include "l3mStream.h"
+#include "stream.h"
 
 using namespace l3m;
 

@@ -1,3 +1,4 @@
+#include <cstring>
 #include "l3m.h"
 #include "Components/factory.h"
 

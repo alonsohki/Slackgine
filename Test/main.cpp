@@ -57,7 +57,6 @@ void display ( void )
     
     if ( sg->renderer()->BeginScene( OrthographicMatrix(-5, 5, 5, -5, 5, -5), TranslationMatrix(fTransX,0,0)*RotationMatrix(fRotX,1,0,0)*RotationMatrix(fRotY,0,1,0) ) )
     {
-        entity->Update ( sg );
         sg->renderer()->EndScene ();
     }
     else

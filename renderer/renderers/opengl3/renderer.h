@@ -4,6 +4,7 @@
 #include <cstring>
 #include "opengl3.h"
 #include "math/matrix.h"
+#include "../../renderer.h"
 
 namespace Renderer
 {
@@ -23,7 +24,6 @@ public:
                 ~OpenGL3_Renderer       ();
     
     bool        Initialize              ();
-    bool        SetupModel              ( const l3m::Model* model );
     
     bool        BeginScene              ( const Matrix& matProjection = IdentityMatrix(), const Matrix& matLookat = IdentityMatrix() );
     bool        Render                  ( const Mesh* mesh, const Matrix& mat = IdentityMatrix() );
