@@ -242,6 +242,38 @@ size_t IOStream::ReadStr ( std::string& str )
     return length;
 }
 
+bool IOStream::WriteMatrix ( const Matrix& mat )
+{
+#ifdef DEBUG
+    assert ( m_ostream != 0 );
+#endif
+    return WriteFloat ( mat.vector(), 16 );
+}
+
+size_t IOStream::ReadMatrix ( Matrix& mat )
+{
+#ifdef DEBUG
+    assert ( m_istream != 0 );
+#endif
+    return ReadFloat ( mat.vector(), 16 ) / 16;
+}
+
+bool IOStream::WriteVector ( const Vector3& vec )
+{
+#ifdef DEBUG
+    assert ( m_ostream != 0 );
+#endif
+    return WriteFloat ( vec.vector(), 3 );
+}
+
+size_t IOStream::ReadVector ( Vector3& vec )
+{
+#ifdef DEBUG
+    assert ( m_istream != 0 );
+#endif
+    return ReadFloat ( vec.vector(), 3 ) / 3;
+}
+
 bool IOStream::WriteData ( const char* data, u32 size, u32 nmemb )
 {
 #ifdef DEBUG

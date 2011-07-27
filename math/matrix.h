@@ -285,6 +285,11 @@ public:
                          x, y, z, 1.0f };
         Matrix::operator= ( v );
     }
+    
+    TranslationMatrix ( f32* v )
+    {
+        *this = TranslationMatrix ( v[0], v[1], v[2] );
+    }
 };
 
 class ScalingMatrix : public Matrix
@@ -306,6 +311,11 @@ public:
                          0.0f, 0.0f, z, 0.0f,
                          0.0f, 0.0f, 0.0f, 1.0f };
         Matrix::operator= ( v );
+    }
+    
+    ScalingMatrix ( f32* v )
+    {
+        Matrix::operator= ( ScalingMatrix ( v[0], v[1], v[2] ) );
     }
 };
 
@@ -329,6 +339,16 @@ public:
         v[12] = 0;            v[13] = 0;            v[14] = 0;            v[15] = 1;
         
         Matrix::operator= ( v );
+    }
+    
+    RotationMatrix ( f32 rotX, f32 rotY, f32 rotZ )
+    {
+        Matrix::operator= ( RotationMatrix ( rotZ, 0, 0, 1 ) * RotationMatrix ( rotY, 0, 1, 0 ) * RotationMatrix ( rotX, 1, 0, 0 ) );
+    }
+    
+    RotationMatrix ( f32* v )
+    {
+        Matrix::operator= ( RotationMatrix ( v[0], v[1], v[2] ) );
     }
 };
 

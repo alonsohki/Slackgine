@@ -17,7 +17,8 @@ public:
                                 Entity          ( const l3m::Model* pModel = 0 );
     virtual                     ~Entity         ();
     
-    virtual const l3m::Model*   GetModel        () const { return m_model; }
+    const l3m::Model*           GetModel        () const { return m_model; }
+    void                        SetModel        ( const l3m::Model* pModel );
 };
 
 #endif	/* ENTITY_H */

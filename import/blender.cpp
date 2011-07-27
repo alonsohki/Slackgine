@@ -9,6 +9,8 @@
 #include "DNA_meshdata_types.h"
 #include "DNA_scene_types.h"
 #include "BKE_customdata.h"
+#include "BKE_object.h"
+#include "BLI_math.h"
 #include "shared/platform.h"
 #include "math/vector.h"
 #include "l3m/l3m.h"
@@ -181,6 +183,47 @@ std::string get_material_id(Material *mat)
 	return translate_id(id_name(mat)) + "-material";
 }
 
+static Matrix get_node_transform_ob(Object *ob)
+{
+	float rot[3], loc[3], scale[3];
+
+	if (ob->parent) {
+		float C[4][4], tmat[4][4], imat[4][4], mat[4][4];
+
+		// factor out scale from obmat
+
+		copy_v3_v3(scale, ob->size);
+
+		ob->size[0] = ob->size[1] = ob->size[2] = 1.0f;
+		object_to_mat4(ob, C);
+		copy_v3_v3(ob->size, scale);
+
+		mul_serie_m4(tmat, ob->parent->obmat, ob->parentinv, C, NULL, NULL, NULL, NULL, NULL);
+
+		// calculate local mat
+
+		invert_m4_m4(imat, ob->parent->obmat);
+		mul_m4_m4m4(mat, tmat, imat);
+
+		// done
+
+		mat4_to_eul(rot, mat);
+		copy_v3_v3(loc, mat[3]);
+	}
+	else {
+		copy_v3_v3(loc, ob->loc);
+		copy_v3_v3(rot, ob->rot);
+		copy_v3_v3(scale, ob->size);
+	}
+
+        return ScalingMatrix ( scale ) * RotationMatrix ( rot ) * TranslationMatrix ( loc );
+}
+
+
+
+
+
+
 static void ImportVertex ( Renderer::Vertex* to, MVert* from, float* uv )
 {
     to->pos() = from->co;
@@ -306,6 +349,47 @@ static bool ImportGeometry ( l3m::Geometry* g, Object* ob, l3m::Model* model )
     }
 }
 
+static bool ImportSceneObject ( Object* ob, ::Scene* sce, l3m::Scene* modelScene )
+{
+    switch ( ob->type )
+    {
+        case OB_MESH:
+        {
+            l3m::Scene::Node<l3m::Geometry>& node = modelScene->CreateGeometryNode();
+            node.url = get_geometry_id(ob);
+            node.transform = get_node_transform_ob(ob);
+            break;
+        }
+    }
+    
+    return true;
+}
+
+static bool ImportScene ( ::Scene* sce, l3m::Scene* modelScene )
+{
+    Base *base= (Base*) sce->base.first;
+    while(base) {
+            Object *ob = base->object;
+
+            if (!ob->parent) {
+                    switch(ob->type) {
+                    case OB_MESH:
+                    case OB_CAMERA:
+                    case OB_LAMP:
+                    case OB_ARMATURE:
+                    case OB_EMPTY:
+                            if ( ImportSceneObject(ob, sce, modelScene) == false )
+                                return false;
+                            break;
+                    }
+            }
+
+            base= base->next;
+    }
+    
+    return true;
+}
+
 static bool import_blender ( ::Scene* sce, l3m::Model* model )
 {
     // Import all geometries
@@ -333,7 +417,7 @@ static bool import_blender ( ::Scene* sce, l3m::Model* model )
     
     // Import the visual scene
     l3m::Scene* modelScene = model->CreateComponent<l3m::Scene>("scene");
-    
+    ImportScene ( sce, modelScene );
 
     return true;
 }

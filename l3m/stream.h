@@ -1,14 +1,9 @@
-/* 
- * File:   l3mStream.h
- * Author: ryden
- *
- * Created on 18 de julio de 2011, 18:06
- */
-
 #pragma once
 
 #include <iostream>
 #include "shared/platform.h"
+#include "math/vector.h"
+#include "math/matrix.h"
 
 namespace l3m
 {
@@ -42,6 +37,8 @@ public:
     bool        Write64         ( const u64* v, u32 nmemb );
     bool        WriteFloat      ( const float* v, u32 nmemb );
     bool        WriteStr        ( const std::string& str );
+    bool        WriteMatrix     ( const Matrix& mat );
+    bool        WriteVector     ( const Vector3& vec );
     bool        WriteData       ( const char* data, u32 size, u32 nmemb );
     
     size_t      Read16          ( u16* v, u32 nmemb );
@@ -49,6 +46,8 @@ public:
     size_t      Read64          ( u64* v, u32 nmemb );
     size_t      ReadFloat       ( float* v, u32 nmemb );
     size_t      ReadStr         ( std::string& str );
+    size_t      ReadMatrix      ( Matrix& mat );
+    size_t      ReadVector      ( Vector3& vec );
     size_t      ReadData        ( char* data, u32 size, u32 nmemb );
     
     u32         flags           () const { return m_flags; }
