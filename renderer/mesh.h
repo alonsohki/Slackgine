@@ -23,41 +23,33 @@ public:
 
 private:
     std::string         m_name;
-    Vertex*             m_vertices;
-    unsigned int        m_numVertices;
     unsigned int*       m_indices;
     unsigned int        m_numIndices;
     PolygonType         m_polyType;
     
 public:
-    __MeshBase ();
-    virtual ~__MeshBase ();
+                                __MeshBase ();
+    virtual                     ~__MeshBase ();
     
 private:
-    void FreeVertices ();
     void FreeIndices ();
     
     // Accessors
 public:
     const std::string&          name            () const { return m_name; }
-    const Vertex*               vertices        () const { return m_vertices; }
     const unsigned int*         indices         () const { return m_indices; }
-    const unsigned int&         numVertices     () const { return m_numVertices; }
     const unsigned int&         numIndices      () const { return m_numIndices; }
     const PolygonType&          polyType        () const { return m_polyType; }
     
     std::string&                name            () { return m_name; }
-    Vertex*&                    vertices        () { return m_vertices; }
     unsigned int*&              indices         () { return m_indices; }
     PolygonType&                polyType        () { return m_polyType; }
 
-    // Loads the vertex and face data, allocating space for it.
-    void Load ( const float* pVertices, unsigned int flags, unsigned int stride, unsigned int vertexCount,
-                const unsigned int* pIndices, unsigned int indexCount, PolygonType polyType = TRIANGLES );
+    // Loads the face data, allocating space for it.
+    void Load ( const unsigned int* pIndices, unsigned int indexCount, PolygonType polyType = TRIANGLES );
     
-    // Loads the vertex and face data, storing the pointer to the previously allocated data.
-    void Set ( Vertex* pVertices, unsigned int vertexCount,
-               unsigned int* pIndices, unsigned int indexCount,
+    // Loads the face data, storing the pointer to the previously allocated data.
+    void Set ( unsigned int* pIndices, unsigned int indexCount,
                PolygonType polyType = TRIANGLES );
 };
 

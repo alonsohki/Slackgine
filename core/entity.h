@@ -14,7 +14,7 @@ public:
     typedef std::vector < Entities::IComponent* > componentVector;
     
 public:
-                                Entity          ( const l3m::Model* pModel = 0 );
+                                Entity          ( l3m::Model* pModel = 0 );
     virtual                     ~Entity         ();
     
     l3m::Model*                 GetModel        () const { return m_model; }

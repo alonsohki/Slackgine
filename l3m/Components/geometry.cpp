@@ -3,10 +3,65 @@
 using namespace l3m;
 using namespace Renderer;
 
+Geometry::Geometry ( const std::string& name )
+: IComponent ( "geometry", 1.0f )
+, m_vertices ( 0 )
+, m_numVertices ( 0 )
+, m_name ( name )
+{
+}
+
+Geometry::~Geometry ()
+{
+    for ( meshList::iterator iter = m_meshes.begin(); iter != m_meshes.end(); ++iter )
+        delete *iter;
+    FreeVertices ();
+}
+
+void Geometry::FreeVertices()
+{
+    if ( m_vertices != 0 )
+        free ( m_vertices );
+    m_vertices = 0;
+    m_numVertices = 0;
+}
+
+void Geometry::Load(const float* pVertices, unsigned int flags, unsigned int stride, unsigned int vertexCount)
+{
+    FreeVertices ();
+    m_vertices = Vertex::LoadAllocating(pVertices, flags, stride, vertexCount);
+    m_numVertices = vertexCount;
+}
+
+void Geometry::Set(Vertex* pVertices, unsigned int vertexCount)
+{
+    if ( pVertices != m_vertices )
+    {
+        FreeVertices ();
+        m_vertices = pVertices;
+    }
+    m_numVertices = vertexCount;
+}
+
+void Geometry::LoadMesh ( Renderer::Mesh* mesh )
+{
+    m_meshes.push_back(mesh);
+}
+
+
 bool Geometry::Load(l3m::IStream& fp, float version)
 {
     // Geometry name
     fp.ReadStr( name() );
+    
+    // Read the vertex data
+    u32 numVertices;
+    if ( fp.Read32 ( &numVertices, 1 ) != 1 )
+        return SetError ( "Error reading the vertex count" );
+    Vertex* vertices = ( Vertex* )malloc ( sizeof(Vertex) * numVertices );
+    if ( fp.ReadFloat(vertices->base(), numVertices*sizeof(Vertex)/sizeof(float)) != numVertices*sizeof(Vertex)/sizeof(float) )
+        return SetError ( "Error reading the vertex data" );
+        
     
     // Read the meshes headers
     u32 numMeshes;
@@ -26,14 +81,6 @@ bool Geometry::Load(l3m::IStream& fp, float version)
             return SetError ( "Error reading the polygon type" );
         Mesh::PolygonType polyType = static_cast < Mesh::PolygonType > ( polyType_ );
         
-        // Read the vertex data
-        u32 numVertices;
-        if ( fp.Read32 ( &numVertices, 1 ) != 1 )
-            return SetError ( "Error reading the vertex count" );
-        Vertex* vertices = ( Vertex* )malloc ( sizeof(Vertex) * numVertices );
-        if ( fp.ReadFloat(reinterpret_cast<float*>(vertices), numVertices*sizeof(Vertex)/sizeof(float)) != numVertices*sizeof(Vertex)/sizeof(float) )
-            return SetError ( "Error reading the vertex data" );
-        
         // Read the index data
         u32 numIndices;
         if ( fp.Read32 ( &numIndices, 1 ) != 1 )
@@ -45,7 +92,7 @@ bool Geometry::Load(l3m::IStream& fp, float version)
         // Create the mesh
         Mesh* mesh = new Mesh ();
         mesh->name () = name;
-        mesh->Set ( vertices, numVertices, indices, numIndices, polyType );
+//        mesh->Set ( vertices, numVertices, indices, numIndices, polyType );
         this->LoadMesh( mesh );
     }
     
@@ -57,6 +104,13 @@ bool Geometry::Save(l3m::OStream& fp)
     // Geometry name
     if ( !fp.WriteStr( name() ) )
         return SetError ( "Error writing the geometry name" );
+    
+    // Geometry vertices
+    u32 num = numVertices();
+    if ( ! fp.Write32 ( &num, 1 ) )
+        return SetError ( "Error writing the vertex count" );
+    if ( ! fp.WriteFloat ( vertices()->base(), num * sizeof(Vertex) / sizeof(float) ) )
+        return SetError ( "Error writing the vertex data" );
 
     // Write the meshes headers
     const meshList& meshes = this->meshes();
@@ -77,13 +131,6 @@ bool Geometry::Save(l3m::OStream& fp)
         if ( ! fp.Write32 ( &polyType, 1 ) )
             return SetError ( "Error writing the mesh polygon type" );
         
-        // Write the vertex data
-        u32 num = mesh->numVertices();
-        if ( ! fp.Write32 ( &num, 1 ) )
-            return SetError ( "Error writing the vertex count" );
-        if ( ! fp.WriteFloat ( reinterpret_cast<float *>(mesh->vertices()), num*sizeof(Vertex) / sizeof(float) ) )
-            return SetError ( "Error writing the vertex data" );
-
         // Write the index data
         num = mesh->numIndices();
         if ( ! fp.Write32( &num, 1 ) )

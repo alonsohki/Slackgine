@@ -3,7 +3,7 @@
 
 using namespace Core;
 
-Entity::Entity ( const l3m::Model* pModel )
+Entity::Entity ( l3m::Model* pModel )
 : m_modelRenderer ( 0 )
 {
     SetModel ( pModel );
@@ -38,7 +38,7 @@ Entity::~Entity()
     delete m_modelRenderer;
 }
 
-void Entity::SetModel ( const l3m::Model* pModel )
+void Entity::SetModel ( l3m::Model* pModel )
 {
     if ( m_modelRenderer != 0 )
     {

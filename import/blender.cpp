@@ -230,21 +230,16 @@ static void ImportVertex ( Renderer::Vertex* to, MVert* from, float* uv )
     to->norm() = Vector3 ( from->no[0] / 32767.0f, from->no[1] / 32767.0f, from->no[2] / 32767.0f );
     if ( uv != 0 )
         to->tex2d() = Vector2 ( uv[0], uv[1] );
+    else
+        to->tex2d() = Vector2 ( 0, 0 );
 }
 
 static bool ImportMesh ( l3m::Geometry* g, const std::string& name, u32 mat_index, Object* ob, l3m::Model* model )
 {
+    // Get the actual face count
     Mesh* me = (Mesh *)ob->data;
-    u32 totvert = me->totvert;
     u32 totface = me->totface;
-    
-    MVert* verts = me->mvert;
-    
-    bool has_uvs = (bool)CustomData_has_layer(&me->fdata, CD_MTFACE);
-
-    // Get the actual vertex count, required because of triangulation and UV mapping.
     MFace *faces = me->mface;
-    u32 actualVertexCount = 0;
     u32 actualFaceCount = 0;
     
     for ( u32 i = 0; i < totface; ++i )
@@ -253,27 +248,70 @@ static bool ImportMesh ( l3m::Geometry* g, const std::string& name, u32 mat_inde
         if ( face->mat_nr == mat_index )
         {
             if ( face->v4 == 0 )
-            {
-                actualVertexCount += 3;
                 ++actualFaceCount;
-            }
             else
-            {
-                actualVertexCount += 6;
                 actualFaceCount += 2;
-            }
         }
     }
     
-    // Allocate space for the vertices and indices.
-    Renderer::Vertex* vertexArray = new Renderer::Vertex [ actualVertexCount ];
-    u32* indices = new u32 [ actualVertexCount ];
-    
     // Make all the indices
-    for ( u32 i = 0; i < actualVertexCount; ++i )
-        indices[i] = i;
+    u32* indices = ( u32* )malloc ( sizeof(u32) * actualFaceCount * 3 );
+    u32 indexIdx = 0;
+    u32 curIndex = 0;
+    for ( u32 i = 0; i < totface; ++i )
+    {
+        MFace* face = &faces[i];
+        if ( face->mat_nr == mat_index )
+        {
+            indices[indexIdx++] = curIndex;
+            indices[indexIdx++] = curIndex+1;
+            indices[indexIdx++] = curIndex+2;
+        }
+        curIndex += 3;
+
+        if ( face->v4 != 0 )
+        {
+            if ( face->mat_nr == mat_index )
+            {
+                indices[indexIdx++] = curIndex;
+                indices[indexIdx++] = curIndex+1;
+                indices[indexIdx++] = curIndex+2;
+            }
+            curIndex += 3;
+        }
+    }
     
-    // Load all the vertices
+    Renderer::Mesh* mesh = new Renderer::Mesh ();
+    mesh->Set ( indices, actualFaceCount, Renderer::Mesh::TRIANGLES );
+    mesh->name() = name;
+    g->LoadMesh( mesh );
+    
+    return true;
+}
+
+static bool ImportGeometry ( l3m::Geometry* g, Object* ob, l3m::Model* model )
+{
+    Mesh* me = (Mesh *)ob->data;
+    MFace *faces = me->mface;
+    MVert* verts = me->mvert;
+    u32 totvert = me->totvert;
+    u32 totcol = me->totcol;
+    u32 totface = me->totface;
+    
+    // Count the total number of vertices
+    u32 actualVertexCount = 0;
+    for ( u32 i = 0; i < totface; ++i )
+    {
+        MFace* face = &faces[i];
+        if ( face->v4 != 0 )
+            actualVertexCount += 6;
+        else
+            actualVertexCount += 3;
+    }
+    
+    // Import the geometry vertices
+    bool has_uvs = (bool)CustomData_has_layer(&me->fdata, CD_MTFACE);
+    Renderer::Vertex* vertexArray = (Renderer::Vertex *)malloc ( sizeof(Renderer::Vertex) * actualVertexCount );
     u32 curVertex = 0;
     if ( has_uvs )
     {
@@ -282,18 +320,15 @@ static bool ImportMesh ( l3m::Geometry* g, const std::string& name, u32 mat_inde
         for ( u32 i = 0; i < totface; ++i )
         {
             MFace* face = &faces[i];
-            if ( face->mat_nr == mat_index )
+            ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v1 ], tface[i].uv[0] );
+            ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v2 ], tface[i].uv[1] );
+            ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v3 ], tface[i].uv[2] );
+
+            if ( face->v4 != 0 )
             {
                 ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v1 ], tface[i].uv[0] );
-                ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v2 ], tface[i].uv[1] );
                 ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v3 ], tface[i].uv[2] );
-
-                if ( face->v4 != 0 )
-                {
-                    ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v1 ], tface[i].uv[0] );
-                    ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v3 ], tface[i].uv[2] );
-                    ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v4 ], tface[i].uv[3] );
-                }
+                ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v4 ], tface[i].uv[3] );
             }
         }
     }
@@ -302,38 +337,22 @@ static bool ImportMesh ( l3m::Geometry* g, const std::string& name, u32 mat_inde
         for ( u32 i = 0; i < totface; ++i )
         {
             MFace* face = &faces[i];
-            if ( face->mat_nr == mat_index )
+            ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v1 ], 0 );
+            ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v2 ], 0 );
+            ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v3 ], 0 );
+
+            if ( face->v4 != 0 )
             {
                 ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v1 ], 0 );
-                ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v2 ], 0 );
                 ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v3 ], 0 );
-
-                if ( face->v4 != 0 )
-                {
-                    ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v1 ], 0 );
-                    ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v3 ], 0 );
-                    ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v4 ], 0 );
-                }
+                ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v4 ], 0 );
             }
         }
     }
-
-    Renderer::Mesh* mesh = new Renderer::Mesh ();
-    mesh->Load( vertexArray->base(), Renderer::Vertex::LOAD_ALL, 0, actualVertexCount, indices, actualFaceCount, Renderer::Mesh::TRIANGLES );
-    mesh->name() = name;
-    g->LoadMesh( mesh );
+    g->Set( vertexArray, actualVertexCount );
     
-    delete [] indices;
-    delete [] vertexArray;
     
-    return true;
-}
-
-static bool ImportGeometry ( l3m::Geometry* g, Object* ob, l3m::Model* model )
-{
-    Mesh* me = (Mesh *)ob->data;
-    u32 totcol = me->totcol;
-    
+    // Load every mesh in this geometry
     if ( !totcol )
         return ImportMesh ( g, g->name(), 0, ob, model );
     else
