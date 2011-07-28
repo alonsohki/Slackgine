@@ -70,27 +70,27 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a: ${OBJECTFILES}
 ${OBJECTDIR}/Components/geometry.o: Components/geometry.cpp 
 	${MKDIR} -p ${OBJECTDIR}/Components
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/geometry.o Components/geometry.cpp
+	$(COMPILE.cc) -O2 -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/geometry.o Components/geometry.cpp
 
 ${OBJECTDIR}/Components/scene.o: Components/scene.cpp 
 	${MKDIR} -p ${OBJECTDIR}/Components
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/scene.o Components/scene.cpp
+	$(COMPILE.cc) -O2 -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/scene.o Components/scene.cpp
 
 ${OBJECTDIR}/stream.o: stream.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/stream.o stream.cpp
+	$(COMPILE.cc) -O2 -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/stream.o stream.cpp
 
 ${OBJECTDIR}/model.o: model.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/model.o model.cpp
+	$(COMPILE.cc) -O2 -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/model.o model.cpp
 
 ${OBJECTDIR}/Components/factory.o: Components/factory.cpp 
 	${MKDIR} -p ${OBJECTDIR}/Components
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -D-ansi -D-pipe -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/factory.o Components/factory.cpp
+	$(COMPILE.cc) -O2 -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/factory.o Components/factory.cpp
 
 # Subprojects
 .build-subprojects:

@@ -63,16 +63,19 @@ void Entity::Tick ()
     }
 }
 
-void Entity::Render ()
+void Entity::Render ( Renderer::IRenderer* renderer )
 {
+    renderer->PushState ();
+
     for ( componentVector::const_iterator iter = m_renderableComponents.begin();
           iter != m_renderableComponents.end();
           ++iter )
     {
-        (*iter)->Render ();
+        (*iter)->Render ( renderer );
     }
     
-    m_modelRenderer->Render();
+    m_modelRenderer->Render ( renderer );
+    renderer->PopState ();
 }
 
 bool Entity::AddComponent( Entities::IComponent* component )

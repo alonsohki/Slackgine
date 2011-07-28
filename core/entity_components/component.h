@@ -1,5 +1,7 @@
 #pragma once
 
+#include "renderer/renderer.h"
+
 namespace Core { class Entity; }
 
 namespace Core { namespace Entities {
@@ -13,14 +15,14 @@ public:
     , m_isRenderable ( isRenderable )
     {}
     
-    virtual ~IComponent () {}
+    virtual             ~IComponent () {}
     
     bool                isTickable      () const { return m_isTickable; }
     bool                isRenderable    () const { return m_isRenderable; }
     Entity*             parent          () const { return m_parent; }
     
     virtual void        Tick            () {}
-    virtual void        Render          () {}
+    virtual void        Render          ( Renderer::IRenderer* renderer ) {}
     
 private:
     Entity*     m_parent;

@@ -16,10 +16,9 @@ public:
     template < typename T >
     struct Node
     {
-        T*              ref;
         std::string     url;
         Matrix          transform;
-        Node () : ref ( 0 ), transform (IdentityMatrix()) {}
+        Node () : transform (IdentityMatrix()) {}
     };
     typedef std::vector < Node<Geometry> > geometryNodesVector;
     

@@ -72,3 +72,13 @@ bool OpenGL3_Shader::Load ( std::istream& fp )
     
     return m_loaded;
 }
+
+void OpenGL3_Renderer::PushState ()
+{
+    
+}
+
+void OpenGL3_Renderer::PopState ()
+{
+    
+}

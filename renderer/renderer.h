@@ -14,7 +14,9 @@ public:
     virtual bool        Initialize      () = 0;
     
     virtual bool        BeginScene      ( const Matrix& matProjection = IdentityMatrix(), const Matrix& matLookat = IdentityMatrix() ) = 0;
+    virtual void        PushState       () = 0;
     virtual bool        Render          ( const Mesh* mesh, const Matrix& mat = IdentityMatrix() ) = 0;
+    virtual void        PopState        () = 0;
     virtual bool        EndScene        () = 0;
     
     virtual void        GetError        ( char* dest ) const = 0;

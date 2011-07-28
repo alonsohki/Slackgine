@@ -16,7 +16,7 @@ public:
     virtual bool        Load            ( l3m::IStream& fp, float version ) = 0;
     virtual bool        Save            ( l3m::OStream& fp ) = 0;
     
-    const char*         type            () const { return m_type; }
+    const std::string&  type            () const { return m_type; }
     float               version         () const { return m_version; }
     const char*         error           () const { return m_error; }
     
@@ -31,7 +31,7 @@ protected:
     }
     
 private:
-    const char*         m_type;
+    std::string         m_type;
     float               m_version;
     char                m_error [ 256 ];
 };

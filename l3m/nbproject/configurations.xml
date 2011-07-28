@@ -42,7 +42,6 @@
           <incDir>
             <pElem>..</pElem>
           </incDir>
-          <commandLine>-ansi -pipe</commandLine>
         </ccTool>
         <archiverTool>
         </archiverTool>
@@ -84,10 +83,6 @@
           <incDir>
             <pElem>..</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>-ansi</Elem>
-            <Elem>-pipe</Elem>
-          </preprocessorList>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>

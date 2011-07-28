@@ -26,7 +26,9 @@ public:
     bool        Initialize              ();
     
     bool        BeginScene              ( const Matrix& matProjection = IdentityMatrix(), const Matrix& matLookat = IdentityMatrix() );
+    void        PushState               ();
     bool        Render                  ( const Mesh* mesh, const Matrix& mat = IdentityMatrix() );
+    void        PopState                ();
     bool        EndScene                ();
     
     void        GetError                ( char* dest ) const { strcpy(dest, m_error); }

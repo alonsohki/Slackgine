@@ -104,10 +104,6 @@
           <incDir>
             <pElem>..</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>-ansi</Elem>
-            <Elem>-pipe</Elem>
-          </preprocessorList>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>

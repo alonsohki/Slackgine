@@ -15,9 +15,12 @@ namespace l3m
 class Model
 {
 public:
+    typedef std::vector < IComponent* > componentVector;
+    
+public:
     virtual     ~Model          ()
     {
-        for ( std::vector<IComponent*>::const_iterator iter = m_vecComponents.begin();
+        for ( componentVector::const_iterator iter = m_vecComponents.begin();
               iter != m_vecComponents.end();
               ++iter )
         {
@@ -54,7 +57,8 @@ public:
         return static_cast<T*>(component);
     }
     
-    unsigned int numComponents () const { return m_vecComponents.size(); }
+    unsigned int                numComponents   () const { return m_vecComponents.size(); }
+    const componentVector&      components      () const { return m_vecComponents; }
     
 private:
     bool        SetError        ( const char* msg, ... )
@@ -69,7 +73,7 @@ public:
     const char* error           () const { return m_error; }
     
 private:
-    std::vector<IComponent*>    m_vecComponents;
+    componentVector             m_vecComponents;
     char                        m_error [ 1024 ];
 };
 
