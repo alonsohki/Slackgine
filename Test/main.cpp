@@ -7,6 +7,8 @@
 
 void display ( void );
 
+using namespace Core;
+
 static Entity* entity = 0;
 static Slackgine* sg = 0;
 

@@ -34,6 +34,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/entity_components/model_renderer.o \
 	${OBJECTDIR}/slackgine.o \
 	${OBJECTDIR}/entity.o
 
@@ -63,6 +64,11 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libcore.a: ${OBJECTFILES}
 	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libcore.a
 	${AR} -rv ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libcore.a ${OBJECTFILES} 
 	$(RANLIB) ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libcore.a
+
+${OBJECTDIR}/entity_components/model_renderer.o: entity_components/model_renderer.cpp 
+	${MKDIR} -p ${OBJECTDIR}/entity_components
+	${RM} $@.d
+	$(COMPILE.cc) -g -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/entity_components/model_renderer.o entity_components/model_renderer.cpp
 
 ${OBJECTDIR}/slackgine.o: slackgine.cpp 
 	${MKDIR} -p ${OBJECTDIR}

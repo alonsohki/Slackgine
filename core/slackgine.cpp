@@ -1,5 +1,7 @@
 #include "slackgine.h"
 
+using namespace Core;
+
 Slackgine::Slackgine ()
 {
     m_renderer = Renderer::Factory::CreateRenderer ();
