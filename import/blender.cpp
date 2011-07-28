@@ -374,7 +374,7 @@ static bool ImportSceneObject ( Object* ob, ::Scene* sce, l3m::Scene* modelScene
     {
         case OB_MESH:
         {
-            l3m::Scene::Node<l3m::Geometry>& node = modelScene->CreateGeometryNode();
+            l3m::Scene::Node& node = modelScene->CreateGeometryNode();
             node.url = get_geometry_id(ob);
             node.transform = get_node_transform_ob(ob);
             break;
@@ -390,8 +390,7 @@ static bool ImportScene ( ::Scene* sce, l3m::Scene* modelScene )
     while(base) {
             Object *ob = base->object;
 
-            if (!ob->parent) {
-                    switch(ob->type) {
+            switch(ob->type) {
                     case OB_MESH:
                     case OB_CAMERA:
                     case OB_LAMP:
@@ -400,7 +399,6 @@ static bool ImportScene ( ::Scene* sce, l3m::Scene* modelScene )
                             if ( ImportSceneObject(ob, sce, modelScene) == false )
                                 return false;
                             break;
-                    }
             }
 
             base= base->next;

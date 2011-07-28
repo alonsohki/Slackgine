@@ -13,14 +13,13 @@ class Geometry;
 class Scene : public IComponent
 {
 public:
-    template < typename T >
     struct Node
     {
-        std::string     url;
-        Matrix          transform;
+        std::string             url;
+        Matrix                  transform;
         Node () : transform (IdentityMatrix()) {}
     };
-    typedef std::vector < Node<Geometry> > geometryNodesVector;
+    typedef std::vector < Node > nodesVector;
     
 public:
     static IComponent* Create ()
@@ -40,11 +39,11 @@ public:
     bool                Load                    ( l3m::IStream& fp, float version );
     bool                Save                    ( l3m::OStream& fp );
     
-    Node<Geometry>&     CreateGeometryNode      ();
+    Node&               CreateGeometryNode      ();
 
 
 private:
-    geometryNodesVector         m_geometryNodes;
+    nodesVector         m_geometryNodes;
 };
 
 }

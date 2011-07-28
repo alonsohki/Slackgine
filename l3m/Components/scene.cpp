@@ -11,7 +11,7 @@ bool Scene::Load(l3m::IStream& fp, float version)
     
     for ( u32 i = 0; i < numGeometryNodes; ++i )
     {
-        Scene::Node<Geometry>& node = CreateGeometryNode();
+        Scene::Node& node = CreateGeometryNode();
         
         fp.ReadStr(node.url);
         if ( fp.ReadMatrix ( node.transform ) != 1 )
@@ -28,11 +28,11 @@ bool Scene::Save(l3m::OStream& fp)
     if ( !fp.Write32 ( &numGeometryNodes, 1 ) )
         return SetError ( "Unable to write the number of geometry nodes" );
     
-    for ( geometryNodesVector::const_iterator i = m_geometryNodes.begin();
+    for ( nodesVector::const_iterator i = m_geometryNodes.begin();
           i != m_geometryNodes.end();
           ++i )
     {
-        const Scene::Node<Geometry>& node = *i;
+        const Scene::Node& node = *i;
         
         if ( !fp.WriteStr ( node.url ) )
             return SetError ( "Unable to write the geometry node URL" );
@@ -43,8 +43,8 @@ bool Scene::Save(l3m::OStream& fp)
     return true;
 }
 
-Scene::Node<Geometry>& Scene::CreateGeometryNode ()
+Scene::Node& Scene::CreateGeometryNode ()
 {
-    m_geometryNodes.push_back ( Node<Geometry>() );
+    m_geometryNodes.push_back ( Node() );
     return m_geometryNodes.back ();
 }
