@@ -234,7 +234,7 @@ static void ImportVertex ( Renderer::Vertex* to, MVert* from, float* uv )
         to->tex2d() = Vector2 ( 0, 0 );
 }
 
-static bool ImportMesh ( l3m::Geometry* g, const std::string& name, u32 mat_index, Object* ob, l3m::Model* model )
+static bool ImportMesh ( Renderer::Geometry* g, const std::string& name, u32 mat_index, Object* ob, l3m::Model* model )
 {
     // Get the actual face count
     Mesh* me = (Mesh *)ob->data;
@@ -289,7 +289,7 @@ static bool ImportMesh ( l3m::Geometry* g, const std::string& name, u32 mat_inde
     return true;
 }
 
-static bool ImportGeometry ( l3m::Geometry* g, Object* ob, l3m::Model* model )
+static bool ImportGeometry ( Renderer::Geometry* g, Object* ob, l3m::Model* model )
 {
     Mesh* me = (Mesh *)ob->data;
     MFace *faces = me->mface;
@@ -420,9 +420,9 @@ static bool import_blender ( ::Scene* sce, l3m::Model* model )
             {
                 exportedGeometry.insert(geom_id);
                 l3m::Geometry* g = model->CreateComponent<l3m::Geometry>("geometry");
-                g->name() = geom_id;
+                g->geometry().name() = geom_id;
 
-                if ( ! ImportGeometry ( g, ob, model ) )
+                if ( ! ImportGeometry ( &(g->geometry()), ob, model ) )
                 {
                     fprintf ( stderr, "Error exporting a geometry\n" );
                     return false;

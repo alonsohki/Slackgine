@@ -55,11 +55,6 @@ public:
     static IShader*     CreateShader    ( IShader::Type type, std::istream& fp );
 };
 
-class Mesh : public __MeshBase
-{
-    
-};
-
 }
 
 #endif

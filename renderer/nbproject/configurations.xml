@@ -32,6 +32,8 @@
       <itemPath>Android.mk</itemPath>
       <itemPath>Makefile</itemPath>
     </logicalFolder>
+    <itemPath>geometry.cpp</itemPath>
+    <itemPath>geometry.h</itemPath>
     <itemPath>mesh.cpp</itemPath>
     <itemPath>mesh.h</itemPath>
     <itemPath>program.h</itemPath>

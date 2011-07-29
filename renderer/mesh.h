@@ -3,14 +3,12 @@
 
 #include <string>
 #include <cstdlib>
-#include "vertex.h"
+#include "renderer/vertex.h"
 
 namespace Renderer
 {
 
-class Mesh;
-    
-class __MeshBase
+class Mesh
 {
 public:
     enum PolygonType
@@ -28,8 +26,8 @@ private:
     PolygonType         m_polyType;
     
 public:
-                                __MeshBase ();
-    virtual                     ~__MeshBase ();
+                                Mesh ();
+    virtual                     ~Mesh ();
     
 private:
     void FreeIndices ();
@@ -55,4 +53,3 @@ public:
 
 }
 
-#include "renderer.h"

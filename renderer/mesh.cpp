@@ -3,18 +3,18 @@
 
 using namespace Renderer;
 
-__MeshBase::__MeshBase()
+Mesh::Mesh()
 : m_indices ( 0 )
 , m_numIndices ( 0 )
 , m_polyType ( TRIANGLES )
 {}
 
-__MeshBase::~__MeshBase ()
+Mesh::~Mesh ()
 {
     FreeIndices ();
 }
 
-void __MeshBase::FreeIndices()
+void Mesh::FreeIndices()
 {
     if ( m_indices != 0 )
         free ( m_indices );
@@ -22,7 +22,7 @@ void __MeshBase::FreeIndices()
     m_numIndices = 0;
 }
 
-void __MeshBase::Load(const unsigned int* pIndices, unsigned int indexCount, PolygonType polyType)
+void Mesh::Load(const unsigned int* pIndices, unsigned int indexCount, PolygonType polyType)
 {
     FreeIndices ();
     m_indices = ( unsigned int * )malloc(sizeof(unsigned int) * indexCount);
@@ -31,7 +31,7 @@ void __MeshBase::Load(const unsigned int* pIndices, unsigned int indexCount, Pol
     m_polyType = polyType;
 }
 
-void __MeshBase::Set(unsigned int* pIndices, unsigned int indexCount, PolygonType polyType)
+void Mesh::Set(unsigned int* pIndices, unsigned int indexCount, PolygonType polyType)
 {
     if ( pIndices != m_indices )
     {

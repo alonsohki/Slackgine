@@ -36,6 +36,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/vertex.o \
 	${OBJECTDIR}/renderers/opengl3/opengl3.o \
+	${OBJECTDIR}/geometry.o \
 	${OBJECTDIR}/renderers/opengl3/renderer.o \
 	${OBJECTDIR}/mesh.o \
 	${OBJECTDIR}/renderers/opengl3/program.o \
@@ -77,6 +78,11 @@ ${OBJECTDIR}/renderers/opengl3/opengl3.o: renderers/opengl3/opengl3.cpp
 	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3
 	${RM} $@.d
 	$(COMPILE.cc) -g -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/opengl3.o renderers/opengl3/opengl3.cpp
+
+${OBJECTDIR}/geometry.o: geometry.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/geometry.o geometry.cpp
 
 ${OBJECTDIR}/renderers/opengl3/renderer.o: renderers/opengl3/renderer.cpp 
 	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3
