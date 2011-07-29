@@ -189,7 +189,8 @@ bool OpenGL3_Renderer::BeginScene ( const Matrix& matProjection, const Matrix& m
         return false;
     
     glEnable ( GL_DEPTH_TEST );
-    glCullFace ( GL_BACK );
+    glDisable ( GL_CULL_FACE );
+    //glCullFace ( GL_BACK );
 
     m_matrix = matProjection * matLookat;
     
@@ -248,12 +249,12 @@ bool OpenGL3_Renderer::Render ( const Geometry* geometry, const Matrix& mat )
     Matrix matGeometry = m_matrix * mat;
     Matrix matNormals = Matrix::Transpose(Matrix::Invert(mat));
     
-    GLchar* base = (GLchar *)(geometry->vertices()->base ());
-    glVertexAttribPointer ( OpenGL3_Program::POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), base );
+    const Vertex* v = geometry->vertices();
+    glVertexAttribPointer ( OpenGL3_Program::POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLchar *)&(v->pos()) );
     eglGetError();
-    glVertexAttribPointer ( OpenGL3_Program::NORMAL, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), base+12 );
+    glVertexAttribPointer ( OpenGL3_Program::NORMAL, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), (GLchar *)&(v->norm()) );
     eglGetError();
-    glVertexAttribPointer ( OpenGL3_Program::TEX2D, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), base+24 );
+    glVertexAttribPointer ( OpenGL3_Program::TEX2D, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLchar *)&(v->tex2d()) );
     eglGetError();
     glEnableVertexAttribArray ( OpenGL3_Program::POSITION );
     eglGetError();

@@ -42,7 +42,8 @@ static Renderer::Geometry* FindGeometryByURL ( Model* model, const std::string& 
         if ( (*iter)->type() == "geometry" )
         {
             l3m::Geometry* g = static_cast < l3m::Geometry* > ( *iter );
-            return &(g->geometry());
+            if ( g->geometry().name() == url )
+                return &(g->geometry());
         }
     }
     

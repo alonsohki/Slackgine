@@ -343,7 +343,7 @@ public:
     
     RotationMatrix ( f32 rotX, f32 rotY, f32 rotZ )
     {
-        Matrix::operator= ( RotationMatrix ( rotZ, 0, 0, 1 ) * RotationMatrix ( rotY, 0, 1, 0 ) * RotationMatrix ( rotX, 1, 0, 0 ) );
+        Matrix::operator= ( RotationMatrix ( rotX, 1, 0, 0 ) * RotationMatrix ( rotY, 0, 1, 0 ) * RotationMatrix ( rotZ, 0, 0, 1 ) );
     }
     
     RotationMatrix ( f32* v )

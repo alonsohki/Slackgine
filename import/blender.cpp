@@ -216,7 +216,7 @@ static Matrix get_node_transform_ob(Object *ob)
 		copy_v3_v3(scale, ob->size);
 	}
 
-        return ScalingMatrix ( scale ) * RotationMatrix ( rot ) * TranslationMatrix ( loc );
+        return TranslationMatrix ( loc ) * RotationMatrix ( rot ) * ScalingMatrix ( scale );
 }
 
 
