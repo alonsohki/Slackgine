@@ -58,6 +58,7 @@ public:
     }
     
     unsigned int                numComponents   () const { return m_vecComponents.size(); }
+    componentVector&            components      () { return m_vecComponents; }
     const componentVector&      components      () const { return m_vecComponents; }
     
 private:
