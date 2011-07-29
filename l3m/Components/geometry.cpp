@@ -6,9 +6,9 @@ using namespace Renderer;
 Geometry::Geometry ( const std::string& name )
 : IComponent ( "geometry", 1.0f )
 , m_name ( name )
+, m_vertices ( 0 )
+, m_numVertices ( 0 )
 {
-    m_mainVertexLayer.vertices = 0;
-    m_mainVertexLayer.numVertices = 0;
 }
 
 Geometry::~Geometry ()
@@ -22,82 +22,38 @@ Geometry::~Geometry ()
           iter != m_mapVertexLayers.end ();
           ++iter )
     {
-        free ( iter->second.vertices );
+        free ( iter->second.data );
     }
 }
 
 void Geometry::FreeVertices()
 {
-    if ( m_mainVertexLayer.vertices != 0 )
-        free ( m_mainVertexLayer.vertices );
-    m_mainVertexLayer.vertices = 0;
-    m_mainVertexLayer.numVertices = 0;
+    if ( m_vertices != 0 )
+        free ( m_vertices );
+    m_vertices = 0;
+    m_numVertices = 0;
 }
 
 void Geometry::Load(const float* pVertices, unsigned int flags, unsigned int stride, unsigned int vertexCount)
 {
     FreeVertices ();
-    m_mainVertexLayer.vertices = Vertex::LoadAllocating(pVertices, flags, stride, vertexCount);
-    m_mainVertexLayer.numVertices = vertexCount;
+    m_vertices = Vertex::LoadAllocating(pVertices, flags, stride, vertexCount);
+    m_numVertices = vertexCount;
 }
 
 void Geometry::Set(Vertex* pVertices, unsigned int vertexCount)
 {
-    if ( pVertices != m_mainVertexLayer.vertices )
+    if ( pVertices != m_vertices )
     {
         FreeVertices ();
-        m_mainVertexLayer.vertices = pVertices;
+        m_vertices = pVertices;
     }
-    m_mainVertexLayer.numVertices = vertexCount;
+    m_numVertices = vertexCount;
 }
 
 void Geometry::LoadMesh ( Renderer::Mesh* mesh )
 {
     m_meshes.push_back(mesh);
-}
-
-
-// Vertex layers
-bool Geometry::CreateVertexLayer(const std::string& name, Renderer::Vertex* vertices, u32 vertexCount)
-{
-    layerMap::iterator iter = m_mapVertexLayers.find ( name );
-    if ( iter != m_mapVertexLayers.end() )
-        return false;
-
-    VertexLayer layer;
-    layer.numVertices = vertexCount;
-    layer.vertices = vertices;
-    m_mapVertexLayers.insert ( layerMap::value_type ( name, layer ) );
-    
-    return true;
-}
-
-bool Geometry::DeleteVertexLayer(const std::string& name)
-{
-    layerMap::iterator iter = m_mapVertexLayers.find ( name );
-    if ( iter == m_mapVertexLayers.end() )
-        return false;
-    
-    free ( iter->second.vertices );
-    m_mapVertexLayers.erase ( iter );
-}
-
-Vertex* Geometry::vertices ( const std::string& layerName ) const
-{
-    Vertex* vertices = 0;
-    layerMap::const_iterator iter = m_mapVertexLayers.find ( layerName );
-    if ( iter != m_mapVertexLayers.end () )
-        vertices = iter->second.vertices;
-    return vertices;
-}
-
-u32 Geometry::numVertices ( const std::string& layerName ) const
-{
-    u32 num = 0;
-    layerMap::const_iterator iter = m_mapVertexLayers.find ( layerName );
-    if ( iter != m_mapVertexLayers.end () )
-        num = iter->second.numVertices;
-    return num;
 }
 
 
@@ -115,6 +71,7 @@ bool Geometry::Load(l3m::IStream& fp, float version)
     Vertex* vertices = ( Vertex* )malloc ( sizeof(Vertex) * numVertices );
     if ( fp.ReadFloat(vertices->base(), numVertices*sizeof(Vertex)/sizeof(float)) != numVertices*sizeof(Vertex)/sizeof(float) )
         return SetError ( "Error reading the vertex data" );
+    this->Set ( vertices, numVertices );
 
     // Vertex layers
     u32 numLayers;
@@ -128,14 +85,15 @@ bool Geometry::Load(l3m::IStream& fp, float version)
             return SetError ( "Error reading the vertex layer name" );
         
         // Vertex layer data
-        if ( fp.Read32 ( &numVertices, 1 ) != 1 )
-            return SetError ( "Error reading the vertex layer vertex count" );
-        vertices = ( Vertex* )malloc ( sizeof(Vertex) * numVertices );
-        if ( fp.ReadFloat(vertices->base(), numVertices*sizeof(Vertex)/sizeof(f32)) != numVertices*sizeof(Vertex)/sizeof(float) )
-            return SetError ( "Error reading the vertex layer vertex data" );
+        u32 elementSize;
+        if ( fp.Read32 ( &elementSize, 1 ) != 1 )
+            return SetError ( "Error reading the vertex layer element size" );
+        void* data = malloc ( elementSize * numVertices );
+        if ( fp.ReadData ( reinterpret_cast < char * > ( data ), elementSize, numVertices ) != numVertices )
+            return SetError ( "Error reading the vertex layer data" );
         
         // Insert it.
-        CreateVertexLayer ( name, vertices, numVertices );
+        CreateVertexLayer ( name, data, elementSize );
     }
     
     // Read the meshes headers
@@ -167,7 +125,7 @@ bool Geometry::Load(l3m::IStream& fp, float version)
         // Create the mesh
         Mesh* mesh = new Mesh ();
         mesh->name () = name;
-//        mesh->Set ( vertices, numVertices, indices, numIndices, polyType );
+        mesh->Set ( indices, numIndices, polyType );
         this->LoadMesh( mesh );
     }
     
@@ -203,11 +161,11 @@ bool Geometry::Save(l3m::OStream& fp)
             return SetError ( "Error writing the vertex layer name" );
         
         // Write the vertex layer data
-        num = layer.numVertices;
-        if ( ! fp.Write32 ( &num, 1 ) )
-            return SetError ( "Error writing the vertex layer vertex count" );
-        if ( ! fp.WriteFloat ( layer.vertices->base(), num*sizeof(Vertex)/sizeof(f32) ) )
-            return SetError ( "Error writing the vertex layer vertex data" );
+        u32 size = layer.elementSize;
+        if ( ! fp.Write32 ( &size, 1 ) )
+            return SetError ( "Error writing the vertex layer element size" );
+        if ( ! fp.WriteData ( reinterpret_cast<char*>(layer.data), size, numVertices() ) )
+            return SetError ( "Error writing the vertex layer data" );
     }
 
     // Write the meshes headers
