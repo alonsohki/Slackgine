@@ -88,12 +88,9 @@ bool Geometry::Load(l3m::IStream& fp, float version)
         u32 elementSize;
         if ( fp.Read32 ( &elementSize, 1 ) != 1 )
             return SetError ( "Error reading the vertex layer element size" );
-        void* data = malloc ( elementSize * numVertices );
+        void* data = CreateVertexLayer ( name, 0, elementSize );
         if ( fp.ReadData ( reinterpret_cast < char * > ( data ), elementSize, numVertices ) != numVertices )
             return SetError ( "Error reading the vertex layer data" );
-        
-        // Insert it.
-        CreateVertexLayer ( name, data, elementSize );
     }
     
     // Read the meshes headers

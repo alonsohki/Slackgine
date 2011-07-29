@@ -55,34 +55,29 @@ public:
     template < typename T >
     T*          CreateVertexLayer       ( const std::string& name, T* data = 0 )
     {
-        T* destination = GetVertexLayer<T> ( name );
+        return reinterpret_cast < T* > ( CreateVertexLayer ( name, data, sizeof(T) ) );
+    }
+    
+    void*       CreateVertexLayer       ( const std::string& name, void* data, u32 elementSize )
+    {
+        void* destination = GetVertexLayer<void *> ( name );
 
         if ( destination == 0 )
         {
             VertexLayer layer;
-            layer.elementSize = sizeof(T);
-            layer.data = malloc ( sizeof(T) * numVertices() );
+            layer.elementSize = elementSize;
+            layer.data = malloc ( elementSize * numVertices() );
             m_mapVertexLayers.insert ( layerMap::value_type ( name, layer ) );
             
             destination = layer.data;
         }
         
         if ( data != 0 )
-            memcpy ( destination, data, sizeof(T) * numVertices() );
+            memcpy ( destination, data, elementSize * numVertices() );
         
         return destination;
     }
-    
-private:
-    void        CreateVertexLayer       ( const std::string& name, void* data, u32 elementSize )
-    {
-        VertexLayer layer;
-        layer.elementSize = elementSize;
-        layer.data = data;
-        m_mapVertexLayers.insert ( layerMap::value_type ( name, layer ) );
-    }
-public:
-    
+
     template < typename T >
     T*          GetVertexLayer          ( const std::string& name )
     {
