@@ -100,6 +100,7 @@ public:
     std::string&                name            () { return m_name; }
     Renderer::Vertex*&          vertices        () { return m_vertices; }
     meshList&                   meshes          () { return m_meshes; }
+    layerMap&                   vertexLayers    () { return m_mapVertexLayers; }
 };
 
 }

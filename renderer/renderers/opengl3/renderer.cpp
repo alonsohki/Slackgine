@@ -189,8 +189,7 @@ bool OpenGL3_Renderer::BeginScene ( const Matrix& matProjection, const Matrix& m
         return false;
     
     glEnable ( GL_DEPTH_TEST );
-    glDisable ( GL_CULL_FACE );
-    //glCullFace ( GL_BACK );
+    glCullFace ( GL_BACK );
 
     m_matrix = matProjection * matLookat;
     

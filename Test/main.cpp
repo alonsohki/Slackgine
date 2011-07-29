@@ -15,7 +15,7 @@ static Slackgine* sg = 0;
 int main(int argc, char** argv)
 {
     l3m::Model model;
-    if ( model.Load ( "../import/spherecube.l3m" ) == false )
+    if ( model.Load ( "../spherecube.l3m" ) == false )
     {
         fprintf ( stderr, "Error al cargar el modelo: %s\n", model.error() );
         return EXIT_FAILURE;
@@ -57,7 +57,7 @@ void display ( void )
         fTransDir = 1;
     fTransX += fTransDir * 0.002;
     
-    float size = 40.0f;
+    float size = 10.0f;
     if ( sg->renderer()->BeginScene( OrthographicMatrix(-size, size, size, -size, size, -size), /*TranslationMatrix(fTransX,0,0)*RotationMatrix(fRotX,1,0,0)*/RotationMatrix(fRotY,0,1,0)*RotationMatrix(3.141592f/2,-1,0,0) ) )
     {
         entity->Render ( sg->renderer() );
