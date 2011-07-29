@@ -9,6 +9,7 @@
         <itemPath>renderers/AndroidGLES20/shader.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="OpenGL3" projectFiles="true">
+        <itemPath>renderers/opengl3/geometry.h</itemPath>
         <itemPath>renderers/opengl3/opengl3.cpp</itemPath>
         <itemPath>renderers/opengl3/opengl3.h</itemPath>
         <itemPath>renderers/opengl3/program.cpp</itemPath>

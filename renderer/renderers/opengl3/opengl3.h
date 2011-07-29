@@ -57,5 +57,8 @@ public:
 
 }
 
+// Geometry definition
+#include "geometry.h"
+
 #endif
 

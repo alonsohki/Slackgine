@@ -282,7 +282,7 @@ static bool ImportMesh ( Renderer::Geometry* g, const std::string& name, u32 mat
     }
     
     Renderer::Mesh* mesh = new Renderer::Mesh ();
-    mesh->Set ( indices, actualFaceCount, Renderer::Mesh::TRIANGLES );
+    mesh->Set ( indices, actualFaceCount * 3, Renderer::Mesh::TRIANGLES );
     mesh->name() = name;
     g->LoadMesh( mesh );
     

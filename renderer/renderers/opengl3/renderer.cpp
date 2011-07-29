@@ -196,7 +196,7 @@ bool OpenGL3_Renderer::BeginScene ( const Matrix& matProjection, const Matrix& m
     return true;
 }
 
-bool OpenGL3_Renderer::Render ( const Mesh* mesh, const Matrix& mat )
+bool OpenGL3_Renderer::Render ( const Geometry* geometry, const Matrix& mat )
 {
 #if 0
     l3mComponent::IRendererData* data_ = model->rendererData();
@@ -245,6 +245,47 @@ bool OpenGL3_Renderer::Render ( const Mesh* mesh, const Matrix& mat )
         }
     }
 #endif
+    Matrix matGeometry = m_matrix * mat;
+    Matrix matNormals = Matrix::Transpose(Matrix::Invert(mat));
+    
+    GLchar* base = (GLchar *)(geometry->vertices()->base ());
+    glVertexAttribPointer ( OpenGL3_Program::POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), base );
+    eglGetError();
+    glVertexAttribPointer ( OpenGL3_Program::NORMAL, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), base+12 );
+    eglGetError();
+    glVertexAttribPointer ( OpenGL3_Program::TEX2D, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), base+24 );
+    eglGetError();
+    glEnableVertexAttribArray ( OpenGL3_Program::POSITION );
+    eglGetError();
+    glEnableVertexAttribArray ( OpenGL3_Program::NORMAL );
+    eglGetError();
+    glEnableVertexAttribArray ( OpenGL3_Program::TEX2D );
+    eglGetError();
+
+    const Geometry::meshList& meshes = geometry->meshes();;
+    for ( Geometry::meshList::const_iterator j = meshes.begin(); j != meshes.end(); ++j )
+    {
+        const Mesh* mesh = *j;
+
+        GLenum polyType = GL_INVALID_ENUM;
+        switch ( mesh->polyType() )
+        {
+            case Mesh::TRIANGLES: polyType = GL_TRIANGLES; break;
+            case Mesh::TRIANGLE_STRIP: polyType = GL_TRIANGLE_STRIP; break;
+            case Mesh::TRIANGLE_FAN: polyType = GL_TRIANGLE_FAN; break;
+            case Mesh::QUADS: polyType = GL_QUADS; break;
+            default: break;
+        }
+
+        if ( polyType != GL_INVALID_ENUM )
+        {
+            m_program->SetUniform("un_Matrix", matGeometry);
+            m_program->SetUniform("un_NormalMatrix", matNormals);
+            glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, mesh->indices() );
+            eglGetError();
+        }
+    }
+    
     return true;
 }
 

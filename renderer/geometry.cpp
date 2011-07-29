@@ -2,13 +2,13 @@
 
 using namespace Renderer;
 
-Geometry::Geometry ()
+GeometryBase::GeometryBase ()
 : m_vertices ( 0 )
 , m_numVertices ( 0 )
 {
 }
 
-Geometry::~Geometry ()
+GeometryBase::~GeometryBase ()
 {
     for ( meshList::iterator iter = m_meshes.begin(); iter != m_meshes.end(); ++iter )
         delete *iter;
@@ -23,7 +23,7 @@ Geometry::~Geometry ()
     }
 }
 
-void Geometry::FreeVertices()
+void GeometryBase::FreeVertices()
 {
     if ( m_vertices != 0 )
         free ( m_vertices );
@@ -31,14 +31,14 @@ void Geometry::FreeVertices()
     m_numVertices = 0;
 }
 
-void Geometry::Load ( const float* pVertices, unsigned int flags, unsigned int stride, unsigned int vertexCount )
+void GeometryBase::Load ( const float* pVertices, unsigned int flags, unsigned int stride, unsigned int vertexCount )
 {
     FreeVertices ();
     m_vertices = Vertex::LoadAllocating(pVertices, flags, stride, vertexCount);
     m_numVertices = vertexCount;
 }
 
-void Geometry::Set ( Vertex* pVertices, unsigned int vertexCount )
+void GeometryBase::Set ( Vertex* pVertices, unsigned int vertexCount )
 {
     if ( pVertices != m_vertices )
     {
@@ -48,7 +48,7 @@ void Geometry::Set ( Vertex* pVertices, unsigned int vertexCount )
     m_numVertices = vertexCount;
 }
 
-void Geometry::LoadMesh ( Renderer::Mesh* mesh )
+void GeometryBase::LoadMesh ( Renderer::Mesh* mesh )
 {
     m_meshes.push_back(mesh);
 }

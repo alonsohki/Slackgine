@@ -40,6 +40,11 @@ public:
     bool                Save                    ( l3m::OStream& fp );
     
     Node&               CreateGeometryNode      ();
+    
+    
+    // Accessors
+public:
+    const nodesVector&          geometryNodes           () const { return m_geometryNodes; }
 
 
 private:

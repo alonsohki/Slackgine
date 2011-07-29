@@ -9,7 +9,7 @@
 namespace Renderer
 {
 
-class Geometry
+class GeometryBase
 {
 public:
     typedef std::list<Mesh *> meshList;
@@ -31,8 +31,8 @@ private:
     void        FreeVertices    ();
     
 public:
-                Geometry        ();
-                ~Geometry       ();
+                GeometryBase        ();
+                ~GeometryBase       ();
 
 
     void        LoadMesh        ( Mesh* mesh );
@@ -103,3 +103,6 @@ public:
 };
 
 }
+
+// Include the renderer selection through the renderer header to get the actual geometry definition
+#include "renderer.h"
