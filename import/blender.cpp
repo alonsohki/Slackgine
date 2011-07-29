@@ -351,7 +351,6 @@ static bool ImportGeometry ( l3m::Geometry* g, Object* ob, l3m::Model* model )
     }
     g->Set( vertexArray, actualVertexCount );
     
-    
     // Load every mesh in this geometry
     if ( !totcol )
         return ImportMesh ( g, g->name(), 0, ob, model );
