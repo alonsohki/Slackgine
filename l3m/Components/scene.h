@@ -45,6 +45,7 @@ public:
     // Accessors
 public:
     const nodesVector&          geometryNodes           () const { return m_geometryNodes; }
+    nodesVector&                geometryNodes           () { return m_geometryNodes; }
 
 
 private:

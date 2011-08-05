@@ -1,5 +1,4 @@
-#ifndef MATRIX_H
-#define	MATRIX_H
+#pragma once
 
 #include <sstream>
 #include <cmath>
@@ -64,7 +63,71 @@ public:
         return memcmp ( v, m.v, sizeof(m.v) ) != 0;
     }
     
+    void Assign3x3 ( const Matrix& m )
+    {
+        for ( u8 i = 0; i < 3; ++i )
+            for ( u8 j = 0; j < 3; ++j )
+                this->m[i][j] = m.m[i][j];
+    }
+        
     // Operations
+    
+    // Determinant
+    // | a b c d |       | f g h |       | e g h |       | e f h |       | e f g |
+    // | e f g h | = a * | j k l | - b * | i k l | + c * | i j l | - d * | i j k |
+    // | i j k l |       | o p q |       | n p q |       | n o q |       | n o p |
+    // | n o p q |
+    f32 Determinant () const
+    {
+        const f32 &a = m[0][0], &b = m[0][1], &c = m[0][2], &d = m[0][3],
+                  &e = m[1][0], &f = m[1][1], &g = m[1][2], &h = m[1][3],
+                  &i = m[2][0], &j = m[2][1], &k = m[2][2], &l = m[2][3],
+                  &n = m[3][0], &o = m[3][1], &p = m[3][2], &q = m[3][3];
+        f32 det1 = f*k*q + g*l*o + h*j*p - h*k*o - g*j*q - f*l*p;
+        f32 det2 = e*k*q + g*l*n + h*i*p - h*k*n - g*i*q - e*l*p;
+        f32 det3 = e*j*q + f*l*n + h*i*o - h*j*n - f*i*q - e*l*o;
+        f32 det4 = e*j*p + f*k*n + g*i*o - g*j*n - g*i*p - e*k*o;
+        return a*det1 - b*det2 + c*det3 - d*det4;
+    }
+    
+    // QR Decomposition, using Gram-Schmidt process, for the 3x3 submatrix.
+    void QRDecompose ( Matrix* Q, Matrix* R ) const
+    {
+        return QRDecompose ( *this, Q, R );
+    }
+    
+    static void QRDecompose ( const Matrix& thiz, Matrix* Q, Matrix* R )
+    {
+        Vector3 a1 = Vector3 ( &thiz.m[0][0] );
+        Vector3 a2 = Vector3 ( &thiz.m[1][0] );
+        Vector3 a3 = Vector3 ( &thiz.m[2][0] );
+        
+        Vector3 u1 = a1;
+        Vector3 e1 = Vector3::Normalize(u1);
+        
+        Vector3 u2 = a2 - (e1 * (e1.Dot(a2) / e1.Dot(e1)));
+        Vector3 e2 = Vector3::Normalize(u2);
+        
+        Vector3 u3 = a3 - (e1 * (e1.Dot(a3) / e1.Dot(e1))) - (e2 * (e2.Dot(a3) / e2.Dot(e2)));
+        Vector3 e3 = Vector3::Normalize(u3);
+        
+        float m [ 16 ];
+        m[0] = e1.x();  m[1] = e1.y();  m[2] = e1.z();  m[3] = 0.0f;
+        m[4] = e2.x();  m[5] = e2.y();  m[6] = e2.z();  m[7] = 0.0f;
+        m[8] = e3.x();  m[9] = e3.y();  m[10] = e3.z(); m[11] = 0.0f;
+        m[12] = 0.0f;   m[13] = 0.0f;   m[14] = 0.0f;   m[15] = 1.0f;
+        *Q = m;
+        
+        memset ( m, 0, sizeof(m) );
+        m[0] = e1.Dot(a1);
+        m[4] = e1.Dot(a2); m[5] = e2.Dot(a2);
+        m[8] = e1.Dot(a3); m[9] = e2.Dot(a3); m[10] = e3.Dot(a3);
+        m[15] = 1.0f;
+        *R = m;
+    }
+    
+    
+    
     Matrix& Transpose ()
     {
         *this = Matrix::Transpose(*this);
@@ -249,12 +312,14 @@ public:
     {
         float res[3] = { 0, 0, 0 };
         
-        f32 elem;
+        const f32* vector = v.vector();
         for ( u8 i = 0; i < 3; ++i )
         {
-            elem = v.vector()[i];
+            const f32& elem = vector[i];
             for ( u8 k = 0; k < 3; ++k )
                 res[k] += m[i][k] * elem;
+            // Assume that the vector 4th component is 1
+            res[i] += m[3][i];
         }
         
         return Vector3(res);
@@ -371,6 +436,3 @@ public:
         Matrix::operator= ( v );
     }
 };
-
-#endif	/* MATRIX_H */
-

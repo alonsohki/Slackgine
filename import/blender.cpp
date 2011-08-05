@@ -376,6 +376,7 @@ static bool ImportSceneObject ( Object* ob, ::Scene* sce, l3m::Scene* modelScene
             l3m::Scene::Node& node = modelScene->CreateGeometryNode();
             node.url = get_geometry_id(ob);
             node.transform = get_node_transform_ob(ob);
+            
             break;
         }
     }

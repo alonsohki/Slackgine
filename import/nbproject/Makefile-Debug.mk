@@ -35,7 +35,8 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/main.o \
-	${OBJECTDIR}/blender.o
+	${OBJECTDIR}/blender.o \
+	${OBJECTDIR}/post_process.o
 
 
 # C Compiler Flags
@@ -75,6 +76,11 @@ ${OBJECTDIR}/blender.o: blender.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -I. -I.. -I../libblender/blender/source/blender/blenkernel -I../libblender/blender/source/blender/blenlib -I../libblender/blender/source/blender/makesdna -I../libblender/blender/source/blender/makesrna -I../libblender/blender/intern/guardedalloc -I../libblender/blender/source/blender/imbuf -I../libblender/blender/source/blender/windowmanager -I../libblender/blender/source/blender/gpu -I../libblender/blender/source/blender/render/extern/include -I../libblender/blender/source/blender/nodes -I../libblender/blender/source/blender/editors/include -I../libblender/blender/source/blender/blenloader -MMD -MP -MF $@.d -o ${OBJECTDIR}/blender.o blender.cpp
+
+${OBJECTDIR}/post_process.o: post_process.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -I. -I.. -I../libblender/blender/source/blender/blenkernel -I../libblender/blender/source/blender/blenlib -I../libblender/blender/source/blender/makesdna -I../libblender/blender/source/blender/makesrna -I../libblender/blender/intern/guardedalloc -I../libblender/blender/source/blender/imbuf -I../libblender/blender/source/blender/windowmanager -I../libblender/blender/source/blender/gpu -I../libblender/blender/source/blender/render/extern/include -I../libblender/blender/source/blender/nodes -I../libblender/blender/source/blender/editors/include -I../libblender/blender/source/blender/blenloader -MMD -MP -MF $@.d -o ${OBJECTDIR}/post_process.o post_process.cpp
 
 # Subprojects
 .build-subprojects:

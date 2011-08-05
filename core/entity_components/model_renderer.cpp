@@ -28,7 +28,7 @@ void ModelRenderer::Render ( Renderer::IRenderer* renderer )
           ++iter )
     {
         Node& node = *iter;
-        renderer->Render( node.geometry, node.transform );
+        renderer->Render( node.geometry, node.transform * parent()->matrix() );
     }
 }
 

@@ -48,7 +48,7 @@ static bool process_geometry ( Renderer::Geometry& g, u32* numDuplicates )
                 *numDuplicates = *numDuplicates + 1;
                 --numVertices;
                 
-                // Delete all the vertices onwards, including all layers
+                // Move all the vertices onwards, including all layers
                 memcpy ( &vertices[lookup], &vertices[lookup+1], (numVertices - lookup) * sizeof(Vertex) );
                 for ( Renderer::Geometry::layerMap::iterator iter = layers.begin ();
                       iter != layers.end();
@@ -59,7 +59,7 @@ static bool process_geometry ( Renderer::Geometry& g, u32* numDuplicates )
                     memcpy ( &data[lookup*layer.elementSize], &data[(lookup+1)*layer.elementSize], (numVertices - lookup) * layer.elementSize );
                 }
                 
-                // Update all the indices that pointed to this vertex
+                // Update all the indices that pointed to this vertex and the follwing
                 Renderer::Geometry::meshList& meshes = g.meshes();
                 for ( Renderer::Geometry::meshList::iterator it = meshes.begin ();
                       it != meshes.end ();

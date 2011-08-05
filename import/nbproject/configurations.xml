@@ -15,6 +15,8 @@
     <itemPath>blender.cpp</itemPath>
     <itemPath>blender_stuff.h</itemPath>
     <itemPath>main.cpp</itemPath>
+    <itemPath>post_process.cpp</itemPath>
+    <itemPath>post_process.h</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>

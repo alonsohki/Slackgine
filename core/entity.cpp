@@ -5,6 +5,7 @@ using namespace Core;
 
 Entity::Entity ( l3m::Model* pModel )
 : m_modelRenderer ( 0 )
+, m_matrix ( IdentityMatrix() )
 {
     SetModel ( pModel );
 }

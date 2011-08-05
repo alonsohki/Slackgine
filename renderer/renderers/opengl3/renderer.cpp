@@ -66,6 +66,10 @@ bool OpenGL3_Renderer::Initialize()
         "in vec2 in_Tex2D;\n"
         "\n"
         "uniform mat4 un_Matrix;\n"
+        "uniform mat4 un_ProjectionMatrix;\n"
+        "uniform mat4 un_LookatMatrix;\n"
+        "uniform mat4 un_ModelviewMatrix;\n"
+        "\n"
         "uniform mat4 un_NormalMatrix;\n"
         "\n"
         "varying vec3 ex_Normal;\n"
@@ -191,7 +195,8 @@ bool OpenGL3_Renderer::BeginScene ( const Matrix& matProjection, const Matrix& m
     glEnable ( GL_DEPTH_TEST );
     glCullFace ( GL_BACK );
 
-    m_matrix = matProjection * matLookat;
+    m_matProjection = matProjection;
+    m_matLookat = matLookat;
     
     return true;
 }
@@ -245,8 +250,8 @@ bool OpenGL3_Renderer::Render ( const Geometry* geometry, const Matrix& mat )
         }
     }
 #endif
-    Matrix matGeometry = m_matrix * mat;
     Matrix matNormals = Matrix::Transpose(Matrix::Invert(mat));
+    Matrix matGeometry = m_matProjection * m_matLookat * mat;
     
     const Vertex* v = geometry->vertices();
     glVertexAttribPointer ( OpenGL3_Program::POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLchar *)&(v->pos()) );
@@ -279,8 +284,11 @@ bool OpenGL3_Renderer::Render ( const Geometry* geometry, const Matrix& mat )
 
         if ( polyType != GL_INVALID_ENUM )
         {
-            m_program->SetUniform("un_Matrix", matGeometry);
+            m_program->SetUniform("un_ProjectionMatrix", m_matProjection );
+            m_program->SetUniform("un_LookatMatrix", m_matLookat );
+            m_program->SetUniform("un_ModelviewMatrix", mat);
             m_program->SetUniform("un_NormalMatrix", matNormals);
+            m_program->SetUniform("un_Matrix", matGeometry );
             glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, mesh->indices() );
             eglGetError();
         }

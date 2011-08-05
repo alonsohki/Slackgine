@@ -24,6 +24,11 @@ public:
     void                        Render          ( Renderer::IRenderer* renderer );
     
     bool                        AddComponent    ( Entities::IComponent* component );
+    
+    // Accessors
+public:
+    Matrix&                     matrix          () { return m_matrix; }
+    const Matrix&               matrix          () const { return m_matrix; }
 
 private:
     Matrix                      m_matrix;

@@ -1,6 +1,6 @@
-#ifndef VECTOR_H
-#define VECTOR_H
+#pragma once
 
+#include <cmath>
 #include <cstring>
 #include "shared/platform.h"
 
@@ -75,7 +75,7 @@ public:
     {
         operator=(v.v);
     }
-    Vector3 ( f32* vec )
+    Vector3 ( const f32* vec )
     {
         operator=(vec);
     }
@@ -160,6 +160,31 @@ public:
     {
         return x()*vec.x() + y()*vec.y() + z()*vec.z();
     }
+    
+    // Normalization and length
+    f32 Length () const
+    {
+        return sqrt(x()*x() + y()*y() + z()*z());
+    }
+    static f32 Length ( const Vector3& thiz )
+    {
+        return thiz.Length();
+    }
+    
+    void Normalize ()
+    {
+        f32 length = Length ();
+        if ( fabs(length) > 0.000001f )
+        {
+            x() = x() / length;
+            y() = y() / length;
+            z() = z() / length;
+        }
+    }
+    static Vector3 Normalize ( const Vector3& vec )
+    {
+        Vector3 v = vec;
+        v.Normalize ();
+        return v;
+    }
 };
-
-#endif
