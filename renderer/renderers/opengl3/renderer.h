@@ -28,7 +28,7 @@ public:
     
     bool        BeginScene              ( const Matrix& matProjection = IdentityMatrix(), const Matrix& matLookat = IdentityMatrix() );
     void        PushState               ();
-    bool        Render                  ( const Geometry* geometry, const Matrix& mat = IdentityMatrix() );
+    bool        Render                  ( Geometry* geometry, const Matrix& mat = IdentityMatrix() );
     void        PopState                ();
     bool        EndScene                ();
     

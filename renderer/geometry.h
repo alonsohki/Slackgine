@@ -32,7 +32,7 @@ private:
     
 public:
                 GeometryBase        ();
-                ~GeometryBase       ();
+    virtual     ~GeometryBase       ();
 
 
     void        LoadMesh        ( Mesh* mesh );

@@ -3,34 +3,6 @@
 
 using namespace Renderer;
 
-#if 0
-struct RendererData : public l3mComponent::IRendererData
-{
-    GLsizei         m_numvaos;
-    GLuint*         m_vaos;
-    GLsizei         m_numbuffers;
-    GLuint*         m_buffers;
-
-    RendererData () : m_numvaos(0), m_vaos(0), m_numbuffers(0), m_buffers(0) {}
-
-    ~RendererData ()
-    {
-        if ( m_vaos != 0 )
-        {
-            glDeleteVertexArrays ( m_numvaos, m_vaos );
-            eglGetError();
-            delete [] m_vaos;
-        }
-        if ( m_buffers != 0 )
-        {
-            glDeleteBuffers ( m_numbuffers, m_buffers );
-            eglGetError();
-            delete [] m_buffers;
-        }
-    }
-};
-#endif
-
 OpenGL3_Renderer::OpenGL3_Renderer()
 : m_initialized(false)
 , m_vertexShader(0)
@@ -110,80 +82,6 @@ bool OpenGL3_Renderer::Initialize()
     return m_initialized;
 }
 
-#if 0
-bool OpenGL3_Renderer::SetupModel(const l3m::Model* model)
-{
-    if ( model->rendererData() != 0 )
-        return false;
-
-    RendererData* data = new RendererData ();
-    model->rendererData() = data;
-
-    // Count the number of meshes.
-    unsigned int numMeshes = 0;
-    const l3mComponent::geometryList& geometries = model->geometries();
-    for ( l3mComponent::geometryList::const_iterator i = geometries.begin(); i != geometries.end(); ++i )
-    {
-        const Geometry* geometry = *i;
-        numMeshes += geometry->meshes().size();
-    }
-
-    if ( numMeshes > 0 )
-    {
-        // Generate the buffers
-        data->m_numvaos = numMeshes;
-        data->m_numbuffers = numMeshes * 2;
-
-        data->m_vaos = new GLuint [ data->m_numvaos ];
-        glGenVertexArrays ( data->m_numvaos, &(data->m_vaos[0]) );
-        eglGetError();
-
-        data->m_buffers = new GLuint [ data->m_numbuffers ];
-        glGenBuffers ( data->m_numbuffers, &(data->m_buffers[0]) );
-        eglGetError();
-
-        // Setup the vaos
-        unsigned int curMesh = 0;
-        for ( l3mComponent::geometryList::const_iterator i = geometries.begin(); i != geometries.end(); ++i )
-        {
-            const Geometry* geometry = *i;
-            for ( Geometry::meshList::const_iterator j = geometry->meshes().begin(); j != geometry->meshes().end(); ++j )
-            {
-                Mesh* mesh = *j;
-                
-                glBindVertexArray ( data->m_vaos[curMesh] );
-                eglGetError();
-
-                glBindBuffer ( GL_ARRAY_BUFFER, data->m_buffers[curMesh * 2] );
-                eglGetError();
-                glBufferData ( GL_ARRAY_BUFFER, mesh->numVertices() * sizeof(Vertex), mesh->vertices(), GL_STATIC_DRAW );
-                eglGetError();
-                glVertexAttribPointer ( OpenGL3_Program::POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLchar*)0 );
-                eglGetError();
-                glVertexAttribPointer ( OpenGL3_Program::NORMAL, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), (GLchar*)12 );
-                eglGetError();
-                glVertexAttribPointer ( OpenGL3_Program::TEX2D, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLchar*)24 );
-                eglGetError();
-                glEnableVertexAttribArray ( OpenGL3_Program::POSITION );
-                eglGetError();
-                glEnableVertexAttribArray ( OpenGL3_Program::NORMAL );
-                eglGetError();
-                glEnableVertexAttribArray ( OpenGL3_Program::TEX2D );
-                eglGetError();
-
-                glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, data->m_buffers[curMesh * 2 + 1 ] );
-                eglGetError();
-                glBufferData ( GL_ELEMENT_ARRAY_BUFFER, mesh->numIndices() * sizeof(unsigned int), mesh->indices(), GL_STATIC_DRAW );
-                eglGetError();
-
-                ++curMesh;
-            }
-        }
-    }
-    return true;
-}
-#endif
-
 bool OpenGL3_Renderer::BeginScene ( const Matrix& matProjection, const Matrix& matLookat )
 {
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -201,59 +99,19 @@ bool OpenGL3_Renderer::BeginScene ( const Matrix& matProjection, const Matrix& m
     return true;
 }
 
-bool OpenGL3_Renderer::Render ( const Geometry* geometry, const Matrix& mat )
+bool OpenGL3_Renderer::Render ( Geometry* geometry, const Matrix& mat )
 {
-#if 0
-    l3mComponent::IRendererData* data_ = model->rendererData();
-    if ( !data_ && !SetupModel(model) )
-        return false;
-    RendererData* data = static_cast<RendererData*>(model->rendererData ());
-    
-    Matrix matModelview = m_matrix * mat;
+    if ( !geometry->initialized() )
+        if ( !geometry->Initialize() )
+            return false;
 
-    unsigned int curMesh = 0;
-    const l3mComponent::geometryList& geometries = model->geometries();
-    for ( l3mComponent::geometryList::const_iterator i = geometries.begin(); i != geometries.end(); ++i )
-    {
-        const Geometry* geometry = *i;
-        Matrix matGeometry = matModelview * geometry->matrix();
-        Matrix matNormals = Matrix::Transpose(Matrix::Invert(mat * geometry->matrix()));
-        
-        const Geometry::meshList& meshes = geometry->meshes();;
-        for ( Geometry::meshList::const_iterator j = meshes.begin(); j != meshes.end(); ++j, ++curMesh )
-        {
-            const Mesh* mesh = *j;
-            
-            GLenum polyType = GL_INVALID_ENUM;
-            switch ( mesh->polyType() )
-            {
-                case Mesh::TRIANGLES: polyType = GL_TRIANGLES; break;
-                case Mesh::TRIANGLE_STRIP: polyType = GL_TRIANGLE_STRIP; break;
-                case Mesh::TRIANGLE_FAN: polyType = GL_TRIANGLE_FAN; break;
-                case Mesh::QUADS: polyType = GL_QUADS; break;
-                default: break;
-            }
-
-            if ( polyType != GL_INVALID_ENUM )
-            {
-                glBindVertexArray ( data->m_vaos[curMesh] );
-                glEnableVertexAttribArray ( OpenGL3_Program::POSITION );
-                eglGetError();
-                glEnableVertexAttribArray ( OpenGL3_Program::NORMAL );
-                eglGetError();
-                glEnableVertexAttribArray ( OpenGL3_Program::TEX2D );
-                m_program->SetUniform("un_Matrix", matGeometry);
-                m_program->SetUniform("un_NormalMatrix", matNormals);
-                glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, 0 );
-                eglGetError();
-            }
-        }
-    }
-#endif
     Matrix matNormals = Matrix::Transpose(Matrix::Invert(mat));
     Matrix matGeometry = m_matProjection * m_matLookat * mat;
     
-    const Vertex* v = geometry->vertices();
+    // Use vertex buffers
+    const Vertex* v = 0;
+    glBindBuffer ( GL_ARRAY_BUFFER, geometry->m_vertexBuffer );
+    
     glVertexAttribPointer ( OpenGL3_Program::POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLchar *)&(v->pos()) );
     eglGetError();
     glVertexAttribPointer ( OpenGL3_Program::NORMAL, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), (GLchar *)&(v->norm()) );
@@ -267,10 +125,14 @@ bool OpenGL3_Renderer::Render ( const Geometry* geometry, const Matrix& mat )
     glEnableVertexAttribArray ( OpenGL3_Program::TEX2D );
     eglGetError();
 
-    const Geometry::meshList& meshes = geometry->meshes();;
-    for ( Geometry::meshList::const_iterator j = meshes.begin(); j != meshes.end(); ++j )
+    // Bind the indices buffer
+    glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, geometry->m_elementBuffer );
+    
+    for ( Geometry::meshNodeVector::const_iterator iter = geometry->m_meshNodes.begin();
+          iter != geometry->m_meshNodes.end();
+          ++iter )
     {
-        const Mesh* mesh = *j;
+        const Mesh* mesh = (*iter).mesh;
 
         GLenum polyType = GL_INVALID_ENUM;
         switch ( mesh->polyType() )
@@ -289,7 +151,7 @@ bool OpenGL3_Renderer::Render ( const Geometry* geometry, const Matrix& mat )
             m_program->SetUniform("un_ModelviewMatrix", mat);
             m_program->SetUniform("un_NormalMatrix", matNormals);
             m_program->SetUniform("un_Matrix", matGeometry );
-            glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, mesh->indices() );
+            glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, reinterpret_cast<const GLvoid *>((*iter).offset * sizeof(u32)) );
             eglGetError();
         }
     }
