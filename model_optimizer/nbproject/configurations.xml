@@ -59,6 +59,7 @@
                             OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/librenderer.a">
               </makeArtifact>
             </linkerLibProjectItem>
+            <linkerOptionItem>`pkg-config --libs glew`</linkerOptionItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>
@@ -111,6 +112,7 @@
                             OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/librenderer.a">
               </makeArtifact>
             </linkerLibProjectItem>
+            <linkerOptionItem>`pkg-config --libs glew`</linkerOptionItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>

@@ -5,6 +5,8 @@
 #include <string>
 #include "mesh.h"
 #include "vertex.h"
+#include "math/boundingbox.h"
+#include "math/boundingsphere.h"
 
 namespace Renderer
 {
@@ -26,6 +28,8 @@ private:
     u32                 m_numVertices;
     layerMap            m_mapVertexLayers;
     meshList            m_meshes;
+    BoundingBox         m_bbox;
+    BoundingSphere      m_bsphere;
     
 private:
     void        FreeVertices    ();
@@ -96,11 +100,15 @@ public:
     const u32&                  numVertices     () const { return m_numVertices;; }
     const meshList&             meshes          () const { return m_meshes; }
     const layerMap&             vertexLayers    () const { return m_mapVertexLayers; }
+    const BoundingBox&          boundingBox     () const { return m_bbox; }
+    const BoundingSphere&       boundingSphere  () const { return m_bsphere; }
     
     std::string&                name            () { return m_name; }
     Renderer::Vertex*&          vertices        () { return m_vertices; }
     meshList&                   meshes          () { return m_meshes; }
     layerMap&                   vertexLayers    () { return m_mapVertexLayers; }
+    BoundingBox&                boundingBox     () { return m_bbox; }
+    BoundingSphere&             boundingSphere  () { return m_bsphere; }
 };
 
 }

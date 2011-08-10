@@ -23,6 +23,13 @@ bool Geometry::Load(l3m::IStream& fp, float version)
     if ( fp.ReadStr( m_geometry.name() ) == -1 )
         return SetError ( "Error reading the geometry name" );
     
+    // Geometry boundaries
+    float values[7];
+    if ( fp.ReadFloat(values, 7) != 7 )
+        return SetError ( "Error reading the geometry boundary data" );
+    m_geometry.boundingBox() = BoundingBox ( values[0], values[1], values[2], values[3], values[4], values[5] );
+    m_geometry.boundingSphere() = BoundingSphere ( values[6] );
+    
     // Read the vertex data
     u32 numVertices;
     if ( fp.Read32 ( &numVertices, 1 ) != 1 )
@@ -93,6 +100,16 @@ bool Geometry::Save(l3m::OStream& fp)
     // Geometry name
     if ( !fp.WriteStr( m_geometry.name() ) )
         return SetError ( "Error writing the geometry name" );
+    
+    // Geometry boundaries
+    float values[7];
+    BoundingBox& bbox = m_geometry.boundingBox();
+    values[0] = bbox.minX(); values[1] = bbox.maxX();
+    values[2] = bbox.minY(); values[3] = bbox.maxY();
+    values[4] = bbox.minZ(); values[5] = bbox.maxZ();
+    values[6] = m_geometry.boundingSphere().radius();
+    if ( ! fp.WriteFloat ( values, 7 ) )
+        return SetError ( "Error writing the geometry boundary data" );
     
     // Geometry vertices
     u32 num = m_geometry.numVertices();

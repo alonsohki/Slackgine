@@ -53,7 +53,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=../l3m/dist/Release/GNU-Linux-x86/libl3m.a ../renderer/dist/Release/GNU-Linux-x86/librenderer.a
+LDLIBSOPTIONS=../l3m/dist/Release/GNU-Linux-x86/libl3m.a ../renderer/dist/Release/GNU-Linux-x86/librenderer.a `pkg-config --libs glew`  
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -70,17 +70,17 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/model_optimizer: ${OBJECTFILES}
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -I. -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -O2 -I. -I.. `pkg-config --cflags glew`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
 
 ${OBJECTDIR}/delete_duplicates.o: delete_duplicates.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -I. -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/delete_duplicates.o delete_duplicates.cpp
+	$(COMPILE.cc) -O2 -I. -I.. `pkg-config --cflags glew`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/delete_duplicates.o delete_duplicates.cpp
 
 ${OBJECTDIR}/filter.o: filter.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -I. -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/filter.o filter.cpp
+	$(COMPILE.cc) -O2 -I. -I.. `pkg-config --cflags glew`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/filter.o filter.cpp
 
 # Subprojects
 .build-subprojects:
