@@ -358,6 +358,34 @@ static bool ImportGeometry ( Renderer::Geometry* g, Object* ob, l3m::Model* mode
         free ( uvData );
     }
     
+    // Import the vertex colors
+    bool has_color = (bool)CustomData_has_layer(&me->fdata, CD_MCOL);
+    if ( has_color )
+    {
+        Color* colorData = (Color *)malloc( sizeof(Color) * actualVertexCount );
+        int index = CustomData_get_active_layer_index(&me->fdata, CD_MCOL);
+        curVertex = 0;
+
+        MCol *mcol = (MCol*)me->fdata.layers[index].data;
+        
+        for ( u32 i = 0; i < totface; ++i, mcol += 4 )
+        {
+            colorData [ curVertex++ ] = Color ( mcol[0].r, mcol[0].g, mcol[0].b, mcol[0].a );
+            colorData [ curVertex++ ] = Color ( mcol[1].r, mcol[1].g, mcol[1].b, mcol[1].a );
+            colorData [ curVertex++ ] = Color ( mcol[2].r, mcol[2].g, mcol[2].b, mcol[2].a );
+            
+            if ( faces[i].v4 != 0 )
+            {
+                colorData [ curVertex++ ] = Color ( mcol[0].r, mcol[0].g, mcol[0].b, mcol[0].a );
+                colorData [ curVertex++ ] = Color ( mcol[2].r, mcol[2].g, mcol[2].b, mcol[2].a );
+                colorData [ curVertex++ ] = Color ( mcol[3].r, mcol[3].g, mcol[3].b, mcol[3].a );
+            }
+        }
+        
+        g->CreateVertexLayer("color", 1, colorData, sizeof(Color) );
+        free ( colorData );
+    }
+    
     // Load every mesh in this geometry
     if ( !totcol )
         return ImportMesh ( g, g->name(), 0, ob, model );
