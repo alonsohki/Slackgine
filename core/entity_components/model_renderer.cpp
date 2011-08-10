@@ -5,11 +5,11 @@
 using namespace Core::Entities;
 using namespace l3m;
 
-ModelRenderer::ModelRenderer ( Entity* parent )
-: IComponent ( parent, false, true )
+ModelRenderer::ModelRenderer ( l3m::Model* model )
+: IComponent ( 0, false, true )
 {
     m_scene = 0;
-    m_model = parent->GetModel();
+    m_model = model;
     if ( m_model )
         Initialize ();
 }
@@ -18,7 +18,7 @@ ModelRenderer::~ModelRenderer ()
 {
 }
 
-void ModelRenderer::Render ( Renderer::IRenderer* renderer )
+void ModelRenderer::Render ( Renderer::IRenderer* renderer, const Matrix& mat )
 {
     if ( !m_model || !m_scene )
         return;
@@ -28,7 +28,7 @@ void ModelRenderer::Render ( Renderer::IRenderer* renderer )
           ++iter )
     {
         Node& node = *iter;
-        renderer->Render( node.geometry, node.transform * parent()->matrix() );
+        renderer->Render( node.geometry, node.transform * mat );
     }
 }
 

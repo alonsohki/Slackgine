@@ -18,13 +18,14 @@ public:
     typedef std::vector < Node > nodesVector;
     
 public:
-                ModelRenderer       ( Entity* parent );
-                ~ModelRenderer      ();
+                        ModelRenderer           ( l3m::Model* model );
+                        ~ModelRenderer          ();
                 
-    void        Render              ( Renderer::IRenderer* renderer );
+    void                Render                  ( Renderer::IRenderer* renderer, const Matrix& mat );
+    l3m::Model*         model                   () const { return m_model; }
     
 private:
-    void        Initialize          ();
+    void                Initialize              ();
     
 private:
     l3m::Model*         m_model;

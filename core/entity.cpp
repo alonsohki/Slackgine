@@ -1,5 +1,6 @@
 #include <set>
 #include "entity.h"
+#include "model_renderer_factory.h"
 
 using namespace Core;
 
@@ -43,14 +44,14 @@ void Entity::SetModel ( l3m::Model* pModel )
 {
     if ( m_modelRenderer != 0 )
     {
-        delete m_modelRenderer;
+        ModelRendererFactory::Release ( m_modelRenderer );
         m_modelRenderer = 0;
     }
     m_model = pModel;
     
     if ( m_model != 0 )
     {
-        m_modelRenderer = new Entities::ModelRenderer ( this );
+        m_modelRenderer = ModelRendererFactory::Create ( m_model );
     }
 }
 
@@ -75,7 +76,7 @@ void Entity::Render ( Renderer::IRenderer* renderer )
         (*iter)->Render ( renderer );
     }
     
-    m_modelRenderer->Render ( renderer );
+    m_modelRenderer->Render ( renderer, matrix() );
     renderer->PopState ();
 }
 
