@@ -19,6 +19,7 @@ public:
     {
         void*   data;
         u32     elementSize;
+        u32     numLevels;
     };
     typedef std::map < std::string, VertexLayer > layerMap;
 
@@ -40,18 +41,17 @@ public:
 
 
     void        LoadMesh        ( Mesh* mesh );
-    void        Load            ( const float* pVertices, unsigned int flags, unsigned int stride, unsigned int vertexCount );
     void        Set             ( Renderer::Vertex* pVertices, u32 vertexCount );
     
     // Vertex layers
 public:
     template < typename T >
-    T*          CreateVertexLayer       ( const std::string& name, T* data = 0 )
+    T*          CreateVertexLayer       ( const std::string& name, u32 numLevels, T* data = 0 )
     {
         return reinterpret_cast < T* > ( CreateVertexLayer ( name, data, sizeof(T) ) );
     }
     
-    void*       CreateVertexLayer       ( const std::string& name, void* data, u32 elementSize )
+    void*       CreateVertexLayer       ( const std::string& name, u32 numLevels, void* data, u32 elementSize )
     {
         void* destination = GetVertexLayer<void *> ( name );
 
@@ -59,26 +59,39 @@ public:
         {
             VertexLayer layer;
             layer.elementSize = elementSize;
-            layer.data = malloc ( elementSize * numVertices() );
+            layer.numLevels = numLevels;
+            layer.data = malloc ( numLevels * elementSize * numVertices() );
             m_mapVertexLayers.insert ( layerMap::value_type ( name, layer ) );
             
             destination = layer.data;
         }
         
         if ( data != 0 )
-            memcpy ( destination, data, elementSize * numVertices() );
+            memcpy ( destination, data, numLevels * elementSize * numVertices() );
         
         return destination;
     }
 
     template < typename T >
-    T*          GetVertexLayer          ( const std::string& name )
+    T*          GetVertexLayer          ( const std::string& name, u32 level = 0 )
     {
-        T* layerData = 0;
+        char* layerData = 0;
         layerMap::iterator iter = m_mapVertexLayers.find ( name );
         if ( iter != m_mapVertexLayers.end() )
-            layerData = reinterpret_cast < T* > ( iter->second.data );
-        return layerData;
+        {
+            layerData = reinterpret_cast < char* > ( iter->second.data );
+            layerData = &layerData [ level * numVertices() ];
+        }
+        return reinterpret_cast < T* > ( layerData );
+    }
+    
+    u32         GetVertexLayerLevelCount( const std::string& name ) const
+    {
+        layerMap::const_iterator iter = m_mapVertexLayers.find ( name );
+        u32 count = 0;
+        if ( iter != m_mapVertexLayers.end() )
+            count = iter->second.numLevels;
+        return count;
     }
     
     bool        DeleteVertexLayer       ( const std::string& name )

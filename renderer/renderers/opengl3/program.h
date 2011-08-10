@@ -14,7 +14,8 @@ public:
     {
         POSITION        = 0,
         NORMAL          = 1,
-        TEX2D           = 2
+        TEX2D           = 2,
+        COLOR           = 3
     };
     
 private:

@@ -68,6 +68,15 @@ static bool ProcessGeometry ( l3m::Geometry* g_, const char** error )
     minY = fabs(minY); maxY = fabs(maxY);
     minZ = fabs(minZ); maxZ = fabs(maxZ);
     g.boundingSphere() = BoundingSphere( max(max(max(max(max(minX, maxX), minY), maxY), minZ), maxZ) );
+    
+    // Only allow up to 2 texture levels.
+    for ( Renderer::Geometry::layerMap::iterator iter = g.vertexLayers().begin();
+          iter != g.vertexLayers().end();
+          ++iter )
+    {
+        if ( iter->first == "uv" && iter->second.numLevels > 2 )
+                iter->second.numLevels = 2;
+    }
     return true;
 }
 

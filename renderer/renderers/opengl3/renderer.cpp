@@ -116,13 +116,9 @@ bool OpenGL3_Renderer::Render ( Geometry* geometry, const Matrix& mat )
     eglGetError();
     glVertexAttribPointer ( OpenGL3_Program::NORMAL, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), (GLchar *)&(v->norm()) );
     eglGetError();
-    glVertexAttribPointer ( OpenGL3_Program::TEX2D, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLchar *)&(v->tex2d()) );
-    eglGetError();
     glEnableVertexAttribArray ( OpenGL3_Program::POSITION );
     eglGetError();
     glEnableVertexAttribArray ( OpenGL3_Program::NORMAL );
-    eglGetError();
-    glEnableVertexAttribArray ( OpenGL3_Program::TEX2D );
     eglGetError();
 
     // Bind the indices buffer

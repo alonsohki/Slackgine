@@ -224,14 +224,10 @@ static Matrix get_node_transform_ob(Object *ob)
 
 
 
-static void ImportVertex ( Renderer::Vertex* to, MVert* from, float* uv )
+static void ImportVertex ( Renderer::Vertex* to, MVert* from )
 {
     to->pos() = from->co;
     to->norm() = Vector3 ( from->no[0] / 32767.0f, from->no[1] / 32767.0f, from->no[2] / 32767.0f );
-    if ( uv != 0 )
-        to->tex2d() = Vector2 ( uv[0], uv[1] );
-    else
-        to->tex2d() = Vector2 ( 0, 0 );
 }
 
 static bool ImportMesh ( Renderer::Geometry* g, const std::string& name, u32 mat_index, Object* ob, l3m::Model* model )
@@ -310,46 +306,57 @@ static bool ImportGeometry ( Renderer::Geometry* g, Object* ob, l3m::Model* mode
     }
     
     // Import the geometry vertices
-    bool has_uvs = (bool)CustomData_has_layer(&me->fdata, CD_MTFACE);
     Renderer::Vertex* vertexArray = (Renderer::Vertex *)malloc ( sizeof(Renderer::Vertex) * actualVertexCount );
+    memset ( vertexArray, 0, sizeof(Renderer::Vertex) * actualVertexCount );
     u32 curVertex = 0;
-    if ( has_uvs )
+    
+    for ( u32 i = 0; i < totface; ++i )
     {
-        MTFace *tface = (MTFace*)CustomData_get_layer_n(&me->fdata, CD_MTFACE, 0);
-        
-        for ( u32 i = 0; i < totface; ++i )
-        {
-            MFace* face = &faces[i];
-            ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v1 ], tface[i].uv[0] );
-            ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v2 ], tface[i].uv[1] );
-            ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v3 ], tface[i].uv[2] );
+        MFace* face = &faces[i];
+        ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v1 ] );
+        ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v2 ] );
+        ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v3 ] );
 
-            if ( face->v4 != 0 )
-            {
-                ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v1 ], tface[i].uv[0] );
-                ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v3 ], tface[i].uv[2] );
-                ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v4 ], tface[i].uv[3] );
-            }
-        }
-    }
-    else
-    {
-        for ( u32 i = 0; i < totface; ++i )
+        if ( face->v4 != 0 )
         {
-            MFace* face = &faces[i];
-            ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v1 ], 0 );
-            ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v2 ], 0 );
-            ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v3 ], 0 );
-
-            if ( face->v4 != 0 )
-            {
-                ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v1 ], 0 );
-                ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v3 ], 0 );
-                ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v4 ], 0 );
-            }
+            ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v1 ] );
+            ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v3 ] );
+            ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v4 ] );
         }
     }
     g->Set( vertexArray, actualVertexCount );
+    
+    // Import the geometry UV texture coordinates
+    bool has_uvs = (bool)CustomData_has_layer(&me->fdata, CD_MTFACE);
+    if ( has_uvs )
+    {
+        curVertex = 0;
+        int layerCount = CustomData_number_of_layers(&me->fdata, CD_MTFACE);
+        Vector2* uvData = (Vector2*)malloc ( sizeof(Vector2) * layerCount * actualVertexCount );
+        
+        for ( u32 l = 0; l < layerCount; ++l )
+        {
+            MTFace *tface = (MTFace*)CustomData_get_layer_n(&me->fdata, CD_MTFACE, l);
+            for ( u32 i = 0; i < totface; ++i )
+            {
+                MFace* face = &faces[i];
+                
+                uvData [ curVertex++ ] = Vector2 ( tface[i].uv[0] );
+                uvData [ curVertex++ ] = Vector2 ( tface[i].uv[1] );
+                uvData [ curVertex++ ] = Vector2 ( tface[i].uv[2] );
+
+                if ( face->v4 != 0 )
+                {
+                    uvData [ curVertex++ ] = Vector2 ( tface[i].uv[0] );
+                    uvData [ curVertex++ ] = Vector2 ( tface[i].uv[2] );
+                    uvData [ curVertex++ ] = Vector2 ( tface[i].uv[3] );
+                }
+            }
+        }
+        
+        g->CreateVertexLayer( "uv", layerCount, uvData, sizeof(Vector2) );
+        free ( uvData );
+    }
     
     // Load every mesh in this geometry
     if ( !totcol )

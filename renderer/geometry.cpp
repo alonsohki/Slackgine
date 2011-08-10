@@ -31,13 +31,6 @@ void GeometryBase::FreeVertices()
     m_numVertices = 0;
 }
 
-void GeometryBase::Load ( const float* pVertices, unsigned int flags, unsigned int stride, unsigned int vertexCount )
-{
-    FreeVertices ();
-    m_vertices = Vertex::LoadAllocating(pVertices, flags, stride, vertexCount);
-    m_numVertices = vertexCount;
-}
-
 void GeometryBase::Set ( Vertex* pVertices, unsigned int vertexCount )
 {
     if ( pVertices != m_vertices )

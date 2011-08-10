@@ -50,12 +50,19 @@ bool Geometry::Load(l3m::IStream& fp, float version)
         if ( fp.ReadStr ( name ) == -1 )
             return SetError ( "Error reading the vertex layer name" );
         
-        // Vertex layer data
+        // Vertex layer level count
+        u32 numLevels;
+        if ( fp.Read32 ( &numLevels, 1 ) != 1 )
+            return SetError ( "Error reading the vertex layer level count" );
+        
+        // Vertex layer element size
         u32 elementSize;
         if ( fp.Read32 ( &elementSize, 1 ) != 1 )
             return SetError ( "Error reading the vertex layer element size" );
-        void* data = m_geometry.CreateVertexLayer ( name, 0, elementSize );
-        if ( fp.ReadData ( reinterpret_cast < char * > ( data ), elementSize, numVertices ) != numVertices )
+        
+        // Vertex layer data
+        void* data = m_geometry.CreateVertexLayer ( name, numLevels, 0, elementSize );
+        if ( fp.ReadData ( reinterpret_cast < char * > ( data ), elementSize, numLevels*numVertices ) != numLevels*numVertices )
             return SetError ( "Error reading the vertex layer data" );
     }
     
@@ -134,11 +141,17 @@ bool Geometry::Save(l3m::OStream& fp)
         if ( !fp.WriteStr ( name ) )
             return SetError ( "Error writing the vertex layer name" );
         
-        // Write the vertex layer data
+        // Write the vertex layer level count
+        if ( !fp.Write32 ( &layer.numLevels, 1 ) )
+            return SetError ( "Error writing the vertex layer level count" );
+        
+        // Write the vertex layer element size
         u32 size = layer.elementSize;
         if ( ! fp.Write32 ( &size, 1 ) )
             return SetError ( "Error writing the vertex layer element size" );
-        if ( ! fp.WriteData ( reinterpret_cast<char*>(layer.data), size, m_geometry.numVertices() ) )
+        
+        // Write the vertex layer data
+        if ( ! fp.WriteData ( reinterpret_cast<char*>(layer.data), size, layer.numLevels*m_geometry.numVertices() ) )
             return SetError ( "Error writing the vertex layer data" );
     }
 
