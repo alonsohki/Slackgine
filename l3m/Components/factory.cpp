@@ -9,4 +9,5 @@ void l3m::ComponentFactory::Initialize()
     ms_initialized = true;
     Register ( "geometry", Geometry::Create );
     Register ( "scene", Scene::Create );
+    Register ( "texture", Texture::Create );
 }

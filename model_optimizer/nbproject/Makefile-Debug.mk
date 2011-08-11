@@ -53,7 +53,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=../l3m/dist/Debug/GNU-Linux-x86/libl3m.a ../renderer/dist/Debug/GNU-Linux-x86/librenderer.a `pkg-config --libs glew`  
+LDLIBSOPTIONS=../l3m/dist/Debug/GNU-Linux-x86/libl3m.a ../renderer/dist/Debug/GNU-Linux-x86/librenderer.a `pkg-config --libs glew` ../shared/dist/Debug/GNU-Linux-x86/libshared.a `pkg-config --libs libpng`  
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -63,6 +63,8 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/model_optimizer: ../l3m/dist/Debug/GN
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/model_optimizer: ../renderer/dist/Debug/GNU-Linux-x86/librenderer.a
 
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/model_optimizer: ../shared/dist/Debug/GNU-Linux-x86/libshared.a
+
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/model_optimizer: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/model_optimizer ${OBJECTFILES} ${LDLIBSOPTIONS} 
@@ -70,22 +72,23 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/model_optimizer: ${OBJECTFILES}
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -I. -I.. `pkg-config --cflags glew`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -g -I. -I.. `pkg-config --cflags glew` `pkg-config --cflags libpng`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
 
 ${OBJECTDIR}/delete_duplicates.o: delete_duplicates.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -I. -I.. `pkg-config --cflags glew`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/delete_duplicates.o delete_duplicates.cpp
+	$(COMPILE.cc) -g -I. -I.. `pkg-config --cflags glew` `pkg-config --cflags libpng`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/delete_duplicates.o delete_duplicates.cpp
 
 ${OBJECTDIR}/filter.o: filter.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -I. -I.. `pkg-config --cflags glew`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/filter.o filter.cpp
+	$(COMPILE.cc) -g -I. -I.. `pkg-config --cflags glew` `pkg-config --cflags libpng`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/filter.o filter.cpp
 
 # Subprojects
 .build-subprojects:
 	cd ../l3m && ${MAKE}  -f Makefile CONF=Debug
 	cd ../renderer && ${MAKE}  -f Makefile CONF=Debug
+	cd ../shared && ${MAKE}  -f Makefile CONF=Debug
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
@@ -96,6 +99,7 @@ ${OBJECTDIR}/filter.o: filter.cpp
 .clean-subprojects:
 	cd ../l3m && ${MAKE}  -f Makefile CONF=Debug clean
 	cd ../renderer && ${MAKE}  -f Makefile CONF=Debug clean
+	cd ../shared && ${MAKE}  -f Makefile CONF=Debug clean
 
 # Enable dependency checking
 .dep.inc: .depcheck-impl

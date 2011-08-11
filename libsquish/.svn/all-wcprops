@@ -1,0 +1,185 @@
+K 25
+svn:wc:ra_dav:version-url
+V 22
+/svn/!svn/ver/26/trunk
+END
+singlecolourlookup.inl
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/!svn/ver/2/trunk/singlecolourlookup.inl
+END
+rangefit.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 34
+/svn/!svn/ver/3/trunk/rangefit.cpp
+END
+simd.h
+K 25
+svn:wc:ra_dav:version-url
+V 28
+/svn/!svn/ver/2/trunk/simd.h
+END
+Doxyfile
+K 25
+svn:wc:ra_dav:version-url
+V 30
+/svn/!svn/ver/2/trunk/Doxyfile
+END
+rangefit.h
+K 25
+svn:wc:ra_dav:version-url
+V 32
+/svn/!svn/ver/3/trunk/rangefit.h
+END
+colourfit.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 36
+/svn/!svn/ver/12/trunk/colourfit.cpp
+END
+ChangeLog
+K 25
+svn:wc:ra_dav:version-url
+V 31
+/svn/!svn/ver/2/trunk/ChangeLog
+END
+GNUmakefile
+K 25
+svn:wc:ra_dav:version-url
+V 34
+/svn/!svn/ver/22/trunk/GNUmakefile
+END
+singlecolourfit.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/svn/!svn/ver/2/trunk/singlecolourfit.cpp
+END
+config.h
+K 25
+svn:wc:ra_dav:version-url
+V 30
+/svn/!svn/ver/9/trunk/config.h
+END
+colourfit.h
+K 25
+svn:wc:ra_dav:version-url
+V 34
+/svn/!svn/ver/12/trunk/colourfit.h
+END
+simd_sse.h
+K 25
+svn:wc:ra_dav:version-url
+V 32
+/svn/!svn/ver/2/trunk/simd_sse.h
+END
+maths.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 32
+/svn/!svn/ver/16/trunk/maths.cpp
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 28
+/svn/!svn/ver/2/trunk/README
+END
+squish.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 32
+/svn/!svn/ver/3/trunk/squish.cpp
+END
+singlecolourfit.h
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/svn/!svn/ver/2/trunk/singlecolourfit.h
+END
+colourblock.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 37
+/svn/!svn/ver/2/trunk/colourblock.cpp
+END
+colourset.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 35
+/svn/!svn/ver/2/trunk/colourset.cpp
+END
+squish.h
+K 25
+svn:wc:ra_dav:version-url
+V 30
+/svn/!svn/ver/3/trunk/squish.h
+END
+maths.h
+K 25
+svn:wc:ra_dav:version-url
+V 29
+/svn/!svn/ver/2/trunk/maths.h
+END
+colourblock.h
+K 25
+svn:wc:ra_dav:version-url
+V 35
+/svn/!svn/ver/2/trunk/colourblock.h
+END
+colourset.h
+K 25
+svn:wc:ra_dav:version-url
+V 33
+/svn/!svn/ver/2/trunk/colourset.h
+END
+clusterfit.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 36
+/svn/!svn/ver/3/trunk/clusterfit.cpp
+END
+config
+K 25
+svn:wc:ra_dav:version-url
+V 29
+/svn/!svn/ver/22/trunk/config
+END
+alpha.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 31
+/svn/!svn/ver/9/trunk/alpha.cpp
+END
+simd_float.h
+K 25
+svn:wc:ra_dav:version-url
+V 34
+/svn/!svn/ver/2/trunk/simd_float.h
+END
+clusterfit.h
+K 25
+svn:wc:ra_dav:version-url
+V 34
+/svn/!svn/ver/3/trunk/clusterfit.h
+END
+alpha.h
+K 25
+svn:wc:ra_dav:version-url
+V 29
+/svn/!svn/ver/2/trunk/alpha.h
+END
+simd_ve.h
+K 25
+svn:wc:ra_dav:version-url
+V 31
+/svn/!svn/ver/3/trunk/simd_ve.h
+END
+CMakeLists.txt
+K 25
+svn:wc:ra_dav:version-url
+V 37
+/svn/!svn/ver/26/trunk/CMakeLists.txt
+END

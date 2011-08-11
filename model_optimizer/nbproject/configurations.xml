@@ -60,6 +60,19 @@
               </makeArtifact>
             </linkerLibProjectItem>
             <linkerOptionItem>`pkg-config --libs glew`</linkerOptionItem>
+            <linkerLibProjectItem>
+              <makeArtifact PL="../shared"
+                            CT="3"
+                            CN="Debug"
+                            AC="true"
+                            BL="true"
+                            WD="../shared"
+                            BC="${MAKE}  -f Makefile CONF=Debug"
+                            CC="${MAKE}  -f Makefile CONF=Debug clean"
+                            OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libshared.a">
+              </makeArtifact>
+            </linkerLibProjectItem>
+            <linkerOptionItem>`pkg-config --libs libpng`</linkerOptionItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>
@@ -113,6 +126,19 @@
               </makeArtifact>
             </linkerLibProjectItem>
             <linkerOptionItem>`pkg-config --libs glew`</linkerOptionItem>
+            <linkerLibProjectItem>
+              <makeArtifact PL="../shared"
+                            CT="3"
+                            CN="Release"
+                            AC="false"
+                            BL="true"
+                            WD="../shared"
+                            BC="${MAKE}  -f Makefile CONF=Release"
+                            CC="${MAKE}  -f Makefile CONF=Release clean"
+                            OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libshared.a">
+              </makeArtifact>
+            </linkerLibProjectItem>
+            <linkerOptionItem>`pkg-config --libs libpng`</linkerOptionItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>

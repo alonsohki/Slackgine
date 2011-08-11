@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <set>
 #include <string>
 #include <sstream>
@@ -5,6 +6,7 @@
 #include "BLO_readfile.h"
 #include "DNA_armature_types.h"
 #include "DNA_object_types.h"
+#include "DNA_material_types.h"
 #include "DNA_mesh_types.h"
 #include "DNA_meshdata_types.h"
 #include "DNA_scene_types.h"
@@ -442,7 +444,66 @@ static bool ImportScene ( ::Scene* sce, l3m::Scene* modelScene )
     return true;
 }
 
-static bool import_blender ( ::Scene* sce, l3m::Model* model )
+static bool ImportImages ( ::Scene* sce, const char* filename, l3m::Model* model )
+{
+    std::vector<std::string> mMat;
+    std::vector<std::string> mImages;
+    
+    // For each mesh...
+    Base *base= (Base*) sce->base.first;
+    while(base) {
+            Object *ob = base->object;
+
+            switch(ob->type)
+            {
+                case OB_MESH:
+                {
+                    // For each mesh uv...
+                    Mesh* me = (Mesh *)ob->data;
+                    bool has_uvs = (bool)CustomData_has_layer(&me->fdata, CD_MTFACE);
+                    if ( has_uvs )
+                    {
+                        int layerCount = CustomData_number_of_layers(&me->fdata, CD_MTFACE);
+                        for ( u32 l = 0; l < layerCount; ++l )
+                        {
+                            MTFace *tface = (MTFace*)CustomData_get_layer_n(&me->fdata, CD_MTFACE, l);
+                            Image* image = tface->tpage;
+                            std::string name(id_name(image));
+                            name = translate_id(name);
+                            char rel[FILE_MAX];
+                            char abs[FILE_MAX];
+                            char src[FILE_MAX];
+                            char dir[FILE_MAX];
+
+                            BLI_split_dirfile(filename, dir, NULL);
+                            BKE_rebase_path(abs, sizeof(abs), rel, sizeof(rel), G.main->name, image->name, dir);
+
+                            if (std::find(mImages.begin(), mImages.end(), name) == mImages.end())
+                            {
+                                l3m::Texture* tex = model->CreateComponent<l3m::Texture>("texture");
+                                tex->id() = name;
+                                Pixmap& pix = tex->pixmap();
+                                if ( !pix.Load(abs) )
+                                {
+                                    fprintf ( stderr, "Unable to load '%s' as texture: %s\n", abs, pix.error() );
+                                    return false;
+                                }
+				mImages.push_back(name);
+                            }
+                        }
+                    }
+                    break;
+                }
+                default: break;
+            }
+
+            base= base->next;
+    }
+    
+    return true;
+}
+
+static bool import_blender ( ::Scene* sce, const char* filename, l3m::Model* model )
 {
     // Import all geometries
     std::set<std::string> exportedGeometry;
@@ -469,7 +530,12 @@ static bool import_blender ( ::Scene* sce, l3m::Model* model )
     
     // Import the visual scene
     l3m::Scene* modelScene = model->CreateComponent<l3m::Scene>("scene");
-    ImportScene ( sce, modelScene );
+    if ( !ImportScene ( sce, modelScene ) )
+        return false;
+    
+    // Import the images
+    if ( !ImportImages ( sce, filename, model ) )
+        return false;
 
     return true;
 }
@@ -481,9 +547,10 @@ bool import_blender ( int argc, const char** argv, const char* file, l3m::Model*
     if ( data == 0 )
         return false;
     
-    return import_blender ( data->curscene, model );
+    return import_blender ( data->curscene, file, model );
 }
 
+#if 0
 bool import_blender ( int argc, const char** argv, std::istream& is, l3m::Model* model )
 {
     startup_blender(argc, argv);
@@ -522,7 +589,8 @@ bool import_blender ( int argc, const char** argv, std::istream& is, l3m::Model*
         return false;
     }
     
-    bool ret = import_blender ( data->curscene, model );
+    bool ret = import_blender ( data->curscene, argv[1], model );
     delete [] mem;
     return ret;
 }
+#endif

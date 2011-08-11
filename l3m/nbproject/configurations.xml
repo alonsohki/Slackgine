@@ -9,6 +9,8 @@
       <itemPath>Components/geometry.h</itemPath>
       <itemPath>Components/scene.cpp</itemPath>
       <itemPath>Components/scene.h</itemPath>
+      <itemPath>Components/texture.cpp</itemPath>
+      <itemPath>Components/texture.h</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"

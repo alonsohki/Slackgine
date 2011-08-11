@@ -13,17 +13,61 @@ Pixmap::Pixmap ()
 }
 
 Pixmap::Pixmap ( u32 width, u32 height )
-: m_width ( width )
-, m_height ( height )
 {
-    m_error[0] = '\0';
-    m_pixels = new Color [ m_width * m_height ] ();
+    Create ( width, height );
+}
+
+Pixmap::Pixmap ( const Pixmap& other )
+{
+    operator= ( other );
 }
 
 Pixmap::~Pixmap ()
 {
+    CleanupData ();
+}
+
+void Pixmap::CleanupData ()
+{
     if ( m_pixels != 0 )
         delete [] m_pixels;
+    m_pixels = 0;
+    m_width = 0;
+    m_height = 0;
+    m_error[0] = '\0';
+}
+
+void Pixmap::Create ( u32 width, u32 height, const Color* data )
+{
+    CleanupData ();
+    m_width = width;
+    m_height = height;
+    m_pixels = new Color [ m_width * m_height ] ();
+    if ( data != 0 )
+        memcpy ( m_pixels, data, sizeof(Color)*m_width*m_height );
+}
+
+Pixmap& Pixmap::operator= ( const Pixmap& other )
+{
+    CleanupData ();
+    m_width = other.m_width;
+    m_height = other.m_height;
+    memcpy ( m_error, other.m_error, sizeof(m_error) );
+    m_pixels = new Color [ m_width * m_height ] ();
+    memcpy ( m_pixels, other.m_pixels, sizeof(Color)*m_width*m_height );
+    return *this;
+}
+
+bool Pixmap::operator== ( const Pixmap& other ) const
+{
+    return m_width == other.m_width &&
+           m_height == other.m_height &&
+           memcmp ( m_pixels, other.m_pixels, sizeof(Color)*m_width*m_height ) == 0;
+}
+
+bool Pixmap::operator!= ( const Pixmap& other ) const
+{
+    return !operator== ( other );
 }
 
 bool Pixmap::Load ( const char* filename )
@@ -40,13 +84,7 @@ bool Pixmap::Load ( const char* filename )
 
 bool Pixmap::Load ( std::istream& stream )
 {
-    // Re-initialize.
-    if ( m_pixels != 0 )
-        delete [] m_pixels;
-    m_pixels = 0;
-    m_width = 0;
-    m_height = 0;
-    m_error[0] = '\0';
+    CleanupData ();
     
     // Check for the file type to load
     char header [ 8 ];

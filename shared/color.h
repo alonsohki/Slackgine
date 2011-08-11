@@ -44,12 +44,14 @@ public:
     const u8& b() const { return m_members[detectBigEndian() ? 2 : 1]; }
     const u8& a() const { return m_members[detectBigEndian() ? 3 : 0]; }
     const u32& rgba() const { return m_value; }
+    const u32& value() const { return m_value; }
     
     u8& r() { return m_members[detectBigEndian() ? 0 : 3]; }
     u8& g() { return m_members[detectBigEndian() ? 1 : 2]; }
     u8& b() { return m_members[detectBigEndian() ? 2 : 1]; }
     u8& a() { return m_members[detectBigEndian() ? 3 : 0]; }
     u32& rgba() { return m_value; }
+    u32& value() { return m_value; }
 };
 
 #endif

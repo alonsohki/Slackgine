@@ -38,6 +38,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/Components/scene.o \
 	${OBJECTDIR}/stream.o \
 	${OBJECTDIR}/model.o \
+	${OBJECTDIR}/Components/texture.o \
 	${OBJECTDIR}/Components/factory.o
 
 
@@ -86,6 +87,11 @@ ${OBJECTDIR}/model.o: model.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/model.o model.cpp
+
+${OBJECTDIR}/Components/texture.o: Components/texture.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Components
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/texture.o Components/texture.cpp
 
 ${OBJECTDIR}/Components/factory.o: Components/factory.cpp 
 	${MKDIR} -p ${OBJECTDIR}/Components

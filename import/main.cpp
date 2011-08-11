@@ -4,18 +4,15 @@
 #include "post_process.h"
 
 extern bool import_blender ( int, const char**, const char*, l3m::Model* );
-extern bool import_blender ( int, const char**, std::istream&, l3m::Model* );
+//extern bool import_blender ( int, const char**, std::istream&, l3m::Model* );
 
 int main(int argc, const char **argv)
 {
     l3m::Model model;
     if ( argc == 1 )
     {
-        if ( ! import_blender ( argc, argv, std::cin, &model ) )
-        {
-            fprintf ( stderr, "Unable to import the blender model\n" );
-            return EXIT_FAILURE;
-        }
+        fprintf ( stderr, "Unsupported behavior. Use %s [model file]\n", argv[0] );
+        return EXIT_FAILURE;
     }
     else
     {

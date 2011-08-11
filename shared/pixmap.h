@@ -8,7 +8,17 @@ class Pixmap
 public:
                         Pixmap          ();
                         Pixmap          ( u32 width, u32 height );
+                        Pixmap          ( const Pixmap& other );
                         ~Pixmap         ();
+private:
+    void                CleanupData     ();
+    
+public:
+    Pixmap&             operator=       ( const Pixmap& other );
+    bool                operator==      ( const Pixmap& other ) const;
+    bool                operator!=      ( const Pixmap& other ) const;
+    
+    void                Create          ( u32 width, u32 height, const Color* data = 0 );
 
     bool                Load            ( const char* filename );
     bool                Load            ( std::istream& stream );
