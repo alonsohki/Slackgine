@@ -4,7 +4,6 @@
 #include <cstring>
 #include "slackgine.h"
 #include "l3m/l3m.h"
-#include "shared/pixmap.h"
 
 void display ( void );
 

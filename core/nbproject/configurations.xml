@@ -20,6 +20,7 @@
     </logicalFolder>
     <itemPath>entity.cpp</itemPath>
     <itemPath>entity.h</itemPath>
+    <itemPath>model_manager.h</itemPath>
     <itemPath>model_renderer_factory.cpp</itemPath>
     <itemPath>model_renderer_factory.h</itemPath>
     <itemPath>slackgine.cpp</itemPath>
