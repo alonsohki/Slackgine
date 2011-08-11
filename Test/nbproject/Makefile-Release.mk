@@ -51,7 +51,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=`pkg-config --libs gl` `pkg-config --libs glu` `pkg-config --libs glew` -lglut ../core/dist/Release/GNU-Linux-x86/libcore.a ../l3m/dist/Release/GNU-Linux-x86/libl3m.a ../renderer/dist/Release/GNU-Linux-x86/librenderer.a ../math/dist/Release/GNU-Linux-x86/libmath.a  
+LDLIBSOPTIONS=`pkg-config --libs gl` `pkg-config --libs glu` `pkg-config --libs glew` -lglut ../core/dist/Release/GNU-Linux-x86/libcore.a ../l3m/dist/Release/GNU-Linux-x86/libl3m.a ../renderer/dist/Release/GNU-Linux-x86/librenderer.a ../math/dist/Release/GNU-Linux-x86/libmath.a ../shared/dist/Release/GNU-Linux-x86/libshared.a `pkg-config --libs libpng`  
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -65,6 +65,8 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ../renderer/dist/Release/GNU-Li
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ../math/dist/Release/GNU-Linux-x86/libmath.a
 
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ../shared/dist/Release/GNU-Linux-x86/libshared.a
+
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test ${OBJECTFILES} ${LDLIBSOPTIONS} 
@@ -72,7 +74,7 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ${OBJECTFILES}
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -I.. `pkg-config --cflags gl` `pkg-config --cflags glu` `pkg-config --cflags glew`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -I.. `pkg-config --cflags gl` `pkg-config --cflags glu` `pkg-config --cflags glew` `pkg-config --cflags libpng`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
 
 # Subprojects
 .build-subprojects:
@@ -80,6 +82,7 @@ ${OBJECTDIR}/main.o: main.cpp
 	cd ../l3m && ${MAKE}  -f Makefile CONF=Release
 	cd ../renderer && ${MAKE}  -f Makefile CONF=Release
 	cd ../math && ${MAKE}  -f Makefile CONF=Release
+	cd ../shared && ${MAKE}  -f Makefile CONF=Release
 	cd ../shared && ${MAKE}  -f Makefile CONF=Release
 	cd ../core && ${MAKE}  -f Makefile CONF=Release
 	cd ../math && ${MAKE}  -f Makefile CONF=Release
@@ -95,6 +98,7 @@ ${OBJECTDIR}/main.o: main.cpp
 	cd ../l3m && ${MAKE}  -f Makefile CONF=Release clean
 	cd ../renderer && ${MAKE}  -f Makefile CONF=Release clean
 	cd ../math && ${MAKE}  -f Makefile CONF=Release clean
+	cd ../shared && ${MAKE}  -f Makefile CONF=Release clean
 	cd ../shared && ${MAKE}  -f Makefile CONF=Release clean
 	cd ../core && ${MAKE}  -f Makefile CONF=Release clean
 	cd ../math && ${MAKE}  -f Makefile CONF=Release clean

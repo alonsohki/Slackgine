@@ -51,7 +51,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=`pkg-config --libs gl` `pkg-config --libs glu` `pkg-config --libs glew` -lglut ../core/dist/Debug/GNU-Linux-x86/libcore.a ../l3m/dist/Debug/GNU-Linux-x86/libl3m.a ../renderer/dist/Debug/GNU-Linux-x86/librenderer.a ../math/dist/Debug/GNU-Linux-x86/libmath.a  
+LDLIBSOPTIONS=`pkg-config --libs gl` `pkg-config --libs glu` `pkg-config --libs glew` -lglut ../core/dist/Debug/GNU-Linux-x86/libcore.a ../l3m/dist/Debug/GNU-Linux-x86/libl3m.a ../renderer/dist/Debug/GNU-Linux-x86/librenderer.a ../math/dist/Debug/GNU-Linux-x86/libmath.a ../shared/dist/Debug/GNU-Linux-x86/libshared.a `pkg-config --libs libpng`  
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -65,6 +65,8 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ../renderer/dist/Debug/GNU-Linu
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ../math/dist/Debug/GNU-Linux-x86/libmath.a
 
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ../shared/dist/Debug/GNU-Linux-x86/libshared.a
+
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test ${OBJECTFILES} ${LDLIBSOPTIONS} 
@@ -72,7 +74,7 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ${OBJECTFILES}
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -I.. `pkg-config --cflags gl` `pkg-config --cflags glu` `pkg-config --cflags glew`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -I.. `pkg-config --cflags gl` `pkg-config --cflags glu` `pkg-config --cflags glew` `pkg-config --cflags libpng`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
 
 # Subprojects
 .build-subprojects:
@@ -80,6 +82,7 @@ ${OBJECTDIR}/main.o: main.cpp
 	cd ../l3m && ${MAKE}  -f Makefile CONF=Debug
 	cd ../renderer && ${MAKE}  -f Makefile CONF=Debug
 	cd ../math && ${MAKE}  -f Makefile CONF=Debug
+	cd ../shared && ${MAKE}  -f Makefile CONF=Debug
 	cd ../shared && ${MAKE}  -f Makefile CONF=Debug
 	cd ../core && ${MAKE}  -f Makefile CONF=Debug
 	cd ../math && ${MAKE}  -f Makefile CONF=Debug
@@ -95,6 +98,7 @@ ${OBJECTDIR}/main.o: main.cpp
 	cd ../l3m && ${MAKE}  -f Makefile CONF=Debug clean
 	cd ../renderer && ${MAKE}  -f Makefile CONF=Debug clean
 	cd ../math && ${MAKE}  -f Makefile CONF=Debug clean
+	cd ../shared && ${MAKE}  -f Makefile CONF=Debug clean
 	cd ../shared && ${MAKE}  -f Makefile CONF=Debug clean
 	cd ../core && ${MAKE}  -f Makefile CONF=Debug clean
 	cd ../math && ${MAKE}  -f Makefile CONF=Debug clean

@@ -14,6 +14,8 @@
       <itemPath>Makefile</itemPath>
     </logicalFolder>
     <itemPath>color.h</itemPath>
+    <itemPath>pixmap.cpp</itemPath>
+    <itemPath>pixmap.h</itemPath>
     <itemPath>platform.h</itemPath>
     <itemPath>util.h</itemPath>
   </logicalFolder>
@@ -26,6 +28,10 @@
       </toolsSet>
       <compileType>
         <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>..</pElem>
+          </incDir>
           <commandLine>-ansi -pipe</commandLine>
         </ccTool>
         <archiverTool>
@@ -43,6 +49,10 @@
         </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>..</pElem>
+          </incDir>
           <commandLine>-ansi -pipe</commandLine>
         </ccTool>
         <fortranCompilerTool>
