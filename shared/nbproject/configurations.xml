@@ -13,6 +13,8 @@
       <itemPath>Android.mk</itemPath>
       <itemPath>Makefile</itemPath>
     </logicalFolder>
+    <itemPath>FastDelegate.h</itemPath>
+    <itemPath>FastDelegateBind.h</itemPath>
     <itemPath>color.h</itemPath>
     <itemPath>directory.h</itemPath>
     <itemPath>pixmap.cpp</itemPath>
