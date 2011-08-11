@@ -35,8 +35,8 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/model_renderer_factory.o \
-	${OBJECTDIR}/entity_components/model_renderer.o \
 	${OBJECTDIR}/slackgine.o \
+	${OBJECTDIR}/entity_components/model_renderer.o \
 	${OBJECTDIR}/entity.o
 
 
@@ -71,15 +71,15 @@ ${OBJECTDIR}/model_renderer_factory.o: model_renderer_factory.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/model_renderer_factory.o model_renderer_factory.cpp
 
-${OBJECTDIR}/entity_components/model_renderer.o: entity_components/model_renderer.cpp 
-	${MKDIR} -p ${OBJECTDIR}/entity_components
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/entity_components/model_renderer.o entity_components/model_renderer.cpp
-
 ${OBJECTDIR}/slackgine.o: slackgine.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/slackgine.o slackgine.cpp
+
+${OBJECTDIR}/entity_components/model_renderer.o: entity_components/model_renderer.cpp 
+	${MKDIR} -p ${OBJECTDIR}/entity_components
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/entity_components/model_renderer.o entity_components/model_renderer.cpp
 
 ${OBJECTDIR}/entity.o: entity.cpp 
 	${MKDIR} -p ${OBJECTDIR}

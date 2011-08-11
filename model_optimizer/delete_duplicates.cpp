@@ -20,9 +20,14 @@ static bool vertices_match ( Renderer::Geometry& g, u32 left, u32 right )
               ++iter )
         {
             const Renderer::Geometry::VertexLayer& layer = iter->second;
-            const char* data = (const char *)layer.data;
-            if ( memcmp ( &data[left*layer.elementSize], &data[right*layer.elementSize], layer.elementSize ) != 0 )
-                return false;
+            for ( u32 i = 0; i < layer.numLevels; ++i )
+            {
+                const char* data = (const char *)layer.data;
+                data = &data[i * layer.elementSize * g.numVertices()];
+                
+                if ( memcmp ( &data[left*layer.elementSize], &data[right*layer.elementSize], layer.elementSize ) != 0 )
+                    return false;
+            }
         }
         
         return true;
@@ -55,8 +60,12 @@ static bool process_geometry ( Renderer::Geometry& g, u32* numDuplicates )
                       ++iter )
                 {
                     Renderer::Geometry::VertexLayer& layer = iter->second;
-                    char* data = (char *)layer.data;
-                    memcpy ( &data[lookup*layer.elementSize], &data[(lookup+1)*layer.elementSize], (numVertices - lookup) * layer.elementSize );
+                    for ( u32 i = 0; i < layer.numLevels; ++i )
+                    {
+                        char* data = (char *)layer.data;
+                        data = &data [ i * layer.elementSize * g.numVertices() ];
+                        memcpy ( &data[lookup*layer.elementSize], &data[(lookup+1)*layer.elementSize], (numVertices - lookup) * layer.elementSize );
+                    }
                 }
                 
                 // Update all the indices that pointed to this vertex and the follwing
