@@ -1,6 +1,7 @@
 #include "post_process.h"
 #include "l3m/Components/geometry.h"
 #include "l3m/Components/scene.h"
+#include "l3m/Components/texture.h"
 #include "math/matrix.h"
 #include "shared/util.h"
 
@@ -80,6 +81,11 @@ static bool ProcessGeometry ( l3m::Geometry* g_, const char** error )
     return true;
 }
 
+static bool ProcessTexture ( l3m::Texture* tex, l3m::Model* model, const char** error )
+{
+    return true;
+}
+
 bool PostProcess ( l3m::Model* model, const char** error )
 {
     using namespace l3m;
@@ -106,6 +112,19 @@ bool PostProcess ( l3m::Model* model, const char** error )
         if ( comp->type() == "geometry" )
         {
             if ( !ProcessGeometry ( static_cast < l3m::Geometry* > ( comp ), error ) )
+                return false;
+        }
+    }
+    
+    // Process the textures
+    for ( Model::componentVector::iterator iter = model->components().begin();
+          iter != model->components().end();
+          ++iter )
+    {
+        IComponent* comp = *iter;
+        if ( comp->type() == "texture" )
+        {
+            if ( !ProcessTexture ( static_cast < l3m::Texture* > ( comp ), model, error ) )
                 return false;
         }
     }

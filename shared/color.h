@@ -24,6 +24,17 @@ public:
         m_value = R << 24 | G << 16 | B << 8 | A;
     }
     
+    // Operators
+public:
+    bool operator== ( const Color& other ) const
+    {
+        return m_value == other.m_value;
+    }
+    bool operator!= ( const Color& other ) const
+    {
+        return !operator== ( other );
+    }
+    
     // Accessors
 public:
     u32 abgr () const

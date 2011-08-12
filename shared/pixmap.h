@@ -22,6 +22,8 @@ public:
 
     bool                Load            ( const char* filename );
     bool                Load            ( std::istream& stream );
+    bool                SavePNG         ( const char* filename );
+    bool                SavePNG         ( std::ostream& stream );
 
     const char*         error           () const { return m_error; }
     const u32&          width           () const { return m_width; }

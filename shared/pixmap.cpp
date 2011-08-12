@@ -104,6 +104,18 @@ static void read_from_png ( png_structp png_ptr, png_bytep data, png_size_t leng
     stream->read ( (char *)data, length );
 }
 
+static void write_to_png ( png_structp png_ptr, png_bytep data, png_size_t length )
+{
+    std::ostream* stream = (std::ostream *)png_get_io_ptr ( png_ptr );
+    stream->write ( (char*)data, length );
+}
+
+static void flush_png ( png_structp png_ptr )
+{
+    std::ostream* stream = (std::ostream *)png_get_io_ptr ( png_ptr );
+    stream->flush();
+}
+
 bool Pixmap::LoadPNG ( std::istream& stream )
 {
     png_structp png_ptr = png_create_read_struct (PNG_LIBPNG_VER_STRING,
@@ -150,6 +162,59 @@ bool Pixmap::LoadPNG ( std::istream& stream )
             row += 4;
         }
     }
+    
+    return true;
+}
+
+bool Pixmap::SavePNG ( const char* filename )
+{
+    std::ofstream fp;
+    fp.open ( filename, std::ios::out | std::ios::binary );
+    if ( !fp.is_open() )
+        return SetError ( "Unable to open the file for writing" );
+    return SavePNG ( fp );
+}
+
+bool Pixmap::SavePNG ( std::ostream& stream )
+{
+    png_byte** row_pointers = new png_byte*[m_height];
+    png_structp png_ptr = png_create_write_struct (PNG_LIBPNG_VER_STRING, 0, 0, 0);
+    if ( !png_ptr )
+       return SetError ( "Error creating the PNG write struct" );
+
+    png_infop info_ptr = png_create_info_struct(png_ptr);
+    if (!info_ptr)
+    {
+       png_destroy_write_struct(&png_ptr, (png_infopp)NULL);
+       return SetError ( "Error creating the PNG write info struct" );
+    }
+    
+    if (setjmp(png_jmpbuf(png_ptr)))
+    {
+       delete [] row_pointers;
+       png_destroy_write_struct(&png_ptr, &info_ptr);
+       return SetError ( "An error occured when writing the PNG data" );
+    }
+    
+    png_set_IHDR(png_ptr,
+                 info_ptr,
+                 m_width,
+                 m_height,
+                 8,
+                 PNG_COLOR_TYPE_RGB_ALPHA,
+                 PNG_INTERLACE_NONE,
+                 PNG_COMPRESSION_TYPE_DEFAULT,
+                 PNG_FILTER_TYPE_DEFAULT);
+    
+    png_set_write_fn ( png_ptr, &stream, write_to_png, flush_png );
+    
+    for ( u32 i = 0; i < m_height; ++i )
+        row_pointers[i] = (png_byte *)&m_pixels[i*m_width];
+    png_set_rows(png_ptr, info_ptr, row_pointers);
+    png_write_png(png_ptr, info_ptr, detectBigEndian() ? PNG_TRANSFORM_IDENTITY : PNG_TRANSFORM_BGR|PNG_TRANSFORM_SWAP_ALPHA, 0);     
+    png_destroy_write_struct(&png_ptr, &info_ptr);
+
+    delete [] row_pointers;
     
     return true;
 }
