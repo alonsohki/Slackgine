@@ -1,6 +1,9 @@
+#include <cassert>
+#include <cmath>
 #include <fstream>
-#include "pixmap.h"
 #include <libpng/png.h>
+#include "pixmap.h"
+#include "shared/util.h"
 
 #define SetError(msg, ...) ( snprintf ( m_error, sizeof(m_error), msg, ## __VA_ARGS__) == 9001 )
 
@@ -177,21 +180,22 @@ bool Pixmap::SavePNG ( const char* filename )
 
 bool Pixmap::SavePNG ( std::ostream& stream )
 {
-    png_byte** row_pointers = new png_byte*[m_height];
     png_structp png_ptr = png_create_write_struct (PNG_LIBPNG_VER_STRING, 0, 0, 0);
     if ( !png_ptr )
        return SetError ( "Error creating the PNG write struct" );
-
+    
+    png_byte** row_pointers = (png_byte **)png_malloc ( png_ptr, sizeof(png_byte*)*m_height );
     png_infop info_ptr = png_create_info_struct(png_ptr);
     if (!info_ptr)
     {
-       png_destroy_write_struct(&png_ptr, (png_infopp)NULL);
-       return SetError ( "Error creating the PNG write info struct" );
+        png_free ( png_ptr, row_pointers );
+        png_destroy_write_struct(&png_ptr, (png_infopp)NULL);
+        return SetError ( "Error creating the PNG write info struct" );
     }
     
     if (setjmp(png_jmpbuf(png_ptr)))
     {
-       delete [] row_pointers;
+       png_free ( png_ptr, row_pointers );
        png_destroy_write_struct(&png_ptr, &info_ptr);
        return SetError ( "An error occured when writing the PNG data" );
     }
@@ -214,7 +218,156 @@ bool Pixmap::SavePNG ( std::ostream& stream )
     png_write_png(png_ptr, info_ptr, detectBigEndian() ? PNG_TRANSFORM_IDENTITY : PNG_TRANSFORM_BGR|PNG_TRANSFORM_SWAP_ALPHA, 0);     
     png_destroy_write_struct(&png_ptr, &info_ptr);
 
-    delete [] row_pointers;
+    png_free ( png_ptr, row_pointers );
     
     return true;
+}
+
+void Pixmap::Resample ( u32 newWidth, u32 newHeight )
+{
+    if ( m_pixels != 0 )
+    {
+        if ( newWidth != m_width )
+            Resample_X ( newWidth );
+        if ( newHeight != m_height )
+            Resample_Y ( newHeight );
+    }
+}
+
+void Pixmap::Resample_X ( u32 newWidth )
+{
+    Color* newPixels = new Color [ newWidth * m_height ]();
+    
+    if ( newWidth < m_width )
+    {
+        float ratio = m_width / (float)newWidth;
+        for ( u32 h = 0; h < m_height; ++h )
+        {
+            u32 w = 0;
+            for ( float x = 0.0f; w < newWidth; x += ratio, ++w )
+            {
+                float from = x;
+                float to = min((float)m_width, x + ratio);
+
+                u32 absoluteValue = (u32)floor(from);
+                float fractionaryPart = from-absoluteValue;
+                float pixelAccum [ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+                if ( fractionaryPart > 0.000001f )
+                {
+                    float factor = 1.0f - fractionaryPart;
+                    Color& color = m_pixels [ m_width*h + absoluteValue ];
+                    pixelAccum[0] += ( color.r() / 255.0f ) * factor;
+                    pixelAccum[1] += ( color.g() / 255.0f ) * factor;
+                    pixelAccum[2] += ( color.b() / 255.0f ) * factor;
+                    pixelAccum[3] += ( color.a() / 255.0f ) * factor;
+                    from = absoluteValue + 1;
+                }
+                from = floor(from);
+                
+                while ( to-from > 1.0f )
+                {
+                    Color& color = m_pixels [ m_width*h + (u32)from ];
+                    pixelAccum[0] += color.r() / 255.0f;
+                    pixelAccum[1] += color.g() / 255.0f;
+                    pixelAccum[2] += color.b() / 255.0f;
+                    pixelAccum[3] += color.a() / 255.0f;
+                    ++from;
+                }
+                
+                if ( fabs(to-from) > 0.000001f )
+                {
+                    float factor = fabs(to-from);
+                    Color& color = m_pixels [ m_width*h + (u32)from ];
+                    pixelAccum[0] += (color.r() / 255.0f) * factor;
+                    pixelAccum[1] += (color.g() / 255.0f) * factor;
+                    pixelAccum[2] += (color.b() / 255.0f) * factor;
+                    pixelAccum[3] += (color.a() / 255.0f) * factor;
+                }
+                
+                newPixels [ newWidth*h + w ] = Color ( pixelAccum[0] / ratio * 255.0f,
+                                                       pixelAccum[1] / ratio * 255.0f,
+                                                       pixelAccum[2] / ratio * 255.0f,
+                                                       pixelAccum[3] / ratio * 255.0f );
+            }
+        }
+    }
+    else if ( newWidth > m_width )
+    {
+        // TODO: Use bicubic interpolation here
+        assert(0);
+    }
+    
+    delete [] m_pixels;
+    m_pixels = newPixels;
+    m_width = newWidth;
+}
+
+void Pixmap::Resample_Y ( u32 newHeight )
+{
+    Color* newPixels = new Color [ m_width * newHeight ]();
+    
+    if ( newHeight < m_height )
+    {
+        float ratio = m_height / (float)newHeight;
+        for ( u32 w = 0; w < m_width; ++w )
+        {
+            u32 h = 0;
+            for ( float y = 0.0f; h < newHeight; y += ratio, ++h )
+            {
+                float from = y;
+                float to = min((float)m_height, y + ratio);
+
+                u32 absoluteValue = (u32)floor(from);
+                float fractionaryPart = from-absoluteValue;
+                float pixelAccum [ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+                if ( fractionaryPart > 0.000001f )
+                {
+                    float factor = 1.0f - fractionaryPart;
+                    Color& color = m_pixels [ m_width*absoluteValue + w ];
+                    pixelAccum[0] += ( color.r() / 255.0f ) * factor;
+                    pixelAccum[1] += ( color.g() / 255.0f ) * factor;
+                    pixelAccum[2] += ( color.b() / 255.0f ) * factor;
+                    pixelAccum[3] += ( color.a() / 255.0f ) * factor;
+                    from = absoluteValue + 1;
+                }
+                from = floor(from);
+                
+                while ( to-from > 1.0f )
+                {
+                    Color& color = m_pixels [ m_width*(u32)from + w ];
+                    pixelAccum[0] += color.r() / 255.0f;
+                    pixelAccum[1] += color.g() / 255.0f;
+                    pixelAccum[2] += color.b() / 255.0f;
+                    pixelAccum[3] += color.a() / 255.0f;
+                    ++from;
+                }
+                
+                if ( fabs(to-from) > 0.000001f )
+                {
+                    float factor = fabs(to-from);
+                    Color& color = m_pixels [ m_width*(u32)from + w ];
+                    pixelAccum[0] += (color.r() / 255.0f) * factor;
+                    pixelAccum[1] += (color.g() / 255.0f) * factor;
+                    pixelAccum[2] += (color.b() / 255.0f) * factor;
+                    pixelAccum[3] += (color.a() / 255.0f) * factor;
+                }
+                
+                newPixels [ m_width*h + w ] = Color ( pixelAccum[0] / ratio * 255.0f,
+                                                      pixelAccum[1] / ratio * 255.0f,
+                                                      pixelAccum[2] / ratio * 255.0f,
+                                                      pixelAccum[3] / ratio * 255.0f );
+            }
+        }
+    }
+    else if ( newHeight > m_height )
+    {
+        // TODO: Use bicubic interpolation here
+        assert(0);
+    }
+    
+    delete [] m_pixels;
+    m_pixels = newPixels;
+    m_height = newHeight;
 }

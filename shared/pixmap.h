@@ -19,6 +19,11 @@ public:
     bool                operator!=      ( const Pixmap& other ) const;
     
     void                Create          ( u32 width, u32 height, const Color* data = 0 );
+    void                Resample        ( u32 newWidth, u32 newHeight );
+private:
+    void                Resample_X      ( u32 newWidth );
+    void                Resample_Y      ( u32 newHeight );
+public:
 
     bool                Load            ( const char* filename );
     bool                Load            ( std::istream& stream );
