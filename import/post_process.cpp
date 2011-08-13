@@ -3,6 +3,7 @@
 #include "l3m/Components/scene.h"
 #include "l3m/Components/texture.h"
 #include "math/matrix.h"
+#include "math/binary.h"
 #include "shared/util.h"
 
 static bool ProcessScene ( l3m::Model* model, l3m::Scene* sce, const char** error )
@@ -83,6 +84,12 @@ static bool ProcessGeometry ( l3m::Geometry* g_, const char** error )
 
 static bool ProcessTexture ( l3m::Texture* tex, l3m::Model* model, const char** error )
 {
+    // Resample the pixmap to make its sizes power of 2
+    Pixmap& pix = tex->pixmap();
+    u32 power_of_2_width = power_of_two_above ( pix.width() );
+    u32 power_of_2_height = power_of_two_above ( pix.height() );
+    pix.Resample(power_of_2_width, power_of_2_height);
+    
     return true;
 }
 

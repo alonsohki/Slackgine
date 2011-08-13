@@ -31,13 +31,3 @@ static inline T clamp ( T min, T value, T max )
     return ( value < min ) ? min : ((value > max) ? max : value);
 }
 
-template < typename T >
-static inline T lerp ( T from, float alpha, T to )
-{
-    return from + to*alpha;
-}
-template < typename T >
-static inline T lerpClamped ( T from, float alpha, T to )
-{
-    return clamp(from, lerp(from, alpha, to), to);
-}

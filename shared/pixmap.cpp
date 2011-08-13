@@ -4,6 +4,7 @@
 #include <libpng/png.h>
 #include "pixmap.h"
 #include "shared/util.h"
+#include "math/interpolation.h"
 
 #define SetError(msg, ...) ( snprintf ( m_error, sizeof(m_error), msg, ## __VA_ARGS__) == 9001 )
 
@@ -294,8 +295,48 @@ void Pixmap::Resample_X ( u32 newWidth )
     }
     else if ( newWidth > m_width )
     {
-        // TODO: Use bicubic interpolation here
-        assert(0);
+        float ratio = m_width / (float)newWidth;
+        for ( u32 h = 0; h < m_height; ++h )
+        {
+            for ( u32 w = 0; w < newWidth; ++w )
+            {
+                u32 left = (u32)floor(w * ratio);
+                u32 right = min(m_width-1, left+1);
+                u32 leftPrev = left > 0 ? left-1 : 0;
+                u32 rightNext = min(m_width-1, right+1);
+                
+                Color& l = m_pixels [ h*m_width + left ];
+                Color& r = m_pixels [ h*m_width + right ];
+                Color& lp = m_pixels [ h*m_width + leftPrev ];
+                Color& rn = m_pixels [ h*m_width + rightNext ];
+                
+                float colorValues [ 4 ][ 4 ] =
+                {
+                    { l.r() / 255.0f,  l.g() / 255.0f,  l.b() / 255.0f,  l.a() / 255.0f },
+                    { r.r() / 255.0f,  r.g() / 255.0f,  r.b() / 255.0f,  r.a() / 255.0f },
+                    { lp.r() / 255.0f, lp.g() / 255.0f, lp.b() / 255.0f, lp.a() / 255.0f },
+                    { rn.r() / 255.0f, rn.g() / 255.0f, rn.b() / 255.0f, rn.a() / 255.0f }
+                };
+                float tangents [ 2 ][ 4 ] =
+                {
+                    { colorValues[1][0]-colorValues[2][0], colorValues[1][1]-colorValues[2][1], colorValues[1][2]-colorValues[2][2], colorValues[1][3]-colorValues[2][3] },
+                    { colorValues[3][0]-colorValues[0][0], colorValues[3][1]-colorValues[0][1], colorValues[3][2]-colorValues[0][2], colorValues[3][3]-colorValues[0][3] }
+                };
+                
+                float interpolatedValues [ 4 ];
+                float alpha = w*ratio;
+                alpha = alpha - floor(alpha);
+                
+                interpolatedValues[0] = clamp(0.0f, cubic_interpolate(colorValues[0][0], tangents[0][0], alpha, colorValues[1][0], tangents[1][0]), 1.0f);
+                interpolatedValues[1] = clamp(0.0f, cubic_interpolate(colorValues[0][1], tangents[0][1], alpha, colorValues[1][1], tangents[1][1]), 1.0f);
+                interpolatedValues[2] = clamp(0.0f, cubic_interpolate(colorValues[0][2], tangents[0][2], alpha, colorValues[1][2], tangents[1][2]), 1.0f);
+                interpolatedValues[3] = clamp(0.0f, cubic_interpolate(colorValues[0][3], tangents[0][3], alpha, colorValues[1][3], tangents[1][3]), 1.0f);
+                newPixels [ h*newWidth + w ] = Color ( interpolatedValues[0] * 255.0f,
+                                                       interpolatedValues[1] * 255.0f,
+                                                       interpolatedValues[2] * 255.0f,
+                                                       interpolatedValues[3] * 255.0f );
+            }
+        }
     }
     
     delete [] m_pixels;
@@ -363,8 +404,48 @@ void Pixmap::Resample_Y ( u32 newHeight )
     }
     else if ( newHeight > m_height )
     {
-        // TODO: Use bicubic interpolation here
-        assert(0);
+        float ratio = m_height / (float)newHeight;
+        for ( u32 w = 0; w < m_width; ++w )
+        {
+            for ( u32 h = 0; h < newHeight; ++h )
+            {
+                u32 up = (u32)floor(h * ratio);
+                u32 down = min(m_height-1, up+1);
+                u32 upPrev = up > 0 ? up-1 : 0;
+                u32 downNext = min(m_height-1, down+1);
+                
+                Color& u = m_pixels [ up*m_width + w ];
+                Color& d = m_pixels [ down*m_width + w ];
+                Color& u_ = m_pixels [ upPrev*m_width + w ];
+                Color& dn = m_pixels [ downNext*m_width + w ];
+                
+                float colorValues [ 4 ][ 4 ] =
+                {
+                    { u.r() / 255.0f,  u.g() / 255.0f,  u.b() / 255.0f,  u.a() / 255.0f },
+                    { d.r() / 255.0f,  d.g() / 255.0f,  d.b() / 255.0f,  d.a() / 255.0f },
+                    { u_.r() / 255.0f, u_.g() / 255.0f, u_.b() / 255.0f, u_.a() / 255.0f },
+                    { dn.r() / 255.0f, dn.g() / 255.0f, dn.b() / 255.0f, dn.a() / 255.0f }
+                };
+                float tangents [ 2 ][ 4 ] =
+                {
+                    { colorValues[1][0]-colorValues[2][0], colorValues[1][1]-colorValues[2][1], colorValues[1][2]-colorValues[2][2], colorValues[1][3]-colorValues[2][3] },
+                    { colorValues[3][0]-colorValues[0][0], colorValues[3][1]-colorValues[0][1], colorValues[3][2]-colorValues[0][2], colorValues[3][3]-colorValues[0][3] }
+                };
+                
+                float interpolatedValues [ 4 ];
+                float alpha = h*ratio;
+                alpha = alpha - floor(alpha);
+                
+                interpolatedValues[0] = clamp(0.0f, cubic_interpolate(colorValues[0][0], tangents[0][0], alpha, colorValues[1][0], tangents[1][0]), 1.0f);
+                interpolatedValues[1] = clamp(0.0f, cubic_interpolate(colorValues[0][1], tangents[0][1], alpha, colorValues[1][1], tangents[1][1]), 1.0f);
+                interpolatedValues[2] = clamp(0.0f, cubic_interpolate(colorValues[0][2], tangents[0][2], alpha, colorValues[1][2], tangents[1][2]), 1.0f);
+                interpolatedValues[3] = clamp(0.0f, cubic_interpolate(colorValues[0][3], tangents[0][3], alpha, colorValues[1][3], tangents[1][3]), 1.0f);
+                newPixels [ h*m_width + w ] = Color ( interpolatedValues[0] * 255.0f,
+                                                      interpolatedValues[1] * 255.0f,
+                                                      interpolatedValues[2] * 255.0f,
+                                                      interpolatedValues[3] * 255.0f );
+            }
+        }
     }
     
     delete [] m_pixels;

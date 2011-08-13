@@ -12,8 +12,10 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
+    <itemPath>binary.h</itemPath>
     <itemPath>boundingbox.h</itemPath>
     <itemPath>boundingsphere.h</itemPath>
+    <itemPath>interpolation.h</itemPath>
     <itemPath>matrix.h</itemPath>
     <itemPath>util.h</itemPath>
     <itemPath>vector.h</itemPath>
