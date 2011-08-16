@@ -1,5 +1,23 @@
-#ifndef OPENGL3_H
-#define	OPENGL3_H
+/////////////////////////////////////////////////////////////
+//
+// Slackgine - Copyright (C) 2010-2011 - Alberto Alonso
+//
+// Redistribution of this software, including any of its
+// files, in either binary or source code form is totally
+// forbidden without the permission of its owners.
+//
+// Owners reserve their right to legal action against any
+// person or company that fails to do so.
+//
+// For more detailed information, see the LICENSE file in
+// the top-level directory.
+//
+// FILE:        opengl3.h
+// PURPOSE:     Specific functions for the OpenGL3 element factory.
+// AUTHORS:     Alberto Alonso <rydencillo@gmail.com>
+//
+
+#pragma once
 
 #include <GL/glew.h>
 #include <GL/gl.h>
@@ -59,6 +77,3 @@ public:
 
 // Geometry definition
 #include "geometry.h"
-
-#endif
-

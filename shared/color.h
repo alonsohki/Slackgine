@@ -1,5 +1,23 @@
-#ifndef COLOR_H
-#define COLOR_H
+/////////////////////////////////////////////////////////////
+//
+// Slackgine - Copyright (C) 2010-2011 - Alberto Alonso
+//
+// Redistribution of this software, including any of its
+// files, in either binary or source code form is totally
+// forbidden without the permission of its owners.
+//
+// Owners reserve their right to legal action against any
+// person or company that fails to do so.
+//
+// For more detailed information, see the LICENSE file in
+// the top-level directory.
+//
+// FILE:        color.h
+// PURPOSE:     Colors.
+// AUTHORS:     Alberto Alonso <rydencillo@gmail.com>
+//
+
+#pragma once
 
 #include "shared/platform.h"
 
@@ -64,5 +82,3 @@ public:
     u32& rgba() { return m_value; }
     u32& value() { return m_value; }
 };
-
-#endif

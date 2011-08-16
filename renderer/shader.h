@@ -1,5 +1,23 @@
-#ifndef SHADER_H
-#define	SHADER_H
+/////////////////////////////////////////////////////////////
+//
+// Slackgine - Copyright (C) 2010-2011 - Alberto Alonso
+//
+// Redistribution of this software, including any of its
+// files, in either binary or source code form is totally
+// forbidden without the permission of its owners.
+//
+// Owners reserve their right to legal action against any
+// person or company that fails to do so.
+//
+// For more detailed information, see the LICENSE file in
+// the top-level directory.
+//
+// FILE:        shader.h
+// PURPOSE:     Interface for the renderer shaders.
+// AUTHORS:     Alberto Alonso <rydencillo@gmail.com>
+//
+
+#pragma once
 
 #include <iostream>
 #include <fstream>
@@ -35,6 +53,3 @@ public:
 }
 
 #include "renderer.h"
-
-#endif	/* SHADER_H */
-
