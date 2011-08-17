@@ -34,7 +34,8 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/pixmap.o
+	${OBJECTDIR}/pixmap.o \
+	${OBJECTDIR}/thread.o
 
 
 # C Compiler Flags
@@ -67,6 +68,11 @@ ${OBJECTDIR}/pixmap.o: pixmap.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -I. -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/pixmap.o pixmap.cpp
+
+${OBJECTDIR}/thread.o: thread.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -I. -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/thread.o thread.cpp
 
 # Subprojects
 .build-subprojects:

@@ -27,6 +27,13 @@ namespace l3m
 class Require : public IComponent
 {
 public:
+    enum RequireType
+    {
+        REQUIRE_MODEL,
+        REQUIRE_TEXTURE
+    };
+    
+public:
     static IComponent*  Create          ()
     {
         return new Require ();
@@ -40,10 +47,14 @@ public:
     bool                Save            ( l3m::OStream& stream );
     
     std::string&        path            () { return m_path; }
+    RequireType&        reqType         () { return m_reqType;  }
+    
     const std::string&  path            () const { return m_path; }
+    const RequireType&  reqType         () const { return m_reqType; }
     
 private:
     std::string         m_path;
+    RequireType         m_reqType;
 };
 
 }

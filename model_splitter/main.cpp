@@ -72,6 +72,7 @@ int main ( int argc, const char** argv )
     {
         Require* req = model.CreateComponent<Require>("require");
         req->path() = *iter;
+        req->reqType() = Require::REQUIRE_TEXTURE;
     }
     
     if ( model.Save(argv[2]) == false )

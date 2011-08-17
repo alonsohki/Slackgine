@@ -20,6 +20,8 @@
     <itemPath>pixmap.cpp</itemPath>
     <itemPath>pixmap.h</itemPath>
     <itemPath>platform.h</itemPath>
+    <itemPath>thread.cpp</itemPath>
+    <itemPath>thread.h</itemPath>
     <itemPath>util.h</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
