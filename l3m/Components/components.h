@@ -22,4 +22,3 @@
 #include "geometry.h"
 #include "scene.h"
 #include "texture.h"
-#include "material.h"

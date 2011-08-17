@@ -29,6 +29,7 @@
 #include "DNA_mesh_types.h"
 #include "DNA_meshdata_types.h"
 #include "DNA_scene_types.h"
+#include "DNA_packedFile_types.h"
 #include "BKE_customdata.h"
 #include "BKE_object.h"
 #include "BLI_math.h"
@@ -237,7 +238,7 @@ static Matrix get_node_transform_ob(Object *ob)
 		copy_v3_v3(scale, ob->size);
 	}
 
-        return TranslationMatrix ( loc ) * RotationMatrix ( rot ) * ScalingMatrix ( scale );
+    return TranslationMatrix ( loc ) * RotationMatrix ( rot ) * ScalingMatrix ( scale );
 }
 
 
@@ -297,10 +298,30 @@ static bool ImportMesh ( Renderer::Geometry* g, const std::string& name, u32 mat
             curIndex += 3;
         }
     }
+
+    
+    // Import the material
+    Renderer::Material mat;
+    if ( me->mat != 0 )
+    {
+        ::Material* ma = me->mat[mat_index];
+        Color ambient ( ma->ambr * 255.0f, ma->ambg * 255.0f, ma->ambb * 255.0f, 1.0f );
+        Color diffuse ( ma->r * ma->ref * 255.0f, ma->g * ma->ref * 255.0f, ma->b * ma->ref * 255.0f, 1.0f );
+        Color specular ( ma->specr * 255.0f, ma->specg * 255.0f, ma->specb * 255.0f, 1.0f );
+        float shininess = ma->har;
+
+
+        mat.ambient () = ambient;
+        mat.diffuse () = diffuse;
+        mat.specular () = specular;
+        mat.shininess () = shininess;
+    }
+
     
     Renderer::Mesh* mesh = new Renderer::Mesh ();
     mesh->Set ( indices, actualFaceCount * 3, Renderer::Mesh::TRIANGLES );
     mesh->name() = name;
+    mesh->material() = mat;
     g->LoadMesh( mesh );
     
     return true;
@@ -311,7 +332,6 @@ static bool ImportGeometry ( Renderer::Geometry* g, Object* ob, l3m::Model* mode
     Mesh* me = (Mesh *)ob->data;
     MFace *faces = me->mface;
     MVert* verts = me->mvert;
-    u32 totvert = me->totvert;
     u32 totcol = me->totcol;
     u32 totface = me->totface;
     
@@ -358,6 +378,7 @@ static bool ImportGeometry ( Renderer::Geometry* g, Object* ob, l3m::Model* mode
         for ( u32 l = 0; l < layerCount; ++l )
         {
             MTFace *tface = (MTFace*)CustomData_get_layer_n(&me->fdata, CD_MTFACE, l);
+            
             for ( u32 i = 0; i < totface; ++i )
             {
                 MFace* face = &faces[i];
@@ -412,7 +433,7 @@ static bool ImportGeometry ( Renderer::Geometry* g, Object* ob, l3m::Model* mode
         return ImportMesh ( g, g->name(), 0, ob, model );
     else
     {
-        for ( u32 i = 0; i < me->totcol; ++i )
+        for ( u32 i = 0; i < totcol; ++i )
         {
             char name [ 512 ];
             snprintf ( name, sizeof(name), "%s-%u", g->name().c_str(), i );
@@ -429,9 +450,24 @@ static bool ImportSceneObject ( Object* ob, ::Scene* sce, l3m::Scene* modelScene
     {
         case OB_MESH:
         {
+            Mesh* me = (Mesh*)ob->data;
             l3m::Scene::Node& node = modelScene->CreateGeometryNode();
             node.url = get_geometry_id(ob);
             node.transform = get_node_transform_ob(ob);
+     
+            // Import the set of textures
+            bool has_uvs = (bool)CustomData_has_layer(&me->fdata, CD_MTFACE);
+            if ( has_uvs )
+            {
+                int layerCount = CustomData_number_of_layers(&me->fdata, CD_MTFACE);
+                for ( u32 l = 0; l < layerCount; ++l )
+                {
+                    MTFace *tface = (MTFace*)CustomData_get_layer_n(&me->fdata, CD_MTFACE, l);
+                    Image* image = tface->tpage;
+                    if ( image != 0 )
+                        node.textures.push_back(translate_id(id_name(image)));
+                }
+            }
             
             break;
         }
@@ -503,7 +539,6 @@ static bool ImportImages ( ::Scene* sce, const char* filename, l3m::Model* model
                                 Pixmap& pix = tex->pixmap();
                                 if ( !pix.Load(abs) )
                                 {
-                                    fprintf ( stderr, "Unable to load '%s' as texture: %s\n", abs, pix.error() );
                                     return false;
                                 }
                                 mImages.push_back(name);
@@ -544,17 +579,7 @@ static bool ImportMaterials ( ::Scene* sce, l3m::Model* model )
                     std::string translated_id = translate_id(id_name(ma));
                     if (std::find(mMat.begin(), mMat.end(), translated_id) == mMat.end())
                     {
-                        Color ambient ( ma->ambr * 255.0f, ma->ambg * 255.0f, ma->ambb * 255.0f, 1.0f );
-                        Color diffuse ( ma->r * ma->ref * 255.0f, ma->g * ma->ref * 255.0f, ma->b * ma->ref * 255.0f, 1.0f );
-                        Color specular ( ma->specr * 255.0f, ma->specg * 255.0f, ma->specb * 255.0f, 1.0f );
-                        float shininess = ma->har;
-                        
-                        l3m::Material* mat = model->CreateComponent <l3m::Material> ( "material" );
-                        mat->name() = translated_id;
-                        mat->material ().ambient () = ambient;
-                        mat->material ().diffuse () = diffuse;
-                        mat->material ().specular () = specular;
-                        mat->material ().shininess () = shininess;
+
                         
                         mMat.push_back(translated_id);
                     }
@@ -600,10 +625,6 @@ static bool import_blender ( ::Scene* sce, const char* filename, l3m::Model* mod
     
     // Import the images
     if ( !ImportImages ( sce, filename, model ) )
-        return false;
-    
-    // Import the materials
-    if ( !ImportMaterials ( sce, model ) )
         return false;
 
     return true;

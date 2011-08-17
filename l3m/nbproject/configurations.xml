@@ -7,8 +7,6 @@
       <itemPath>Components/factory.h</itemPath>
       <itemPath>Components/geometry.cpp</itemPath>
       <itemPath>Components/geometry.h</itemPath>
-      <itemPath>Components/material.cpp</itemPath>
-      <itemPath>Components/material.h</itemPath>
       <itemPath>Components/scene.cpp</itemPath>
       <itemPath>Components/scene.h</itemPath>
       <itemPath>Components/texture.cpp</itemPath>

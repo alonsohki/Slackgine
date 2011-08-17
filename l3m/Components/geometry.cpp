@@ -103,6 +103,17 @@ bool Geometry::Load(l3m::IStream& fp, float version)
             return SetError ( "Error reading the polygon type" );
         Mesh::PolygonType polyType = static_cast < Mesh::PolygonType > ( polyType_ );
         
+        // Read the color attributes
+        Renderer::Material mat;
+        if ( fp.ReadColor (&mat.ambient (), 1) != 1 )
+            return SetError ( "Error reading the material ambient value" );
+        if ( fp.ReadColor (&mat.diffuse (), 1) != 1 )
+            return SetError ( "Error reading the material diffuse value" );
+        if ( fp.ReadColor (&mat.specular (), 1) != 1 )
+            return SetError ( "Error reading the material specular value" );
+        if ( fp.ReadFloat (&mat.shininess (), 1) != 1 )
+            return SetError ( "Error reading the material shininess value" );
+        
         // Read the index data
         u32 numIndices;
         if ( fp.Read32 ( &numIndices, 1 ) != 1 )
@@ -192,6 +203,16 @@ bool Geometry::Save(l3m::OStream& fp)
         u32 polyType = mesh->polyType();
         if ( ! fp.Write32 ( &polyType, 1 ) )
             return SetError ( "Error writing the mesh polygon type" );
+        
+        // Write the color attributes
+        if ( ! fp.WriteColor (&mesh->material().ambient (), 1) )
+            return SetError ( "Error writing the material ambient value" );
+        if ( ! fp.WriteColor (&mesh->material().diffuse (), 1) )
+            return SetError ( "Error writing the material diffuse value" );
+        if ( ! fp.WriteColor (&mesh->material().specular (), 1) )
+            return SetError ( "Error writing the material specular value" );
+        if ( ! fp.WriteFloat (&mesh->material().shininess (), 1) )
+            return SetError ( "Error writing the material shininess value" );
         
         // Write the index data
         num = mesh->numIndices();

@@ -32,9 +32,21 @@ bool Scene::Load(l3m::IStream& fp, float version)
     {
         Scene::Node& node = CreateGeometryNode();
         
-        fp.ReadStr(node.url);
+        if ( fp.ReadStr(node.url) < 1 )
+            return SetError ( "Error reading the geometry node url" );
         if ( fp.ReadMatrix ( node.transform ) != 1 )
             return SetError ( "Error reading the geometry node transform" );
+        
+        u32 numTextures;
+        if ( fp.Read32 ( &numTextures, 1 ) != 1 )
+            return SetError ( "Error reading the geometry node texture count" );
+        for ( u32 t = 0; t < numTextures; ++t )
+        {
+            std::string texUrl;
+            if ( fp.ReadStr(texUrl) < 1 )
+                return SetError ( "Error reading the geometry node texture url" );
+            node.textures.push_back ( texUrl );
+        }
     }
     
     return true;
@@ -57,6 +69,15 @@ bool Scene::Save(l3m::OStream& fp)
             return SetError ( "Unable to write the geometry node URL" );
         if ( !fp.WriteMatrix( node.transform ) )
             return SetError ( "Unable to write the geometry node transform" );
+
+        u32 numTextures = node.textures.size();
+        if ( !fp.Write32 (&numTextures, 1) )
+            return SetError ( "Unable to write the geometry node texture count" );
+        for ( u32 i = 0; i < numTextures; ++i )
+        {
+            if ( !fp.WriteStr(node.textures[i]) )
+                return SetError ( "Unable to write the geometry node texture url" );
+        }
     }
     
     return true;

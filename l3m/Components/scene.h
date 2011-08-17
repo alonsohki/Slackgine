@@ -34,8 +34,9 @@ class Scene : public IComponent
 public:
     struct Node
     {
-        std::string             url;
-        Matrix                  transform;
+        std::string                     url;
+        Matrix                          transform;
+        std::vector<std::string>        textures;
         Node () : transform (IdentityMatrix()) {}
     };
     typedef std::vector < Node > nodesVector;
