@@ -12,14 +12,34 @@
 // For more detailed information, see the LICENSE file in
 // the top-level directory.
 //
-// FILE:        components.h
-// PURPOSE:     Header to import all the existing components.
+// FILE:        require.cpp
+// PURPOSE:     Special component that tells the engine a model dependency.
 // AUTHORS:     Alberto Alonso <rydencillo@gmail.com>
 //
 
-#pragma once
-
-#include "geometry.h"
-#include "scene.h"
-#include "texture.h"
 #include "require.h"
+
+using namespace l3m;
+
+Require::Require ()
+: IComponent ( "require", 1.0f )
+{
+}
+
+Require::~Require ()
+{
+}
+
+bool Require::Load ( l3m::IStream& fp, float version )
+{
+    if ( fp.ReadStr ( m_path ) < 1 )
+        return SetError ( "Unable to load the requirement path" );
+    return true;
+}
+
+bool Require::Save ( l3m::OStream& fp )
+{
+    if ( fp.WriteStr ( m_path ) == false )
+        return SetError ( "Unable to write the requirement path" );
+    return true;
+}
