@@ -39,6 +39,7 @@ static void print_help ( const char* path )
     puts ( "\t-h|--help\t\tShows this help" );
     puts ( "\t-d|--delete-duplicates\tDeletes duplicate vertices for each geometry" );
     puts ( "\t-f|--filter type\tFilters out components of that type" );
+    puts ( "\t-T|--clean-texture-ids\tFilters the texture ids to make them a clean name" );
 }
 
 int main ( int argc, char* const * argv )
@@ -47,6 +48,7 @@ int main ( int argc, char* const * argv )
     bool do_delete_duplicates = false;
     std::vector < std::string > vecFilterTypes;
     const char* filepath = 0;
+    bool do_clean_texture_ids = false;
     
     while ( 1 )
     {
@@ -54,13 +56,14 @@ int main ( int argc, char* const * argv )
            { "help",                0, 0, 'h' },
            { "delete-duplicates",   0, 0, 'd' },
            { "filter",              1, 0, 'f' },
+           { "clean-texture-ids",   0, 0, 'T' },
            { 0,                     0, 0, 0   }
         };
 
         int c;
         int option_index;
         
-        c = getopt_long(argc, argv, "hdf:", long_options, &option_index);
+        c = getopt_long(argc, argv, "hdf:T", long_options, &option_index);
         if ( c == -1 )
             break;
         
@@ -81,6 +84,10 @@ int main ( int argc, char* const * argv )
                 
             case '?':
                 return EXIT_FAILURE;
+                break;
+                
+            case 'T':
+                do_clean_texture_ids = true;
                 break;
 
             default:
@@ -119,6 +126,8 @@ int main ( int argc, char* const * argv )
     if ( do_delete_duplicates && delete_duplicates ( &model ) == false )
         return EXIT_FAILURE;
     if ( vecFilterTypes.size() > 0 && filter_types ( &model, vecFilterTypes ) == false )
+        return EXIT_FAILURE;
+    if ( do_clean_texture_ids && clean_texture_ids( &model ) == false )
         return EXIT_FAILURE;
     
     // Write the result to the standard output.

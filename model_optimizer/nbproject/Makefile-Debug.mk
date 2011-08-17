@@ -36,6 +36,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/delete_duplicates.o \
+	${OBJECTDIR}/clean_texture_ids.o \
 	${OBJECTDIR}/filter.o
 
 
@@ -78,6 +79,11 @@ ${OBJECTDIR}/delete_duplicates.o: delete_duplicates.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -I. -I.. `pkg-config --cflags glew` `pkg-config --cflags libpng`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/delete_duplicates.o delete_duplicates.cpp
+
+${OBJECTDIR}/clean_texture_ids.o: clean_texture_ids.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -I. -I.. `pkg-config --cflags glew` `pkg-config --cflags libpng`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/clean_texture_ids.o clean_texture_ids.cpp
 
 ${OBJECTDIR}/filter.o: filter.cpp 
 	${MKDIR} -p ${OBJECTDIR}

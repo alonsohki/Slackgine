@@ -12,8 +12,8 @@
 // For more detailed information, see the LICENSE file in
 // the top-level directory.
 //
-// FILE:        optimizations.h
-// PURPOSE:     File to include all the existing optimization strategies.
+// FILE:        clean_texture_ids.h
+// PURPOSE:     Strategy to clean the texture ids.
 // AUTHORS:     Alberto Alonso <rydencillo@gmail.com>
 //
 
@@ -21,6 +21,4 @@
 
 #include "l3m/l3m.h"
 
-#include "delete_duplicates.h"
-#include "filter.h"
-#include "clean_texture_ids.h"
+extern bool clean_texture_ids ( l3m::Model* model );

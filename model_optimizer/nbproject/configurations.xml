@@ -12,6 +12,8 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
+    <itemPath>clean_texture_ids.cpp</itemPath>
+    <itemPath>clean_texture_ids.h</itemPath>
     <itemPath>delete_duplicates.cpp</itemPath>
     <itemPath>delete_duplicates.h</itemPath>
     <itemPath>filter.cpp</itemPath>
