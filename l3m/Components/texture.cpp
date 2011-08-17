@@ -45,7 +45,7 @@ bool Texture::Load ( IStream& stream, float version )
     m_image.Create ( size[0], size[1] );
     
     // Load the pixels
-    if ( stream.Read32 ( &(m_image.pixels()->value()), size[0]*size[1] ) != size[0]*size[1] )
+    if ( stream.ReadColor ( m_image.pixels(), size[0]*size[1] ) != size[0]*size[1] )
         return SetError ( "Error reading the texture pixel data" );
     
     return true;
@@ -65,8 +65,7 @@ bool Texture::Save ( OStream& stream )
         return SetError ( "Error writing the texture image size" );
     
     // Write the image data
-    u32* values = &(m_image.pixels()->value());
-    if ( !stream.Write32(values, size[0]*size[1]) )
+    if ( !stream.WriteColor(m_image.pixels(), size[0]*size[1]) )
         return SetError ( "Error writing the texture pixel data" );
 
     return true;

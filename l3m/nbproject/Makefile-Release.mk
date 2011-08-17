@@ -39,7 +39,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/stream.o \
 	${OBJECTDIR}/model.o \
 	${OBJECTDIR}/Components/texture.o \
-	${OBJECTDIR}/Components/factory.o
+	${OBJECTDIR}/Components/factory.o \
+	${OBJECTDIR}/Components/material.o
 
 
 # C Compiler Flags
@@ -97,6 +98,11 @@ ${OBJECTDIR}/Components/factory.o: Components/factory.cpp
 	${MKDIR} -p ${OBJECTDIR}/Components
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/factory.o Components/factory.cpp
+
+${OBJECTDIR}/Components/material.o: Components/material.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Components
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/material.o Components/material.cpp
 
 # Subprojects
 .build-subprojects:

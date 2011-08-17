@@ -36,6 +36,7 @@
     </logicalFolder>
     <itemPath>geometry.cpp</itemPath>
     <itemPath>geometry.h</itemPath>
+    <itemPath>material.h</itemPath>
     <itemPath>mesh.cpp</itemPath>
     <itemPath>mesh.h</itemPath>
     <itemPath>program.h</itemPath>

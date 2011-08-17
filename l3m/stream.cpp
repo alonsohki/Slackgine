@@ -293,6 +293,22 @@ size_t IOStream::ReadVector ( Vector3& vec )
     return ReadFloat ( vec.vector(), 3 ) / 3;
 }
 
+bool IOStream::WriteColor ( const Color* col, u32 nmemb )
+{
+#ifdef DEBUG
+    assert ( m_ostream != 0 );
+#endif
+    return Write32 ( &col->value (), nmemb );
+}
+
+size_t IOStream::ReadColor ( Color* col, u32 nmemb )
+{
+#ifdef DEBUG
+    assert ( m_istream != 0 );
+#endif
+    return Read32 ( &col->value (), nmemb );
+}
+
 bool IOStream::WriteData ( const char* data, u32 size, u32 nmemb )
 {
 #ifdef DEBUG

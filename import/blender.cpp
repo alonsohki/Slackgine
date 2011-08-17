@@ -465,7 +465,6 @@ static bool ImportScene ( ::Scene* sce, l3m::Scene* modelScene )
 
 static bool ImportImages ( ::Scene* sce, const char* filename, l3m::Model* model )
 {
-    std::vector<std::string> mMat;
     std::vector<std::string> mImages;
     
     // For each mesh...
@@ -507,7 +506,7 @@ static bool ImportImages ( ::Scene* sce, const char* filename, l3m::Model* model
                                     fprintf ( stderr, "Unable to load '%s' as texture: %s\n", abs, pix.error() );
                                     return false;
                                 }
-				mImages.push_back(name);
+                                mImages.push_back(name);
                             }
                         }
                     }
@@ -517,6 +516,53 @@ static bool ImportImages ( ::Scene* sce, const char* filename, l3m::Model* model
             }
 
             base= base->next;
+    }
+    
+    return true;
+}
+
+static bool ImportMaterials ( ::Scene* sce, l3m::Model* model )
+{
+    std::vector < std::string > mMat;
+    
+    // For each mesh object...
+    Base *base= (Base*) sce->base.first;
+    while(base)
+    {
+        Object *ob = base->object;
+
+        switch(ob->type)
+        {
+            case OB_MESH:
+            {
+                for ( u32 a = 0; a < ob->totcol; ++a )
+                {
+                    ::Material *ma = give_current_material(ob, a+1);
+                    if (!ma)
+                        continue;
+
+                    std::string translated_id = translate_id(id_name(ma));
+                    if (std::find(mMat.begin(), mMat.end(), translated_id) == mMat.end())
+                    {
+                        Color ambient ( ma->ambr * 255.0f, ma->ambg * 255.0f, ma->ambb * 255.0f, 1.0f );
+                        Color diffuse ( ma->r * ma->ref * 255.0f, ma->g * ma->ref * 255.0f, ma->b * ma->ref * 255.0f, 1.0f );
+                        Color specular ( ma->specr * 255.0f, ma->specg * 255.0f, ma->specb * 255.0f, 1.0f );
+                        float shininess = ma->har;
+                        
+                        l3m::Material* mat = model->CreateComponent <l3m::Material> ( "material" );
+                        mat->name() = translated_id;
+                        mat->material ().ambient () = ambient;
+                        mat->material ().diffuse () = diffuse;
+                        mat->material ().specular () = specular;
+                        mat->material ().shininess () = shininess;
+                        
+                        mMat.push_back(translated_id);
+                    }
+                }
+            }
+        }
+        
+        base= base->next;
     }
     
     return true;
@@ -554,6 +600,10 @@ static bool import_blender ( ::Scene* sce, const char* filename, l3m::Model* mod
     
     // Import the images
     if ( !ImportImages ( sce, filename, model ) )
+        return false;
+    
+    // Import the materials
+    if ( !ImportMaterials ( sce, model ) )
         return false;
 
     return true;
