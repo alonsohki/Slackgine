@@ -24,7 +24,6 @@
 #include "slackgine.h"
 #include "l3m/l3m.h"
 #include "core/model_manager.h"
-#include "shared/pixmap.h"
 
 void display ( void );
 

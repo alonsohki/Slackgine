@@ -17,6 +17,8 @@
     <itemPath>FastDelegateBind.h</itemPath>
     <itemPath>color.h</itemPath>
     <itemPath>directory.h</itemPath>
+    <itemPath>mutex.cpp</itemPath>
+    <itemPath>mutex.h</itemPath>
     <itemPath>pixmap.cpp</itemPath>
     <itemPath>pixmap.h</itemPath>
     <itemPath>platform.h</itemPath>
