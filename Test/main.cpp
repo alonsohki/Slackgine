@@ -65,13 +65,15 @@ int main(int argc, char** argv)
 
 void display ( void )
 {
+    
+    
     if ( sg == 0 )
     {
         sg = new Slackgine ();
         sg->Initialize ();
         sg->GetModelManager().AddLookupPath ( ".." );
     }
-    
+        
     sg->Tick ();
     
     static float fRotX = -3.141592f/2;

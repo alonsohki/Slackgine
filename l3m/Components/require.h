@@ -52,6 +52,21 @@ public:
     const std::string&  path            () const { return m_path; }
     const RequireType&  reqType         () const { return m_reqType; }
     
+    std::string         makepath        () const
+    {
+        switch ( m_reqType )
+        {
+            case REQUIRE_MODEL:
+                return path() + ".l3m";
+                break;
+            case REQUIRE_TEXTURE:
+                return path() + ".ltm";
+                break;
+        }
+        
+        return "";
+    }
+    
 private:
     std::string         m_path;
     RequireType         m_reqType;
