@@ -23,7 +23,6 @@
 #include <cstring>
 #include "slackgine.h"
 #include "l3m/l3m.h"
-#include "core/model_manager.h"
 
 void display ( void );
 
@@ -31,6 +30,12 @@ using namespace Core;
 
 static Entity* entity = 0;
 static Slackgine* sg = 0;
+
+static void cleanup ()
+{
+    if ( sg != 0 )
+        delete sg;
+}
 
 int main(int argc, char** argv)
 {
@@ -49,6 +54,8 @@ int main(int argc, char** argv)
     glutCreateWindow ("Slackgine test");
     
     glutDisplayFunc ( display );
+    atexit ( cleanup );
+    
     glutMainLoop ();
     
     delete entity;
@@ -62,7 +69,10 @@ void display ( void )
     {
         sg = new Slackgine ();
         sg->Initialize ();
+        sg->GetModelManager().AddLookupPath ( ".." );
     }
+    
+    sg->Tick ();
     
     static float fRotX = -3.141592f/2;
     static float fRotY = 0;
@@ -76,14 +86,15 @@ void display ( void )
     else if ( fTransX < -2.5f )
         fTransDir = 1;
     fTransX += fTransDir * 0.002;
-    
+
     float size = 10.0f;
-    if ( sg->renderer()->BeginScene( OrthographicMatrix(-size, size, size, -size, size, -size), /*TranslationMatrix(fTransX,0,0)*RotationMatrix(fRotX,1,0,0)*/RotationMatrix(fRotY,0,1,0)*RotationMatrix(3.141592f/2,-1,0,0) ) )
+    if ( sg->GetRenderer()->BeginScene( OrthographicMatrix(-size, size, size, -size, size, -size), /*TranslationMatrix(fTransX,0,0)*RotationMatrix(fRotX,1,0,0)*/RotationMatrix(fRotY,0,1,0)*RotationMatrix(3.141592f/2,-1,0,0) ) )
     {
-        entity->Render ( sg->renderer() );
-        sg->renderer()->EndScene ();
+        entity->Render ( sg->GetRenderer() );
+        sg->GetRenderer()->EndScene ();
     }
     else
         fprintf ( stderr, "Error al iniciar la escena.\n" );
+    
     glutPostRedisplay ();
 }

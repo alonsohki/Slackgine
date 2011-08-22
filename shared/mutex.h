@@ -19,20 +19,24 @@
 
 #pragma once
 
+#if USE_THREADS
+
 #include <pthread.h>
-#include <ctime>
 
 class Mutex
 {
+    friend class ThreadCondition;
+    
 public:
                 Mutex           ();
                 ~Mutex          ();
                 
     void        Lock            ();
     bool        TryLock         ();
-    void        TimedLock       ( timespec ts );
     void        Unlock          ();
     
 private:
     pthread_mutex_t     m_handler;
 };
+
+#endif

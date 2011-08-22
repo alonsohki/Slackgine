@@ -35,6 +35,8 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/model_renderer_factory.o \
+	${OBJECTDIR}/time.o \
+	${OBJECTDIR}/model_manager.o \
 	${OBJECTDIR}/slackgine.o \
 	${OBJECTDIR}/entity_components/model_renderer.o \
 	${OBJECTDIR}/entity.o
@@ -69,22 +71,32 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libcore.a: ${OBJECTFILES}
 ${OBJECTDIR}/model_renderer_factory.o: model_renderer_factory.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/model_renderer_factory.o model_renderer_factory.cpp
+	$(COMPILE.cc) -O2 -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/model_renderer_factory.o model_renderer_factory.cpp
+
+${OBJECTDIR}/time.o: time.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/time.o time.cpp
+
+${OBJECTDIR}/model_manager.o: model_manager.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/model_manager.o model_manager.cpp
 
 ${OBJECTDIR}/slackgine.o: slackgine.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/slackgine.o slackgine.cpp
+	$(COMPILE.cc) -O2 -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/slackgine.o slackgine.cpp
 
 ${OBJECTDIR}/entity_components/model_renderer.o: entity_components/model_renderer.cpp 
 	${MKDIR} -p ${OBJECTDIR}/entity_components
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/entity_components/model_renderer.o entity_components/model_renderer.cpp
+	$(COMPILE.cc) -O2 -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/entity_components/model_renderer.o entity_components/model_renderer.cpp
 
 ${OBJECTDIR}/entity.o: entity.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/entity.o entity.cpp
+	$(COMPILE.cc) -O2 -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/entity.o entity.cpp
 
 # Subprojects
 .build-subprojects:

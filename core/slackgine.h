@@ -22,22 +22,30 @@
 #include "renderer/renderer.h"
 #include "l3m/l3m.h"
 #include "shared/platform.h"
+#include "model_manager.h"
+#include "time.h"
 
 namespace Core
 {
     
 class Slackgine
 {
-private:
-    Renderer::IRenderer* m_renderer;
-    
 public:
                                 Slackgine       ();
                                 ~Slackgine      ();
 
     bool                        Initialize      ();
+    
+    void                        Tick            ();
                 
-    Renderer::IRenderer*        renderer        () { return m_renderer; }
+    Renderer::IRenderer*        GetRenderer     () { return m_renderer; }
+    ModelManager&               GetModelManager () { return m_modelManager; }
+    Time&                       GetTime         () { return m_time; }
+    
+private:
+    Renderer::IRenderer*        m_renderer;
+    ModelManager                m_modelManager;
+    Time                        m_time;
 };
 
 }

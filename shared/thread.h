@@ -19,6 +19,8 @@
 
 #pragma once
 
+#if USE_THREADS
+
 #include <pthread.h>
 #include "platform.h"
 #include "FastDelegate.h"
@@ -56,7 +58,7 @@ private:
     struct ThreadInitStruct
     {
         void*   data;
-    } m_initStruct;
+    };
     static void* __thread_init ( void* );
     
 private:
@@ -64,4 +66,7 @@ private:
     pthread_t           m_handler;
     pthread_attr_t      m_attributes;
     MainFn              m_mainFn;
+    ThreadInitStruct    m_initStruct;
 };
+
+#endif

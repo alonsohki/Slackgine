@@ -46,21 +46,21 @@ public:
         }
         m_vecComponents.clear ();
     }
-                
-    bool        Load            ( const char* filepath )
+
+    bool        Load            ( const std::string& filepath )
     {
         std::fstream fp;
-        fp.open(filepath, std::ios::in | std::ios::binary);
+        fp.open(filepath.c_str(), std::ios::in | std::ios::binary);
         if ( fp.fail() )
-            return SetError ( "Unable to open '%s' for reading", filepath );
+            return SetError ( "Unable to open '%s' for reading", filepath.c_str() );
         return Load ( fp );
     }
-    bool        Save            ( const char* filepath )
+    bool        Save            ( const std::string& filepath )
     {
         std::fstream fp;
-        fp.open(filepath, std::ios::out | std::ios::binary);
+        fp.open(filepath.c_str(), std::ios::out | std::ios::binary);
         if ( fp.fail() )
-            return SetError ( "Unable to open '%s' for writing", filepath );
+            return SetError ( "Unable to open '%s' for writing", filepath.c_str() );
         return Save ( fp );
     }
     

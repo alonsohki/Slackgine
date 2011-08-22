@@ -17,6 +17,8 @@
 // AUTHORS:     Alberto Alonso <rydencillo@gmail.com>
 //
 
+#if USE_THREADS
+
 #include <signal.h>
 #include "thread.h"
 
@@ -100,3 +102,5 @@ void Thread::Detach ()
     else if ( IsCreated() )
         pthread_attr_setdetachstate ( &m_attributes, 1 );
 }
+
+#endif

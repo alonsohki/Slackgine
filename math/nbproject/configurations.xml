@@ -28,6 +28,11 @@
         <compilerSet>default</compilerSet>
       </toolsSet>
       <compileType>
+        <ccTool>
+          <preprocessorList>
+            <Elem>USE_THREADS</Elem>
+          </preprocessorList>
+        </ccTool>
         <archiverTool>
         </archiverTool>
       </compileType>

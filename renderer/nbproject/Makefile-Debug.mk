@@ -73,42 +73,42 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/librenderer.a: ${OBJECTFILES}
 ${OBJECTDIR}/vertex.o: vertex.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/vertex.o vertex.cpp
+	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/vertex.o vertex.cpp
 
 ${OBJECTDIR}/renderers/opengl3/opengl3.o: renderers/opengl3/opengl3.cpp 
 	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3
 	${RM} $@.d
-	$(COMPILE.cc) -g -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/opengl3.o renderers/opengl3/opengl3.cpp
+	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/opengl3.o renderers/opengl3/opengl3.cpp
 
 ${OBJECTDIR}/geometry.o: geometry.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/geometry.o geometry.cpp
+	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/geometry.o geometry.cpp
 
 ${OBJECTDIR}/renderers/opengl3/renderer.o: renderers/opengl3/renderer.cpp 
 	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3
 	${RM} $@.d
-	$(COMPILE.cc) -g -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/renderer.o renderers/opengl3/renderer.cpp
+	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/renderer.o renderers/opengl3/renderer.cpp
 
 ${OBJECTDIR}/mesh.o: mesh.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/mesh.o mesh.cpp
+	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/mesh.o mesh.cpp
 
 ${OBJECTDIR}/renderers/opengl3/program.o: renderers/opengl3/program.cpp 
 	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3
 	${RM} $@.d
-	$(COMPILE.cc) -g -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/program.o renderers/opengl3/program.cpp
+	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/program.o renderers/opengl3/program.cpp
 
 ${OBJECTDIR}/renderers/opengl3/geometry.o: renderers/opengl3/geometry.cpp 
 	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3
 	${RM} $@.d
-	$(COMPILE.cc) -g -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/geometry.o renderers/opengl3/geometry.cpp
+	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/geometry.o renderers/opengl3/geometry.cpp
 
 ${OBJECTDIR}/renderers/opengl3/shader.o: renderers/opengl3/shader.cpp 
 	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3
 	${RM} $@.d
-	$(COMPILE.cc) -g -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/shader.o renderers/opengl3/shader.cpp
+	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/shader.o renderers/opengl3/shader.cpp
 
 # Subprojects
 .build-subprojects:

@@ -58,6 +58,9 @@
             <pElem>..</pElem>
           </incDir>
           <commandLine>-ansi -pipe</commandLine>
+          <preprocessorList>
+            <Elem>USE_THREADS</Elem>
+          </preprocessorList>
         </ccTool>
         <archiverTool>
         </archiverTool>

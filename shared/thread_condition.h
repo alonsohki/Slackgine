@@ -12,33 +12,30 @@
 // For more detailed information, see the LICENSE file in
 // the top-level directory.
 //
-// FILE:        slackgine.cpp
-// PURPOSE:     Slackgine main class.
+// FILE:        thread_condition.h
+// PURPOSE:     Thread condition encapsulation.
 // AUTHORS:     Alberto Alonso <rydencillo@gmail.com>
 //
 
-#include "slackgine.h"
+#if USE_THREADS
 
-using namespace Core;
+#pragma once
 
-Slackgine::Slackgine ()
-: m_modelManager ( m_time )
+#include <pthread.h>
+#include "mutex.h"
+
+class ThreadCondition
 {
-    m_renderer = Renderer::Factory::CreateRenderer ();
-}
+public:
+                ThreadCondition         ();
+                ~ThreadCondition        ();
+        
+    void        Wait                    ( Mutex& mutex );
+    void        Signal                  ();
+    void        Broadcast               ();
+        
+private:
+    pthread_cond_t      m_handler;
+};
 
-Slackgine::~Slackgine ()
-{
-    delete m_renderer;
-}
-
-bool Slackgine::Initialize ()
-{
-    return m_renderer->Initialize ();
-}
-
-void Slackgine::Tick ()
-{
-    m_time.Tick ();
-    m_modelManager.Tick ();
-}
+#endif

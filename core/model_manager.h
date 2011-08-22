@@ -23,69 +23,124 @@
 #include <vector>
 #include "shared/FastDelegate.h"
 #include "l3m/l3m.h"
+#if USE_THREADS
+#       include "shared/thread.h"
+#       include "shared/mutex.h"
+#       include "shared/thread_condition.h"
+#endif
+#include "time.h"
 
 namespace Core
 {
     
 class ModelManager
 {
+    friend class Slackgine;
+
 public:
     enum Priority
     {
-        PRIORITY_NONE,
-        PRIORITY_LOW,
-        PRIORITY_NORMAL,
-        PRIORITY_HIGH,
-        PRIORITY_NOW
+        PRIORITY_NONE   = 0,
+        PRIORITY_LOW    = 1,
+        PRIORITY_NORMAL = 2,
+        PRIORITY_HIGH   = 3,
+        PRIORITY_NOW    = 4
+    };
+    
+private:
+    enum
+    {
+        MAX_TIME_IN_QUEUE       = 5000, // In miliseconds
+        PRIORITY_COUNT          = 4,
+        SYNCHRONOUS_MAX_TIME    = 100,  // Max time in ms to use when not using threads.
+        DEFAULT_MAX_MEMORY      = 0     // Max memory in bytes as threshold for the garbage collection
     };
     
 public:
-    typedef fastdelegate::FastDelegate1<bool, l3m::Model*> RequestCallback;
+    typedef FastDelegate1<l3m::Model*, bool> RequestCallback;
     typedef std::vector<RequestCallback> callbackVector;
 private:
-    struct RequestNode
-    {
-        callbackVector  callbacks;
-        u32             requestDate;
-    };
-    typedef std::deque<RequestNode> requestQueue;
-    
     struct ModelNode
     {
+        std::string     name;
         l3m::Model*     model;
         bool            loaded;
         u32             refCount;
-        ModelNode*      LRUnext;
-        ModelNode*      LRUprev;
+        
+        // Graveyard stuff
+        ModelNode*      graveyard_next;
+        ModelNode*      graveyard_prev;
+        
+        // Request stuff
+        callbackVector  requestCallbacks;
+        time_t          requestTime;
+        Priority        requestPriority;
     };
-    
-    // Singleton stuff
-private:
-    static ModelManager*        ms_instance;
-public:
-    static ModelManager&        GetInstance     ()
-    {
-        if ( !ms_instance )
-            ms_instance = new ModelManager ();
-        return *ms_instance;
-    }
+    typedef std::map<std::string, ModelNode> modelMap;
+    typedef std::map<const l3m::Model*, ModelNode*> modelptrMap;
+    typedef std::deque<ModelNode*> requestQueue;
+    typedef std::vector<std::string> pathVector;
+    typedef std::vector<l3m::Model*> garbageVector;
     
 private:
-                        ModelManager                ();
-                        ~ModelManager               ();
+                        ModelManager                    ( const Time& time );
+                        ~ModelManager                   ();
     
 public:
-    bool                Request                     ( const char* model, RequestCallback callback, Priority priority = PRIORITY_NORMAL );
-    bool                Request                     ( std::istream& stream, RequestCallback callback, Priority priority = PRIORITY_NORMAL );
-    l3m::Model*         RequestBlocking             ( const char* model );
-    bool                Release                     ( const l3m::Model* model );
+    bool                AddLookupPath                   ( const std::string& path );
+    void                SetMaxMemory                    ( u32 limit ) { m_maxMemory = limit; }
+    u32                 GetMaxMemory                    () const { return m_maxMemory; }
+    
+    bool                Request                         ( const std::string& model, RequestCallback callback, Priority priority = PRIORITY_NORMAL );
+    l3m::Model*         RequestBlocking                 ( const std::string& model );
+    bool                CancelRequest                   ( const std::string& model, RequestCallback callback );
+    bool                Release                         ( const l3m::Model* model );
+    bool                ReleaseAllReferences            ( const l3m::Model* model );
 
-    void                ProcessQueue                ();
-    void                LoadAllRequestedModels      ();
+    void                LoadAllRequestedModels          ();
+    
+    void                Tick                            ();
     
 private:
+    // Request management functions
+    bool                ProcessOne                      ( ModelNode** nodeptr = 0 );
+    ModelNode*          CreateModelNode                 ( const std::string& model );
+    ModelNode*          FindModelNode                   ( const std::string& model );
+    ModelNode*          FindModelNode                   ( const l3m::Model* model );
+    bool                GetModelAccessPath              ( const std::string& model, std::string* path = 0 ) const;
+    bool                CanModelBeLoaded                ( const std::string& model ) const;
+    void                ProcessRequest                  ( ModelNode* req );
+    void                DispatchRequest                 ( ModelNode* req );
+#if USE_THREADS
+    void*               RequestThread                   ( Thread*, void* );
+    void                Lock                            ();
+    void                Unlock                          ();
+#endif
+    void                Unlink                          ( ModelNode* node, bool toTheGraveyard = true );
+    bool                Release                         ( ModelNode* node );
+    void                DigATomb                        ( ModelNode* node );
+    void                CollectGarbage                  ();
+    
+private:
+    const Time&         m_time;
+    modelMap            m_models;
+    modelptrMap         m_modelPtrs;
     requestQueue        m_queues [ 4 ];
+    struct
+    {
+        ModelNode*      first;
+        ModelNode*      last;
+    } m_graveyard;
     Priority            m_nostarveQueue;
+#if USE_THREADS
+    Thread              m_thread;
+    Mutex               m_mutex;
+    ThreadCondition     m_threadCond;
+#endif
+    pathVector          m_paths;
+    u32                 m_maxMemory;
+    u32                 m_currentMemory;
+    garbageVector       m_garbage;
 };
     
 }

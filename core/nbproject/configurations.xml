@@ -20,11 +20,14 @@
     </logicalFolder>
     <itemPath>entity.cpp</itemPath>
     <itemPath>entity.h</itemPath>
+    <itemPath>model_manager.cpp</itemPath>
     <itemPath>model_manager.h</itemPath>
     <itemPath>model_renderer_factory.cpp</itemPath>
     <itemPath>model_renderer_factory.h</itemPath>
     <itemPath>slackgine.cpp</itemPath>
     <itemPath>slackgine.h</itemPath>
+    <itemPath>time.cpp</itemPath>
+    <itemPath>time.h</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -39,6 +42,9 @@
             <pElem>..</pElem>
           </incDir>
           <commandLine>-pipe -ansi</commandLine>
+          <preprocessorList>
+            <Elem>USE_THREADS</Elem>
+          </preprocessorList>
         </ccTool>
         <archiverTool>
         </archiverTool>
@@ -101,6 +107,9 @@
             <pElem>..</pElem>
           </incDir>
           <commandLine>-pipe -ansi</commandLine>
+          <preprocessorList>
+            <Elem>USE_THREADS</Elem>
+          </preprocessorList>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>

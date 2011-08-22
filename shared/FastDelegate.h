@@ -2106,3 +2106,4 @@ FastDelegate8<Param1, Param2, Param3, Param4, Param5, Param6, Param7, Param8, FA
 
 #endif // !defined(FASTDELEGATE_H)
 
+using namespace fastdelegate;

@@ -17,6 +17,8 @@
 // AUTHORS:     Alberto Alonso <rydencillo@gmail.com>
 //
 
+#if USE_THREADS
+
 #include "mutex.h"
 
 Mutex::Mutex ()
@@ -39,12 +41,9 @@ bool Mutex::TryLock ()
     return pthread_mutex_trylock ( &m_handler ) == 0;
 }
 
-void Mutex::TimedLock (timespec ts)
-{
-    pthread_mutex_timedlock (&m_handler, &ts);
-}
-
 void Mutex::Unlock ()
 {
     pthread_mutex_unlock ( &m_handler );
 }
+
+#endif

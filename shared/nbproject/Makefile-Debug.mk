@@ -36,6 +36,8 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/pixmap.o \
 	${OBJECTDIR}/thread.o \
+	${OBJECTDIR}/thread_condition.o \
+	${OBJECTDIR}/log.o \
 	${OBJECTDIR}/mutex.o
 
 
@@ -68,17 +70,27 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libshared.a: ${OBJECTFILES}
 ${OBJECTDIR}/pixmap.o: pixmap.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -I. -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/pixmap.o pixmap.cpp
+	$(COMPILE.cc) -g -DUSE_THREADS -I. -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/pixmap.o pixmap.cpp
 
 ${OBJECTDIR}/thread.o: thread.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -I. -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/thread.o thread.cpp
+	$(COMPILE.cc) -g -DUSE_THREADS -I. -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/thread.o thread.cpp
+
+${OBJECTDIR}/thread_condition.o: thread_condition.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -DUSE_THREADS -I. -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/thread_condition.o thread_condition.cpp
+
+${OBJECTDIR}/log.o: log.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -DUSE_THREADS -I. -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/log.o log.cpp
 
 ${OBJECTDIR}/mutex.o: mutex.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -I. -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/mutex.o mutex.cpp
+	$(COMPILE.cc) -g -DUSE_THREADS -I. -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/mutex.o mutex.cpp
 
 # Subprojects
 .build-subprojects:
