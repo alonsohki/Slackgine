@@ -123,8 +123,8 @@ bool OpenGL3_Renderer::Render ( Geometry* geometry, const Matrix& mat )
     if ( !geometry->initialized() )
         if ( !geometry->Initialize() )
             return false;
-
-    Matrix matNormals = Matrix::Transpose(Matrix::Invert(mat));
+    
+    Matrix matNormals = MatrixForNormals ( mat );
     Matrix matGeometry = m_matProjection * m_matLookat * mat;
     
     // Use vertex buffers

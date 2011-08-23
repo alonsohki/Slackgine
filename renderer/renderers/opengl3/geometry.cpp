@@ -53,7 +53,7 @@ bool Geometry::Initialize ()
     GLuint buffers [ 2 ];
     glGenBuffers ( 2, buffers );
     eglGetError ();
-
+    
     // Prepare the vertex buffer
     m_vertexBuffer = buffers[0];
     

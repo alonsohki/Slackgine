@@ -56,7 +56,8 @@ Entity::~Entity()
     }
     
     // Delete the model renderer component
-    delete m_modelRenderer;
+    if ( m_modelRenderer != 0 )
+        ModelRendererFactory::Release ( m_modelRenderer );
 }
 
 void Entity::SetModel ( l3m::Model* pModel )

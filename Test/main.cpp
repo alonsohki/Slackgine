@@ -29,6 +29,7 @@ void display ( void );
 using namespace Core;
 
 static Entity* entity = 0;
+static l3m::Model* model = 0;
 static Slackgine* sg = 0;
 
 static void cleanup ()
@@ -62,10 +63,13 @@ void display ( void )
         sg = new Slackgine ();
         sg->Initialize ();
         sg->GetModelManager().AddLookupPath ( ".." );
-        l3m::Model* m = sg->GetModelManager().RequestBlocking ("spherecube.l3m");
-        entity = new Entity ( m );
     }
 
+    if ( model == 0 )
+        model = sg->GetModelManager().RequestBlocking ("spherecube.l3m");
+    if ( entity == 0 )
+        entity = new Entity ( model );
+    
     sg->Tick ();
     
     static float fRotX = -3.141592f/2;

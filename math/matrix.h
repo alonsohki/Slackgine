@@ -175,6 +175,11 @@ public:
                 ret.m[i][j] = thiz.m[j][i];
         for ( u8 i = 0; i < 3; ++i )
             ret.m[3][i] = -thiz.m[3][i];
+        
+        ret.m[0][3] = 0.0f;
+        ret.m[1][3] = 0.0f;
+        ret.m[2][3] = 0.0f;
+        ret.m[3][3] = 1.0f;
 #endif
         return ret;
     }
@@ -453,5 +458,17 @@ public:
         };
         
         Matrix::operator= ( v );
+    }
+};
+
+class MatrixForNormals : public Matrix
+{
+public:
+    MatrixForNormals ( const Matrix& mat )
+    {
+        Matrix::operator= ( IdentityMatrix() );
+        Matrix::Assign3x3( mat );
+        Matrix::Invert();
+        Matrix::Transpose();
     }
 };

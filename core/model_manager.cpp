@@ -520,7 +520,9 @@ void ModelManager::ProcessRequest (ModelNode* node)
                     if ( node->requestPriority == PRIORITY_NOW )
                     {
                         // Load the requirements blocking
-                        InternalRequestBlocking ( reqPath );
+                        l3m::Model* depModel = InternalRequestBlocking ( reqPath );
+                        if ( depModel != 0 )
+                            node->loadedDeps.push_back ( depModel );
                     }
                     else
                     {
