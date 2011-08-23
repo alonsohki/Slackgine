@@ -39,15 +39,6 @@ static void cleanup ()
 
 int main(int argc, char** argv)
 {
-    l3m::Model model;
-    if ( model.Load ( "../spherecube.l3m" ) == false )
-    {
-        fprintf ( stderr, "Error al cargar el modelo: %s\n", model.error() );
-        return EXIT_FAILURE;
-    }
-
-    entity = new Entity ( &model );
-    
     glutInit (&argc, argv);
     glutInitWindowSize (800, 600);
     glutInitDisplayMode ( GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH );
@@ -63,17 +54,18 @@ int main(int argc, char** argv)
     return EXIT_SUCCESS;
 }
 
+
 void display ( void )
 {
-    
-    
     if ( sg == 0 )
     {
         sg = new Slackgine ();
         sg->Initialize ();
         sg->GetModelManager().AddLookupPath ( ".." );
+        l3m::Model* m = sg->GetModelManager().RequestBlocking ("spherecube.l3m");
+        entity = new Entity ( m );
     }
-        
+
     sg->Tick ();
     
     static float fRotX = -3.141592f/2;
