@@ -19,6 +19,8 @@
         <itemPath>renderers/opengl3/renderer.h</itemPath>
         <itemPath>renderers/opengl3/shader.cpp</itemPath>
         <itemPath>renderers/opengl3/shader.h</itemPath>
+        <itemPath>renderers/opengl3/texture.cpp</itemPath>
+        <itemPath>renderers/opengl3/texture.h</itemPath>
       </logicalFolder>
       <itemPath>renderers/renderer_selection.h</itemPath>
     </logicalFolder>
@@ -42,6 +44,7 @@
     <itemPath>program.h</itemPath>
     <itemPath>renderer.h</itemPath>
     <itemPath>shader.h</itemPath>
+    <itemPath>texture.h</itemPath>
     <itemPath>vertex.cpp</itemPath>
     <itemPath>vertex.h</itemPath>
   </logicalFolder>

@@ -41,7 +41,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/mesh.o \
 	${OBJECTDIR}/renderers/opengl3/program.o \
 	${OBJECTDIR}/renderers/opengl3/geometry.o \
-	${OBJECTDIR}/renderers/opengl3/shader.o
+	${OBJECTDIR}/renderers/opengl3/shader.o \
+	${OBJECTDIR}/renderers/opengl3/texture.o
 
 
 # C Compiler Flags
@@ -109,6 +110,11 @@ ${OBJECTDIR}/renderers/opengl3/shader.o: renderers/opengl3/shader.cpp
 	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3
 	${RM} $@.d
 	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/shader.o renderers/opengl3/shader.cpp
+
+${OBJECTDIR}/renderers/opengl3/texture.o: renderers/opengl3/texture.cpp 
+	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3
+	${RM} $@.d
+	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/texture.o renderers/opengl3/texture.cpp
 
 # Subprojects
 .build-subprojects:

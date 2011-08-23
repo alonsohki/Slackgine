@@ -41,6 +41,9 @@ Pixmap::Pixmap ( u32 width, u32 height )
 }
 
 Pixmap::Pixmap ( const Pixmap& other )
+: m_width ( 0 )
+, m_height ( 0 )
+, m_pixels ( 0 )
 {
     operator= ( other );
 }

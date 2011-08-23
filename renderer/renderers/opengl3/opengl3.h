@@ -54,12 +54,14 @@ default:                                                       break;\
 #define eglGetError()
 #endif
 
+#include "../../texture.h"
 #include "../../shader.h"
 #include "../../program.h"
 #include "../../renderer.h"
 #include "shader.h"
 #include "program.h"
 #include "renderer.h"
+#include "texture.h"
 
 namespace Renderer
 {
@@ -71,6 +73,8 @@ public:
     static IProgram*    CreateProgram   ();
     static IShader*     CreateShader    ( IShader::Type type, const char* file );
     static IShader*     CreateShader    ( IShader::Type type, std::istream& fp );
+    
+    static ITexture*    CreateTexture   ( u32 width, u32 height, ITexture::Format format = ITexture::RGBA8 );
 };
 
 }

@@ -29,6 +29,7 @@
 #       include "shared/mutex.h"
 #       include "shared/thread_condition.h"
 #endif
+#include "texture_manager.h"
 #include "time.h"
 
 namespace Core
@@ -103,7 +104,7 @@ private:
     
     
 private:
-                        ModelManager                    ( const Time& time );
+                        ModelManager                    ( TextureManager& textureManager, const Time& time );
                         ~ModelManager                   ();
     
 public:
@@ -149,6 +150,7 @@ private:
     
     
 private:
+    TextureManager&     m_textureManager;
     const Time&         m_time;
     ModelMap            m_models;
     ModelptrMap         m_modelPtrs;

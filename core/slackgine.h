@@ -31,21 +31,23 @@ namespace Core
 class Slackgine
 {
 public:
-                                Slackgine       ();
-                                ~Slackgine      ();
+                                Slackgine               ();
+                                ~Slackgine              ();
 
-    bool                        Initialize      ();
+    bool                        Initialize              ();
     
-    void                        Tick            ();
+    void                        Tick                    ();
                 
-    Renderer::IRenderer*        GetRenderer     () { return m_renderer; }
-    ModelManager&               GetModelManager () { return m_modelManager; }
-    Time&                       GetTime         () { return m_time; }
+    Renderer::IRenderer*        GetRenderer             () { return m_renderer; }
+    ModelManager&               GetModelManager         () { return m_modelManager; }
+    TextureManager&             GetTextureManager       () { return m_textureManager; }
+    Time&                       GetTime                 () { return m_time; }
     
 private:
     Renderer::IRenderer*        m_renderer;
-    ModelManager                m_modelManager;
     Time                        m_time;
+    TextureManager              m_textureManager;
+    ModelManager                m_modelManager;
 };
 
 }

@@ -26,6 +26,8 @@
     <itemPath>model_renderer_factory.h</itemPath>
     <itemPath>slackgine.cpp</itemPath>
     <itemPath>slackgine.h</itemPath>
+    <itemPath>texture_manager.cpp</itemPath>
+    <itemPath>texture_manager.h</itemPath>
     <itemPath>time.cpp</itemPath>
     <itemPath>time.h</itemPath>
   </logicalFolder>

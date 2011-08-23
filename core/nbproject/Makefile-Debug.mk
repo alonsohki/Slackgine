@@ -37,6 +37,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/model_renderer_factory.o \
 	${OBJECTDIR}/time.o \
 	${OBJECTDIR}/model_manager.o \
+	${OBJECTDIR}/texture_manager.o \
 	${OBJECTDIR}/slackgine.o \
 	${OBJECTDIR}/entity_components/model_renderer.o \
 	${OBJECTDIR}/entity.o
@@ -82,6 +83,11 @@ ${OBJECTDIR}/model_manager.o: model_manager.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/model_manager.o model_manager.cpp
+
+${OBJECTDIR}/texture_manager.o: texture_manager.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/texture_manager.o texture_manager.cpp
 
 ${OBJECTDIR}/slackgine.o: slackgine.cpp 
 	${MKDIR} -p ${OBJECTDIR}

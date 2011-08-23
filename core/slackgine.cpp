@@ -23,7 +23,9 @@
 using namespace Core;
 
 Slackgine::Slackgine ()
-: m_modelManager ( m_time )
+: m_time ()
+, m_textureManager ()
+, m_modelManager ( m_textureManager, m_time )
 {
     m_renderer = Renderer::Factory::CreateRenderer ();
 }

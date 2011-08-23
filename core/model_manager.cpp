@@ -24,11 +24,13 @@
 #include "shared/log.h"
 #include "l3m/l3m.h"
 #include "l3m/Components/require.h"
+#include "l3m/Components/texture.h"
 
 using namespace Core;
 
-ModelManager::ModelManager ( const Time& time )
-: m_time ( time )
+ModelManager::ModelManager ( TextureManager& textureManager, const Time& time )
+: m_textureManager ( textureManager )
+, m_time ( time )
 {
     AddLookupPath ( "." );
     m_nostarveQueue = PRIORITY_NONE;
@@ -44,19 +46,16 @@ ModelManager::ModelManager ( const Time& time )
 
 ModelManager::~ModelManager ()
 {
-    // Delete all the alocated models
-    for ( ModelMap::iterator iter = m_models.begin();
-          iter != m_models.end();
-          ++iter )
-    {
-        ModelNode& node = iter->second;
-        delete node.model;
-    }
-    
 #if USE_THREADS
     // Stop the model loading thread
     m_thread.Stop ();
 #endif
+
+    // Delete all the allocated models
+    while ( m_models.size() > 0 )
+    {
+        Unlink ( &(m_models.begin()->second), false );
+    }
 }
 
 #if USE_THREADS
@@ -483,6 +482,7 @@ void ModelManager::ProcessRequest (ModelNode* node)
     using l3m::Model;
     using l3m::IComponent;
     using l3m::Require;
+    using l3m::Texture;
     
     // Load the model and mark it as loaded
     std::string accessPath;
@@ -498,16 +498,18 @@ void ModelManager::ProcessRequest (ModelNode* node)
         
         // TODO: Provide a method to know the memory being used by a model
         m_currentMemory += 1;
-        
-        ////////////////////////////////////////////////////////////////////////
-        // Track its dependencies
-        //
+
+        // Check every component for special actions.
         Model::componentVector& comps = model->components ();
         for ( Model::componentVector::iterator iter = comps.begin ();
               iter != comps.end();
               ++iter )
         {
             IComponent* comp = *iter;
+            
+            ////////////////////////////////////////////////////////////////////
+            // Track its dependencies
+            //
             if ( comp->type() == "require" )
             {
                 Require* req = static_cast < Require* > ( comp );
@@ -525,6 +527,16 @@ void ModelManager::ProcessRequest (ModelNode* node)
                         MakeDependencyTracker ( node, reqPath );
                     }
                 }
+            }
+            
+            ////////////////////////////////////////////////////////////////////
+            // Register the textures into the texture manager
+            //
+            else if ( comp->type() == "texture" )
+            {
+                Texture* tex = static_cast < Texture* > ( comp );
+                if ( tex != 0 )
+                    m_textureManager.Register ( *tex );
             }
         }
         
@@ -670,6 +682,38 @@ void ModelManager::LoadAllRequestedModels ()
 
 void ModelManager::Unlink ( ModelNode* node, bool toTheGraveyard )
 {
+    // Unlink it form the queues.
+    if ( node->loaded == false && node->requestPriority <= PRIORITY_HIGH )
+    {
+        RequestQueue& queue = m_queues [ node->requestPriority ];
+        for ( RequestQueue::iterator iter = queue.begin();
+              iter != queue.end();
+              ++iter )
+        {
+            if ( *iter == node )
+            {
+                queue.erase ( iter );
+                break;
+            }
+        }
+    }
+    
+    // Manage the dependencies
+    if ( node->requestedDeps.size() > 0 )
+    {
+        // Unlink it from the dependency waiters
+        for ( RequestList::iterator iter = m_dependencyWaiters.begin();
+              iter != m_dependencyWaiters.end();
+              ++iter )
+        {
+            if ( *iter == node )
+            {
+                m_dependencyWaiters.erase ( iter );
+                break;
+            }
+        }
+    }
+
     if ( !toTheGraveyard )
     {
         LOG_V ( "ModelManager", "Deleting model '%s' (%p)", node->name.c_str(), node->model );
@@ -679,6 +723,21 @@ void ModelManager::Unlink ( ModelNode* node, bool toTheGraveyard )
         {
             // TODO: Implement a way to know the memory being used by a model
             m_currentMemory -= 1;
+            
+            // Unregister the textures from the texture manager.
+            l3m::Model::componentVector& components = node->model->components ();
+            for ( l3m::Model::componentVector::iterator iter = components.begin();
+                  iter != components.end();
+                  ++iter )
+            {
+                l3m::IComponent* comp = *iter;
+                if ( comp->type() == "texture" )
+                {
+                    l3m::Texture* tex = static_cast < l3m::Texture* > ( comp );
+                    if ( tex != 0 )
+                        m_textureManager.Release ( *tex );
+                }
+            }
             
             // Cancel the dependency requests
             for ( DependencyList::iterator iter = node->requestedDeps.begin();
@@ -743,35 +802,6 @@ void ModelManager::Unlink ( ModelNode* node, bool toTheGraveyard )
             node->graveyard_prev = m_graveyard.last;
             m_graveyard.last->graveyard_next = node;
             m_graveyard.last = node;
-        }
-    }
-
-    // Unlink it form the queues.
-    RequestQueue& queue = m_queues [ node->requestPriority ];
-    for ( RequestQueue::iterator iter = queue.begin();
-          iter != queue.end();
-          ++iter )
-    {
-        if ( *iter == node )
-        {
-            queue.erase ( iter );
-            break;
-        }
-    }
-    
-    // Manage the dependencies
-    if ( node->requestedDeps.size() > 0 )
-    {
-        // Unlink it from the dependency waiters
-        for ( RequestList::iterator iter = m_dependencyWaiters.begin();
-              iter != m_dependencyWaiters.end();
-              ++iter )
-        {
-            if ( *iter == node )
-            {
-                m_dependencyWaiters.erase ( iter );
-                break;
-            }
         }
     }
 }

@@ -44,3 +44,8 @@ IShader* Factory::CreateShader(IShader::Type type, std::istream& fp)
     shader->Load ( fp );
     return shader;
 }
+
+ITexture* Factory::CreateTexture (u32 width, u32 height, ITexture::Format format)
+{
+    return new OpenGL3_Texture ( width, height, format );
+}
