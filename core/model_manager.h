@@ -59,7 +59,7 @@ private:
     
 public:
     typedef FastDelegate1<l3m::Model*, bool> RequestCallback;
-    typedef std::vector<RequestCallback> callbackVector;
+    typedef std::vector<RequestCallback> CallbackVector;
 private:
     // Structure to track the dependencies
     struct ModelNode;
@@ -71,8 +71,8 @@ private:
         
         bool    OnLoad  ( l3m::Model* model );
     };
-    typedef std::list < DependencyTracker > dependencyList;
-    typedef std::vector < l3m::Model* > modelVector;
+    typedef std::list < DependencyTracker > DependencyList;
+    typedef std::vector < l3m::Model* > ModelVector;
     
     struct ModelNode
     {
@@ -82,24 +82,24 @@ private:
         u32             refCount;
         
         // Dependencies
-        dependencyList  requestedDeps;
-        modelVector     loadedDeps;
+        DependencyList  requestedDeps;
+        ModelVector     loadedDeps;
         
         // Graveyard stuff
         ModelNode*      graveyard_next;
         ModelNode*      graveyard_prev;
         
         // Request stuff
-        callbackVector  requestCallbacks;
+        CallbackVector  requestCallbacks;
         time_t          requestTime;
         Priority        requestPriority;
     };
-    typedef std::map<std::string, ModelNode> modelMap;
-    typedef std::map<const l3m::Model*, ModelNode*> modelptrMap;
-    typedef std::deque<ModelNode*> requestQueue;
-    typedef std::list<ModelNode*> requestList;
-    typedef std::vector<std::string> pathVector;
-    typedef std::vector<l3m::Model*> garbageVector;
+    typedef std::map<std::string, ModelNode> ModelMap;
+    typedef std::map<const l3m::Model*, ModelNode*> ModelptrMap;
+    typedef std::deque<ModelNode*> RequestQueue;
+    typedef std::list<ModelNode*> RequestList;
+    typedef std::vector<std::string> PathVector;
+    typedef std::vector<l3m::Model*> GarbageVector;
     
     
 private:
@@ -143,17 +143,17 @@ private:
 #endif
     void                Unlink                          ( ModelNode* node, bool toTheGraveyard = true );
     bool                InternalRelease                 ( ModelNode* node );
-    void                DigATomb                        ( ModelNode* node );
+    void                MoveFromGraveyard               ( ModelNode* node );
     void                CollectGarbage                  ();
     bool                MakeDependencyTracker           ( ModelNode* node, const std::string& dep );
     
     
 private:
     const Time&         m_time;
-    modelMap            m_models;
-    modelptrMap         m_modelPtrs;
-    requestQueue        m_queues [ 4 ];
-    requestList         m_dependencyWaiters;
+    ModelMap            m_models;
+    ModelptrMap         m_modelPtrs;
+    RequestQueue        m_queues [ 4 ];
+    RequestList         m_dependencyWaiters;
     struct
     {
         ModelNode*      first;
@@ -165,10 +165,10 @@ private:
     Mutex               m_mutex;
     ThreadCondition     m_threadCond;
 #endif
-    pathVector          m_paths;
+    PathVector          m_paths;
     u32                 m_maxMemory;
     u32                 m_currentMemory;
-    garbageVector       m_garbage;
+    GarbageVector       m_garbage;
 };
     
 }

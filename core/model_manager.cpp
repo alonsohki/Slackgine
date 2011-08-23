@@ -45,7 +45,7 @@ ModelManager::ModelManager ( const Time& time )
 ModelManager::~ModelManager ()
 {
     // Delete all the alocated models
-    for ( modelMap::iterator iter = m_models.begin();
+    for ( ModelMap::iterator iter = m_models.begin();
           iter != m_models.end();
           ++iter )
     {
@@ -87,7 +87,7 @@ bool ModelManager::ProcessOne ( ModelNode** nodeptr )
     {
         if ( m_queues[i].size() > 0 )
         {
-            for ( requestQueue::iterator iter = m_queues[i].begin();
+            for ( RequestQueue::iterator iter = m_queues[i].begin();
                   iter != m_queues[i].end();
                   ++iter )
             {
@@ -110,8 +110,8 @@ bool ModelManager::ProcessOne ( ModelNode** nodeptr )
     {
         if ( m_queues[PRIORITY_COUNT-i-1].size () > 0 )
         {
-            requestQueue& queue = m_queues[PRIORITY_COUNT-i-1];
-            for ( requestQueue::iterator iter = queue.begin();
+            RequestQueue& queue = m_queues[PRIORITY_COUNT-i-1];
+            for ( RequestQueue::iterator iter = queue.begin();
                   iter != queue.end();
                   ++iter )
             {
@@ -152,7 +152,7 @@ bool ModelManager::GetModelAccessPath (const std::string& model, std::string* pa
 {
     struct stat status;
     
-    for ( pathVector::const_reverse_iterator iter = m_paths.rbegin ();
+    for ( PathVector::const_reverse_iterator iter = m_paths.rbegin ();
           iter != m_paths.rend();
           ++iter )
     {
@@ -176,7 +176,7 @@ bool ModelManager::GetModelAccessPath (const std::string& model, std::string* pa
 
 ModelManager::ModelNode* ModelManager::FindModelNode ( const std::string& model )
 {
-    modelMap::iterator iter = m_models.find ( model );
+    ModelMap::iterator iter = m_models.find ( model );
     if ( iter != m_models.end() )
         return &(iter->second);
     return 0;
@@ -184,7 +184,7 @@ ModelManager::ModelNode* ModelManager::FindModelNode ( const std::string& model 
 
 ModelManager::ModelNode* ModelManager::FindModelNode ( const l3m::Model* model )
 {
-    modelptrMap::iterator iter = m_modelPtrs.find ( model );
+    ModelptrMap::iterator iter = m_modelPtrs.find ( model );
     if ( iter != m_modelPtrs.end() )
         return iter->second;
     return 0;
@@ -222,7 +222,7 @@ bool ModelManager::InternalRequest ( const std::string& model, RequestCallback c
         {
             // Check if this model was dead to give it life again.
             if ( node->refCount == 0 )
-                DigATomb ( node );
+                MoveFromGraveyard ( node );
             if ( callback != 0 )
                 callback ( node->model );
         }
@@ -238,8 +238,8 @@ bool ModelManager::InternalRequest ( const std::string& model, RequestCallback c
         else
         {
             // Move it out of the current queue
-            requestQueue& queue = m_queues[node->requestPriority];
-            for ( requestQueue::iterator iter = queue.begin ();
+            RequestQueue& queue = m_queues[node->requestPriority];
+            for ( RequestQueue::iterator iter = queue.begin ();
                   iter != queue.end();
                   ++iter )
             {
@@ -329,7 +329,7 @@ l3m::Model* ModelManager::InternalRequestBlocking (const std::string& model)
         if ( node->loaded == false )
             ProcessRequest ( node );
         if ( node->refCount == 0 )
-            DigATomb ( node );
+            MoveFromGraveyard ( node );
     }
     else
     {
@@ -365,7 +365,7 @@ bool ModelManager::InternalCancelRequest ( const std::string& model, RequestCall
     if ( node != 0 && node->loaded == false )
     {
         // Take out all the callbacks corresponding to the one given by parameter
-        for ( callbackVector::iterator iter = node->requestCallbacks.begin();
+        for ( CallbackVector::iterator iter = node->requestCallbacks.begin();
               iter != node->requestCallbacks.end();
             )
         {
@@ -463,7 +463,7 @@ void ModelManager::Unlock ()
 
 ModelManager::ModelNode* ModelManager::CreateModelNode (const std::string& model)
 {
-    std::pair<modelMap::iterator, bool> pair = m_models.insert ( modelMap::value_type(model, ModelNode()) );
+    std::pair<ModelMap::iterator, bool> pair = m_models.insert ( ModelMap::value_type(model, ModelNode()) );
     ModelNode* node = &(pair.first->second);
     node->name = model;
     node->model = 0;
@@ -493,7 +493,7 @@ void ModelManager::ProcessRequest (ModelNode* node)
         node->model = model;
         
         // Insert it into the model ptrs map
-        m_modelPtrs.insert ( modelptrMap::value_type ( model, node ) );
+        m_modelPtrs.insert ( ModelptrMap::value_type ( model, node ) );
         
         // TODO: Provide a method to know the memory being used by a model
         m_currentMemory += 1;
@@ -532,8 +532,8 @@ void ModelManager::ProcessRequest (ModelNode* node)
         if ( hasDeps )
         {
             // Take it out of its priority queue and move it to the dependency waiters
-            requestQueue& queue = m_queues [ node->requestPriority ];
-            for ( requestQueue::iterator iter = queue.begin();
+            RequestQueue& queue = m_queues [ node->requestPriority ];
+            for ( RequestQueue::iterator iter = queue.begin();
                   iter != queue.end();
                   ++iter )
             {
@@ -546,8 +546,8 @@ void ModelManager::ProcessRequest (ModelNode* node)
             m_dependencyWaiters.push_back ( node );
             
             // Request all the dependencies
-            dependencyList& deps = node->requestedDeps;
-            for ( dependencyList::iterator iter = deps.begin();
+            DependencyList& deps = node->requestedDeps;
+            for ( DependencyList::iterator iter = deps.begin();
                   iter != deps.end();
                   ++iter )
             {
@@ -563,7 +563,7 @@ void ModelManager::DispatchRequest ( ModelNode* req )
     LOG_VV ( "ModelManager", "Dispatching the request for the model '%s'", req->name.c_str() );
     
     // Call the callback chain
-    for ( callbackVector::iterator iter = req->requestCallbacks.begin();
+    for ( CallbackVector::iterator iter = req->requestCallbacks.begin();
           iter != req->requestCallbacks.end();
           ++iter )
     {
@@ -576,8 +576,8 @@ void ModelManager::DispatchRequest ( ModelNode* req )
     // Take it out of the queue
     if ( req->requestPriority < PRIORITY_NOW )
     {
-        requestQueue& queue = m_queues[req->requestPriority];
-        for ( requestQueue::iterator iter = queue.begin();
+        RequestQueue& queue = m_queues[req->requestPriority];
+        for ( RequestQueue::iterator iter = queue.begin();
               iter != queue.end();
               ++iter )
         {
@@ -598,7 +598,7 @@ void ModelManager::Tick ()
     // Dispatch all the models that have been loaded by the loading thread
     for ( u32 i = 0; i < PRIORITY_COUNT; ++i )
     {
-        requestQueue& queue = m_queues[PRIORITY_COUNT-i-1];
+        RequestQueue& queue = m_queues[PRIORITY_COUNT-i-1];
         while ( queue.size() > 0 && queue.front()->loaded == true )
         {
             DispatchRequest ( queue.front() );
@@ -625,7 +625,7 @@ void ModelManager::Tick ()
 #endif
 
     // Check the dependency waiters
-    for ( requestList::iterator iter = m_dependencyWaiters.begin();
+    for ( RequestList::iterator iter = m_dependencyWaiters.begin();
           iter != m_dependencyWaiters.end();
         )
     {
@@ -648,19 +648,23 @@ void ModelManager::Tick ()
 
 void ModelManager::LoadAllRequestedModels ()
 {
+#ifdef USE_THREADS
     Lock ();
+#endif
     
     // Flush all queues
     while ( ProcessOne() );
     
     for ( u32 i = 0; i < PRIORITY_COUNT; ++i )
     {
-        requestQueue& queue = m_queues[PRIORITY_COUNT-i-1];
+        RequestQueue& queue = m_queues[PRIORITY_COUNT-i-1];
         while ( queue.size() >  0 )
             DispatchRequest ( queue.front () );
     }
     
+#ifdef USE_THREADS
     Unlock ();
+#endif
 }
 
 void ModelManager::Unlink ( ModelNode* node, bool toTheGraveyard )
@@ -676,7 +680,7 @@ void ModelManager::Unlink ( ModelNode* node, bool toTheGraveyard )
             m_currentMemory -= 1;
             
             // Cancel the dependency requests
-            for ( dependencyList::iterator iter = node->requestedDeps.begin();
+            for ( DependencyList::iterator iter = node->requestedDeps.begin();
                   iter != node->requestedDeps.end();
                   ++iter )
             {
@@ -685,7 +689,7 @@ void ModelManager::Unlink ( ModelNode* node, bool toTheGraveyard )
             }
 
             // Release the loaded dependencies
-            for ( modelVector::iterator iter = node->loadedDeps.begin();
+            for ( ModelVector::iterator iter = node->loadedDeps.begin();
                   iter != node->loadedDeps.end();
                   ++iter )
             {
@@ -706,11 +710,11 @@ void ModelManager::Unlink ( ModelNode* node, bool toTheGraveyard )
             }
             
             m_garbage.push_back ( node->model );
-            modelptrMap::iterator iter = m_modelPtrs.find ( node->model );
+            ModelptrMap::iterator iter = m_modelPtrs.find ( node->model );
             if ( iter != m_modelPtrs.end() )
                 m_modelPtrs.erase ( iter );
         }
-        modelMap::iterator iter = m_models.find ( node->name );
+        ModelMap::iterator iter = m_models.find ( node->name );
         if ( iter != m_models.end() )
             m_models.erase ( iter );
     }
@@ -742,8 +746,8 @@ void ModelManager::Unlink ( ModelNode* node, bool toTheGraveyard )
     }
 
     // Unlink it form the queues.
-    requestQueue& queue = m_queues [ node->requestPriority ];
-    for ( requestQueue::iterator iter = queue.begin();
+    RequestQueue& queue = m_queues [ node->requestPriority ];
+    for ( RequestQueue::iterator iter = queue.begin();
           iter != queue.end();
           ++iter )
     {
@@ -758,7 +762,7 @@ void ModelManager::Unlink ( ModelNode* node, bool toTheGraveyard )
     if ( node->requestedDeps.size() > 0 )
     {
         // Unlink it from the dependency waiters
-        for ( requestList::iterator iter = m_dependencyWaiters.begin();
+        for ( RequestList::iterator iter = m_dependencyWaiters.begin();
               iter != m_dependencyWaiters.end();
               ++iter )
         {
@@ -771,7 +775,7 @@ void ModelManager::Unlink ( ModelNode* node, bool toTheGraveyard )
     }
 }
 
-void ModelManager::DigATomb (ModelNode* node)
+void ModelManager::MoveFromGraveyard (ModelNode* node)
 {
     LOG_V ( "ModelManager", "Rescuing model '%s' from the graveyard (%p)", node->name.c_str(), node->model );
 
@@ -806,7 +810,7 @@ void ModelManager::ClearUnlinkedModels ()
 
 void ModelManager::CollectGarbage ()
 {
-    for ( garbageVector::iterator iter = m_garbage.begin();
+    for ( GarbageVector::iterator iter = m_garbage.begin();
           iter != m_garbage.end();
           ++iter )
     {
@@ -848,7 +852,7 @@ bool ModelManager::MakeDependencyTracker (ModelNode* node, const std::string& de
 
 bool ModelManager::DependencyTracker::OnLoad (l3m::Model* model)
 {
-    for ( dependencyList::iterator iter = parent->requestedDeps.begin();
+    for ( DependencyList::iterator iter = parent->requestedDeps.begin();
           iter != parent->requestedDeps.end();
           ++iter )
     {
