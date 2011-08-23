@@ -373,6 +373,7 @@ bool ModelManager::InternalCancelRequest ( const std::string& model, RequestCall
             {
                 ret = true;
                 iter = node->requestCallbacks.erase ( iter );
+                node->refCount--;
             }
             else
                 ++iter;
