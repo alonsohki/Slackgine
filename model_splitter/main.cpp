@@ -55,7 +55,7 @@ int main ( int argc, const char** argv )
             
             Texture* tex = static_cast < Texture* > ( *iter );
             texModel.components ().push_back ( tex );
-            snprintf ( outname, sizeof(outname), "%s.tex", tex->id().c_str() );
+            snprintf ( outname, sizeof(outname), "%s.ltm", tex->id().c_str() );
             texModel.Save ( outname );
             
             iter = components.erase ( iter );

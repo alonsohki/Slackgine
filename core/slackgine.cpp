@@ -18,6 +18,7 @@
 //
 
 #include "slackgine.h"
+#include "shared/log.h"
 
 using namespace Core;
 
@@ -34,6 +35,7 @@ Slackgine::~Slackgine ()
 
 bool Slackgine::Initialize ()
 {
+    LOG_V ( "Slackgine", "Initializing the engine" );
     return m_renderer->Initialize ();
 }
 
