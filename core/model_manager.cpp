@@ -724,7 +724,7 @@ void ModelManager::Unlink ( ModelNode* node, bool toTheGraveyard )
         // Completely delete it.
         if ( node->model != 0 )
         {
-            // TODO: Implement a way to know the memory being used by a model
+            // Discount the memory used by this model.
             m_currentMemory -= node->model->size ();
             LOG_VV ( "ModelManager", "GC status after freeing model: %u/%u bytes (%.2f%%)", m_currentMemory, GetMaxMemory (), 100.0f*m_currentMemory/(float)GetMaxMemory() );
             
