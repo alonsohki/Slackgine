@@ -52,10 +52,10 @@ public:
 private:
     enum
     {
-        MAX_TIME_IN_QUEUE       = 5000, // In miliseconds
+        MAX_TIME_IN_QUEUE       = 5000,         // In miliseconds
         PRIORITY_COUNT          = 4,
-        SYNCHRONOUS_MAX_TIME    = 100,  // Max time in ms to use when not using threads.
-        DEFAULT_MAX_MEMORY      = 100   // Max memory in bytes as threshold for the garbage collection
+        SYNCHRONOUS_MAX_TIME    = 100,          // Max time in ms to use when not using threads.
+        DEFAULT_MAX_MEMORY      = 100*1024*1024 // Max memory in bytes as threshold for the garbage collection
     };
     
 public:

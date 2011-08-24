@@ -42,7 +42,7 @@ public:
     
 public:
     IOStream ( std::istream* istream, std::ostream* ostream, u32 flags = NONE )
-    : m_istream ( istream ), m_ostream ( ostream ), m_flags ( flags )
+    : m_istream ( istream ), m_ostream ( ostream ), m_flags ( flags ), m_totalIn(0), m_totalOut(0)
     {
         SetupFlags ();
     }
@@ -79,6 +79,8 @@ public:
     size_t      ReadData        ( char* data, u32 size, u32 nmemb );
     
     u32         flags           () const { return m_flags; }
+    const u32&  totalIn         () const { return m_totalIn; }
+    const u32&  totalOut        () const { return m_totalOut; }
     
 private:
     void        SetupFlags    ();
@@ -93,6 +95,8 @@ private:
     std::istream*       m_istream;
     std::ostream*       m_ostream;
     u32                 m_flags;
+    u32                 m_totalIn;
+    u32                 m_totalOut;
 };
 
 

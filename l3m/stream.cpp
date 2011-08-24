@@ -171,7 +171,9 @@ bool IOStream::Write16 ( const u16* v, u32 nmemb )
 #ifdef DEBUG
     assert ( m_ostream != 0 );
 #endif
-    return m_endian16writer ( v, nmemb, *m_ostream ) >= nmemb;
+    size_t size = m_endian16writer ( v, nmemb, *m_ostream );
+    m_totalOut += size * sizeof(u16);
+    return size >= nmemb;
 }
 
 size_t IOStream::Read16 ( u16* v, u32 nmemb )
@@ -179,7 +181,9 @@ size_t IOStream::Read16 ( u16* v, u32 nmemb )
 #ifdef DEBUG
     assert ( m_istream != 0 );
 #endif
-    return m_endian16reader ( v, nmemb, *m_istream );
+    size_t size = m_endian16reader ( v, nmemb, *m_istream );
+    m_totalIn += size * sizeof(u16);
+    return size;
 }
 
 bool IOStream::Write32 ( const u32* v, u32 nmemb )
@@ -187,7 +191,9 @@ bool IOStream::Write32 ( const u32* v, u32 nmemb )
 #ifdef DEBUG
     assert ( m_ostream != 0 );
 #endif
-    return m_endian32writer ( v, nmemb, *m_ostream ) >= nmemb;
+    size_t size = m_endian32writer ( v, nmemb, *m_ostream );
+    m_totalOut += size * sizeof(u32);
+    return size >= nmemb;
 }
 
 size_t IOStream::Read32 ( u32* v, u32 nmemb )
@@ -195,7 +201,9 @@ size_t IOStream::Read32 ( u32* v, u32 nmemb )
 #ifdef DEBUG
     assert ( m_istream != 0 );
 #endif
-    return m_endian32reader ( v, nmemb, *m_istream );
+    size_t size = m_endian32reader ( v, nmemb, *m_istream );
+    m_totalIn += size * sizeof(u32);
+    return size;
 }
 
 bool IOStream::Write64 ( const u64* v, u32 nmemb )
@@ -203,7 +211,9 @@ bool IOStream::Write64 ( const u64* v, u32 nmemb )
 #ifdef DEBUG
     assert ( m_ostream != 0 );
 #endif
-    return m_endian64writer ( v, nmemb, *m_ostream ) >= nmemb;
+    size_t size = m_endian64writer ( v, nmemb, *m_ostream );
+    m_totalOut += size * sizeof(u64);
+    return size >= nmemb;
 }
 
 size_t IOStream::Read64 ( u64* v, u32 nmemb )
@@ -211,23 +221,29 @@ size_t IOStream::Read64 ( u64* v, u32 nmemb )
 #ifdef DEBUG
     assert ( m_istream != 0 );
 #endif
-    return m_endian64reader ( v, nmemb, *m_istream );
+    size_t size = m_endian64reader ( v, nmemb, *m_istream );
+    m_totalIn += size * sizeof(u64);
+    return size;
 }
 
-bool IOStream::WriteFloat ( const float* v, u32 nmemb )
+bool IOStream::WriteFloat ( const f32* v, u32 nmemb )
 {
 #ifdef DEBUG
     assert ( m_ostream != 0 );
 #endif
-    return m_endian32writer ( reinterpret_cast<const u32*>(v), nmemb, *m_ostream ) >= nmemb;
+    size_t size = m_endian32writer ( reinterpret_cast<const u32*>(v), nmemb, *m_ostream );
+    m_totalOut += size * sizeof(f32);
+    return size >= nmemb;
 }
 
-size_t IOStream::ReadFloat ( float* v, u32 nmemb )
+size_t IOStream::ReadFloat ( f32* v, u32 nmemb )
 {
 #ifdef DEBUG
     assert ( m_istream != 0 );
 #endif
-    return m_endian32reader ( reinterpret_cast<u32*>(v), nmemb, *m_istream );
+    size_t size = m_endian32reader ( reinterpret_cast<u32*>(v), nmemb, *m_istream );
+    m_totalIn += size * sizeof(f32);
+    return size;
 }
 
 bool IOStream::WriteStr ( const std::string& str )
@@ -347,6 +363,7 @@ bool IOStream::WriteData ( const char* data, u32 size, u32 nmemb )
     assert ( m_ostream != 0 );
 #endif
     m_ostream->write ( reinterpret_cast<const char*>(data), size*nmemb );
+    m_totalOut += size*nmemb;
     return true;
 }
 
@@ -356,5 +373,7 @@ size_t IOStream::ReadData ( char* data, u32 size, u32 nmemb )
     assert ( m_istream != 0 );
 #endif
     m_istream->read ( data, size*nmemb );
-    return m_istream->gcount () / size;
+    size_t numElems = m_istream->gcount () / size;
+    m_totalIn += numElems * size;
+    return numElems;
 }

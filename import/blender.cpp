@@ -556,7 +556,6 @@ static bool ImportImages ( ::Scene* sce, const char* filename, l3m::Model* model
                             name = translate_id(name);
                             char rel[FILE_MAX];
                             char abs[FILE_MAX];
-                            char src[FILE_MAX];
                             char dir[FILE_MAX];
 
                             BLI_split_dirfile(filename, dir, NULL);

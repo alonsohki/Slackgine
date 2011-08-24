@@ -90,6 +90,8 @@ bool Model::Load(std::istream& fp)
         m_vecComponents.push_back ( component );
     }
     
+    m_size = is.totalIn ();
+    
     return true;
 }
 

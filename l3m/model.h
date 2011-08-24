@@ -36,7 +36,11 @@ public:
     typedef std::vector < IComponent* > componentVector;
     
 public:
-    virtual     ~Model          ()
+                Model           ()
+    : m_size ( 0 )
+    {
+    }
+                ~Model          ()
     {
         for ( componentVector::const_iterator iter = m_vecComponents.begin();
               iter != m_vecComponents.end();
@@ -79,6 +83,8 @@ public:
     componentVector&            components      () { return m_vecComponents; }
     const componentVector&      components      () const { return m_vecComponents; }
     
+    const u32&                  size            () const { return m_size; }
+    
 private:
     bool        SetError        ( const char* msg, ... )
     {
@@ -94,6 +100,7 @@ public:
 private:
     componentVector             m_vecComponents;
     char                        m_error [ 1024 ];
+    u32                         m_size;
 };
 
 

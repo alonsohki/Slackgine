@@ -496,8 +496,9 @@ void ModelManager::ProcessRequest (ModelNode* node)
         // Insert it into the model ptrs map
         m_modelPtrs.insert ( ModelptrMap::value_type ( model, node ) );
         
-        // TODO: Provide a method to know the memory being used by a model
-        m_currentMemory += 1;
+        // Account the memory used by this model
+        m_currentMemory += model->size ();
+        LOG_VV ( "ModelManager", "Model took %u bytes. GC status: %u/%u bytes (%.2f%%)", model->size(), m_currentMemory, GetMaxMemory (), 100.0f*m_currentMemory/(float)GetMaxMemory() );
 
         // Check every component for special actions.
         Model::componentVector& comps = model->components ();
@@ -724,7 +725,8 @@ void ModelManager::Unlink ( ModelNode* node, bool toTheGraveyard )
         if ( node->model != 0 )
         {
             // TODO: Implement a way to know the memory being used by a model
-            m_currentMemory -= 1;
+            m_currentMemory -= node->model->size ();
+            LOG_VV ( "ModelManager", "GC status after freeing model: %u/%u bytes (%.2f%%)", m_currentMemory, GetMaxMemory (), 100.0f*m_currentMemory/(float)GetMaxMemory() );
             
             // Unregister the textures from the texture manager.
             l3m::Model::componentVector& components = node->model->components ();
