@@ -32,7 +32,7 @@ public:
     struct Node
     {
         Renderer::Geometry*     geometry;
-        Matrix                  transform;
+        Transform               transform;
     };
     typedef std::vector < Node > nodesVector;
     

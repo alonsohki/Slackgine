@@ -24,6 +24,8 @@
 #include "shared/color.h"
 #include "math/vector.h"
 #include "math/matrix.h"
+#include "math/quaternion.h"
+#include "math/transform.h"
 
 namespace l3m
 {
@@ -60,6 +62,8 @@ public:
     bool        WriteMatrix     ( const Matrix& mat );
     bool        WriteVector     ( const Vector3& vec );
     bool        WriteColor      ( const Color* col, u32 nmemb );
+    bool        WriteQuaternion ( const Quaternion* v, u32 nmemb );
+    bool        WriteTransform  ( const Transform* v, u32 nmemb );
     bool        WriteData       ( const char* data, u32 size, u32 nmemb );
     
     size_t      Read16          ( u16* v, u32 nmemb );
@@ -70,6 +74,8 @@ public:
     size_t      ReadMatrix      ( Matrix& mat );
     size_t      ReadVector      ( Vector3& vec );
     size_t      ReadColor       ( Color* col, u32 nmemb );
+    size_t      ReadQuaternion  ( Quaternion* v, u32 nmemb );
+    size_t      ReadTransform   ( Transform* v, u32 nmemb );
     size_t      ReadData        ( char* data, u32 size, u32 nmemb );
     
     u32         flags           () const { return m_flags; }

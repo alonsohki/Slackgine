@@ -82,7 +82,9 @@ private:
     };
     
 public:
-    Vector3 ( f32 fX = 0.0f, f32 fY = 0.0f, f32 fZ = 0.0f )
+    Vector3 () {}
+
+    Vector3 ( f32 fX, f32 fY, f32 fZ )
     {
         x() = fX;
         y() = fY;
@@ -158,20 +160,31 @@ public:
             v[i] -= vec.v[i];
         return *this;
     }
+
+    // V * k
+    Vector3 operator* ( const f32& k ) const
+    {
+        float ret[3];
+        ret[0] = x() * k;
+        ret[1] = y() * k;
+        ret[2] = z() * k;
+        return Vector3(ret);
+    }
+    Vector3& operator*= ( const f32& k )
+    {
+        x() *= k;
+        y() *= k;
+        z() *= k;
+    }
     
     // V * V (Cross product)
-    Vector3 operator* ( const Vector3& vec ) const
+    Vector3 Cross ( const Vector3& vec ) const
     {
         float ret[3];
         ret[0] = y()*vec.z() - z()*vec.y();
         ret[1] = z()*vec.x() - x()*vec.z();
         ret[2] = x()*vec.y() - y()*vec.x();
         return Vector3(ret);
-    }
-    Vector3& operator*= ( const Vector3& vec )
-    {
-        *this = *this * vec;
-        return *this;
     }
     
     // V * V (Dot product)
@@ -207,3 +220,21 @@ public:
         return v;
     }
 };
+
+class ZeroVector3 : public Vector3
+{
+public:
+    ZeroVector3 ()
+    : Vector3 ( 0.0f, 0.0f, 0.0f )
+    {}
+};
+
+static inline f32 Dot ( const Vector3& vec1, const Vector3& vec2 )
+{
+    return vec1.Dot ( vec2 );
+}
+
+static inline Vector3 Cross ( const Vector3& vec1, const Vector3& vec2 )
+{
+    return vec1.Cross(vec2);
+}

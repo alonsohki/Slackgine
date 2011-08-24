@@ -20,7 +20,7 @@
 #pragma once
 
 #include <vector>
-#include "math/matrix.h"
+#include "math/transform.h"
 #include "l3m/component.h"
 #include "l3m/Components/geometry.h"
 
@@ -35,9 +35,9 @@ public:
     struct Node
     {
         std::string                     url;
-        Matrix                          transform;
+        Transform                       transform;
         std::vector<std::string>        textures;
-        Node () : transform (IdentityMatrix()) {}
+        Node () : transform (IdentityTransform()) {}
     };
     typedef std::vector < Node > nodesVector;
     

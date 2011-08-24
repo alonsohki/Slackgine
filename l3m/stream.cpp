@@ -309,6 +309,38 @@ size_t IOStream::ReadColor ( Color* col, u32 nmemb )
     return Read32 ( &col->value (), nmemb );
 }
 
+bool IOStream::WriteQuaternion ( const Quaternion* v, u32 nmemb )
+{
+#ifdef DEBUG
+    assert ( m_ostream != 0 );
+#endif
+    return WriteFloat ( (f32 *)v, nmemb*4 );
+}
+
+size_t IOStream::ReadQuaternion ( Quaternion* v, u32 nmemb )
+{
+#ifdef DEBUG
+    assert ( m_istream != 0 );
+#endif
+    return ReadFloat ( (f32 *)v, nmemb*4 ) / 4;
+}
+
+bool IOStream::WriteTransform ( const Transform* v, u32 nmemb )
+{
+#ifdef DEBUG
+    assert ( m_ostream != 0 );
+#endif
+    return WriteFloat ( (f32 *)v, nmemb * sizeof(Transform) / sizeof(float) );
+}
+
+size_t IOStream::ReadTransform ( Transform* v, u32 nmemb )
+{
+#ifdef DEBUG
+    assert ( m_istream != 0 );
+#endif
+    return ReadFloat ( (f32 *)v, nmemb * sizeof(Transform) / sizeof(float) ) / ( sizeof(Transform) / sizeof(float) );
+}
+
 bool IOStream::WriteData ( const char* data, u32 size, u32 nmemb )
 {
 #ifdef DEBUG

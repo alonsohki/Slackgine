@@ -124,10 +124,10 @@ public:
         Vector3 u1 = a1;
         Vector3 e1 = Vector3::Normalize(u1);
         
-        Vector3 u2 = a2 - (e1 * (e1.Dot(a2) / e1.Dot(e1)));
+        Vector3 u2 = a2 - e1*Dot(e1,a2);
         Vector3 e2 = Vector3::Normalize(u2);
         
-        Vector3 u3 = a3 - (e1 * (e1.Dot(a3) / e1.Dot(e1))) - (e2 * (e2.Dot(a3) / e2.Dot(e2)));
+        Vector3 u3 = a3 - e1*Dot(a3,e1) - e2*Dot(a3,e2);
         Vector3 e3 = Vector3::Normalize(u3);
         
         float m [ 16 ];

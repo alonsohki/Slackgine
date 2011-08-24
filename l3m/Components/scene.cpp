@@ -34,7 +34,7 @@ bool Scene::Load(l3m::IStream& fp, float version)
         
         if ( fp.ReadStr(node.url) < 1 )
             return SetError ( "Error reading the geometry node url" );
-        if ( fp.ReadMatrix ( node.transform ) != 1 )
+        if ( fp.ReadTransform ( &node.transform, 1 ) != 1 )
             return SetError ( "Error reading the geometry node transform" );
         
         u32 numTextures;
@@ -67,7 +67,7 @@ bool Scene::Save(l3m::OStream& fp)
         
         if ( !fp.WriteStr ( node.url ) )
             return SetError ( "Unable to write the geometry node URL" );
-        if ( !fp.WriteMatrix( node.transform ) )
+        if ( !fp.WriteTransform ( &node.transform, 1 ) )
             return SetError ( "Unable to write the geometry node transform" );
 
         u32 numTextures = node.textures.size();

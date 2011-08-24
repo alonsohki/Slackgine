@@ -27,6 +27,7 @@
 
 static bool ProcessScene ( l3m::Model* model, l3m::Scene* sce, const char** error )
 {
+#if 0
     for ( l3m::Scene::nodesVector::iterator iter = sce->geometryNodes().begin();
           iter != sce->geometryNodes().end();
           ++iter )
@@ -55,7 +56,7 @@ static bool ProcessScene ( l3m::Model* model, l3m::Scene* sce, const char** erro
             }
         }
     }
-
+#endif
     return true;
 }
 

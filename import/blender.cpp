@@ -35,6 +35,7 @@
 #include "BLI_math.h"
 #include "shared/platform.h"
 #include "math/vector.h"
+#include "math/transform.h"
 #include "l3m/l3m.h"
 #include "l3m/Components/components.h"
 #include "renderer/mesh.h"
@@ -205,15 +206,14 @@ std::string get_material_id(Material *mat)
 	return translate_id(id_name(mat)) + "-material";
 }
 
-static Matrix get_node_transform_ob(Object *ob)
+static void get_node_transform_ob(Object *ob, Transform* transform, Vector3* scaling)
 {
-	float rot[3], loc[3], scale[3];
-
-	if (ob->parent) {
+	if (ob->parent)
+    {
 		float C[4][4], tmat[4][4], imat[4][4], mat[4][4];
+        float scale[3];
 
 		// factor out scale from obmat
-
 		copy_v3_v3(scale, ob->size);
 
 		ob->size[0] = ob->size[1] = ob->size[2] = 1.0f;
@@ -228,17 +228,15 @@ static Matrix get_node_transform_ob(Object *ob)
 		mul_m4_m4m4(mat, tmat, imat);
 
 		// done
-
-		mat4_to_eul(rot, mat);
-		copy_v3_v3(loc, mat[3]);
+        mat4_to_quat ( reinterpret_cast<float *>(&transform->orientation()), mat );
+		copy_v3_v3 ( reinterpret_cast<float *>(&transform->translation()), mat[3] );
+        copy_v3_v3 ( reinterpret_cast<float *>(scaling), ob->size );
 	}
 	else {
-		copy_v3_v3(loc, ob->loc);
-		copy_v3_v3(rot, ob->rot);
-		copy_v3_v3(scale, ob->size);
+		copy_v3_v3(reinterpret_cast<float *>(&transform->translation()), ob->loc);
+		eul_to_quat(reinterpret_cast<float *>(&transform->orientation()), ob->rot);
+		copy_v3_v3(reinterpret_cast<float *>(scaling), ob->size);
 	}
-
-    return TranslationMatrix ( loc ) * RotationMatrix ( rot ) * ScalingMatrix ( scale );
 }
 
 
@@ -444,7 +442,7 @@ static bool ImportGeometry ( Renderer::Geometry* g, Object* ob, l3m::Model* mode
     }
 }
 
-static bool ImportSceneObject ( Object* ob, ::Scene* sce, l3m::Scene* modelScene )
+static bool ImportSceneObject ( l3m::Model* model, Object* ob, ::Scene* sce, l3m::Scene* modelScene )
 {
     switch ( ob->type )
     {
@@ -453,7 +451,36 @@ static bool ImportSceneObject ( Object* ob, ::Scene* sce, l3m::Scene* modelScene
             Mesh* me = (Mesh*)ob->data;
             l3m::Scene::Node& node = modelScene->CreateGeometryNode();
             node.url = get_geometry_id(ob);
-            node.transform = get_node_transform_ob(ob);
+            
+            // Get the transform
+            Vector3 scale;
+            get_node_transform_ob(ob, &node.transform, &scale );
+            
+            // Apply the scale
+            if ( fabs(scale.x() - 1.0f) > 0.0001f ||
+                 fabs(scale.y() - 1.0f) > 0.0001f ||
+                 fabs(scale.z() - 1.0f) > 0.0001f )
+            {
+                // Find the geometry associated to this url.
+                for ( l3m::Model::componentVector::iterator miter = model->components().begin();
+                      miter != model->components().end();
+                      ++miter )
+                {
+                    if ( (*miter)->type() == "geometry" && static_cast < l3m::Geometry* > ( *miter )->geometry().name() == node.url )
+                    {
+                        Renderer::Geometry& g = static_cast<l3m::Geometry *>(*miter)->geometry();
+                        
+                        // Apply the scaling to every vertex.
+                        Renderer::Vertex* v = g.vertices();
+                        for ( u32 i = 0; i < g.numVertices(); ++i )
+                        {
+                            v[i].pos().x() *= scale.x();
+                            v[i].pos().y() *= scale.y();
+                            v[i].pos().z() *= scale.z();
+                        }
+                    }
+                }
+            }
      
             // Import the set of textures
             bool has_uvs = (bool)CustomData_has_layer(&me->fdata, CD_MTFACE);
@@ -476,7 +503,7 @@ static bool ImportSceneObject ( Object* ob, ::Scene* sce, l3m::Scene* modelScene
     return true;
 }
 
-static bool ImportScene ( ::Scene* sce, l3m::Scene* modelScene )
+static bool ImportScene ( l3m::Model* model, ::Scene* sce, l3m::Scene* modelScene )
 {
     Base *base= (Base*) sce->base.first;
     while(base) {
@@ -488,7 +515,7 @@ static bool ImportScene ( ::Scene* sce, l3m::Scene* modelScene )
                     case OB_LAMP:
                     case OB_ARMATURE:
                     case OB_EMPTY:
-                            if ( ImportSceneObject(ob, sce, modelScene) == false )
+                            if ( ImportSceneObject(model, ob, sce, modelScene) == false )
                                 return false;
                             break;
             }
@@ -522,6 +549,9 @@ static bool ImportImages ( ::Scene* sce, const char* filename, l3m::Model* model
                         {
                             MTFace *tface = (MTFace*)CustomData_get_layer_n(&me->fdata, CD_MTFACE, l);
                             Image* image = tface->tpage;
+                            if ( image == 0 )
+                                continue;
+                            
                             std::string name(id_name(image));
                             name = translate_id(name);
                             char rel[FILE_MAX];
@@ -620,7 +650,7 @@ static bool import_blender ( ::Scene* sce, const char* filename, l3m::Model* mod
     
     // Import the visual scene
     l3m::Scene* modelScene = model->CreateComponent<l3m::Scene>("scene");
-    if ( !ImportScene ( sce, modelScene ) )
+    if ( !ImportScene ( model, sce, modelScene ) )
         return false;
     
     // Import the images

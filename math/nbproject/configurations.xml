@@ -17,6 +17,8 @@
     <itemPath>boundingsphere.h</itemPath>
     <itemPath>interpolation.h</itemPath>
     <itemPath>matrix.h</itemPath>
+    <itemPath>quaternion.h</itemPath>
+    <itemPath>transform.h</itemPath>
     <itemPath>util.h</itemPath>
     <itemPath>vector.h</itemPath>
   </logicalFolder>

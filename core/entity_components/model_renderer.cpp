@@ -47,7 +47,7 @@ void ModelRenderer::Render ( Renderer::IRenderer* renderer, const Matrix& mat )
           ++iter )
     {
         Node& node = *iter;
-        renderer->Render( node.geometry, node.transform * mat );
+        renderer->Render( node.geometry, Transform2Matrix(node.transform) * mat );
     }
 }
 
