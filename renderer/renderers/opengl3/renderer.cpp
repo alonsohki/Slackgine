@@ -67,7 +67,7 @@ bool OpenGL3_Renderer::Initialize()
         "void main(void)\n"
         "{\n"
         "    gl_Position = vec4(in_Position, 1.0) * un_Matrix;\n"
-        "    ex_Normal = vec4(in_Normal, 1.0) * un_NormalMatrix;\n"
+        "    ex_Normal = (vec4(in_Normal, 1.0) * un_NormalMatrix).xyz;\n"
         "}\n";
 
     static const char* const s_defaultFragmentShader =
@@ -75,8 +75,7 @@ bool OpenGL3_Renderer::Initialize()
         "\n"
         "void main(void)\n"
         "{\n"
-        " ex_Normal = ex_Normal + vec4(0.15, 0.15, 0.15, 0);\n"
-        "    gl_FragColor = vec4(ex_Normal, 1.0);\n"
+        "    gl_FragColor = vec4(ex_Normal + vec3(0.15, 0.15, 0.15), 1.0);\n"
         "}\n";
 
     std::istringstream vertexShaderSource ( s_defaultVertexShader );
