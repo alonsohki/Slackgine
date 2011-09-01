@@ -94,7 +94,11 @@ void display ( void )
         sg->GetRenderer()->EndScene ();
     }
     else
-        fprintf ( stderr, "Error al iniciar la escena.\n" );
+    {
+        char error [ 1024 ];
+        sg->GetRenderer()->GetError ( error );
+        fprintf ( stderr, "Error al iniciar la escena: %s\n", error );
+    }
     
     glutPostRedisplay ();
 }

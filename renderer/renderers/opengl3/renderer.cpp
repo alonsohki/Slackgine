@@ -52,9 +52,9 @@ bool OpenGL3_Renderer::Initialize()
 
     // Initialize the main shaders
     static const char* const s_defaultVertexShader =
-        "in vec3 in_Position;\n"
-        "in vec3 in_Normal;\n"
-        "in vec2 in_Tex2D;\n"
+        "attribute vec3 in_Position;\n"
+        "attribute vec3 in_Normal;\n"
+        "attribute vec2 in_Tex2D;\n"
         "\n"
         "uniform mat4 un_Matrix;\n"
         "uniform mat4 un_ProjectionMatrix;\n"
@@ -67,7 +67,7 @@ bool OpenGL3_Renderer::Initialize()
         "void main(void)\n"
         "{\n"
         "    gl_Position = vec4(in_Position, 1.0) * un_Matrix;\n"
-        "    ex_Normal = vec4(in_Normal, 1.0) * un_NormalMatrix;\n"
+        "    ex_Normal = (vec4(in_Normal, 1.0) * un_NormalMatrix).xyz;\n"
         "}\n";
 
     static const char* const s_defaultFragmentShader =
@@ -75,8 +75,7 @@ bool OpenGL3_Renderer::Initialize()
         "\n"
         "void main(void)\n"
         "{\n"
-        " ex_Normal = ex_Normal + vec4(0.15, 0.15, 0.15, 0);\n"
-        "    gl_FragColor = vec4(ex_Normal, 1.0);\n"
+        "    gl_FragColor = vec4(ex_Normal + vec3(0.15, 0.15, 0.15), 1.0);\n"
         "}\n";
 
     std::istringstream vertexShaderSource ( s_defaultVertexShader );
@@ -88,14 +87,27 @@ bool OpenGL3_Renderer::Initialize()
 
     strcpy ( m_error, "Success" );
     
+    char error [ 1024 ];
     if ( !m_vertexShader->Load (vertexShaderSource) )
-        m_vertexShader->GetError ( m_error );
+    {
+        m_vertexShader->GetError ( error );
+        snprintf ( m_error, sizeof(m_error), "Error loading the vertex shader: %s", error );
+    }
     else if ( !m_fragmentShader->Load ( fragmentShaderSource ) )
-        m_fragmentShader->GetError( m_error );
+    {
+        m_fragmentShader->GetError( error );
+        snprintf ( m_error, sizeof(m_error), "Error loading the fragment shader: %s", error );
+    }
     else if ( !m_program->AttachShader(m_vertexShader) || !m_program->AttachShader(m_fragmentShader) )
-        m_program->GetError ( m_error );
+    {
+        m_program->GetError ( error );
+        snprintf ( m_error, sizeof(m_error), "Error attaching the shaders: %s", error );
+    }
     else if ( !m_program->Link() )
-        m_program->GetError( m_error );
+    {
+        m_program->GetError( error );
+        snprintf ( m_error, sizeof(m_error), "Error linking the shaders: %s", error );
+    }
 
     m_initialized = ( strcmp(m_error, "Success") == 0 );
     return m_initialized;
