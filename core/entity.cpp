@@ -24,8 +24,8 @@
 using namespace Core;
 
 Entity::Entity ( l3m::Model* pModel )
-: m_modelRenderer ( 0 )
-, m_matrix ( IdentityMatrix() )
+: Transformable ( IdentityTransform() )
+, m_modelRenderer ( 0 )
 {
     SetModel ( pModel );
 }
@@ -77,6 +77,8 @@ void Entity::SetModel ( l3m::Model* pModel )
 
 void Entity::Tick ()
 {
+    Transformable::Tick ();
+
     for ( componentVector::const_iterator iter = m_tickableComponents.begin();
           iter != m_tickableComponents.end();
           ++iter )
@@ -96,7 +98,7 @@ void Entity::Render ( Renderer::IRenderer* renderer )
         (*iter)->Render ( renderer );
     }
     
-    m_modelRenderer->Render ( renderer, matrix() );
+    m_modelRenderer->Render ( renderer, transform() );
     renderer->PopState ();
 }
 

@@ -15,6 +15,7 @@
     <itemPath>binary.h</itemPath>
     <itemPath>boundingbox.h</itemPath>
     <itemPath>boundingsphere.h</itemPath>
+    <itemPath>euler.h</itemPath>
     <itemPath>interpolation.h</itemPath>
     <itemPath>matrix.h</itemPath>
     <itemPath>quaternion.h</itemPath>

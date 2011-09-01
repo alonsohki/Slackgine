@@ -21,7 +21,7 @@
 #define	RENDERER_H
 
 #include "shared/platform.h"
-#include "math/matrix.h"
+#include "math/transform.h"
 #include "geometry.h"
 
 namespace Renderer { class Geometry; }
@@ -36,7 +36,7 @@ public:
     
     virtual bool        BeginScene      ( const Matrix& matProjection = IdentityMatrix(), const Matrix& matLookat = IdentityMatrix() ) = 0;
     virtual void        PushState       () = 0;
-    virtual bool        Render          ( Geometry* geometry, const Matrix& mat = IdentityMatrix() ) = 0;
+    virtual bool        Render          ( Geometry* geometry, const Transform& transform = IdentityTransform() ) = 0;
     virtual void        PopState        () = 0;
     virtual bool        EndScene        () = 0;
     

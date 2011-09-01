@@ -118,12 +118,13 @@ bool OpenGL3_Renderer::BeginScene ( const Matrix& matProjection, const Matrix& m
     return true;
 }
 
-bool OpenGL3_Renderer::Render ( Geometry* geometry, const Matrix& mat )
+bool OpenGL3_Renderer::Render ( Geometry* geometry, const Transform& transform )
 {
     if ( !geometry->initialized() )
         if ( !geometry->Initialize() )
             return false;
     
+    Matrix mat = Transform2Matrix ( transform );
     Matrix matNormals = MatrixForNormals ( mat );
     Matrix matGeometry = m_matProjection * m_matLookat * mat;
     

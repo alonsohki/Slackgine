@@ -20,65 +20,82 @@
 #pragma once
 
 #include "matrix.h"
-#include "quaternion.h"
 #include "vector.h"
 
+//------------------------------------------------------------------------------
+// Transform class
+// Encapsulates the rigid body transformations
+//
 class Transform
 {
 private:
-    Quaternion  m_orientation;
+    Matrix3     m_orientation;
     Vector3     m_translation;
-    // Pad it to 32 bytes
-    float       m_padding;
     
 public:
+    //--------------------------------------------------------------------------
+    // Default constructor: Do nothing
     Transform ()
-    : m_padding ( 0.0f )
     {}
     
-    Transform ( const Vector3& translation, const Quaternion& orientation )
+    //--------------------------------------------------------------------------
+    // Constructor taking a translation and an orientation
+    Transform ( const Vector3& translation, const Matrix3& orientation )
     : m_orientation ( orientation )
     , m_translation ( translation )
-    , m_padding ( 0.0f )
     {}
     
-    Quaternion&         orientation () { return m_orientation; }
-    const Quaternion&   orientation () const { return m_orientation; }
+    //--------------------------------------------------------------------------
+    // Accessors
+    Matrix3&            orientation () { return m_orientation; }
+    const Matrix3&      orientation () const { return m_orientation; }
     Vector3&            translation () { return m_translation; }
     const Vector3&      translation () const { return m_translation; }
+    
+    //--------------------------------------------------------------------------
+    // Transform*Transform
+    // Transform concatenation
+    Transform operator* ( const Transform& Right ) const
+    {
+        Transform ret;
+        ret.orientation() = orientation() * Right.orientation();
+        ret.translation() = orientation() * Right.translation() + translation();
+        return ret;
+    }
+    Transform& operator*= ( const Transform& Right )
+    {
+        *this = *this * Right;
+        return *this;
+    }
 };
 
+
+
+//--------------------------------------------------------------------------
+// Utility transforms
+
+//--------------------------------------------------------------------------
+// IdentityTransform
 class IdentityTransform : public Transform
 {
 public:
     IdentityTransform ()
-    : Transform ( ZeroVector3(), IdentityQuaternion() )
+    : Transform ( ZeroVector3(), IdentityMatrix3() )
     {}
 };
 
-#include <cstdio>
+
+//------------------------------------------------------------------------------
+// Transform2Matrix
+// Takes a transform as parameter and yields a transform matrix
 class Transform2Matrix : public Matrix
 {
 public:
     Transform2Matrix ( const Transform& transform )
     {
-        const Quaternion& quat = transform.orientation();
-        const Vector3& vec = transform.translation();
-        const f32& qw = quat.w();
-        const f32& qx = quat.x();
-        const f32& qy = quat.y();
-        const f32& qz = quat.z();
-        const f32& vx = vec.x();
-        const f32& vy = vec.y();
-        const f32& vz = vec.z();
-        
-        f32 m[16] = {
-            1 - 2*qy*qy - 2*qz*qz,      2*qx*qy + 2*qw*qz,      2*qx*qz - 2*qw*qy,      0.0f,
-            2*qx*qy - 2*qw*qz,          1 - 2*qx*qx + 2*qz*qz,  2*qy*qz + 2*qw*qx,      0.0f,
-            2*qx*qz + 2*qw*qy,          2*qy*qz - 2*qw*qx,      1 - 2*qx*qx - 2*qy*qy,  0.0f,
-            vx,                         vy,                     vz,                     1.0f
-        };
-        
-        Matrix::operator= ( m );
+        Matrix::operator= ( transform.orientation() );
+        Matrix::v[12] = transform.translation().x();
+        Matrix::v[13] = transform.translation().y();
+        Matrix::v[14] = transform.translation().z();
     }
 };

@@ -17,6 +17,7 @@
 // AUTHORS:     Alberto Alonso <rydencillo@gmail.com>
 //
 
+#include <cassert>
 #include "stream.h"
 
 using namespace l3m;

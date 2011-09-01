@@ -40,7 +40,7 @@ public:
                         ModelRenderer           ( l3m::Model* model );
                         ~ModelRenderer          ();
                 
-    void                Render                  ( Renderer::IRenderer* renderer, const Matrix& mat );
+    void                Render                  ( Renderer::IRenderer* renderer, const Transform& mat );
     l3m::Model*         model                   () const { return m_model; }
     
 private:

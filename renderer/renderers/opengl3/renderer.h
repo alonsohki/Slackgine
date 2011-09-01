@@ -22,6 +22,7 @@
 #include <cstring>
 #include "opengl3.h"
 #include "math/matrix.h"
+#include "math/transform.h"
 #include "../../renderer.h"
 
 namespace Renderer
@@ -46,7 +47,7 @@ public:
     
     bool        BeginScene              ( const Matrix& matProjection = IdentityMatrix(), const Matrix& matLookat = IdentityMatrix() );
     void        PushState               ();
-    bool        Render                  ( Geometry* geometry, const Matrix& mat = IdentityMatrix() );
+    bool        Render                  ( Geometry* geometry, const Transform& transform = IdentityTransform() );
     void        PopState                ();
     bool        EndScene                ();
     

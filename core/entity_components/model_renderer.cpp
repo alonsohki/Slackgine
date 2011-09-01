@@ -37,7 +37,7 @@ ModelRenderer::~ModelRenderer ()
 {
 }
 
-void ModelRenderer::Render ( Renderer::IRenderer* renderer, const Matrix& mat )
+void ModelRenderer::Render ( Renderer::IRenderer* renderer, const Transform& transform )
 {
     if ( !m_model || !m_scene )
         return;
@@ -47,7 +47,7 @@ void ModelRenderer::Render ( Renderer::IRenderer* renderer, const Matrix& mat )
           ++iter )
     {
         Node& node = *iter;
-        renderer->Render( node.geometry, Transform2Matrix(node.transform) * mat );
+        renderer->Render( node.geometry, transform * node.transform );
     }
 }
 

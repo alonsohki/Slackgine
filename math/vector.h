@@ -106,13 +106,14 @@ public:
     }
     Vector3& operator= ( const f32* vec )
     {
-        memcpy ( v, vec, sizeof(v) );
+        for ( u8 i = 0; i < 3; ++i )
+            v[i] = vec[i];
         return *this;
     }
     
     bool operator== ( const Vector3& vec ) const
     {
-        return memcmp ( v, vec.v, sizeof(v) ) == 0;
+        return v[0] == vec.v[0] && v[1] == vec.v[1] && v[2] == vec.v[2];
     }
     bool operator!= ( const Vector3& vec ) const
     {
@@ -144,6 +145,16 @@ public:
         for ( u8 i = 0; i < 3; ++i )
             v[i] += vec.v[i];
         return *this;
+    }
+    
+    //--------------------------------------------------------------------------
+    // -V
+    Vector3 operator- () const
+    {
+        Vector3 ret;
+        for ( u8 i = 0; i < 3; ++i )
+            ret.v[i] = -v[i];
+        return ret;
     }
     
     // V - V
@@ -229,12 +240,31 @@ public:
     {}
 };
 
+//------------------------------------------------------------------------------
+// Dot product of vectors
 static inline f32 Dot ( const Vector3& vec1, const Vector3& vec2 )
 {
     return vec1.Dot ( vec2 );
 }
 
+//------------------------------------------------------------------------------
+// Cross product of vectors
 static inline Vector3 Cross ( const Vector3& vec1, const Vector3& vec2 )
 {
     return vec1.Cross(vec2);
+}
+
+//------------------------------------------------------------------------------
+// Vector transform by quaternion
+// Actually equivalent to q^-1 * V * q
+#include "quaternion.h"
+#include <cstdio>
+static inline Vector3 operator* ( const Vector3& vec, const Quaternion& quat )
+{
+    Quaternion p ( 0, vec );
+    Quaternion q = quat;
+    q.Normalize ();
+    Quaternion qInverse = q.Conjugate();
+    
+    return ( q * p * qInverse ).xyz ();
 }

@@ -18,6 +18,8 @@
       <itemPath>Android.mk</itemPath>
       <itemPath>Makefile</itemPath>
     </logicalFolder>
+    <itemPath>camera.cpp</itemPath>
+    <itemPath>camera.h</itemPath>
     <itemPath>entity.cpp</itemPath>
     <itemPath>entity.h</itemPath>
     <itemPath>model_manager.cpp</itemPath>
@@ -30,6 +32,8 @@
     <itemPath>texture_manager.h</itemPath>
     <itemPath>time.cpp</itemPath>
     <itemPath>time.h</itemPath>
+    <itemPath>transformable.cpp</itemPath>
+    <itemPath>transformable.h</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>

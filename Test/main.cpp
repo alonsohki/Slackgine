@@ -47,7 +47,7 @@ int main(int argc, char** argv)
     
     glutDisplayFunc ( display );
     atexit ( cleanup );
-    
+
     glutMainLoop ();
     
     delete entity;
@@ -68,25 +68,27 @@ void display ( void )
     if ( model == 0 )
         model = sg->GetModelManager().RequestBlocking ("spherecube.l3m");
     if ( entity == 0 )
+    {
         entity = new Entity ( model );
+        entity->SetRotation ( EulerAngles(0.0f, 0.0f, 1.0f) );
+    }
     
     sg->Tick ();
     
-    static float fRotX = -3.141592f/2;
-    static float fRotY = 0;
     static float fTransX = 0;
     static float fTransDir = 1;
-    fRotX += 3.141592f/1024;
-    fRotY += 3.151592f/512;
     
     if ( fTransX > 2.5f )
         fTransDir = -1;
     else if ( fTransX < -2.5f )
         fTransDir = 1;
     fTransX += fTransDir * 0.002;
+    
+    entity->Rotate( EulerAngles(0.0f, 0.005f, 0.0f), Transformable::OBJECT );
+    entity->Move ( Vector3 ( 0, 0.02f, 0 ), Transformable::OBJECT );
 
     float size = 10.0f;
-    if ( sg->GetRenderer()->BeginScene( OrthographicMatrix(-size, size, size, -size, size, -size), /*TranslationMatrix(fTransX,0,0)*RotationMatrix(fRotX,1,0,0)*/RotationMatrix(fRotY,0,1,0)*RotationMatrix(3.141592f/2,-1,0,0) ) )
+    if ( sg->GetRenderer()->BeginScene( OrthographicMatrix(-size, size, size, -size, size, -size) ) )
     {
         entity->Render ( sg->GetRenderer() );
         sg->GetRenderer()->EndScene ();

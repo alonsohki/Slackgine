@@ -24,10 +24,11 @@
 #include "entity_components/component.h"
 #include "entity_components/model_renderer.h"
 #include "renderer/renderer.h"
+#include "transformable.h"
 
 namespace Core {
 
-class Entity
+class Entity : public Transformable
 {
 public:
     typedef std::vector < Entities::IComponent* > componentVector;
@@ -44,13 +45,8 @@ public:
     
     bool                        AddComponent    ( Entities::IComponent* component );
     
-    // Accessors
-public:
-    Matrix&                     matrix          () { return m_matrix; }
-    const Matrix&               matrix          () const { return m_matrix; }
 
 private:
-    Matrix                      m_matrix;
     l3m::Model*                 m_model;
     
     componentVector             m_tickableComponents;

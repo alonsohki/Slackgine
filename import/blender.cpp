@@ -228,13 +228,15 @@ static void get_node_transform_ob(Object *ob, Transform* transform, Vector3* sca
 		mul_m4_m4m4(mat, tmat, imat);
 
 		// done
-        mat4_to_quat ( reinterpret_cast<float *>(&transform->orientation()), mat );
+        for ( u8 i = 0; i < 3; ++i )
+            for ( u8 j = 0; j < 3; ++j )
+                transform->orientation().vector()[i*3+j] = mat[i][j];
 		copy_v3_v3 ( reinterpret_cast<float *>(&transform->translation()), mat[3] );
         copy_v3_v3 ( reinterpret_cast<float *>(scaling), ob->size );
 	}
 	else {
 		copy_v3_v3(reinterpret_cast<float *>(&transform->translation()), ob->loc);
-		eul_to_quat(reinterpret_cast<float *>(&transform->orientation()), ob->rot);
+        transform->orientation() = RotationMatrix ( EulerAngles(ob->rot[1], ob->rot[0], ob->rot[2]) );
 		copy_v3_v3(reinterpret_cast<float *>(scaling), ob->size);
 	}
 }

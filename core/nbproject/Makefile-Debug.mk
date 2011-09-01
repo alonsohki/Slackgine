@@ -37,7 +37,9 @@ OBJECTFILES= \
 	${OBJECTDIR}/model_renderer_factory.o \
 	${OBJECTDIR}/time.o \
 	${OBJECTDIR}/model_manager.o \
+	${OBJECTDIR}/transformable.o \
 	${OBJECTDIR}/texture_manager.o \
+	${OBJECTDIR}/camera.o \
 	${OBJECTDIR}/slackgine.o \
 	${OBJECTDIR}/entity_components/model_renderer.o \
 	${OBJECTDIR}/entity.o
@@ -84,10 +86,20 @@ ${OBJECTDIR}/model_manager.o: model_manager.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/model_manager.o model_manager.cpp
 
+${OBJECTDIR}/transformable.o: transformable.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/transformable.o transformable.cpp
+
 ${OBJECTDIR}/texture_manager.o: texture_manager.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/texture_manager.o texture_manager.cpp
+
+${OBJECTDIR}/camera.o: camera.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/camera.o camera.cpp
 
 ${OBJECTDIR}/slackgine.o: slackgine.cpp 
 	${MKDIR} -p ${OBJECTDIR}
