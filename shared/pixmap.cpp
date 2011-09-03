@@ -20,7 +20,7 @@
 #include <cassert>
 #include <cmath>
 #include <fstream>
-#include <libpng/png.h>
+#include <png.h>
 #include "pixmap.h"
 #include "shared/util.h"
 #include "math/interpolation.h"
@@ -173,8 +173,7 @@ bool Pixmap::LoadPNG ( std::istream& stream )
     png_set_read_fn ( png_ptr, &stream, read_from_png );
     png_read_png ( png_ptr, info_ptr, PNG_TRANSFORM_IDENTITY, 0 );
     
-    m_height = info_ptr->height;
-    m_width = info_ptr->width;
+    png_get_IHDR(png_ptr, info_ptr, &m_width, &m_height, 0, 0, 0, 0, 0);
     m_pixels = new Color [ m_width * m_height ] ();
     png_bytep* row_pointers = png_get_rows( png_ptr, info_ptr );
     

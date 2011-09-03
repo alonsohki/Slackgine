@@ -14,14 +14,14 @@ GREP=grep
 NM=nm
 CCADMIN=CCadmin
 RANLIB=ranlib
-CC=gcc
-CCC=g++
-CXX=g++
+CC=gcc.exe
+CCC=g++.exe
+CXX=g++.exe
 FC=gfortran
-AS=as
+AS=as.exe
 
 # Macros
-CND_PLATFORM=GNU-Linux-x86
+CND_PLATFORM=GNU-Windows
 CND_CONF=Debug
 CND_DISTDIR=dist
 CND_BUILDDIR=build
@@ -51,30 +51,30 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=`pkg-config --libs gl` `pkg-config --libs glu` `pkg-config --libs glew` -lglut ../core/dist/Debug/GNU-Linux-x86/libcore.a ../l3m/dist/Debug/GNU-Linux-x86/libl3m.a ../renderer/dist/Debug/GNU-Linux-x86/librenderer.a ../math/dist/Debug/GNU-Linux-x86/libmath.a ../shared/dist/Debug/GNU-Linux-x86/libshared.a `pkg-config --libs libpng`  
+LDLIBSOPTIONS=../core/dist/Debug/GNU-Windows/libcore.a ../l3m/dist/Debug/GNU-Windows/libl3m.a ../renderer/dist/Debug/GNU-Windows/librenderer.a ../math/dist/Debug/GNU-Windows/libmath.a ../shared/dist/Debug/GNU-Windows/libshared.a `pkg-config --libs libpng` -lpthread  `pkg-config --libs gl` `pkg-config --libs glu` `pkg-config --libs glew` -lglut  
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test.exe
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ../core/dist/Debug/GNU-Linux-x86/libcore.a
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test.exe: ../core/dist/Debug/GNU-Windows/libcore.a
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ../l3m/dist/Debug/GNU-Linux-x86/libl3m.a
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test.exe: ../l3m/dist/Debug/GNU-Windows/libl3m.a
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ../renderer/dist/Debug/GNU-Linux-x86/librenderer.a
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test.exe: ../renderer/dist/Debug/GNU-Windows/librenderer.a
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ../math/dist/Debug/GNU-Linux-x86/libmath.a
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test.exe: ../math/dist/Debug/GNU-Windows/libmath.a
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ../shared/dist/Debug/GNU-Linux-x86/libshared.a
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test.exe: ../shared/dist/Debug/GNU-Windows/libshared.a
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ${OBJECTFILES}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test.exe: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -DUSE_THREADS -I.. `pkg-config --cflags gl` `pkg-config --cflags glu` `pkg-config --cflags glew` `pkg-config --cflags libpng`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -DUSE_THREADS -I.. `pkg-config --cflags libpng` `pkg-config --cflags gl` `pkg-config --cflags glu` `pkg-config --cflags glew`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
 
 # Subprojects
 .build-subprojects:
@@ -90,7 +90,7 @@ ${OBJECTDIR}/main.o: main.cpp
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test
+	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test.exe
 
 # Subprojects
 .clean-subprojects:

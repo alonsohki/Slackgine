@@ -34,10 +34,6 @@
         </ccTool>
         <linkerTool>
           <linkerLibItems>
-            <linkerOptionItem>`pkg-config --libs gl`</linkerOptionItem>
-            <linkerOptionItem>`pkg-config --libs glu`</linkerOptionItem>
-            <linkerOptionItem>`pkg-config --libs glew`</linkerOptionItem>
-            <linkerOptionItem>-lglut</linkerOptionItem>
             <linkerLibProjectItem>
               <makeArtifact PL="../core"
                             CT="3"
@@ -99,6 +95,11 @@
               </makeArtifact>
             </linkerLibProjectItem>
             <linkerOptionItem>`pkg-config --libs libpng`</linkerOptionItem>
+            <linkerLibStdlibItem>PosixThreads</linkerLibStdlibItem>
+            <linkerOptionItem>`pkg-config --libs gl`</linkerOptionItem>
+            <linkerOptionItem>`pkg-config --libs glu`</linkerOptionItem>
+            <linkerOptionItem>`pkg-config --libs glew`</linkerOptionItem>
+            <linkerOptionItem>-lglut</linkerOptionItem>
           </linkerLibItems>
         </linkerTool>
         <requiredProjects>
@@ -227,6 +228,7 @@
               </makeArtifact>
             </linkerLibProjectItem>
             <linkerOptionItem>`pkg-config --libs libpng`</linkerOptionItem>
+            <linkerLibStdlibItem>PosixThreads</linkerLibStdlibItem>
           </linkerLibItems>
         </linkerTool>
         <requiredProjects>

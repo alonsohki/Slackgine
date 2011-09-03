@@ -14,14 +14,14 @@ GREP=grep
 NM=nm
 CCADMIN=CCadmin
 RANLIB=ranlib
-CC=gcc
-CCC=g++
-CXX=g++
+CC=gcc.exe
+CCC=g++.exe
+CXX=g++.exe
 FC=gfortran
-AS=as
+AS=as.exe
 
 # Macros
-CND_PLATFORM=GNU-Linux-x86
+CND_PLATFORM=GNU-Windows
 CND_CONF=Release
 CND_DISTDIR=dist
 CND_BUILDDIR=build
@@ -40,8 +40,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/transformable.o \
 	${OBJECTDIR}/texture_manager.o \
 	${OBJECTDIR}/camera.o \
-	${OBJECTDIR}/slackgine.o \
 	${OBJECTDIR}/entity_components/model_renderer.o \
+	${OBJECTDIR}/slackgine.o \
 	${OBJECTDIR}/entity.o
 
 
@@ -101,15 +101,15 @@ ${OBJECTDIR}/camera.o: camera.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/camera.o camera.cpp
 
-${OBJECTDIR}/slackgine.o: slackgine.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/slackgine.o slackgine.cpp
-
 ${OBJECTDIR}/entity_components/model_renderer.o: entity_components/model_renderer.cpp 
 	${MKDIR} -p ${OBJECTDIR}/entity_components
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/entity_components/model_renderer.o entity_components/model_renderer.cpp
+
+${OBJECTDIR}/slackgine.o: slackgine.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/slackgine.o slackgine.cpp
 
 ${OBJECTDIR}/entity.o: entity.cpp 
 	${MKDIR} -p ${OBJECTDIR}

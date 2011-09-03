@@ -45,7 +45,7 @@ typedef long i64;
 typedef unsigned long u64;
 typedef float f32;
 typedef double f64;
-#elif defined(__i586__) || defined(__i686__)
+#elif defined(__i586__) || defined(__i686__) || defined(_X86) || defined(_WIN32)
 typedef bool b8;
 typedef unsigned char byte;
 typedef char i8;

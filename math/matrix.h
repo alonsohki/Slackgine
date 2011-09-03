@@ -912,11 +912,11 @@ public:
 class OrthographicMatrix : public Matrix
 {
 public:
-    OrthographicMatrix ( f32 left, f32 right, f32 top, f32 bottom, f32 near, f32 far )
+    OrthographicMatrix ( f32 left, f32 right, f32 top, f32 bottom, f32 pNear, f32 pFar )
     {
         const f32& l = left; const f32& r = right;
         const f32& t = top; const f32& b = bottom;
-        const f32& n = near; const f32& f = far;
+        const f32& n = pNear; const f32& f = pFar;
         f32 v [ 16 ] =
         {
             2.0f/(r-l), 0.0f, 0.0f, 0.0f,
@@ -934,15 +934,15 @@ public:
 class PerspectiveMatrix : public Matrix
 {
 public:
-    PerspectiveMatrix ( f32 fovy, f32 aspect, f32 near, f32 far )
+    PerspectiveMatrix ( f32 fovy, f32 aspect, f32 pNear, f32 pFar )
     {
         f32 f = 1.0f / tan ( fovy*0.5f );
         f32 v [ 16 ] =
         {
             f/aspect,   0.0f,   0.0f,                   0.0f,
             0.0f,       f,      0.0f,                   0.0f,
-            0.0f,       0.0f,   (far+near)/(near-far),  -1.0f,
-            0.0f,       0.0f,   2*far*near/(near-far),  0.0f
+            0.0f,       0.0f,   (pFar+pNear)/(pNear-pFar),  -1.0f,
+            0.0f,       0.0f,   2*pFar*pNear/(pNear-pFar),  0.0f
         };
         
         Matrix::operator= ( v );
