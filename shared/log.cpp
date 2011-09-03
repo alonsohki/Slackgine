@@ -27,7 +27,10 @@
 void vLog ( const char* level, const char* tag, const char* msg, va_list vl )
 {
 #if USE_THREADS
-    static Mutex logMutex;
+    static Mutex* logMutex = 0;
+
+    if ( logMutex == 0 )
+        logMutex = new Mutex();
 #endif
 
     char buffer [ 1024 ];
@@ -36,11 +39,11 @@ void vLog ( const char* level, const char* tag, const char* msg, va_list vl )
     
     vsnprintf ( buffer, sizeof(buffer)/sizeof(buffer[0]), msg, vl );
 #if USE_THREADS
-    logMutex.Lock();
+    logMutex->Lock();
 #endif
     fprintf ( stdout, "[%s] [%lu.%lu] \"%s\": %s\n", level, tv.tv_sec, tv.tv_usec, tag, buffer );
 #if USE_THREADS
-    logMutex.Unlock();
+    logMutex->Unlock();
 #endif
 }
 
