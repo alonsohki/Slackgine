@@ -51,7 +51,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=`pkg-config --libs gl` `pkg-config --libs glu` `pkg-config --libs glew` -lglut ../core/dist/Release/GNU-Windows/libcore.a ../l3m/dist/Release/GNU-Windows/libl3m.a ../renderer/dist/Release/GNU-Windows/librenderer.a ../math/dist/Release/GNU-Windows/libmath.a ../shared/dist/Release/GNU-Windows/libshared.a `pkg-config --libs libpng` -lpthread   
+LDLIBSOPTIONS=../core/dist/Release/GNU-Windows/libcore.a ../l3m/dist/Release/GNU-Windows/libl3m.a ../renderer/dist/Release/GNU-Windows/librenderer.a ../math/dist/Release/GNU-Windows/libmath.a ../shared/dist/Release/GNU-Windows/libshared.a `pkg-config --libs libpng` -lpthread  `pkg-config --libs gl` `pkg-config --libs glu` `pkg-config --libs glew` -lglut  
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -74,7 +74,7 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test.exe: ${OBJECTFILES}
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -DUSE_THREADS -I.. `pkg-config --cflags gl` `pkg-config --cflags glu` `pkg-config --cflags glew` `pkg-config --cflags libpng`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -DUSE_THREADS -I.. `pkg-config --cflags libpng` `pkg-config --cflags gl` `pkg-config --cflags glu` `pkg-config --cflags glew`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
 
 # Subprojects
 .build-subprojects:
