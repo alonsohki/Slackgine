@@ -133,6 +133,16 @@
                         CC="${MAKE}  -f Makefile CONF=Debug clean"
                         OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libmath.a">
           </makeArtifact>
+          <makeArtifact PL="../l3m"
+                        CT="3"
+                        CN="Debug"
+                        AC="true"
+                        BL="true"
+                        WD="../l3m"
+                        BC="${MAKE} -j9 -f Makefile CONF=Debug"
+                        CC="${MAKE} -j9 -f Makefile CONF=Debug clean"
+                        OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a">
+          </makeArtifact>
         </requiredProjects>
       </compileType>
     </conf>
@@ -261,6 +271,16 @@
                         BC="${MAKE}  -f Makefile CONF=Release"
                         CC="${MAKE}  -f Makefile CONF=Release clean"
                         OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libmath.a">
+          </makeArtifact>
+          <makeArtifact PL="../l3m"
+                        CT="3"
+                        CN="Release"
+                        AC="false"
+                        BL="true"
+                        WD="../l3m"
+                        BC="${MAKE} -j9 -f Makefile CONF=Release"
+                        CC="${MAKE} -j9 -f Makefile CONF=Release clean"
+                        OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a">
           </makeArtifact>
         </requiredProjects>
       </compileType>

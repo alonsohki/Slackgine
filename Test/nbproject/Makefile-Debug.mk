@@ -86,6 +86,7 @@ ${OBJECTDIR}/main.o: main.cpp
 	cd ../shared && ${MAKE}  -f Makefile CONF=Debug
 	cd ../core && ${MAKE}  -f Makefile CONF=Debug
 	cd ../math && ${MAKE}  -f Makefile CONF=Debug
+	cd ../l3m && ${MAKE} -j9 -f Makefile CONF=Debug
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
@@ -102,6 +103,7 @@ ${OBJECTDIR}/main.o: main.cpp
 	cd ../shared && ${MAKE}  -f Makefile CONF=Debug clean
 	cd ../core && ${MAKE}  -f Makefile CONF=Debug clean
 	cd ../math && ${MAKE}  -f Makefile CONF=Debug clean
+	cd ../l3m && ${MAKE} -j9 -f Makefile CONF=Debug clean
 
 # Enable dependency checking
 .dep.inc: .depcheck-impl

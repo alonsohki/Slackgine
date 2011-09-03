@@ -34,6 +34,9 @@
             <pElem>.</pElem>
             <pElem>..</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>USE_THREADS</Elem>
+          </preprocessorList>
         </ccTool>
         <linkerTool>
           <linkerLibItems>
@@ -94,6 +97,9 @@
             <pElem>.</pElem>
             <pElem>..</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>USE_THREADS</Elem>
+          </preprocessorList>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>

@@ -115,6 +115,9 @@
           <incDir>
             <pElem>..</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>USE_THREADS</Elem>
+          </preprocessorList>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>

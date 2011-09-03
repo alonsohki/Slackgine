@@ -51,6 +51,9 @@
         </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>
+          <preprocessorList>
+            <Elem>USE_THREADS</Elem>
+          </preprocessorList>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>
