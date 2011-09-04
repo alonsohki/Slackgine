@@ -62,14 +62,23 @@ public:
     Node&               CreateGeometryNode      ();
     
     
+    //--------------------------------------------------------------------------
     // Accessors
 public:
-    const nodesVector&          geometryNodes           () const { return m_geometryNodes; }
     nodesVector&                geometryNodes           () { return m_geometryNodes; }
+    std::string&                camera                  () { return m_camera; }
+    
+    //--------------------------------------------------------------------------
+    // Constant accessors
+public:
+    const nodesVector&          geometryNodes           () const { return m_geometryNodes; }
+    const std::string&          camera                  () const { return m_camera; }
+    
 
 
 private:
     nodesVector         m_geometryNodes;
+    std::string         m_camera;
 };
 
 }

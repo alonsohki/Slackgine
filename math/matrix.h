@@ -358,23 +358,6 @@ public:
         
         return ret;
     }
-    
-    //--------------------------------------------------------------------------
-    // M*V
-    Vector3 operator* ( const Vector3& v ) const
-    {
-        float res[3] = { 0, 0, 0 };
-        
-        const f32* vector = v.vector();
-        for ( u8 i = 0; i < 3; ++i )
-        {
-            const f32& elem = vector[i];
-            for ( u8 k = 0; k < 3; ++k )
-                res[k] += m[i][k] * elem;
-        }
-        
-        return Vector3(res);
-    }
 };
 
 
@@ -770,25 +753,6 @@ public:
         
         return ret;
     }
-    
-    //--------------------------------------------------------------------------
-    // M*V
-    Vector3 operator* ( const Vector3& v ) const
-    {
-        float res[3] = { 0, 0, 0 };
-        
-        const f32* vector = v.vector();
-        for ( u8 i = 0; i < 3; ++i )
-        {
-            const f32& elem = vector[i];
-            for ( u8 k = 0; k < 3; ++k )
-                res[k] += m[i][k] * elem;
-            // Assume that the vector 4th component is 1
-            res[i] += m[3][i];
-        }
-        
-        return Vector3(res);
-    }
 };
 
 
@@ -962,3 +926,80 @@ public:
         Matrix::Transpose();
     }
 };
+
+
+
+//------------------------------------------------------------------------------
+// Vector transform by matrix
+static inline Vector3 operator* ( const Vector3& v, const Matrix3& mat )
+{
+    float res[3] = { 0, 0, 0 };
+
+    const f32* vector = v.vector();
+    for ( u8 i = 0; i < 3; ++i )
+    {
+        const f32& elem = vector[i];
+        for ( u8 k = 0; k < 3; ++k )
+            res[k] += mat.m[i][k] * elem;
+    }
+
+    return Vector3(res);
+}
+static inline Vector3& operator*= ( Vector3& v, const Matrix3& mat )
+{
+    v = v * mat;
+    return v;
+}
+static inline Vector3 operator* ( const Matrix3& mat, const Vector3& v )
+{
+    float res[3] = { 0, 0, 0 };
+
+    const f32* vector = v.vector();
+    for ( u8 i = 0; i < 3; ++i )
+    {
+        const f32& elem = vector[i];
+        for ( u8 k = 0; k < 3; ++k )
+            res[k] += mat.m[k][i] * elem;
+    }
+
+    return Vector3(res);
+}
+
+
+static inline Vector3 operator* ( const Vector3& v, const Matrix& mat )
+{
+    float res[3] = { 0, 0, 0 };
+
+    const f32* vector = v.vector();
+    for ( u8 i = 0; i < 3; ++i )
+    {
+        const f32& elem = vector[i];
+        for ( u8 k = 0; k < 3; ++k )
+            res[k] += mat.m[i][k] * elem;
+        // Assume that the vector 4th component is 1
+        res[i] += mat.m[3][i];
+    }
+
+    return Vector3(res);
+}
+static inline Vector3& operator*= ( Vector3& v, const Matrix& mat )
+{
+    v = v * mat;
+    return v;
+}
+static inline Vector3 operator* ( const Matrix& mat, const Vector3& v )
+{
+    float res[3] = { 0, 0, 0 };
+
+    const f32* vector = v.vector();
+    for ( u8 i = 0; i < 3; ++i )
+    {
+        const f32& elem = vector[i];
+        for ( u8 k = 0; k < 3; ++k )
+            res[k] += mat.m[k][i] * elem;
+        // Assume that the vector 4th component is 1
+        res[i] += mat.m[i][3];
+    }
+
+    return Vector3(res);
+}

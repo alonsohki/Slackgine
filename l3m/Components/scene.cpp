@@ -23,6 +23,10 @@ using namespace l3m;
 
 bool Scene::Load(l3m::IStream& fp, float version)
 {
+    // Load the camera
+    if ( fp.ReadStr ( m_camera ) < 0 )
+        return SetError ( "Error reading the scene camera" );
+
     // Load the geometry nodes.
     u32 numGeometryNodes;
     if ( fp.Read32 ( &numGeometryNodes, 1 ) != 1 )
@@ -54,6 +58,10 @@ bool Scene::Load(l3m::IStream& fp, float version)
 
 bool Scene::Save(l3m::OStream& fp)
 {
+    // Save the camera
+    if ( !fp.WriteStr ( m_camera ) )
+        return SetError ( "Error writing the scene camera" );
+
     // Save all the geometry nodes.
     u32 numGeometryNodes = m_geometryNodes.size();
     if ( !fp.Write32 ( &numGeometryNodes, 1 ) )

@@ -24,6 +24,7 @@
 #include "blender_stuff.h"
 #include "BLO_readfile.h"
 #include "DNA_armature_types.h"
+#include "DNA_camera_types.h"
 #include "DNA_object_types.h"
 #include "DNA_material_types.h"
 #include "DNA_mesh_types.h"
@@ -240,7 +241,6 @@ static void get_node_transform_ob(Object *ob, Transform* transform, Vector3* sca
 		copy_v3_v3(reinterpret_cast<float *>(scaling), ob->size);
 	}
 }
-
 
 
 
@@ -525,6 +525,10 @@ static bool ImportScene ( l3m::Model* model, ::Scene* sce, l3m::Scene* modelScen
             base= base->next;
     }
     
+    // Import the scene camera
+    if ( sce->camera != 0 )
+        modelScene->camera() = get_camera_id ( sce->camera );
+    
     return true;
 }
 
@@ -624,6 +628,48 @@ static bool ImportMaterials ( ::Scene* sce, l3m::Model* model )
     return true;
 }
 
+static bool ImportCamera ( l3m::Camera* cam, ::Object* ob, ::Scene* sce )
+{
+    // Get the transform
+    Transform transform;
+    float orientation[9];
+    transform.translation() = Vector3 ( ob->obmat[3][0], ob->obmat[3][1], ob->obmat[3][2] );
+    
+    for ( u32 i = 0; i < 3; ++i )
+        for ( u32 j = 0; j < 3; ++j )
+            orientation[i*3+j] = ob->obmat[i][j];
+    transform.orientation() = orientation;
+    cam->transform() = transform;
+    
+    Vector3 lookAt ( 0, 0, 1 );
+    lookAt = lookAt * transform.orientation();
+    
+    // Get the camera type
+    ::Camera* c = (::Camera *)ob->data;
+    if (!c)
+        return false;
+    
+    // Import the data according to the type
+    switch ( c->type )
+    {
+        case CAM_PERSP:
+            cam->type() = l3m::Camera::CAMERA_PERSPECTIVE;
+            cam->perspectiveData().aspect = (float)(sce->r.xsch)/(float)(sce->r.ysch);
+            cam->perspectiveData().fov = lens_to_angle(c->lens);
+            cam->perspectiveData().near = c->clipsta;
+            cam->perspectiveData().far = c->clipend;
+            break;
+        case CAM_ORTHO:
+            fprintf ( stderr, "WARNING: Importing unsupported orthographic camera: %s\n", cam->name().c_str() );
+        default:
+            cam->type() = l3m::Camera::CAMERA_UNKNOWN;
+            break;
+    }
+
+    
+    return true;
+}
+
 static bool import_blender ( ::Scene* sce, const char* filename, l3m::Model* model )
 {
     // Import all geometries
@@ -643,6 +689,29 @@ static bool import_blender ( ::Scene* sce, const char* filename, l3m::Model* mod
                 if ( ! ImportGeometry ( &(g->geometry()), ob, model ) )
                 {
                     fprintf ( stderr, "Error exporting a geometry\n" );
+                    return false;
+                }
+            }
+        }
+    }
+    
+    // Import the scene cameras
+    std::set<std::string> exportedCameras;
+    for ( Base* base = (Base *)sce->base.first; base != 0; base = base->next )
+    {
+        Object* ob = base->object;
+        if ( ob->type == OB_CAMERA && ob->data )
+        {
+            std::string cam_id = get_camera_id(ob);
+            if (exportedCameras.find(cam_id) == exportedCameras.end())
+            {
+                exportedCameras.insert(cam_id);
+                l3m::Camera* cam = model->CreateComponent<l3m::Camera>("camera");
+                cam->name() = cam_id;
+
+                if ( ! ImportCamera ( cam, ob, sce ) )
+                {
+                    fprintf ( stderr, "Error importing a camera\n" );
                     return false;
                 }
             }

@@ -59,7 +59,7 @@ public:
     {
         Transform ret;
         ret.orientation() = orientation() * Right.orientation();
-        ret.translation() = orientation() * Right.translation() + translation();
+        ret.translation() = Right.translation() * orientation() + translation();
         return ret;
     }
     Transform& operator*= ( const Transform& Right )

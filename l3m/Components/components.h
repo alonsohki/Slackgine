@@ -23,3 +23,4 @@
 #include "scene.h"
 #include "texture.h"
 #include "require.h"
+#include "camera.h"

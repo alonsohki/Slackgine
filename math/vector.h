@@ -258,7 +258,6 @@ static inline Vector3 Cross ( const Vector3& vec1, const Vector3& vec2 )
 // Vector transform by quaternion
 // Actually equivalent to q^-1 * V * q
 #include "quaternion.h"
-#include <cstdio>
 static inline Vector3 operator* ( const Vector3& vec, const Quaternion& quat )
 {
     Quaternion p ( 0, vec );
@@ -267,4 +266,9 @@ static inline Vector3 operator* ( const Vector3& vec, const Quaternion& quat )
     Quaternion qInverse = q.Conjugate();
     
     return ( q * p * qInverse ).xyz ();
+}
+static inline Vector3& operator*= ( Vector3& vec, const Quaternion& quat )
+{
+    vec = vec * quat;
+    return vec;
 }

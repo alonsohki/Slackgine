@@ -2,6 +2,8 @@
 <configurationDescriptor version="79">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="f1" displayName="Components" projectFiles="true">
+      <itemPath>Components/camera.cpp</itemPath>
+      <itemPath>Components/camera.h</itemPath>
       <itemPath>Components/components.h</itemPath>
       <itemPath>Components/factory.cpp</itemPath>
       <itemPath>Components/factory.h</itemPath>

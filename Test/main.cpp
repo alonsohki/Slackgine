@@ -75,15 +75,6 @@ void display ( void )
     
     sg->Tick ();
     
-    static float fTransX = 0;
-    static float fTransDir = 1;
-    
-    if ( fTransX > 2.5f )
-        fTransDir = -1;
-    else if ( fTransX < -2.5f )
-        fTransDir = 1;
-    fTransX += fTransDir * 0.002;
-    
     entity->Rotate( EulerAngles(0.0f, 0.005f, 0.0f), Transformable::OBJECT );
     entity->Move ( Vector3 ( 0, 0.02f, 0 ), Transformable::OBJECT );
 

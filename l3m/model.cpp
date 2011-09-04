@@ -79,7 +79,7 @@ bool Model::Load(std::istream& fp)
         
         // Read the component version
         if ( is.ReadFloat ( &version, 1 ) != 1 )
-            return SetError ( "Unable to read the component version" );
+            return SetError ( "Unable to read the component version for a component of type '%s'", type.c_str() );
         
         IComponent* component = ComponentFactory::Create( type );
         if ( component == 0 )

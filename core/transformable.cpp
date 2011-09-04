@@ -42,7 +42,7 @@ void Transformable::Translate (const Vector3& vec, TransformAxis axis )
     switch ( axis )
     {
         case OBJECT:
-            m_transform.translation () += m_transform.orientation () * vec;
+            m_transform.translation () += vec * m_transform.orientation ();
             break;
         case WORLD:
         case INERTIAL:
