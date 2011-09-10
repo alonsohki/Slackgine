@@ -49,6 +49,10 @@ bool Geometry::Load(l3m::IStream& fp, float version)
     m_geometry.boundingBox() = BoundingBox ( values[0], values[1], values[2], values[3], values[4], values[5] );
     m_geometry.boundingSphere() = BoundingSphere ( values[6] );
     
+    // Geometry centroid
+    if ( fp.ReadVector(m_geometry.centroid()) != 1 )
+        return SetError ( "Error reading the geometry centroid" );
+    
     // Read the vertex data
     u32 numVertices;
     if ( fp.Read32 ( &numVertices, 1 ) != 1 )
@@ -147,6 +151,10 @@ bool Geometry::Save(l3m::OStream& fp)
     values[6] = m_geometry.boundingSphere().radius();
     if ( ! fp.WriteFloat ( values, 7 ) )
         return SetError ( "Error writing the geometry boundary data" );
+    
+    // Geometry centroid
+    if ( ! fp.WriteVector( m_geometry.centroid() ) )
+        return SetError ( "Error writing the geometry centroid" );
     
     // Geometry vertices
     u32 num = m_geometry.numVertices();

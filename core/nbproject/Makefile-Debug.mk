@@ -36,6 +36,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/model_renderer_factory.o \
 	${OBJECTDIR}/time.o \
+	${OBJECTDIR}/entity_components/scene.o \
 	${OBJECTDIR}/model_manager.o \
 	${OBJECTDIR}/transformable.o \
 	${OBJECTDIR}/texture_manager.o \
@@ -80,6 +81,11 @@ ${OBJECTDIR}/time.o: time.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/time.o time.cpp
+
+${OBJECTDIR}/entity_components/scene.o: entity_components/scene.cpp 
+	${MKDIR} -p ${OBJECTDIR}/entity_components
+	${RM} $@.d
+	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/entity_components/scene.o entity_components/scene.cpp
 
 ${OBJECTDIR}/model_manager.o: model_manager.cpp 
 	${MKDIR} -p ${OBJECTDIR}

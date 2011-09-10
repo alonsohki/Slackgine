@@ -57,7 +57,9 @@ char build_system[]= "unmaintained buildsystem alert!";
 
 
 #if defined(__linux__) && defined(__GNUC__)
+#ifndef _GNU_SOURCE
 #define _GNU_SOURCE
+#endif
 #include <fenv.h>
 #endif
 

@@ -5,6 +5,8 @@
       <itemPath>entity_components/component.h</itemPath>
       <itemPath>entity_components/model_renderer.cpp</itemPath>
       <itemPath>entity_components/model_renderer.h</itemPath>
+      <itemPath>entity_components/scene.cpp</itemPath>
+      <itemPath>entity_components/scene.h</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"

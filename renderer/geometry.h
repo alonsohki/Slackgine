@@ -50,6 +50,7 @@ private:
     meshList            m_meshes;
     BoundingBox         m_bbox;
     BoundingSphere      m_bsphere;
+    Vector3             m_centroid;
     
 private:
     void        FreeVertices    ();
@@ -125,6 +126,7 @@ public:
         return false;
     }
     
+    //--------------------------------------------------------------------------
     // Accessors
 public:
     const std::string&          name            () const { return m_name; }
@@ -134,6 +136,7 @@ public:
     const layerMap&             vertexLayers    () const { return m_mapVertexLayers; }
     const BoundingBox&          boundingBox     () const { return m_bbox; }
     const BoundingSphere&       boundingSphere  () const { return m_bsphere; }
+    const Vector3&              centroid        () const { return m_centroid; }
     
     std::string&                name            () { return m_name; }
     Renderer::Vertex*&          vertices        () { return m_vertices; }
@@ -141,6 +144,7 @@ public:
     layerMap&                   vertexLayers    () { return m_mapVertexLayers; }
     BoundingBox&                boundingBox     () { return m_bbox; }
     BoundingSphere&             boundingSphere  () { return m_bsphere; }
+    Vector3&                    centroid        () { return m_centroid; }
 };
 
 }

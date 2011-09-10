@@ -34,8 +34,9 @@ class IRenderer
 public:
     virtual bool        Initialize      () = 0;
     
-    virtual bool        BeginScene      ( const Matrix& matProjection = IdentityMatrix(), const Matrix& matLookat = IdentityMatrix() ) = 0;
+    virtual bool        BeginScene      () = 0;
     virtual void        PushState       () = 0;
+    virtual void        SetCamera       ( const Matrix& matProjection = IdentityMatrix(), const Matrix& matLookat = IdentityMatrix() ) = 0;
     virtual bool        Render          ( Geometry* geometry, const Transform& transform = IdentityTransform() ) = 0;
     virtual void        PopState        () = 0;
     virtual bool        EndScene        () = 0;

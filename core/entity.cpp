@@ -95,10 +95,19 @@ void Entity::Render ( Renderer::IRenderer* renderer )
           iter != m_renderableComponents.end();
           ++iter )
     {
+        (*iter)->PreRender( renderer );
         (*iter)->Render ( renderer );
     }
     
     m_modelRenderer->Render ( renderer, transform() );
+    
+    for ( componentVector::const_iterator iter = m_renderableComponents.begin();
+      iter != m_renderableComponents.end();
+      ++iter )
+    {
+        (*iter)->PostRender( renderer );
+    }
+    
     renderer->PopState ();
 }
 
@@ -111,6 +120,8 @@ bool Entity::AddComponent( Entities::IComponent* component )
         m_tickableComponents.push_back ( component );
     if ( component->isRenderable() )
         m_renderableComponents.push_back ( component );
+    
+    component->parent() = this;
     
     return true;
 }

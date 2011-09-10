@@ -20,9 +20,9 @@
 #include "model_renderer.h"
 #include "core/entity.h"
 #include "l3m/Components/scene.h"
+#include "l3m/Components/camera.h"
 
 using namespace Core::Entities;
-using namespace l3m;
 
 ModelRenderer::ModelRenderer ( l3m::Model* model )
 : IComponent ( 0, false, true )
@@ -51,10 +51,10 @@ void ModelRenderer::Render ( Renderer::IRenderer* renderer, const Transform& tra
     }
 }
 
-static Renderer::Geometry* FindGeometryByURL ( Model* model, const std::string& url )
+static Renderer::Geometry* FindGeometryByURL ( l3m::Model* model, const std::string& url )
 {
-    const Model::componentVector& components = model->components ();
-    for ( Model::componentVector::const_iterator iter = components.begin();
+    const l3m::Model::componentVector& components = model->components ();
+    for ( l3m::Model::componentVector::const_iterator iter = components.begin();
           iter != components.end();
           ++iter )
     {
@@ -75,15 +75,15 @@ void ModelRenderer::Initialize ()
         return;
     
     // Find the scene
-    Scene* scene = 0;
-    const Model::componentVector& components = m_model->components ();
-    for ( Model::componentVector::const_iterator iter = components.begin();
+    l3m::Scene* scene = 0;
+    const l3m::Model::componentVector& components = m_model->components ();
+    for ( l3m::Model::componentVector::const_iterator iter = components.begin();
           iter != components.end();
           ++iter )
     {
         if ( (*iter)->type() == "scene" )
         {
-            scene = static_cast < Scene* > ( *iter );
+            scene = static_cast < l3m::Scene* > ( *iter );
             break;
         }
     }
@@ -92,12 +92,12 @@ void ModelRenderer::Initialize ()
     if ( m_scene )
     {
         // Find the actual memory references to every geometry in the scene.
-        const Scene::nodesVector& geometries = m_scene->geometryNodes();
-        for ( Scene::nodesVector::const_iterator iter = geometries.begin();
+        const l3m::Scene::nodesVector& geometries = m_scene->geometryNodes();
+        for ( l3m::Scene::nodesVector::const_iterator iter = geometries.begin();
               iter != geometries.end ();
               ++iter )
         {
-            const Scene::Node& node = *iter;
+            const l3m::Scene::Node& node = *iter;
             const std::string& url = node.url;
             Renderer::Geometry* g = FindGeometryByURL(m_model, url);
             if ( g != 0 )

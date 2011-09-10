@@ -146,7 +146,7 @@ bool OpenGL3_Program::SetUniform(const std::string& name, const Matrix& mat)
     eglGetError();
     if ( loc == -1 )
         return false;
-    glUniformMatrix4fv ( loc, 1, GL_TRUE, mat.vector() );
+    glUniformMatrix4fv ( loc, 1, GL_FALSE, mat.vector() );
     eglGetError();
     return true;
 }

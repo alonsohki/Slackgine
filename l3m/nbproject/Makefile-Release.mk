@@ -34,8 +34,8 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/Components/camera.o \
 	${OBJECTDIR}/Components/require.o \
+	${OBJECTDIR}/Components/camera.o \
 	${OBJECTDIR}/Components/geometry.o \
 	${OBJECTDIR}/Components/scene.o \
 	${OBJECTDIR}/stream.o \
@@ -70,15 +70,15 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a: ${OBJECTFILES}
 	${AR} -rv ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a ${OBJECTFILES} 
 	$(RANLIB) ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a
 
-${OBJECTDIR}/Components/camera.o: Components/camera.cpp 
-	${MKDIR} -p ${OBJECTDIR}/Components
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/camera.o Components/camera.cpp
-
 ${OBJECTDIR}/Components/require.o: Components/require.cpp 
 	${MKDIR} -p ${OBJECTDIR}/Components
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/require.o Components/require.cpp
+
+${OBJECTDIR}/Components/camera.o: Components/camera.cpp 
+	${MKDIR} -p ${OBJECTDIR}/Components
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/camera.o Components/camera.cpp
 
 ${OBJECTDIR}/Components/geometry.o: Components/geometry.cpp 
 	${MKDIR} -p ${OBJECTDIR}/Components

@@ -839,6 +839,11 @@ public:
     {
         Matrix::operator= ( ScalingMatrix ( v[0], v[1], v[2] ) );
     }
+    
+    ScalingMatrix ( const Vector3& vec )
+    {
+        Matrix::operator= ( ScalingMatrix ( vec.x(), vec.y(), vec.z() ) );
+    }
 };
 
 //------------------------------------------------------------------------------
@@ -865,9 +870,9 @@ public:
     
     RotationMatrix ( const EulerAngles& euler )
     {
-        Matrix3::operator= ( RotationMatrix ( euler.heading(), 0.0f, 1.0f, 0.0f ) *
+        Matrix3::operator= ( RotationMatrix ( euler.heading(), 0.0f, 0.0f, 1.0f ) *
                              RotationMatrix ( euler.pitch(),   1.0f, 0.0f, 0.0f ) *
-                             RotationMatrix ( euler.bank(),    0.0f, 0.0f, 1.0f ) );
+                             RotationMatrix ( euler.bank(),    0.0f, 1.0f, 0.0f ) );
     }
 };
 
@@ -883,10 +888,10 @@ public:
         const f32& n = pNear; const f32& f = pFar;
         f32 v [ 16 ] =
         {
-            2.0f/(r-l), 0.0f, 0.0f, 0.0f,
-            0.0f, 2.0f/(t-b), 0.0f, 0.0f,
-            0.0f, 0.0f, 2.0f/(n-f), 0.0f,
-            -(r+l)/(r-l), -(t+b)/(t-b), -(n+f)/(n-f), 1.0f
+            2.0f/(r-l),         0.0f,           0.0f,           0.0f,
+            0.0f,               2.0f/(f-n),     0.0f,           0.0f,
+            0.0f,               0.0f,           2.0f/(t-b),     0.0f,
+            -(r+l)/(r-l),       -(f+n)/(f-n),   -(t+b)/(t-b),   1.0f
         };
         
         Matrix::operator= ( v );
@@ -898,17 +903,17 @@ public:
 class PerspectiveMatrix : public Matrix
 {
 public:
-    PerspectiveMatrix ( f32 fovy, f32 aspect, f32 pNear, f32 pFar )
+    PerspectiveMatrix ( f32 aspect, f32 fovy, f32 pNear, f32 pFar )
     {
         f32 f = 1.0f / tan ( fovy*0.5f );
         f32 v [ 16 ] =
         {
-            f/aspect,   0.0f,   0.0f,                   0.0f,
-            0.0f,       f,      0.0f,                   0.0f,
-            0.0f,       0.0f,   (pFar+pNear)/(pNear-pFar),  -1.0f,
-            0.0f,       0.0f,   2*pFar*pNear/(pNear-pFar),  0.0f
+            f/aspect,   0.0f,                           0.0f,           0.0f,
+            0.0f,       (pFar+pNear)/(pFar-pNear),      0.0f,           1.0f,
+            0.0f,       0.0f,                           f,              0.0f,
+            0.0f,       2*pFar*pNear/(pFar-pNear),      0.0f,           0.0f
         };
-        
+
         Matrix::operator= ( v );
     }
 };
@@ -927,10 +932,77 @@ public:
     }
 };
 
+//------------------------------------------------------------------------------
+// Lookat matrix
+class LookatMatrix : public Matrix
+{
+public:
+    LookatMatrix ( const Vector3& eye, const Vector3& target, const Vector3& up_ )
+    {
+        Vector3 forward;
+        Vector3 side;
+        
+        Vector3 up = up_;
+        up.Normalize ();
+        
+	forward = target - eye;
+	forward.Normalize ();
+        
+        f32 match = forward.Dot ( up );
+        if ( fabs(fabs(match) - 1.0f) < 0.001f )
+        {
+            // Up and forward vector are parallel
+            up = Vector3 ( 0.0f, -match, 0.0f );
+            up.Normalize ();
+        }
 
+        side = forward.Cross(up);
+        side.Normalize();
+                
+	up = side.Cross(forward);
+        
+        Vector3 t ( -eye.Dot(side), -eye.Dot(forward), -eye.Dot(up) );
+
+        f32 m [ 16 ] = {
+            side.x(),           forward.x(),            up.x(),         0.0f,
+            side.y(),           forward.y(),            up.y(),         0.0f,
+            side.z(),           forward.z(),            up.z(),         0.0f,
+            t.x(),              t.y(),                  t.z(),          1.0f
+        };
+        
+        Matrix::operator= ( m );
+    }
+    
+    LookatMatrix ( const Matrix3& orientation, const Vector3& eye )
+    {
+        const f32* col0 = &orientation.m[0][0];
+        const f32* col1 = &orientation.m[1][0];
+        const f32* col2 = &orientation.m[2][0];
+        
+        Vector3 t ( -eye.Dot(col0), -eye.Dot(col1), -eye.Dot(col2) );
+        
+        f32 m [ 16 ] = {
+            col0[0], col1[0], col2[0], 0.0f,
+            col0[1], col1[1], col2[1], 0.0f,
+            col0[2], col1[2], col2[2], 0.0f,
+            t.x(),   t.y(),   t.z(),   1.0f
+        };
+        
+        Matrix::operator= ( m );
+    }
+};
 
 //------------------------------------------------------------------------------
-// Vector transform by matrix
+// Matrix3 * Matrix4
+static inline Matrix operator* ( const Matrix3& Left, const Matrix& Right )
+{
+    IdentityMatrix ret;
+    ret.Assign3x3( Left );
+    return ret * Right;
+}
+
+//------------------------------------------------------------------------------
+// Vector3 * Matrix
 static inline Vector3 operator* ( const Vector3& v, const Matrix3& mat )
 {
     float res[3] = { 0, 0, 0 };
@@ -996,10 +1068,58 @@ static inline Vector3 operator* ( const Matrix& mat, const Vector3& v )
     {
         const f32& elem = vector[i];
         for ( u8 k = 0; k < 3; ++k )
-            res[k] += mat.m[k][i] * elem;
+            res[k] += mat.m[i][k] * elem;
         // Assume that the vector 4th component is 1
-        res[i] += mat.m[i][3];
+        res[i] += mat.m[3][i];
     }
 
     return Vector3(res);
+}
+
+
+//------------------------------------------------------------------------------
+// Vector4 * Matrix
+static inline Vector4 operator* ( const Vector4& v, const Matrix& mat )
+{
+    float res[4] = { 0, 0, 0, 0 };
+
+    const f32* vector = v.vector();
+    for ( u8 i = 0; i < 4; ++i )
+    {
+        const f32& elem = vector[i];
+        for ( u8 k = 0; k < 4; ++k )
+            res[k] += mat.m[i][k] * elem;
+    }
+
+    return Vector4(res);
+}
+static inline Vector4& operator*= ( Vector4& v, const Matrix& mat )
+{
+    v = v * mat;
+    return v;
+}
+static inline Vector4 operator* ( const Matrix& mat, const Vector4& v )
+{
+    float res[4] = { 0, 0, 0, 0 };
+
+    const f32* vector = v.vector();
+    for ( u8 i = 0; i < 4; ++i )
+    {
+        const f32& elem = vector[i];
+        for ( u8 k = 0; k < 4; ++k )
+            res[k] += mat.m[i][k] * elem;
+    }
+
+    return Vector4(res);
+}
+
+//------------------------------------------------------------------------------
+// Matrix4 -> Matrix3
+static inline Matrix3 Matrix2Matrix3(const Matrix& mat )
+{
+    Matrix3 ret;
+    for ( u8 i = 0; i < 3; ++i )
+        for ( u8 j = 0; j < 3; ++j )
+            ret.m[i][j] = mat.m[i][j];
+    return ret;
 }

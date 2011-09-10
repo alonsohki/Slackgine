@@ -132,6 +132,7 @@ public:
     f32& z() { return s.fZ; }
     f32* vector() { return v; }
     
+    //--------------------------------------------------------------------------
     // V + V
     Vector3 operator+ ( const Vector3& vec ) const
     {
@@ -157,6 +158,7 @@ public:
         return ret;
     }
     
+    //--------------------------------------------------------------------------
     // V - V
     Vector3 operator- ( const Vector3& vec ) const
     {
@@ -172,22 +174,55 @@ public:
         return *this;
     }
 
+    //--------------------------------------------------------------------------
+    // V + k
+    Vector3 operator+ ( const f32& k ) const
+    {
+        return Vector3 ( x() + k, y() + k, z() + k );
+    }
+    Vector3& operator+= ( const f32& k )
+    {
+        *this = *this + k;
+        return *this;
+    }
+    
+    //--------------------------------------------------------------------------
+    // V - k
+    Vector3 operator- ( const f32& k ) const
+    {
+        return Vector3 ( x() - k, y() - k, z() - k );
+    }
+    Vector3& operator-= ( const f32& k )
+    {
+        *this = *this - k;
+        return *this;
+    }
+    
+    //--------------------------------------------------------------------------
     // V * k
     Vector3 operator* ( const f32& k ) const
     {
-        float ret[3];
-        ret[0] = x() * k;
-        ret[1] = y() * k;
-        ret[2] = z() * k;
-        return Vector3(ret);
+        return Vector3 ( x() * k, y() * k, z() * k );
     }
     Vector3& operator*= ( const f32& k )
     {
-        x() *= k;
-        y() *= k;
-        z() *= k;
+        *this = *this * k;
+        return *this;
     }
     
+    //--------------------------------------------------------------------------
+    // V / k
+    Vector3 operator/ ( const f32& k ) const
+    {
+        return Vector3 ( x() / k, y() / k, z() / k );
+    }
+    Vector3& operator/= ( const f32& k )
+    {
+        *this = *this / k;
+        return *this;
+    }
+    
+    //--------------------------------------------------------------------------
     // V * V (Cross product)
     Vector3 Cross ( const Vector3& vec ) const
     {
@@ -198,12 +233,14 @@ public:
         return Vector3(ret);
     }
     
+    //--------------------------------------------------------------------------
     // V * V (Dot product)
     f32 Dot ( const Vector3& vec ) const
     {
         return x()*vec.x() + y()*vec.y() + z()*vec.z();
     }
     
+    //--------------------------------------------------------------------------
     // Normalization and length
     f32 Length () const
     {
@@ -232,11 +269,223 @@ public:
     }
 };
 
+class Vector4
+{
+private:
+    typedef struct { f32 fX, fY, fZ, fW; } __s4f;
+    
+    union
+    {
+        f32 v [ 4 ];
+        __s4f s;
+    };
+    
+public:
+    Vector4 () {}
+
+    Vector4 ( f32 fX, f32 fY, f32 fZ, f32 fW )
+    {
+        x() = fX;
+        y() = fY;
+        z() = fZ;
+        w() = fW;
+    }
+    
+    // Copy, assignment, compare.
+    Vector4 ( const Vector4& v )
+    {
+        operator=(v.v);
+    }
+    Vector4 ( const f32* vec )
+    {
+        operator=(vec);
+    }
+    Vector4& operator= ( const Vector4& v )
+    {
+        return operator=(v.v);
+    }
+    Vector4& operator= ( const f32* vec )
+    {
+        for ( u8 i = 0; i < 4; ++i )
+            v[i] = vec[i];
+        return *this;
+    }
+    
+    bool operator== ( const Vector4& vec ) const
+    {
+        return v[0] == vec.v[0] && v[1] == vec.v[1] && v[2] == vec.v[2] && v[3] == vec.v[3];
+    }
+    bool operator!= ( const Vector4& vec ) const
+    {
+        return !operator==(vec);
+    }
+    
+    
+    // Accessors
+    const f32& x() const { return s.fX; }
+    const f32& y() const { return s.fY; }
+    const f32& z() const { return s.fZ; }
+    const f32& w() const { return s.fW; }
+    const f32* vector() const { return v; }
+    
+    f32& x() { return s.fX; }
+    f32& y() { return s.fY; }
+    f32& z() { return s.fZ; }
+    f32& w() { return s.fW; }
+    f32* vector() { return v; }
+    
+    //--------------------------------------------------------------------------
+    // V + V
+    Vector4 operator+ ( const Vector4& vec ) const
+    {
+        Vector4 ret;
+        for ( u8 i = 0; i < 4; ++i )
+            ret.v[i] = v[i] + vec.v[i];
+        return ret;
+    }
+    Vector4& operator+= ( const Vector4& vec )
+    {
+        for ( u8 i = 0; i < 4; ++i )
+            v[i] += vec.v[i];
+        return *this;
+    }
+    
+    //--------------------------------------------------------------------------
+    // -V
+    Vector4 operator- () const
+    {
+        Vector4 ret;
+        for ( u8 i = 0; i < 4; ++i )
+            ret.v[i] = -v[i];
+        return ret;
+    }
+    
+    //--------------------------------------------------------------------------
+    // V - V
+    Vector4 operator- ( const Vector4& vec ) const
+    {
+        Vector4 ret;
+        for ( u8 i = 0; i < 4; ++i )
+            ret.v[i] = v[i] - vec.v[i];
+        return ret;
+    }
+    Vector4& operator-= ( const Vector4& vec )
+    {
+        for ( u8 i = 0; i < 4; ++i )
+            v[i] -= vec.v[i];
+        return *this;
+    }
+
+    //--------------------------------------------------------------------------
+    // V + k
+    Vector4 operator+ ( const f32& k ) const
+    {
+        return Vector4 ( x() + k, y() + k, z() + k, w() + k );
+    }
+    Vector4& operator+= ( const f32& k )
+    {
+        *this = *this + k;
+        return *this;
+    }
+    
+    //--------------------------------------------------------------------------
+    // V - k
+    Vector4 operator- ( const f32& k ) const
+    {
+        return Vector4 ( x() - k, y() - k, z() - k, w() - k );
+    }
+    Vector4& operator-= ( const f32& k )
+    {
+        *this = *this - k;
+        return *this;
+    }
+    
+    //--------------------------------------------------------------------------
+    // V * k
+    Vector4 operator* ( const f32& k ) const
+    {
+        return Vector4 ( x() * k, y() * k, z() * k, w() * k );
+    }
+    Vector4& operator*= ( const f32& k )
+    {
+        *this = *this * k;
+        return *this;
+    }
+    
+    //--------------------------------------------------------------------------
+    // V / k
+    Vector4 operator/ ( const f32& k ) const
+    {
+        return Vector4 ( x() / k, y() / k, z() / k, w() / k );
+    }
+    Vector4& operator/= ( const f32& k )
+    {
+        *this = *this / k;
+        return *this;
+    }
+    
+    //--------------------------------------------------------------------------
+    // V * V (Dot product)
+    f32 Dot ( const Vector4& vec ) const
+    {
+        return x()*vec.x() + y()*vec.y() + z()*vec.z() + w()*vec.w();
+    }
+    
+    //--------------------------------------------------------------------------
+    // Normalization and length
+    f32 Length () const
+    {
+        return sqrt(x()*x() + y()*y() + z()*z() + w()*w());
+    }
+    static f32 Length ( const Vector4& thiz )
+    {
+        return thiz.Length();
+    }
+    
+    void Normalize ()
+    {
+        f32 length = Length ();
+        if ( fabs(length) > 0.000001f )
+        {
+            f32 f = 1.0f / length;
+            x() = x() * f;
+            y() = y() * f;
+            z() = z() * f;
+            w() = w() * f;
+        }
+    }
+    static Vector4 Normalize ( const Vector4& vec )
+    {
+        Vector4 v = vec;
+        v.Normalize ();
+        return v;
+    }
+};
+
+
+//------------------------------------------------------------------------------
+// Null vectors
+class ZeroVector2 : public Vector2
+{
+public:
+    ZeroVector2 ()
+    : Vector2 ( 0.0f, 0.0f )
+    {}
+};
+
 class ZeroVector3 : public Vector3
 {
 public:
     ZeroVector3 ()
     : Vector3 ( 0.0f, 0.0f, 0.0f )
+    {}
+};
+
+class ZeroVector4 : public Vector4
+{
+public:
+    ZeroVector4 ()
+    : Vector4 ( 0.0f, 0.0f, 0.0f, 0.0f )
     {}
 };
 

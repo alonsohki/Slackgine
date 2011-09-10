@@ -39,9 +39,12 @@ public:
     bool                isTickable      () const { return m_isTickable; }
     bool                isRenderable    () const { return m_isRenderable; }
     Entity*             parent          () const { return m_parent; }
+    Entity*&            parent          () { return m_parent; }
     
     virtual void        Tick            () {}
+    virtual void        PreRender       ( Renderer::IRenderer* renderer ) {}
     virtual void        Render          ( Renderer::IRenderer* renderer ) {}
+    virtual void        PostRender      ( Renderer::IRenderer* renderer ) {}
     
 private:
     Entity*     m_parent;

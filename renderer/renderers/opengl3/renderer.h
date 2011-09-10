@@ -45,7 +45,8 @@ public:
     
     bool        Initialize              ();
     
-    bool        BeginScene              ( const Matrix& matProjection = IdentityMatrix(), const Matrix& matLookat = IdentityMatrix() );
+    void        SetCamera               ( const Matrix& matProjection = IdentityMatrix(), const Matrix& matLookat = IdentityMatrix() );
+    bool        BeginScene              ();
     void        PushState               ();
     bool        Render                  ( Geometry* geometry, const Transform& transform = IdentityTransform() );
     void        PopState                ();

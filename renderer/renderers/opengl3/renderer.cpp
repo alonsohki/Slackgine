@@ -66,8 +66,8 @@ bool OpenGL3_Renderer::Initialize()
         "varying vec3 ex_Normal;\n"
         "void main(void)\n"
         "{\n"
-        "    gl_Position = vec4(in_Position, 1.0) * un_Matrix;\n"
-        "    ex_Normal = (vec4(in_Normal, 1.0) * un_NormalMatrix).xyz;\n"
+        "    gl_Position = un_Matrix * vec4(in_Position, 1.0);"
+        "    ex_Normal = (un_NormalMatrix * vec4(in_Normal, 1.0)).xyz;\n"
         "}\n";
 
     static const char* const s_defaultFragmentShader =
@@ -75,7 +75,7 @@ bool OpenGL3_Renderer::Initialize()
         "\n"
         "void main(void)\n"
         "{\n"
-        "    gl_FragColor = vec4(ex_Normal + vec3(0.15, 0.15, 0.15), 1.0);\n"
+        "    gl_FragColor = vec4((ex_Normal + 1.0) * 0.5, 1.0);\n"
         "}\n";
 
     std::istringstream vertexShaderSource ( s_defaultVertexShader );
@@ -113,7 +113,33 @@ bool OpenGL3_Renderer::Initialize()
     return m_initialized;
 }
 
-bool OpenGL3_Renderer::BeginScene ( const Matrix& matProjection, const Matrix& matLookat )
+void OpenGL3_Renderer::SetCamera ( const Matrix& matProjection, const Matrix& matLookat )
+{
+    // Change the basis to the OpenGL basis
+    static const f32 m [ 16 ] = {
+        1.0f,   0.0f,   0.0f,   0.0f,
+        0.0f,   0.0f,  -1.0f,   0.0f,
+        0.0f,   1.0f,   0.0f,   0.0f,
+        0.0f,   0.0f,   0.0f,   1.0f
+    };
+    static const Matrix s_matBasisChanger ( m );
+    
+    const f32* col0 = &matProjection.m[0][0];
+    const f32* col1 = &matProjection.m[1][0];
+    const f32* col2 = &matProjection.m[2][0];
+    const f32* col3 = &matProjection.m[3][0];
+    const f32 projectionM [ 16 ] = {
+         col0[0],  col0[2], -col0[1],  col0[3],
+         col2[0],  col2[2], -col2[1],  col2[3],
+        -col1[0], -col1[2], -col1[1], -col1[3],
+         col3[0],  col3[2], -col3[1],  col3[3]
+    };
+    
+    m_matProjection = Matrix ( projectionM );
+    m_matLookat = s_matBasisChanger * matLookat;
+}
+
+bool OpenGL3_Renderer::BeginScene ( )
 {
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     eglGetError();
@@ -123,9 +149,8 @@ bool OpenGL3_Renderer::BeginScene ( const Matrix& matProjection, const Matrix& m
     
     glEnable ( GL_DEPTH_TEST );
     glCullFace ( GL_BACK );
-
-    m_matProjection = matProjection;
-    m_matLookat = matLookat;
+    
+    SetCamera ( IdentityMatrix(), IdentityMatrix() );
     
     return true;
 }
@@ -139,7 +164,7 @@ bool OpenGL3_Renderer::Render ( Geometry* geometry, const Transform& transform )
     Matrix mat = Transform2Matrix ( transform );
     Matrix matNormals = MatrixForNormals ( mat );
     Matrix matGeometry = m_matProjection * m_matLookat * mat;
-    
+
     // Use vertex buffers
     const Vertex* v = 0;
     glBindBuffer ( GL_ARRAY_BUFFER, geometry->m_vertexBuffer );
@@ -189,6 +214,26 @@ bool OpenGL3_Renderer::Render ( Geometry* geometry, const Transform& transform )
 
 bool OpenGL3_Renderer::EndScene()
 {
+    // Draw the debug coordinate system
+    glDisable ( GL_LIGHTING );
+    glUseProgram ( 0 );
+    glMatrixMode ( GL_PROJECTION_MATRIX );
+    glLoadIdentity ();
+    glMatrixMode ( GL_MODELVIEW_MATRIX );
+    glLoadMatrixf ( (m_matProjection * m_matLookat).vector() );
+    
+    glBegin ( GL_LINES );
+        glColor3f ( 1.0f, 0.0f, 0.0f );
+        glVertex3f ( 0.0f, 0.0f, 0.0f );
+        glVertex3f ( 10.0f, 0.0f, 0.0f );
+        glColor3f ( 0.0f, 1.0f, 0.0f );
+        glVertex3f ( 0.0f, 0.0f, 0.0f );
+        glVertex3f ( 0.0f, 10.0f, 0.0f );
+        glColor3f ( 0.0f, 0.0f, 1.0f );
+        glVertex3f ( 0.0f, 0.0f, 0.0f );
+        glVertex3f ( 0.0f, 0.0f, 10.0f );
+    glEnd ();
+
     glutSwapBuffers ();
     return true;
 }

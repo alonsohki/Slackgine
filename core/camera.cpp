@@ -114,8 +114,8 @@ void Camera::MakeOrthographicMatrix ()
 
 void Camera::MakePerspectiveMatrix ()
 {
-    m_projection = PerspectiveMatrix ( m_perspective.fovy,
-                                       m_perspective.aspect,
+    m_projection = PerspectiveMatrix ( m_perspective.aspect,
+                                       m_perspective.fovy,
                                        m_perspective.near,
                                        m_perspective.far );
 }

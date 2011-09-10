@@ -23,6 +23,7 @@
 #include <cstring>
 #include "slackgine.h"
 #include "l3m/l3m.h"
+#include "core/entity_components/scene.h"
 
 void display ( void );
 
@@ -41,12 +42,13 @@ static void cleanup ()
 int main(int argc, char** argv)
 {
     glutInit (&argc, argv);
-    glutInitWindowSize (800, 600);
+    glutInitWindowSize (1920/2, 1080/2);
     glutInitDisplayMode ( GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH );
     glutCreateWindow ("Slackgine test");
     
     glutDisplayFunc ( display );
     atexit ( cleanup );
+    glViewport(0, 0, 1920/2, 1080/2);
 
     glutMainLoop ();
     
@@ -70,16 +72,12 @@ void display ( void )
     if ( entity == 0 )
     {
         entity = new Entity ( model );
-        entity->SetRotation ( EulerAngles(0.0f, 0.0f, 1.0f) );
+        entity->AddComponent( new Core::Entities::Scene() );
     }
     
     sg->Tick ();
-    
-    entity->Rotate( EulerAngles(0.0f, 0.005f, 0.0f), Transformable::OBJECT );
-    entity->Move ( Vector3 ( 0, 0.02f, 0 ), Transformable::OBJECT );
 
-    float size = 10.0f;
-    if ( sg->GetRenderer()->BeginScene( OrthographicMatrix(-size, size, size, -size, size, -size) ) )
+    if ( sg->GetRenderer()->BeginScene() )
     {
         entity->Render ( sg->GetRenderer() );
         sg->GetRenderer()->EndScene ();

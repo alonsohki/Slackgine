@@ -37,6 +37,7 @@
 #include "shared/platform.h"
 #include "math/vector.h"
 #include "math/transform.h"
+#include "math/util.h"
 #include "l3m/l3m.h"
 #include "l3m/Components/components.h"
 #include "renderer/mesh.h"
@@ -207,8 +208,9 @@ std::string get_material_id(Material *mat)
 	return translate_id(id_name(mat)) + "-material";
 }
 
-static void get_node_transform_ob(Object *ob, Transform* transform, Vector3* scaling)
+static Transform get_node_transform_ob(Object *ob, Vector3* scaling)
 {
+    Transform transform;
 	if (ob->parent)
     {
 		float C[4][4], tmat[4][4], imat[4][4], mat[4][4];
@@ -227,20 +229,25 @@ static void get_node_transform_ob(Object *ob, Transform* transform, Vector3* sca
 
 		invert_m4_m4(imat, ob->parent->obmat);
 		mul_m4_m4m4(mat, tmat, imat);
-
+                
 		// done
-        for ( u8 i = 0; i < 3; ++i )
-            for ( u8 j = 0; j < 3; ++j )
-                transform->orientation().vector()[i*3+j] = mat[i][j];
-		copy_v3_v3 ( reinterpret_cast<float *>(&transform->translation()), mat[3] );
-        copy_v3_v3 ( reinterpret_cast<float *>(scaling), ob->size );
+                for ( u8 i = 0; i < 3; ++i )
+                     for ( u8 j = 0; j < 3; ++j )
+                         transform.orientation().vector()[i*3+j] = mat[i][j];
+                transform.translation() = Vector3 ( mat[3][0], mat[3][1], mat[3][2] );
+                copy_v3_v3 ( reinterpret_cast<float *>(scaling), ob->size );
 	}
 	else {
-		copy_v3_v3(reinterpret_cast<float *>(&transform->translation()), ob->loc);
-        transform->orientation() = RotationMatrix ( EulerAngles(ob->rot[1], ob->rot[0], ob->rot[2]) );
-		copy_v3_v3(reinterpret_cast<float *>(scaling), ob->size);
+            transform.translation() = Vector3 ( ob->loc[0], ob->loc[1], ob->loc[2] );
+            for ( u8 i = 0; i < 3; ++i )
+                 for ( u8 j = 0; j < 3; ++j )
+                     transform.orientation().vector()[i*3+j] = ob->obmat[i][j];
+            copy_v3_v3(reinterpret_cast<float *>(scaling), ob->size);
 	}
+
+    return transform;
 }
+
 
 
 
@@ -456,30 +463,24 @@ static bool ImportSceneObject ( l3m::Model* model, Object* ob, ::Scene* sce, l3m
             
             // Get the transform
             Vector3 scale;
-            get_node_transform_ob(ob, &node.transform, &scale );
+            node.transform = get_node_transform_ob(ob, &scale );
             
-            // Apply the scale
-            if ( fabs(scale.x() - 1.0f) > 0.0001f ||
-                 fabs(scale.y() - 1.0f) > 0.0001f ||
-                 fabs(scale.z() - 1.0f) > 0.0001f )
+            // Apply the scale and mirroring
+            // Find the geometry associated to this url.
+            for ( l3m::Model::componentVector::iterator miter = model->components().begin();
+                  miter != model->components().end();
+                  ++miter )
             {
-                // Find the geometry associated to this url.
-                for ( l3m::Model::componentVector::iterator miter = model->components().begin();
-                      miter != model->components().end();
-                      ++miter )
+                if ( (*miter)->type() == "geometry" && static_cast < l3m::Geometry* > ( *miter )->geometry().name() == node.url )
                 {
-                    if ( (*miter)->type() == "geometry" && static_cast < l3m::Geometry* > ( *miter )->geometry().name() == node.url )
+                    Renderer::Geometry& g = static_cast<l3m::Geometry *>(*miter)->geometry();
+
+                    // Apply the scaling to every vertex.
+                    Renderer::Vertex* v = g.vertices();
+                    for ( u32 i = 0; i < g.numVertices(); ++i )
                     {
-                        Renderer::Geometry& g = static_cast<l3m::Geometry *>(*miter)->geometry();
-                        
-                        // Apply the scaling to every vertex.
-                        Renderer::Vertex* v = g.vertices();
-                        for ( u32 i = 0; i < g.numVertices(); ++i )
-                        {
-                            v[i].pos().x() *= scale.x();
-                            v[i].pos().y() *= scale.y();
-                            v[i].pos().z() *= scale.z();
-                        }
+                        Vector3 pos = v[i].pos() * ScalingMatrix ( scale );
+                        v[i].pos() = pos;
                     }
                 }
             }
@@ -633,16 +634,16 @@ static bool ImportCamera ( l3m::Camera* cam, ::Object* ob, ::Scene* sce )
     // Get the transform
     Transform transform;
     float orientation[9];
+    
+    // Blender uses Z as up direction, but we use Y as up direction.
     transform.translation() = Vector3 ( ob->obmat[3][0], ob->obmat[3][1], ob->obmat[3][2] );
     
     for ( u32 i = 0; i < 3; ++i )
         for ( u32 j = 0; j < 3; ++j )
             orientation[i*3+j] = ob->obmat[i][j];
-    transform.orientation() = orientation;
+    // WARNING: Here we rotate the camera because, for some reason, Blender cameras look forward by looking downwards.
+    transform.orientation() = Matrix3(orientation) * RotationMatrix(EulerAngles(0.0f,deg2rad(-90.0f), 0.0f));
     cam->transform() = transform;
-    
-    Vector3 lookAt ( 0, 0, 1 );
-    lookAt = lookAt * transform.orientation();
     
     // Get the camera type
     ::Camera* c = (::Camera *)ob->data;

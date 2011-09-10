@@ -44,7 +44,6 @@ public:
     void                        Render          ( Renderer::IRenderer* renderer );
     
     bool                        AddComponent    ( Entities::IComponent* component );
-    
 
 private:
     l3m::Model*                 m_model;
