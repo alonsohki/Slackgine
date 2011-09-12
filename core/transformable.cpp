@@ -32,12 +32,12 @@ Transformable::Transformable ( const Transform& transform )
 {
 }
 
-void Transformable::SetPosition (const Vector3& pos)
+void Transformable::setPosition (const Vector3& pos)
 {
     m_transform.translation () = pos;
 }
 
-void Transformable::Translate (const Vector3& vec, TransformAxis axis )
+void Transformable::translate (const Vector3& vec, TransformAxis axis )
 {
     switch ( axis )
     {
@@ -51,17 +51,17 @@ void Transformable::Translate (const Vector3& vec, TransformAxis axis )
     }
 }
 
-void Transformable::SetRotation (const EulerAngles& rot)
+void Transformable::setRotation (const EulerAngles& rot)
 {
     m_transform.orientation () = RotationMatrix( rot );
 }
 
-void Transformable::SetRotation ( const Matrix3& m )
+void Transformable::setRotation ( const Matrix3& m )
 {
     m_transform.orientation () = m;
 }
 
-void Transformable::Rotate ( const Matrix3& m, TransformAxis axis )
+void Transformable::rotate ( const Matrix3& m, TransformAxis axis )
 {
     switch ( axis )
     {
@@ -77,8 +77,8 @@ void Transformable::Rotate ( const Matrix3& m, TransformAxis axis )
     }
 }
 
-void Transformable::Rotate (const EulerAngles& rot, TransformAxis axis )
+void Transformable::rotate (const EulerAngles& rot, TransformAxis axis )
 {
     RotationMatrix m ( rot );
-    return Rotate ( m, axis );
+    return rotate ( m, axis );
 }

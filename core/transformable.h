@@ -41,16 +41,16 @@ public:
                         Transformable           ( const Transform& transform );
     virtual             ~Transformable          () {}
 
-    void                Move                    ( const Vector3& vec, TransformAxis axis = OBJECT ) { return Translate(vec, axis); }
-    void                Translate               ( const Vector3& vec, TransformAxis axis = OBJECT );
-    void                SetPosition             ( const Vector3& pos );
+    void                move                    ( const Vector3& vec, TransformAxis axis = OBJECT ) { return translate(vec, axis); }
+    void                translate               ( const Vector3& vec, TransformAxis axis = OBJECT );
+    void                setPosition             ( const Vector3& pos );
 
-    void                Rotate                  ( const EulerAngles& rot, TransformAxis axis = OBJECT );
-    void                Rotate                  ( const Matrix3& rot, TransformAxis axis = OBJECT );
-    void                SetRotation             ( const EulerAngles& rot );
-    void                SetRotation             ( const Matrix3& rot );
+    void                rotate                  ( const EulerAngles& rot, TransformAxis axis = OBJECT );
+    void                rotate                  ( const Matrix3& rot, TransformAxis axis = OBJECT );
+    void                setRotation             ( const EulerAngles& rot );
+    void                setRotation             ( const Matrix3& rot );
     
-    void                Tick                    () {}
+    void                tick                    () {}
     
     //--------------------------------------------------------------------------
     // Accessors

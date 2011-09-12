@@ -30,16 +30,16 @@ public:
                 Time                    ();
                 ~Time                   ();
 
-    u32         GetSystemTime           () const;
-    u64         GetSystemTimeMS         () const;
-    u64         GetTimeMS               () const { return m_timeMS; }
-    void        SetTimeStep             ( float step ) { m_timestep = step; }
-    float       GetTimeStep             () const { return m_timestep; }
+    u32         getSystemTime           () const;
+    u64         getSystemTimeMS         () const;
+    u64         getTimeMS               () const { return m_timeMS; }
+    void        setTimeStep             ( float step ) { m_timestep = step; }
+    float       getTimeStep             () const { return m_timestep; }
     
-    void        SleepMS                 ( u32 ms ) const;
-    void        SystemSleepMS           ( u32 ms ) const;
+    void        sleepMS                 ( u32 ms ) const;
+    void        systemSleepMS           ( u32 ms ) const;
 
-    void        Tick                    ();
+    void        tick                    ();
     
 private:
     float       m_timestep;

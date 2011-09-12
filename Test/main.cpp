@@ -63,30 +63,25 @@ void display ( void )
     if ( sg == 0 )
     {
         sg = new Slackgine ();
-        sg->Initialize ();
-        sg->GetModelManager().AddLookupPath ( ".." );
+        sg->initialize ();
+        sg->getModelManager().addLookupPath ( ".." );
     }
 
     if ( model == 0 )
-        model = sg->GetModelManager().RequestBlocking ("spherecube.l3m");
+        model = sg->getModelManager().requestBlocking ("spherecube.l3m");
     if ( entity == 0 )
     {
         entity = new Entity ( model );
-        entity->AddComponent( new Core::Entities::Scene() );
+        entity->setParent( &sg->getWorld() );
+        entity->addComponent( new Core::Entities::Scene() );
     }
     
-    sg->Tick ();
-
-    if ( sg->GetRenderer()->BeginScene() )
-    {
-        entity->Render ( sg->GetRenderer() );
-        sg->GetRenderer()->EndScene ();
-    }
-    else
+    sg->tick ();
+    if ( !sg->render () )
     {
         char error [ 1024 ];
-        sg->GetRenderer()->GetError ( error );
-        fprintf ( stderr, "Error al iniciar la escena: %s\n", error );
+        sg->getError ( error );
+        fprintf ( stderr, "Error rendering the scene: %s\n", error );
     }
     
     glutPostRedisplay ();

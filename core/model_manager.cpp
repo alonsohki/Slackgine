@@ -32,15 +32,15 @@ ModelManager::ModelManager ( TextureManager& textureManager, const Time& time )
 : m_textureManager ( textureManager )
 , m_time ( time )
 {
-    AddLookupPath ( "." );
+    addLookupPath ( "." );
     m_nostarveQueue = PRIORITY_NONE;
     m_graveyard.first = 0;
     m_graveyard.last = 0;
-    SetMaxMemory ( DEFAULT_MAX_MEMORY );
+    setMaxMemory ( DEFAULT_MAX_MEMORY );
     m_currentMemory = 0;
     
 #if USE_THREADS
-    m_thread.CreateStarted ( MakeDelegate(this, &ModelManager::RequestThread) );
+    m_thread.CreateStarted ( MakeDelegate(this, &ModelManager::requestThread) );
 #endif
 }
 
@@ -54,30 +54,30 @@ ModelManager::~ModelManager ()
     // Delete all the allocated models
     while ( m_models.size() > 0 )
     {
-        Unlink ( &(m_models.begin()->second), false );
+        unlink ( &(m_models.begin()->second), false );
     }
 }
 
 #if USE_THREADS
-void* ModelManager::RequestThread ( Thread*, void* )
+void* ModelManager::requestThread ( Thread*, void* )
 {
     LOG_V ( "ModelManager", "Starting the request thread" );
     for (;;)
     {
-        Lock ();
+        lock ();
         // Process one by one until the queues are empty.
-        if ( !ProcessOne () )
+        if ( !processOne () )
         {
             // If there aren't any models pending to load, sleep until there is
             // a new request.
             m_threadCond.Wait ( m_mutex );
         }
-        Unlock ();
+        unlock ();
     }
 }
 #endif
 
-bool ModelManager::ProcessOne ( ModelNode** nodeptr )
+bool ModelManager::processOne ( ModelNode** nodeptr )
 {
     // First of all, check if any request is starving.
     for ( u32 i = (m_nostarveQueue + 1) % PRIORITY_COUNT;
@@ -92,10 +92,10 @@ bool ModelManager::ProcessOne ( ModelNode** nodeptr )
             {
                 ModelNode* node = *iter;
                 if ( node->loaded == false &&
-                    (m_time.GetSystemTimeMS () - node->requestTime) > MAX_TIME_IN_QUEUE )
+                    (m_time.getSystemTimeMS () - node->requestTime) > MAX_TIME_IN_QUEUE )
                 {
                     m_nostarveQueue = static_cast<Priority>(i);
-                    ProcessRequest ( node );
+                    processRequest ( node );
                     if ( nodeptr != 0 )
                         *nodeptr = node;
                     return true;
@@ -117,7 +117,7 @@ bool ModelManager::ProcessOne ( ModelNode** nodeptr )
                 ModelNode* node = *iter;
                 if ( node->loaded == false )
                 {
-                    ProcessRequest ( node );
+                    processRequest ( node );
                     if ( nodeptr != 0 )
                         *nodeptr = node;
                     return true;
@@ -129,7 +129,7 @@ bool ModelManager::ProcessOne ( ModelNode** nodeptr )
     return false;
 }
 
-bool ModelManager::AddLookupPath (const std::string& path)
+bool ModelManager::addLookupPath (const std::string& path)
 {
     struct stat status;
     if ( stat(path.c_str(), &status) != 0 )
@@ -142,12 +142,12 @@ bool ModelManager::AddLookupPath (const std::string& path)
     return true;
 }
 
-bool ModelManager::CanModelBeLoaded (const std::string& model) const
+bool ModelManager::canModelBeLoaded (const std::string& model) const
 {
-    return GetModelAccessPath(model, 0) == true;
+    return getModelAccessPath(model, 0) == true;
 }
 
-bool ModelManager::GetModelAccessPath (const std::string& model, std::string* path) const
+bool ModelManager::getModelAccessPath (const std::string& model, std::string* path) const
 {
     struct stat status;
     
@@ -173,7 +173,7 @@ bool ModelManager::GetModelAccessPath (const std::string& model, std::string* pa
     return false;
 }
 
-ModelManager::ModelNode* ModelManager::FindModelNode ( const std::string& model )
+ModelManager::ModelNode* ModelManager::findModelNode ( const std::string& model )
 {
     ModelMap::iterator iter = m_models.find ( model );
     if ( iter != m_models.end() )
@@ -181,7 +181,7 @@ ModelManager::ModelNode* ModelManager::FindModelNode ( const std::string& model 
     return 0;
 }
 
-ModelManager::ModelNode* ModelManager::FindModelNode ( const l3m::Model* model )
+ModelManager::ModelNode* ModelManager::findModelNode ( const l3m::Model* model )
 {
     ModelptrMap::iterator iter = m_modelPtrs.find ( model );
     if ( iter != m_modelPtrs.end() )
@@ -189,31 +189,31 @@ ModelManager::ModelNode* ModelManager::FindModelNode ( const l3m::Model* model )
     return 0;
 }
 
-bool ModelManager::Request (const std::string& model, RequestCallback callback, Priority priority)
+bool ModelManager::request (const std::string& model, RequestCallback callback, Priority priority)
 {
-    if ( !CanModelBeLoaded(model) )
+    if ( !canModelBeLoaded(model) )
         return false;
     
 #ifdef USE_THREADS
-    Lock ();
+    lock ();
 #endif
 
-    bool ret = InternalRequest ( model, callback, priority );
+    bool ret = internalRequest ( model, callback, priority );
     
 #ifdef USE_THREADS
-    Unlock ();
+    unlock ();
 #endif
 
     return ret;
 }
 
-bool ModelManager::InternalRequest ( const std::string& model, RequestCallback callback, Priority priority )
+bool ModelManager::internalRequest ( const std::string& model, RequestCallback callback, Priority priority )
 {
     bool shouldProcessQueues = false;
     LOG_V ( "ModelManager", "Requesting model '%s'...", model.c_str() );
     
     // Check if the model has already been loaded.
-    ModelNode* node = FindModelNode ( model );
+    ModelNode* node = findModelNode ( model );
     if ( node != 0 )
     {
         // If the model has already been loaded, return it.
@@ -221,7 +221,7 @@ bool ModelManager::InternalRequest ( const std::string& model, RequestCallback c
         {
             // Check if this model was dead to give it life again.
             if ( node->refCount == 0 )
-                MoveFromGraveyard ( node );
+                moveFromGraveyard ( node );
             if ( callback != 0 )
                 callback ( node->model );
         }
@@ -262,15 +262,15 @@ bool ModelManager::InternalRequest ( const std::string& model, RequestCallback c
             }
             else
             {
-                ProcessRequest ( node );
-                DispatchRequest ( node );
+                processRequest ( node );
+                dispatchRequest ( node );
             }
         }
     }
     else
     {
         // Create a new model node
-        node = CreateModelNode ( model );
+        node = createModelNode ( model );
         node->requestPriority = priority;
         node->requestCallbacks.push_back ( callback );
         
@@ -283,8 +283,8 @@ bool ModelManager::InternalRequest ( const std::string& model, RequestCallback c
         }
         else
         {
-            ProcessRequest ( node );
-            DispatchRequest ( node );
+            processRequest ( node );
+            dispatchRequest ( node );
         }
     }
     
@@ -300,67 +300,67 @@ bool ModelManager::InternalRequest ( const std::string& model, RequestCallback c
     return true;
 }
 
-l3m::Model* ModelManager::RequestBlocking (const std::string& model)
+l3m::Model* ModelManager::requestBlocking (const std::string& model)
 {
-    if ( !CanModelBeLoaded(model) )
+    if ( !canModelBeLoaded(model) )
         return 0;
     
 #if USE_THREADS
-    Lock ();
+    lock ();
 #endif
     
-    l3m::Model* ret = InternalRequestBlocking ( model );
+    l3m::Model* ret = internalRequestBlocking ( model );
         
 #if USE_THREADS
-    Unlock ();
+    unlock ();
 #endif
     
     return ret;
 }
 
-l3m::Model* ModelManager::InternalRequestBlocking (const std::string& model)
+l3m::Model* ModelManager::internalRequestBlocking (const std::string& model)
 {
     // Check if the model has already been loaded.
-    ModelNode* node = FindModelNode ( model );
+    ModelNode* node = findModelNode ( model );
     if ( node != 0 )
     {
         node->requestPriority = PRIORITY_NOW;
         if ( node->loaded == false )
-            ProcessRequest ( node );
+            processRequest ( node );
         if ( node->refCount == 0 )
-            MoveFromGraveyard ( node );
+            moveFromGraveyard ( node );
     }
     else
     {
-        node = CreateModelNode ( model );
+        node = createModelNode ( model );
         node->requestPriority = PRIORITY_NOW;
         node->refCount = 1;
-        ProcessRequest ( node );
+        processRequest ( node );
     }
     
-    DispatchRequest ( node );
+    dispatchRequest ( node );
     return node->model;
 }
 
-bool ModelManager::CancelRequest ( const std::string& model, RequestCallback callback )
+bool ModelManager::cancelRequest ( const std::string& model, RequestCallback callback )
 {
 #ifdef USE_THREADS
-    Lock ();
+    lock ();
 #endif
     
-    bool ret = InternalCancelRequest ( model, callback );
+    bool ret = internalCancelRequest ( model, callback );
     
 #ifdef USE_THREADS
-    Unlock ();
+    unlock ();
 #endif
     
     return ret;
 }
 
-bool ModelManager::InternalCancelRequest ( const std::string& model, RequestCallback callback )
+bool ModelManager::internalCancelRequest ( const std::string& model, RequestCallback callback )
 {
     bool ret = false;
-    ModelNode* node = FindModelNode ( model );
+    ModelNode* node = findModelNode ( model );
     if ( node != 0 && node->loaded == false )
     {
         // Take out all the callbacks corresponding to the one given by parameter
@@ -381,53 +381,53 @@ bool ModelManager::InternalCancelRequest ( const std::string& model, RequestCall
         // If there are no callbacks left, take it out of the queue and map
         if ( node->requestCallbacks.size() == 0 )
         {
-            Unlink ( node, false );
+            unlink ( node, false );
         }
     }
     
     return ret;
 }
 
-bool ModelManager::Release (const l3m::Model* model)
+bool ModelManager::release (const l3m::Model* model)
 {
     bool ret;
     
 #ifdef USE_THREADS
-    Lock ();
+    lock ();
 #endif
     
-    ret = InternalRelease ( FindModelNode ( model ) );
+    ret = internalRelease ( findModelNode ( model ) );
     
 #ifdef USE_THREADS
-    Unlock ();
+    unlock ();
 #endif
     
     return ret;
 }
 
-bool ModelManager::ReleaseAllReferences (const l3m::Model* model)
+bool ModelManager::releaseAllReferences (const l3m::Model* model)
 {
     bool ret = false;
     
 #ifdef USE_THREADS
-    Lock ();
+    lock ();
 #endif
 
-    ModelNode* node = FindModelNode ( model );
+    ModelNode* node = findModelNode ( model );
     if ( node != 0 )
     {
         node->refCount = 1;
-        ret = InternalRelease ( node );
+        ret = internalRelease ( node );
     }
 
 #ifdef USE_THREADS
-    Unlock ();
+    unlock ();
 #endif
 
     return ret;
 }
 
-bool ModelManager::InternalRelease (ModelNode* node)
+bool ModelManager::internalRelease (ModelNode* node)
 {
     bool ret = false;
     
@@ -441,7 +441,7 @@ bool ModelManager::InternalRelease (ModelNode* node)
                 LOG_V ( "ModelManager", "Releasing model '%s' (%p)", node->name.c_str(), node->model );
                 
                 // Release it
-                Unlink ( node, true );
+                unlink ( node, true );
                 ret = true;
             }
         }
@@ -451,17 +451,17 @@ bool ModelManager::InternalRelease (ModelNode* node)
 }
     
 #if USE_THREADS
-void ModelManager::Lock ()
+void ModelManager::lock ()
 {
     m_mutex.Lock ();
 }
-void ModelManager::Unlock ()
+void ModelManager::unlock ()
 {
     m_mutex.Unlock ();
 }
 #endif
 
-ModelManager::ModelNode* ModelManager::CreateModelNode (const std::string& model)
+ModelManager::ModelNode* ModelManager::createModelNode (const std::string& model)
 {
     std::pair<ModelMap::iterator, bool> pair = m_models.insert ( ModelMap::value_type(model, ModelNode()) );
     ModelNode* node = &(pair.first->second);
@@ -473,11 +473,11 @@ ModelManager::ModelNode* ModelManager::CreateModelNode (const std::string& model
     node->graveyard_prev = 0;
     node->requestPriority = PRIORITY_NONE;
     node->requestCallbacks.clear ();
-    node->requestTime = m_time.GetSystemTimeMS ();
+    node->requestTime = m_time.getSystemTimeMS ();
     return node;
 }
 
-void ModelManager::ProcessRequest (ModelNode* node)
+void ModelManager::processRequest (ModelNode* node)
 {
     using l3m::Model;
     using l3m::IComponent;
@@ -486,7 +486,7 @@ void ModelManager::ProcessRequest (ModelNode* node)
     
     // Load the model and mark it as loaded
     std::string accessPath;
-    if ( GetModelAccessPath(node->name, &accessPath) )
+    if ( getModelAccessPath(node->name, &accessPath) )
     {
         LOG_VV ( "ModelManager", "Processing request for '%s' at path '%s'", node->name.c_str(), accessPath.c_str() );
         Model* model = new Model ();
@@ -498,7 +498,7 @@ void ModelManager::ProcessRequest (ModelNode* node)
         
         // Account the memory used by this model
         m_currentMemory += model->size ();
-        LOG_VV ( "ModelManager", "Model took %u bytes. GC status: %u/%u bytes (%.2f%%)", model->size(), m_currentMemory, GetMaxMemory (), 100.0f*m_currentMemory/(float)GetMaxMemory() );
+        LOG_VV ( "ModelManager", "Model took %u bytes. GC status: %u/%u bytes (%.2f%%)", model->size(), m_currentMemory, getMaxMemory (), 100.0f*m_currentMemory/(float)getMaxMemory() );
 
         // Check every component for special actions.
         Model::componentVector& comps = model->components ();
@@ -521,13 +521,13 @@ void ModelManager::ProcessRequest (ModelNode* node)
                     if ( node->requestPriority == PRIORITY_NOW )
                     {
                         // Load the requirements blocking
-                        l3m::Model* depModel = InternalRequestBlocking ( reqPath );
+                        l3m::Model* depModel = internalRequestBlocking ( reqPath );
                         if ( depModel != 0 )
                             node->loadedDeps.push_back ( depModel );
                     }
                     else
                     {
-                        MakeDependencyTracker ( node, reqPath );
+                        makeDependencyTracker ( node, reqPath );
                     }
                 }
             }
@@ -568,13 +568,13 @@ void ModelManager::ProcessRequest (ModelNode* node)
                   ++iter )
             {
                 DependencyTracker& dep = *iter;
-                InternalRequest ( dep.name, MakeDelegate ( &dep, &DependencyTracker::OnLoad ), node->requestPriority );
+                internalRequest ( dep.name, MakeDelegate ( &dep, &DependencyTracker::OnLoad ), node->requestPriority );
             }
         }
     }
 }
 
-void ModelManager::DispatchRequest ( ModelNode* req )
+void ModelManager::dispatchRequest ( ModelNode* req )
 {
     LOG_VV ( "ModelManager", "Dispatching the request for the model '%s'", req->name.c_str() );
     
@@ -606,10 +606,10 @@ void ModelManager::DispatchRequest ( ModelNode* req )
     }
 }
 
-void ModelManager::Tick ()
+void ModelManager::tick ()
 {
 #if USE_THREADS
-    Lock ();
+    lock ();
     
     // Dispatch all the models that have been loaded by the loading thread
     for ( u32 i = 0; i < PRIORITY_COUNT; ++i )
@@ -617,7 +617,7 @@ void ModelManager::Tick ()
         RequestQueue& queue = m_queues[PRIORITY_COUNT-i-1];
         while ( queue.size() > 0 && queue.front()->loaded == true )
         {
-            DispatchRequest ( queue.front() );
+            dispatchRequest ( queue.front() );
         }
     }
 #else
@@ -648,42 +648,42 @@ void ModelManager::Tick ()
         ModelNode* node = *iter;
         if ( node->loaded == true )
         {
-            DispatchRequest ( node );
+            dispatchRequest ( node );
             iter = m_dependencyWaiters.erase ( iter );
         }
         else
             ++iter;
     }
 
-    CollectGarbage ();
+    collectGarbage ();
 
 #ifdef USE_THREADS
-    Unlock ();
+    unlock ();
 #endif
 }
 
-void ModelManager::LoadAllRequestedModels ()
+void ModelManager::loadAllRequestedModels ()
 {
 #ifdef USE_THREADS
-    Lock ();
+    lock ();
 #endif
     
     // Flush all queues
-    while ( ProcessOne() );
+    while ( processOne() );
     
     for ( u32 i = 0; i < PRIORITY_COUNT; ++i )
     {
         RequestQueue& queue = m_queues[PRIORITY_COUNT-i-1];
         while ( queue.size() >  0 )
-            DispatchRequest ( queue.front () );
+            dispatchRequest ( queue.front () );
     }
     
 #ifdef USE_THREADS
-    Unlock ();
+    unlock ();
 #endif
 }
 
-void ModelManager::Unlink ( ModelNode* node, bool toTheGraveyard )
+void ModelManager::unlink ( ModelNode* node, bool toTheGraveyard )
 {
     // Unlink it form the queues.
     if ( node->loaded == false && node->requestPriority <= PRIORITY_HIGH )
@@ -726,7 +726,7 @@ void ModelManager::Unlink ( ModelNode* node, bool toTheGraveyard )
         {
             // Discount the memory used by this model.
             m_currentMemory -= node->model->size ();
-            LOG_VV ( "ModelManager", "GC status after freeing model: %u/%u bytes (%.2f%%)", m_currentMemory, GetMaxMemory (), 100.0f*m_currentMemory/(float)GetMaxMemory() );
+            LOG_VV ( "ModelManager", "GC status after freeing model: %u/%u bytes (%.2f%%)", m_currentMemory, getMaxMemory (), 100.0f*m_currentMemory/(float)getMaxMemory() );
             
             // Unregister the textures from the texture manager.
             l3m::Model::componentVector& components = node->model->components ();
@@ -749,7 +749,7 @@ void ModelManager::Unlink ( ModelNode* node, bool toTheGraveyard )
                   ++iter )
             {
                 DependencyTracker& tracker = *iter;
-                InternalCancelRequest ( tracker.name, MakeDelegate ( &tracker, &DependencyTracker::OnLoad ) );
+                internalCancelRequest ( tracker.name, MakeDelegate ( &tracker, &DependencyTracker::OnLoad ) );
             }
 
             // Release the loaded dependencies
@@ -757,7 +757,7 @@ void ModelManager::Unlink ( ModelNode* node, bool toTheGraveyard )
                   iter != node->loadedDeps.end();
                   ++iter )
             {
-                InternalRelease ( FindModelNode ( *iter ) );
+                internalRelease ( findModelNode ( *iter ) );
             }
             
             // Unlink it from the graveyard
@@ -810,7 +810,7 @@ void ModelManager::Unlink ( ModelNode* node, bool toTheGraveyard )
     }
 }
 
-void ModelManager::MoveFromGraveyard (ModelNode* node)
+void ModelManager::moveFromGraveyard (ModelNode* node)
 {
     LOG_V ( "ModelManager", "Rescuing model '%s' from the graveyard (%p)", node->name.c_str(), node->model );
 
@@ -827,23 +827,23 @@ void ModelManager::MoveFromGraveyard (ModelNode* node)
     node->refCount++;
 }
 
-void ModelManager::ClearUnlinkedModels ()
+void ModelManager::clearUnlinkedModels ()
 {
 #ifdef USE_THREADS
-    Lock ();
+    lock ();
 #endif
     
-    u32 maxMemory = GetMaxMemory ();
-    SetMaxMemory ( 0 );
-    CollectGarbage ();
-    SetMaxMemory ( maxMemory );
+    u32 maxMemory = getMaxMemory ();
+    setMaxMemory ( 0 );
+    collectGarbage ();
+    setMaxMemory ( maxMemory );
     
 #ifdef USE_THREADS
-    Unlock ();
+    unlock ();
 #endif
 }
 
-void ModelManager::CollectGarbage ()
+void ModelManager::collectGarbage ()
 {
     for ( GarbageVector::iterator iter = m_garbage.begin();
           iter != m_garbage.end();
@@ -864,7 +864,7 @@ void ModelManager::CollectGarbage ()
               ptr = ptrNext)
         {
             ptrNext = ptr->graveyard_next;
-            Unlink ( ptr, false );
+            unlink ( ptr, false );
             ++numCollected;
         }
         
@@ -873,9 +873,9 @@ void ModelManager::CollectGarbage ()
     }
 }
 
-bool ModelManager::MakeDependencyTracker (ModelNode* node, const std::string& dep)
+bool ModelManager::makeDependencyTracker (ModelNode* node, const std::string& dep)
 {
-    if ( !CanModelBeLoaded ( dep ) )
+    if ( !canModelBeLoaded ( dep ) )
         return false;
     
     DependencyTracker tracker;

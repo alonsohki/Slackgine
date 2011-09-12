@@ -32,16 +32,16 @@ namespace Renderer
 class IRenderer
 {
 public:
-    virtual bool        Initialize      () = 0;
+    virtual bool        initialize      () = 0;
     
-    virtual bool        BeginScene      () = 0;
-    virtual void        PushState       () = 0;
-    virtual void        SetCamera       ( const Matrix& matProjection = IdentityMatrix(), const Matrix& matLookat = IdentityMatrix() ) = 0;
-    virtual bool        Render          ( Geometry* geometry, const Transform& transform = IdentityTransform() ) = 0;
-    virtual void        PopState        () = 0;
-    virtual bool        EndScene        () = 0;
+    virtual bool        beginScene      () = 0;
+    virtual void        pushState       () = 0;
+    virtual void        setCamera       ( const Matrix& matProjection = IdentityMatrix(), const Matrix& matLookat = IdentityMatrix() ) = 0;
+    virtual bool        render          ( Geometry* geometry, const Transform& transform = IdentityTransform() ) = 0;
+    virtual void        popState        () = 0;
+    virtual bool        endScene        () = 0;
     
-    virtual void        GetError        ( char* dest ) const = 0;
+    virtual void        getError        ( char* dest ) const = 0;
 };
 
 }

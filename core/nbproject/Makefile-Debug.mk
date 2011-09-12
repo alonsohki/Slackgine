@@ -35,6 +35,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/model_renderer_factory.o \
+	${OBJECTDIR}/world.o \
 	${OBJECTDIR}/time.o \
 	${OBJECTDIR}/entity_components/scene.o \
 	${OBJECTDIR}/model_manager.o \
@@ -76,6 +77,11 @@ ${OBJECTDIR}/model_renderer_factory.o: model_renderer_factory.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/model_renderer_factory.o model_renderer_factory.cpp
+
+${OBJECTDIR}/world.o: world.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/world.o world.cpp
 
 ${OBJECTDIR}/time.o: time.cpp 
 	${MKDIR} -p ${OBJECTDIR}

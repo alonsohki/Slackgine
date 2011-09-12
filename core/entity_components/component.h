@@ -41,10 +41,10 @@ public:
     Entity*             parent          () const { return m_parent; }
     Entity*&            parent          () { return m_parent; }
     
-    virtual void        Tick            () {}
-    virtual void        PreRender       ( Renderer::IRenderer* renderer ) {}
-    virtual void        Render          ( Renderer::IRenderer* renderer ) {}
-    virtual void        PostRender      ( Renderer::IRenderer* renderer ) {}
+    virtual void        tick            () {}
+    virtual void        preRender       ( Renderer::IRenderer* renderer ) {}
+    virtual void        render          ( Renderer::IRenderer* renderer ) {}
+    virtual void        postRender      ( Renderer::IRenderer* renderer ) {}
     
 private:
     Entity*     m_parent;

@@ -30,19 +30,19 @@ Time::Time ()
 , m_waste(0.0f)
 , m_timeMS(0)
 {
-    m_lastSnapshot = GetSystemTimeMS();
+    m_lastSnapshot = getSystemTimeMS();
 }
 
 Time::~Time ()
 {
 }
 
-u32 Time::GetSystemTime () const
+u32 Time::getSystemTime () const
 {
     return time(0);
 }
 
-u64 Time::GetSystemTimeMS () const
+u64 Time::getSystemTimeMS () const
 {
     timeval tv;
     gettimeofday ( &tv, 0 );
@@ -51,19 +51,19 @@ u64 Time::GetSystemTimeMS () const
     return ms;
 }
 
-void Time::SystemSleepMS ( u32 ms ) const
+void Time::systemSleepMS ( u32 ms ) const
 {
     usleep ( ms * 1000 );
 }
 
-void Time::SleepMS ( u32 ms ) const
+void Time::sleepMS ( u32 ms ) const
 {
-    SystemSleepMS ( ms / m_timestep );
+    systemSleepMS ( ms / m_timestep );
 }
 
-void Time::Tick ()
+void Time::tick ()
 {
-    u64 systemTime = GetSystemTimeMS ();
+    u64 systemTime = getSystemTimeMS ();
     float timeSpent = ( systemTime - m_lastSnapshot ) * m_timestep + m_waste;
     m_lastSnapshot = systemTime;
     u64 timeSpentInt = floor(timeSpent);

@@ -35,19 +35,19 @@ public:
     
     //--------------------------------------------------------------------------
     // Inherited methods from IComponent
-    void        PreRender               ( Renderer::IRenderer* renderer );
+    void        preRender               ( Renderer::IRenderer* renderer );
     
     //--------------------------------------------------------------------------
     // FindTheModelCamera
     // Finds the camera model in the l3m model.
 private:
-    void        FindTheModelCamera      ( const l3m::Model* model );
+    void        findTheModelCamera      ( const l3m::Model* model );
     
     //--------------------------------------------------------------------------
     // DestroyTheCamera
     // Destroys the camera object.
 private:
-    void        DestroyTheCamera        ();
+    void        destroyTheCamera        ();
     
     //--------------------------------------------------------------------------
     // Class private attributes

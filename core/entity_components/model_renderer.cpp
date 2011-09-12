@@ -30,14 +30,14 @@ ModelRenderer::ModelRenderer ( l3m::Model* model )
     m_scene = 0;
     m_model = model;
     if ( m_model )
-        Initialize ();
+        initialize ();
 }
 
 ModelRenderer::~ModelRenderer ()
 {
 }
 
-void ModelRenderer::Render ( Renderer::IRenderer* renderer, const Transform& transform )
+void ModelRenderer::render ( Renderer::IRenderer* renderer, const Transform& transform )
 {
     if ( !m_model || !m_scene )
         return;
@@ -47,11 +47,11 @@ void ModelRenderer::Render ( Renderer::IRenderer* renderer, const Transform& tra
           ++iter )
     {
         Node& node = *iter;
-        renderer->Render( node.geometry, transform * node.transform );
+        renderer->render( node.geometry, transform * node.transform );
     }
 }
 
-static Renderer::Geometry* FindGeometryByURL ( l3m::Model* model, const std::string& url )
+static Renderer::Geometry* findGeometryByURL ( l3m::Model* model, const std::string& url )
 {
     const l3m::Model::componentVector& components = model->components ();
     for ( l3m::Model::componentVector::const_iterator iter = components.begin();
@@ -69,7 +69,7 @@ static Renderer::Geometry* FindGeometryByURL ( l3m::Model* model, const std::str
     return 0;
 }
 
-void ModelRenderer::Initialize ()
+void ModelRenderer::initialize ()
 {
     if ( !m_model )
         return;
@@ -99,7 +99,7 @@ void ModelRenderer::Initialize ()
         {
             const l3m::Scene::Node& node = *iter;
             const std::string& url = node.url;
-            Renderer::Geometry* g = FindGeometryByURL(m_model, url);
+            Renderer::Geometry* g = findGeometryByURL(m_model, url);
             if ( g != 0 )
             {
                 Node newNode;

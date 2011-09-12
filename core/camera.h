@@ -39,25 +39,25 @@ public:
                         Camera          ();
     virtual             ~Camera         ();
     
-    void                SetOrthographic ( const f32& left, const f32& right,
+    void                setOrthographic ( const f32& left, const f32& right,
                                           const f32& top,  const f32& bottom,
                                           const f32& near, const f32& far );
-    void                SetPerspective  ( const f32& fovy, const f32& aspect,
+    void                setPerspective  ( const f32& fovy, const f32& aspect,
                                           const f32& near, const f32& far );
     
-    void                SetCorners      ( const f32& left, const f32& right,
+    void                setCorners      ( const f32& left, const f32& right,
                                           const f32& top,  const f32& bottom );
-    void                SetNearFar      ( const f32& near, const f32& far );
-    void                SetFovy         ( const f32& fovy );
-    void                SetAspect       ( const f32& aspect );
+    void                setNearFar      ( const f32& near, const f32& far );
+    void                setFovy         ( const f32& fovy );
+    void                setAspect       ( const f32& aspect );
     
-    const Matrix&       GetProjection   () const { return m_projection; }
+    const Matrix&       getProjection   () const { return m_projection; }
     
-    virtual void        Tick            () { Transformable::Tick(); }
+    virtual void        tick            () { Transformable::tick(); }
     
 private:
-    void                MakeOrthographicMatrix  ();
-    void                MakePerspectiveMatrix   ();
+    void                makeOrthographicMatrix  ();
+    void                makePerspectiveMatrix   ();
     
 private:
     Matrix      m_projection;

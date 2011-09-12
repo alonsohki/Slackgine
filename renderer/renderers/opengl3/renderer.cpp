@@ -41,7 +41,7 @@ OpenGL3_Renderer::~OpenGL3_Renderer()
     }
 }
 
-bool OpenGL3_Renderer::Initialize()
+bool OpenGL3_Renderer::initialize()
 {
     if ( m_initialized )
         return true;
@@ -113,7 +113,7 @@ bool OpenGL3_Renderer::Initialize()
     return m_initialized;
 }
 
-void OpenGL3_Renderer::SetCamera ( const Matrix& matProjection, const Matrix& matLookat )
+void OpenGL3_Renderer::setCamera ( const Matrix& matProjection, const Matrix& matLookat )
 {
     // Change the basis to the OpenGL basis
     static const f32 m [ 16 ] = {
@@ -139,7 +139,7 @@ void OpenGL3_Renderer::SetCamera ( const Matrix& matProjection, const Matrix& ma
     m_matLookat = s_matBasisChanger * matLookat;
 }
 
-bool OpenGL3_Renderer::BeginScene ( )
+bool OpenGL3_Renderer::beginScene ( )
 {
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     eglGetError();
@@ -150,12 +150,12 @@ bool OpenGL3_Renderer::BeginScene ( )
     glEnable ( GL_DEPTH_TEST );
     glCullFace ( GL_BACK );
     
-    SetCamera ( IdentityMatrix(), IdentityMatrix() );
+    setCamera ( IdentityMatrix(), IdentityMatrix() );
     
     return true;
 }
 
-bool OpenGL3_Renderer::Render ( Geometry* geometry, const Transform& transform )
+bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform )
 {
     if ( !geometry->initialized() )
         if ( !geometry->Initialize() )
@@ -212,7 +212,7 @@ bool OpenGL3_Renderer::Render ( Geometry* geometry, const Transform& transform )
     return true;
 }
 
-bool OpenGL3_Renderer::EndScene()
+bool OpenGL3_Renderer::endScene()
 {
     // Draw the debug coordinate system
     glDisable ( GL_LIGHTING );

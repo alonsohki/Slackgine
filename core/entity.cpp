@@ -20,27 +20,46 @@
 #include <set>
 #include "entity.h"
 #include "model_renderer_factory.h"
+#include "slackgine.h"
 
 using namespace Core;
 
-Entity::Entity ( l3m::Model* pModel )
-: Transformable ( IdentityTransform() )
+Entity::Entity ( l3m::Model* pModel, Entity* parent )
+: m_parent ( 0 )
+, Transformable ( IdentityTransform() )
 , m_modelRenderer ( 0 )
 {
-    SetModel ( pModel );
+    setParent ( parent );
+    setModel ( pModel );
+}
+
+Entity::Entity ( Entity* parent )
+: m_parent ( 0 )
+, Transformable ( IdentityTransform() )
+, m_modelRenderer ( 0 )
+{
+    setParent ( parent );
 }
 
 Entity::~Entity()
 {
+    // Recursively delete all the child entities
+    for ( EntityVector::iterator iter = m_children.begin(); iter != m_children.end(); ++iter )
+        delete *iter;
+    
+    // Unlink us from our parent
+    if ( m_parent )
+        m_parent->unlinkChild( this );
+
     // Find all the -unique- components.
     std::set<Entities::IComponent*> knownComponents;
-    for ( componentVector::const_iterator iter = m_tickableComponents.begin();
+    for ( ComponentVector::const_iterator iter = m_tickableComponents.begin();
           iter != m_tickableComponents.end();
           ++iter )
     {
         knownComponents.insert ( *iter );
     }
-    for ( componentVector::const_iterator iter = m_renderableComponents.begin();
+    for ( ComponentVector::const_iterator iter = m_renderableComponents.begin();
           iter != m_renderableComponents.end();
           ++iter )
     {
@@ -60,7 +79,41 @@ Entity::~Entity()
         ModelRendererFactory::Release ( m_modelRenderer );
 }
 
-void Entity::SetModel ( l3m::Model* pModel )
+void Entity::unlinkChild ( Entity* entity )
+{
+    for ( EntityVector::iterator iter = m_children.begin();
+          iter != m_children.end();
+          ++iter )
+    {
+        if ( *iter == entity )
+        {
+            m_children.erase ( iter );
+            break;
+        }
+    }
+}
+
+void Entity::linkChild ( Entity* entity )
+{
+    if ( entity != this )
+        m_children.push_back ( entity );
+}
+
+void Entity::setParent ( Entity* parent )
+{
+    // If there was a previously set parent, unlink from it.
+    if ( m_parent != 0 )
+        m_parent->unlinkChild ( this );
+    
+    // Assign the new parent
+    m_parent = parent;
+    
+    // Relink to the new parent
+    if ( m_parent != 0 )
+        m_parent->linkChild ( this );
+}
+
+void Entity::setModel ( l3m::Model* pModel )
 {
     if ( m_modelRenderer != 0 )
     {
@@ -75,43 +128,61 @@ void Entity::SetModel ( l3m::Model* pModel )
     }
 }
 
-void Entity::Tick ()
+void Entity::tick ()
 {
-    Transformable::Tick ();
+    Transformable::tick ();
 
-    for ( componentVector::const_iterator iter = m_tickableComponents.begin();
+    for ( ComponentVector::const_iterator iter = m_tickableComponents.begin();
           iter != m_tickableComponents.end();
           ++iter )
     {
-        (*iter)->Tick ();
+        (*iter)->tick ();
+    }
+    
+    // Tick all the child entities
+    for ( EntityVector::iterator iter = m_children.begin();
+          iter != m_children.end();
+          ++iter )
+    {
+        (*iter)->tick ();
     }
 }
 
-void Entity::Render ( Renderer::IRenderer* renderer )
+void Entity::render ( Renderer::IRenderer* renderer )
 {
-    renderer->PushState ();
+    // Render all the child entities
+    for ( EntityVector::iterator iter = m_children.begin();
+          iter != m_children.end();
+          ++iter )
+    {
+        (*iter)->render ( renderer );
+    }
+    
+    // Render this
+    renderer->pushState ();
 
-    for ( componentVector::const_iterator iter = m_renderableComponents.begin();
+    for ( ComponentVector::const_iterator iter = m_renderableComponents.begin();
           iter != m_renderableComponents.end();
           ++iter )
     {
-        (*iter)->PreRender( renderer );
-        (*iter)->Render ( renderer );
+        (*iter)->preRender( renderer );
+        (*iter)->render ( renderer );
     }
     
-    m_modelRenderer->Render ( renderer, transform() );
+    if ( m_modelRenderer != 0 )
+        m_modelRenderer->render ( renderer, transform() );
     
-    for ( componentVector::const_iterator iter = m_renderableComponents.begin();
+    for ( ComponentVector::const_iterator iter = m_renderableComponents.begin();
       iter != m_renderableComponents.end();
       ++iter )
     {
-        (*iter)->PostRender( renderer );
+        (*iter)->postRender( renderer );
     }
     
-    renderer->PopState ();
+    renderer->popState ();
 }
 
-bool Entity::AddComponent( Entities::IComponent* component )
+bool Entity::addComponent( Entities::IComponent* component )
 {
     if ( !component->isTickable() && !component->isRenderable() )
         return false;

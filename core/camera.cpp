@@ -23,14 +23,14 @@ using namespace Core;
 
 Camera::Camera ()
 {
-    SetOrthographic ( -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f );
+    setOrthographic ( -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f );
 }
 
 Camera::~Camera ()
 {
 }
 
-void Camera::SetOrthographic ( const float& left, const float& right,
+void Camera::setOrthographic ( const float& left, const float& right,
                                const float& top, const float& bottom,
                                const float& near, const float& far )
 {
@@ -41,10 +41,10 @@ void Camera::SetOrthographic ( const float& left, const float& right,
     m_orthographic.bottom = bottom;
     m_orthographic.near = near;
     m_orthographic.far = far;
-    MakeOrthographicMatrix ();
+    makeOrthographicMatrix ();
 }
 
-void Camera::SetPerspective ( const float& fovy, const float& aspect,
+void Camera::setPerspective ( const float& fovy, const float& aspect,
                               const float& near, const float& far )
 {
     m_type = CAMERA_PERSPECTIVE;
@@ -52,10 +52,10 @@ void Camera::SetPerspective ( const float& fovy, const float& aspect,
     m_perspective.aspect = aspect;
     m_perspective.near = near;
     m_perspective.far = far;
-    MakePerspectiveMatrix ();
+    makePerspectiveMatrix ();
 }
 
-void Camera::SetCorners (const f32& left, const f32& right, const f32& top, const f32& bottom)
+void Camera::setCorners (const f32& left, const f32& right, const f32& top, const f32& bottom)
 {
     if ( m_type == CAMERA_ORTHOGRAPHIC )
     {
@@ -63,45 +63,45 @@ void Camera::SetCorners (const f32& left, const f32& right, const f32& top, cons
         m_orthographic.right = right;
         m_orthographic.top = top;
         m_orthographic.bottom = bottom;
-        MakeOrthographicMatrix ();
+        makeOrthographicMatrix ();
     }
 }
 
-void Camera::SetNearFar (const f32& near, const f32& far)
+void Camera::setNearFar (const f32& near, const f32& far)
 {
     if ( m_type == CAMERA_ORTHOGRAPHIC )
     {
         m_orthographic.near = near;
         m_orthographic.far = far;
-        MakeOrthographicMatrix ();
+        makeOrthographicMatrix ();
     }
     else
     {
         m_perspective.near = near;
         m_perspective.far = far;
-        MakePerspectiveMatrix ();
+        makePerspectiveMatrix ();
     }
 }
 
-void Camera::SetFovy (const f32& fovy)
+void Camera::setFovy (const f32& fovy)
 {
     if ( m_type == CAMERA_PERSPECTIVE )
     {
         m_perspective.fovy = fovy;
-        MakePerspectiveMatrix ();
+        makePerspectiveMatrix ();
     }
 }
 
-void Camera::SetAspect (const f32& aspect)
+void Camera::setAspect (const f32& aspect)
 {
     if ( m_type == CAMERA_PERSPECTIVE )
     {
         m_perspective.aspect = aspect;
-        MakePerspectiveMatrix ();
+        makePerspectiveMatrix ();
     }
 }
 
-void Camera::MakeOrthographicMatrix ()
+void Camera::makeOrthographicMatrix ()
 {
     m_projection = OrthographicMatrix ( m_orthographic.left,
                                         m_orthographic.right,
@@ -111,7 +111,7 @@ void Camera::MakeOrthographicMatrix ()
                                         m_orthographic.far );
 }
 
-void Camera::MakePerspectiveMatrix ()
+void Camera::makePerspectiveMatrix ()
 {
     m_projection = PerspectiveMatrix ( m_perspective.aspect,
                                        m_perspective.fovy,

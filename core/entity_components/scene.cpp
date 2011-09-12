@@ -35,10 +35,10 @@ Scene::Scene ()
 
 Scene::~Scene()
 {
-    DestroyTheCamera ();
+    destroyTheCamera ();
 }
 
-void Scene::DestroyTheCamera ()
+void Scene::destroyTheCamera ()
 {
     if ( m_camera != 0 )
     {
@@ -47,14 +47,14 @@ void Scene::DestroyTheCamera ()
     }
 }
 
-void Scene::FindTheModelCamera ( const l3m::Model* model )
+void Scene::findTheModelCamera ( const l3m::Model* model )
 {
     if ( m_model == model )
         return;
     
     m_model = model;
     if ( !m_model )
-        return DestroyTheCamera ();
+        return destroyTheCamera ();
     
     // Find the scene component
     l3m::Scene* scene = 0;
@@ -72,7 +72,7 @@ void Scene::FindTheModelCamera ( const l3m::Model* model )
     
     // Make sure that there is a scene
     if ( !scene )
-        return DestroyTheCamera ();
+        return destroyTheCamera ();
 
     // Find the scene camera
     if ( scene->camera() != "" )
@@ -91,7 +91,7 @@ void Scene::FindTheModelCamera ( const l3m::Model* model )
                     {
                         case l3m::Camera::CAMERA_ORTHOGRAPHIC:
                             m_camera = new Camera ();
-                            m_camera->SetOrthographic( cam->orthographicData().left,
+                            m_camera->setOrthographic( cam->orthographicData().left,
                                                        cam->orthographicData().right,
                                                        cam->orthographicData().top,
                                                        cam->orthographicData().bottom,
@@ -100,7 +100,7 @@ void Scene::FindTheModelCamera ( const l3m::Model* model )
                             break;
                         case l3m::Camera::CAMERA_PERSPECTIVE:
                             m_camera = new Camera ();
-                            m_camera->SetPerspective( cam->perspectiveData().fov,
+                            m_camera->setPerspective( cam->perspectiveData().fov,
                                                       cam->perspectiveData().aspect,
                                                       cam->perspectiveData().near,
                                                       cam->perspectiveData().far );
@@ -120,16 +120,16 @@ void Scene::FindTheModelCamera ( const l3m::Model* model )
     }
 }
 
-void Scene::PreRender ( Renderer::IRenderer* renderer )
+void Scene::preRender ( Renderer::IRenderer* renderer )
 {
     if ( !parent() )
         return;
     
-    FindTheModelCamera ( parent()->GetModel() );
+    findTheModelCamera ( parent()->getModel() );
     if ( m_camera != 0 )
     {
-        Matrix projection = m_camera->GetProjection();
+        Matrix projection = m_camera->getProjection();
         LookatMatrix lookAt ( m_camera->transform().orientation(), m_camera->transform().translation() );
-        renderer->SetCamera ( projection, lookAt );
+        renderer->setCamera ( projection, lookAt );
     }
 }

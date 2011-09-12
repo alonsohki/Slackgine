@@ -108,45 +108,45 @@ private:
                         ~ModelManager                   ();
     
 public:
-    bool                AddLookupPath                   ( const std::string& path );
-    void                SetMaxMemory                    ( u32 limit ) { m_maxMemory = limit; }
-    u32                 GetMaxMemory                    () const { return m_maxMemory; }
+    bool                addLookupPath                   ( const std::string& path );
+    void                setMaxMemory                    ( u32 limit ) { m_maxMemory = limit; }
+    u32                 getMaxMemory                    () const { return m_maxMemory; }
     
-    bool                Request                         ( const std::string& model, RequestCallback callback, Priority priority = PRIORITY_NORMAL );
-    l3m::Model*         RequestBlocking                 ( const std::string& model );
-    bool                CancelRequest                   ( const std::string& model, RequestCallback callback );
-    bool                Release                         ( const l3m::Model* model );
-    bool                ReleaseAllReferences            ( const l3m::Model* model );
+    bool                request                         ( const std::string& model, RequestCallback callback, Priority priority = PRIORITY_NORMAL );
+    l3m::Model*         requestBlocking                 ( const std::string& model );
+    bool                cancelRequest                   ( const std::string& model, RequestCallback callback );
+    bool                release                         ( const l3m::Model* model );
+    bool                releaseAllReferences            ( const l3m::Model* model );
 
-    void                LoadAllRequestedModels          ();
-    void                ClearUnlinkedModels             ();
+    void                loadAllRequestedModels          ();
+    void                clearUnlinkedModels             ();
     
-    void                Tick                            ();
+    void                tick                            ();
     
 private:
     // Request management functions
-    bool                InternalRequest                 ( const std::string& model, RequestCallback callback, Priority priority );
-    l3m::Model*         InternalRequestBlocking         ( const std::string& model );
-    bool                InternalCancelRequest           ( const std::string& model, RequestCallback callback );
+    bool                internalRequest                 ( const std::string& model, RequestCallback callback, Priority priority );
+    l3m::Model*         internalRequestBlocking         ( const std::string& model );
+    bool                internalCancelRequest           ( const std::string& model, RequestCallback callback );
     
-    bool                ProcessOne                      ( ModelNode** nodeptr = 0 );
-    ModelNode*          CreateModelNode                 ( const std::string& model );
-    ModelNode*          FindModelNode                   ( const std::string& model );
-    ModelNode*          FindModelNode                   ( const l3m::Model* model );
-    bool                GetModelAccessPath              ( const std::string& model, std::string* path = 0 ) const;
-    bool                CanModelBeLoaded                ( const std::string& model ) const;
-    void                ProcessRequest                  ( ModelNode* req );
-    void                DispatchRequest                 ( ModelNode* req );
+    bool                processOne                      ( ModelNode** nodeptr = 0 );
+    ModelNode*          createModelNode                 ( const std::string& model );
+    ModelNode*          findModelNode                   ( const std::string& model );
+    ModelNode*          findModelNode                   ( const l3m::Model* model );
+    bool                getModelAccessPath              ( const std::string& model, std::string* path = 0 ) const;
+    bool                canModelBeLoaded                ( const std::string& model ) const;
+    void                processRequest                  ( ModelNode* req );
+    void                dispatchRequest                 ( ModelNode* req );
 #if USE_THREADS
-    void*               RequestThread                   ( Thread*, void* );
-    void                Lock                            ();
-    void                Unlock                          ();
+    void*               requestThread                   ( Thread*, void* );
+    void                lock                            ();
+    void                unlock                          ();
 #endif
-    void                Unlink                          ( ModelNode* node, bool toTheGraveyard = true );
-    bool                InternalRelease                 ( ModelNode* node );
-    void                MoveFromGraveyard               ( ModelNode* node );
-    void                CollectGarbage                  ();
-    bool                MakeDependencyTracker           ( ModelNode* node, const std::string& dep );
+    void                unlink                          ( ModelNode* node, bool toTheGraveyard = true );
+    bool                internalRelease                 ( ModelNode* node );
+    void                moveFromGraveyard               ( ModelNode* node );
+    void                collectGarbage                  ();
+    bool                makeDependencyTracker           ( ModelNode* node, const std::string& dep );
     
     
 private:

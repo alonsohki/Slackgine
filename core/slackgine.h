@@ -24,30 +24,52 @@
 #include "shared/platform.h"
 #include "model_manager.h"
 #include "time.h"
+#include "world.h"
 
 namespace Core
 {
     
 class Slackgine
 {
+    //--------------------------------------------------------------------------
+    // Context management
+    // When a Slackgine instance gets ticket, the current thread context is set
+    // to that Slackgine instance, doing the subsequent calls to the slackgine
+    // use that context through getInstance().
+    // TODO: Make it thread safe.
+private:
+    static Slackgine*           ms_context;
+    static void                 setContext              ( Slackgine* );
+public:
+    static Slackgine*           getInstance             ()
+    {
+        return ms_context;
+    }
+
 public:
                                 Slackgine               ();
                                 ~Slackgine              ();
 
-    bool                        Initialize              ();
+    bool                        initialize              ();
     
-    void                        Tick                    ();
+    void                        tick                    ();
+    bool                        render                  ();
                 
-    Renderer::IRenderer*        GetRenderer             () { return m_renderer; }
-    ModelManager&               GetModelManager         () { return m_modelManager; }
-    TextureManager&             GetTextureManager       () { return m_textureManager; }
-    Time&                       GetTime                 () { return m_time; }
+    Renderer::IRenderer*        getRenderer             () { return m_renderer; }
+    ModelManager&               getModelManager         () { return m_modelManager; }
+    TextureManager&             getTextureManager       () { return m_textureManager; }
+    Time&                       getTime                 () { return m_time; }
+    World&                      getWorld                () { return m_world; }
+    
+    void                        getError                ( char* dest ) const;
     
 private:
     Renderer::IRenderer*        m_renderer;
     Time                        m_time;
     TextureManager              m_textureManager;
     ModelManager                m_modelManager;
+    World                       m_world;
+    char                        m_error [ 256 ];
 };
 
 }

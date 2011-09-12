@@ -30,26 +30,40 @@ namespace Core {
 
 class Entity : public Transformable
 {
-public:
-    typedef std::vector < Entities::IComponent* > componentVector;
+    friend class World;
     
 public:
-                                Entity          ( l3m::Model* pModel = 0 );
+    typedef std::vector < Entities::IComponent* > ComponentVector;
+    typedef std::vector < Entity* > EntityVector;
+    
+public:
+                                Entity          ( l3m::Model* pModel = 0, Entity* parent = 0 );
+                                Entity          ( Entity* parent );
     virtual                     ~Entity         ();
     
-    l3m::Model*                 GetModel        () const { return m_model; }
-    void                        SetModel        ( l3m::Model* pModel );
+    void                        setParent       ( Entity* parent );
     
-    void                        Tick            ();
-    void                        Render          ( Renderer::IRenderer* renderer );
+    l3m::Model*                 getModel        () const { return m_model; }
+    void                        setModel        ( l3m::Model* pModel );
     
-    bool                        AddComponent    ( Entities::IComponent* component );
+    void                        tick            ();
+    void                        render          ( Renderer::IRenderer* renderer );
+    
+    bool                        addComponent    ( Entities::IComponent* component );
+    
+private:
+    //--------------------------------------------------------------------------
+    // Child entities linkage.
+    void                        linkChild       ( Entity* entity );
+    void                        unlinkChild     ( Entity* entity );
 
 private:
+    Entity*                     m_parent;
+    EntityVector                m_children;
     l3m::Model*                 m_model;
     
-    componentVector             m_tickableComponents;
-    componentVector             m_renderableComponents;
+    ComponentVector             m_tickableComponents;
+    ComponentVector             m_renderableComponents;
     Entities::ModelRenderer*    m_modelRenderer;
 };
 

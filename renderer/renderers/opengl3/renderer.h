@@ -43,16 +43,16 @@ public:
                 OpenGL3_Renderer        ();
                 ~OpenGL3_Renderer       ();
     
-    bool        Initialize              ();
+    bool        initialize              ();
     
-    void        SetCamera               ( const Matrix& matProjection = IdentityMatrix(), const Matrix& matLookat = IdentityMatrix() );
-    bool        BeginScene              ();
-    void        PushState               ();
-    bool        Render                  ( Geometry* geometry, const Transform& transform = IdentityTransform() );
-    void        PopState                ();
-    bool        EndScene                ();
+    void        setCamera               ( const Matrix& matProjection = IdentityMatrix(), const Matrix& matLookat = IdentityMatrix() );
+    bool        beginScene              ();
+    void        pushState               ();
+    bool        render                  ( Geometry* geometry, const Transform& transform = IdentityTransform() );
+    void        popState                ();
+    bool        endScene                ();
     
-    void        GetError                ( char* dest ) const { strcpy(dest, m_error); }
+    void        getError                ( char* dest ) const { strcpy(dest, m_error); }
 };
 
 }

@@ -36,6 +36,8 @@
     <itemPath>time.h</itemPath>
     <itemPath>transformable.cpp</itemPath>
     <itemPath>transformable.h</itemPath>
+    <itemPath>world.cpp</itemPath>
+    <itemPath>world.h</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>

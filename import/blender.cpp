@@ -16,7 +16,6 @@
 // PURPOSE:     Import models from .blend files.
 // AUTHORS:     Alberto Alonso <rydencillo@gmail.com>
 //
-
 #include <algorithm>
 #include <set>
 #include <string>
@@ -570,13 +569,15 @@ static bool ImportImages ( ::Scene* sce, const char* filename, l3m::Model* model
 
                             if (std::find(mImages.begin(), mImages.end(), name) == mImages.end())
                             {
-                                l3m::Texture* tex = model->CreateComponent<l3m::Texture>("texture");
-                                tex->id() = name;
-                                Pixmap& pix = tex->pixmap();
+                                Pixmap pix;
                                 if ( !pix.Load(abs) )
                                 {
-                                    return false;
+                                    fprintf ( stderr, "Warning: Cannot open the image: %s\n", abs );
+                                    continue;
                                 }
+                                l3m::Texture* tex = model->CreateComponent<l3m::Texture>("texture");
+                                tex->id() = name;
+                                tex->pixmap() = pix;
                                 mImages.push_back(name);
                             }
                         }
@@ -729,11 +730,17 @@ static bool import_blender ( ::Scene* sce, const char* filename, l3m::Model* mod
     // Import the visual scene
     l3m::Scene* modelScene = model->CreateComponent<l3m::Scene>("scene");
     if ( !ImportScene ( model, sce, modelScene ) )
+    {
+        fprintf ( stderr, "Error importing the visual scene\n" );
         return false;
+    }
     
     // Import the images
     if ( !ImportImages ( sce, filename, model ) )
+    {
+        fprintf ( stderr, "Error importing the scene images\n" );
         return false;
+    }
 
     return true;
 }
@@ -743,7 +750,10 @@ bool import_blender ( int argc, const char** argv, const char* file, l3m::Model*
     startup_blender(argc, argv);
     BlendFileData* data = BLO_read_from_file(file, NULL);
     if ( data == 0 )
+    {
+        fprintf ( stderr, "Unable to read the blender file.\n" );
         return false;
+    }
     
     return import_blender ( data->curscene, file, model );
 }
