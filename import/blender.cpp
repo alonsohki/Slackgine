@@ -661,7 +661,14 @@ static bool ImportCamera ( l3m::Camera* cam, ::Object* ob, ::Scene* sce )
             cam->perspectiveData().far = c->clipend;
             break;
         case CAM_ORTHO:
-            fprintf ( stderr, "WARNING: Importing unsupported orthographic camera: %s\n", cam->name().c_str() );
+            cam->type() = l3m::Camera::CAMERA_ORTHOGRAPHIC;
+            cam->orthographicData().left = -c->ortho_scale * (float)(sce->r.xsch)/(float)(sce->r.ysch);
+            cam->orthographicData().right = -cam->orthographicData().left;
+            cam->orthographicData().top = c->ortho_scale;
+            cam->orthographicData().bottom = -c->ortho_scale;
+            cam->orthographicData().near = c->clipsta;
+            cam->orthographicData().far = c->clipend;
+            break;
         default:
             cam->type() = l3m::Camera::CAMERA_UNKNOWN;
             break;

@@ -42,7 +42,6 @@ void Camera::SetOrthographic ( const float& left, const float& right,
     m_orthographic.near = near;
     m_orthographic.far = far;
     MakeOrthographicMatrix ();
-    
 }
 
 void Camera::SetPerspective ( const float& fovy, const float& aspect,
