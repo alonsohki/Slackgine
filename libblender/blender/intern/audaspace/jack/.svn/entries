@@ -1,15 +1,15 @@
 10
 
 dir
-38518
+40188
 https://svn.blender.org/svnroot/bf-blender/trunk/blender/intern/audaspace/jack
 https://svn.blender.org/svnroot/bf-blender
 
 
 
-2011-02-25T10:21:56.373241Z
-35141
-jesterking
+2011-08-30T09:15:55.930526Z
+39792
+nexyon
 
 
 
@@ -32,11 +32,11 @@ file
 
 
 
-2011-07-19T21:16:20.000000Z
-5ce5c02154e1d83e132c77478a9a787f
-2011-02-25T10:21:56.373241Z
-35141
-jesterking
+2011-09-13T17:04:20.519614Z
+88314d927131b71824aa5ab95640c663
+2011-08-30T09:15:55.930526Z
+39792
+nexyon
 has-props
 
 
@@ -58,7 +58,7 @@ has-props
 
 
 
-9023
+8995
 
 AUD_JackDevice.h
 file
@@ -66,11 +66,11 @@ file
 
 
 
-2011-07-19T21:16:20.000000Z
-07daa71ce923d1a727ebfeeb2b8e120b
-2011-02-25T10:21:56.373241Z
-35141
-jesterking
+2011-09-13T17:04:20.519614Z
+50e0f06f97dafdedaeb5fca12345a43c
+2011-08-30T09:15:55.930526Z
+39792
+nexyon
 has-props
 
 
@@ -92,5 +92,5 @@ has-props
 
 
 
-3669
+4392
 

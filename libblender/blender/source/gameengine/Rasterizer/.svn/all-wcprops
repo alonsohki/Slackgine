@@ -1,7 +1,7 @@
 K 25
 svn:wc:ra_dav:version-url
 V 77
-/svnroot/bf-blender/!svn/ver/38443/trunk/blender/source/gameengine/Rasterizer
+/svnroot/bf-blender/!svn/ver/40080/trunk/blender/source/gameengine/Rasterizer
 END
 RAS_ICanvas.h
 K 25
@@ -19,7 +19,7 @@ RAS_MaterialBucket.cpp
 K 25
 svn:wc:ra_dav:version-url
 V 100
-/svnroot/bf-blender/!svn/ver/35174/trunk/blender/source/gameengine/Rasterizer/RAS_MaterialBucket.cpp
+/svnroot/bf-blender/!svn/ver/39683/trunk/blender/source/gameengine/Rasterizer/RAS_MaterialBucket.cpp
 END
 RAS_Polygon.h
 K 25
@@ -61,7 +61,7 @@ RAS_2DFilterManager.cpp
 K 25
 svn:wc:ra_dav:version-url
 V 101
-/svnroot/bf-blender/!svn/ver/35174/trunk/blender/source/gameengine/Rasterizer/RAS_2DFilterManager.cpp
+/svnroot/bf-blender/!svn/ver/39885/trunk/blender/source/gameengine/Rasterizer/RAS_2DFilterManager.cpp
 END
 RAS_TexVert.h
 K 25
@@ -73,7 +73,7 @@ RAS_IRasterizer.h
 K 25
 svn:wc:ra_dav:version-url
 V 95
-/svnroot/bf-blender/!svn/ver/35390/trunk/blender/source/gameengine/Rasterizer/RAS_IRasterizer.h
+/svnroot/bf-blender/!svn/ver/40080/trunk/blender/source/gameengine/Rasterizer/RAS_IRasterizer.h
 END
 RAS_Deformer.h
 K 25
@@ -127,7 +127,7 @@ RAS_IPolygonMaterial.cpp
 K 25
 svn:wc:ra_dav:version-url
 V 102
-/svnroot/bf-blender/!svn/ver/35390/trunk/blender/source/gameengine/Rasterizer/RAS_IPolygonMaterial.cpp
+/svnroot/bf-blender/!svn/ver/39683/trunk/blender/source/gameengine/Rasterizer/RAS_IPolygonMaterial.cpp
 END
 RAS_FramingManager.h
 K 25
@@ -145,7 +145,7 @@ RAS_IPolygonMaterial.h
 K 25
 svn:wc:ra_dav:version-url
 V 100
-/svnroot/bf-blender/!svn/ver/35072/trunk/blender/source/gameengine/Rasterizer/RAS_IPolygonMaterial.h
+/svnroot/bf-blender/!svn/ver/39683/trunk/blender/source/gameengine/Rasterizer/RAS_IPolygonMaterial.h
 END
 RAS_texmatrix.cpp
 K 25
@@ -157,7 +157,7 @@ RAS_CameraData.h
 K 25
 svn:wc:ra_dav:version-url
 V 94
-/svnroot/bf-blender/!svn/ver/35072/trunk/blender/source/gameengine/Rasterizer/RAS_CameraData.h
+/svnroot/bf-blender/!svn/ver/39883/trunk/blender/source/gameengine/Rasterizer/RAS_CameraData.h
 END
 CMakeLists.txt
 K 25

@@ -1,5 +1,5 @@
 /*
-* $Id: MOD_smoke.c 37319 2011-06-08 16:00:52Z campbellbarton $
+* $Id: MOD_smoke.c 39342 2011-08-12 18:11:22Z blendix $
 *
 * ***** BEGIN GPL LICENSE BLOCK *****
 *
@@ -189,4 +189,5 @@ ModifierTypeInfo modifierType_Smoke = {
 	/* dependsOnNormals */	NULL,
 	/* foreachObjectLink */ NULL,
 	/* foreachIDLink */     foreachIDLink,
+	/* foreachTexLink */    NULL
 };

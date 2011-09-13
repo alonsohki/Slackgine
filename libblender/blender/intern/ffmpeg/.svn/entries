@@ -1,15 +1,15 @@
 10
 
 dir
-38518
+40188
 https://svn.blender.org/svnroot/bf-blender/trunk/blender/intern/ffmpeg
 https://svn.blender.org/svnroot/bf-blender
 
 
 
-2011-07-17T10:28:31.596571Z
-38446
-jiri
+2011-08-28T14:46:03.431450Z
+39749
+schlaile
 
 
 
@@ -32,11 +32,11 @@ file
 
 
 
-2011-07-19T21:16:26.000000Z
-31f631c23319f480ded2edc7742079bd
-2011-07-17T10:28:31.596571Z
-38446
-jiri
+2011-09-13T17:04:42.670684Z
+2df03fd76c33f219656635b6203ac8aa
+2011-08-28T14:46:03.431450Z
+39749
+schlaile
 has-props
 
 
@@ -58,5 +58,5 @@ has-props
 
 
 
-4336
+4612
 

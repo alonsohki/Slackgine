@@ -1,7 +1,7 @@
 /* particle.c
  *
  *
- * $Id: particle.c 38287 2011-07-10 17:30:31Z jhk $
+ * $Id: particle.c 40147 2011-09-12 04:14:12Z campbellbarton $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -2090,10 +2090,10 @@ void precalc_guides(ParticleSimulationData *sim, ListBase *effectors)
 			data = eff->guide_data + p;
 
 			VECSUB(efd.vec_to_point, state.co, eff->guide_loc);
-			VECCOPY(efd.nor, eff->guide_dir);
+			copy_v3_v3(efd.nor, eff->guide_dir);
 			efd.distance = len_v3(efd.vec_to_point);
 
-			VECCOPY(data->vec_to_point, efd.vec_to_point);
+			copy_v3_v3(data->vec_to_point, efd.vec_to_point);
 			data->strength = effector_falloff(eff, &efd, &point, weights);
 		}
 	}
@@ -3161,7 +3161,7 @@ void psys_cache_edit_paths(Scene *scene, Object *ob, PTCacheEdit *edit, float cf
 			}
 			else {
 				ca->vel[0] = ca->vel[1] = 0.0f;
-				ca->vel[1] = 1.0f;
+				ca->vel[2] = 1.0f;
 			}
 
 			/* selection coloring in edit mode */
@@ -4389,6 +4389,7 @@ void psys_get_dupli_path_transform(ParticleSimulationData *sim, ParticleData *pa
 	copy_m3_m4(nmat, ob->imat);
 	transpose_m3(nmat);
 	mul_m3_v3(nmat, nor);
+	normalize_v3(nor);
 
 	/* make sure that we get a proper side vector */
 	if(fabs(dot_v3v3(nor,vec))>0.999999) {

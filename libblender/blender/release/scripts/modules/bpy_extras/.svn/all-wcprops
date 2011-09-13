@@ -1,41 +1,41 @@
 K 25
 svn:wc:ra_dav:version-url
 V 83
-/svnroot/bf-blender/!svn/ver/38466/trunk/blender/release/scripts/modules/bpy_extras
+/svnroot/bf-blender/!svn/ver/39716/trunk/blender/release/scripts/modules/bpy_extras
 END
 mesh_utils.py
 K 25
 svn:wc:ra_dav:version-url
 V 97
-/svnroot/bf-blender/!svn/ver/38352/trunk/blender/release/scripts/modules/bpy_extras/mesh_utils.py
+/svnroot/bf-blender/!svn/ver/39716/trunk/blender/release/scripts/modules/bpy_extras/mesh_utils.py
 END
 __init__.py
 K 25
 svn:wc:ra_dav:version-url
 V 95
-/svnroot/bf-blender/!svn/ver/36784/trunk/blender/release/scripts/modules/bpy_extras/__init__.py
+/svnroot/bf-blender/!svn/ver/38869/trunk/blender/release/scripts/modules/bpy_extras/__init__.py
 END
 view3d_utils.py
 K 25
 svn:wc:ra_dav:version-url
 V 99
-/svnroot/bf-blender/!svn/ver/38279/trunk/blender/release/scripts/modules/bpy_extras/view3d_utils.py
+/svnroot/bf-blender/!svn/ver/39716/trunk/blender/release/scripts/modules/bpy_extras/view3d_utils.py
 END
 image_utils.py
 K 25
 svn:wc:ra_dav:version-url
 V 98
-/svnroot/bf-blender/!svn/ver/38286/trunk/blender/release/scripts/modules/bpy_extras/image_utils.py
+/svnroot/bf-blender/!svn/ver/39716/trunk/blender/release/scripts/modules/bpy_extras/image_utils.py
 END
 object_utils.py
 K 25
 svn:wc:ra_dav:version-url
 V 99
-/svnroot/bf-blender/!svn/ver/36971/trunk/blender/release/scripts/modules/bpy_extras/object_utils.py
+/svnroot/bf-blender/!svn/ver/39716/trunk/blender/release/scripts/modules/bpy_extras/object_utils.py
 END
 io_utils.py
 K 25
 svn:wc:ra_dav:version-url
 V 95
-/svnroot/bf-blender/!svn/ver/38466/trunk/blender/release/scripts/modules/bpy_extras/io_utils.py
+/svnroot/bf-blender/!svn/ver/39716/trunk/blender/release/scripts/modules/bpy_extras/io_utils.py
 END

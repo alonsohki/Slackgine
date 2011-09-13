@@ -1,5 +1,5 @@
 /*
- * $Id: image_intern.h 36293 2011-04-23 08:30:28Z lukastoenne $
+ * $Id: image_intern.h 38908 2011-08-02 04:28:05Z merwin $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -73,6 +73,7 @@ void IMAGE_OT_view_zoom(struct wmOperatorType *ot);
 void IMAGE_OT_view_zoom_in(struct wmOperatorType *ot);
 void IMAGE_OT_view_zoom_out(struct wmOperatorType *ot);
 void IMAGE_OT_view_zoom_ratio(struct wmOperatorType *ot);
+void IMAGE_OT_view_ndof(struct wmOperatorType *ot);
 
 void IMAGE_OT_new(struct wmOperatorType *ot);
 void IMAGE_OT_open(struct wmOperatorType *ot);

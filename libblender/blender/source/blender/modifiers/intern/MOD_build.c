@@ -1,5 +1,5 @@
 /*
-* $Id: MOD_build.c 36276 2011-04-21 15:53:30Z campbellbarton $
+* $Id: MOD_build.c 39342 2011-08-12 18:11:22Z blendix $
 *
 * ***** BEGIN GPL LICENSE BLOCK *****
 *
@@ -299,5 +299,6 @@ ModifierTypeInfo modifierType_Build = {
 	/* dependsOnTime */     dependsOnTime,
 	/* dependsOnNormals */	NULL,
 	/* foreachObjectLink */ NULL,
-	/* foreachIDLink */     NULL
+	/* foreachIDLink */     NULL,
+	/* foreachTexLink */    NULL,
 };

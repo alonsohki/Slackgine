@@ -1,5 +1,5 @@
 /*
- * $Id: wm_window.c 37765 2011-06-23 19:55:47Z blendix $
+ * $Id: wm_window.c 38908 2011-08-02 04:28:05Z merwin $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -621,12 +621,12 @@ static int ghost_event_proc(GHOST_EventHandle evt, GHOST_TUserDataPtr private)
 		if (!ghostwin) {
 			// XXX - should be checked, why are we getting an event here, and
 			//	what is it?
-			
+			puts("<!> event has no window");
 			return 1;
 		} else if (!GHOST_ValidWindow(g_system, ghostwin)) {
 			// XXX - should be checked, why are we getting an event here, and
 			//	what is it?
-			
+			puts("<!> event has invalid window");			
 			return 1;
 		} else {
 			win= GHOST_GetWindowUserData(ghostwin);

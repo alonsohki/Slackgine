@@ -1,5 +1,5 @@
 /*
-* $Id: MOD_smooth.c 38300 2011-07-11 09:15:20Z blendix $
+* $Id: MOD_smooth.c 39342 2011-08-12 18:11:22Z blendix $
 *
 * ***** BEGIN GPL LICENSE BLOCK *****
 *
@@ -270,4 +270,5 @@ ModifierTypeInfo modifierType_Smooth = {
 	/* dependsOnNormals */	NULL,
 	/* foreachObjectLink */ NULL,
 	/* foreachIDLink */     NULL,
+	/* foreachTexLink */    NULL,
 };

@@ -1,5 +1,5 @@
 /*
- * $Id: paint_vertex.c 37246 2011-06-06 11:04:54Z nazgul $
+ * $Id: paint_vertex.c 39991 2011-09-07 06:33:29Z mont29 $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *

@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svnroot/bf-blender/!svn/ver/40080/trunk/blender/extern/recastnavigation/Detour/Source
+END
+DetourStatNavMesh.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svnroot/bf-blender/!svn/ver/40080/trunk/blender/extern/recastnavigation/Detour/Source/DetourStatNavMesh.cpp
+END
+DetourTileNavMesh.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svnroot/bf-blender/!svn/ver/40080/trunk/blender/extern/recastnavigation/Detour/Source/DetourTileNavMesh.cpp
+END
+DetourStatNavMeshBuilder.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svnroot/bf-blender/!svn/ver/40080/trunk/blender/extern/recastnavigation/Detour/Source/DetourStatNavMeshBuilder.cpp
+END
+DetourNode.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svnroot/bf-blender/!svn/ver/40080/trunk/blender/extern/recastnavigation/Detour/Source/DetourNode.cpp
+END
+DetourTileNavMeshBuilder.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svnroot/bf-blender/!svn/ver/40080/trunk/blender/extern/recastnavigation/Detour/Source/DetourTileNavMeshBuilder.cpp
+END
+DetourCommon.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svnroot/bf-blender/!svn/ver/40080/trunk/blender/extern/recastnavigation/Detour/Source/DetourCommon.cpp
+END

@@ -63,6 +63,22 @@ set(CMAKE_BUILD_TYPE_INIT "Release")
 # set_property(GLOBAL PROPERTY RULE_MESSAGES OFF)
 
 #-----------------------------------------------------------------------------
+# Set policy
+
+# see "cmake --help-policy CMP0003"
+# So library linking is more sane
+cmake_policy(SET CMP0003 NEW)
+
+# So BUILDINFO and BLENDERPATH strings are automatically quoted
+cmake_policy(SET CMP0005 NEW)
+
+# So syntax problems are errors
+cmake_policy(SET CMP0010 NEW)
+
+# Input directories must have CMakeLists.txt
+cmake_policy(SET CMP0014 NEW)
+
+#-----------------------------------------------------------------------------
 # Load some macros.
 include(build_files/cmake/macros.cmake)
 
@@ -155,6 +171,7 @@ option(WITH_IMAGE_DDS           "Enable DDS Image Support" ON)
 option(WITH_IMAGE_CINEON        "Enable CINEON and DPX Image Support" ON)
 option(WITH_IMAGE_HDR           "Enable HDR Image Support" ON)
 option(WITH_IMAGE_REDCODE       "Enable RedCode Image Support" OFF)
+option(WITH_IMAGE_FRAMESERVER   "Enable image FrameServer Support for rendering" ON)
 
 # Audio/Video format support
 option(WITH_CODEC_FFMPEG        "Enable FFMPeg Support (http://ffmpeg.org)" OFF)
@@ -178,6 +195,7 @@ option(WITH_LZO           "Enable fast LZO compression (used for pointcache)" ON
 option(WITH_LZMA          "Enable best LZMA compression, (used for pointcache)" ON)
 
 # Misc
+option(WITH_INPUT_NDOF "Enable NDOF input devices (SpaceNavigator and friends)" ON)
 option(WITH_RAYOPTIMIZATION	"Enable use of SIMD (SSE) optimizations for the raytracer" ON) 
 if(UNIX AND NOT APPLE)
 	option(WITH_INSTALL_PORTABLE "Install redistributeable runtime, otherwise install into CMAKE_INSTALL_PREFIX" ON)
@@ -255,6 +273,11 @@ if(WITH_PYTHON_MODULE)
 endif()
 
 TEST_SSE_SUPPORT()
+
+# don't store paths to libs for portable distrobution
+if(WITH_INSTALL_PORTABLE)
+	set(CMAKE_SKIP_BUILD_RPATH TRUE)
+endif()
 
 #-----------------------------------------------------------------------------
 # Initialize un-cached vars, avoid unused warning
@@ -427,27 +450,32 @@ if(UNIX AND NOT APPLE)
 	endif()
 
 	if(WITH_OPENCOLLADA)
-		set(OPENCOLLADA /usr/local/opencollada CACHE PATH "OpenCollada Directory")
-		mark_as_advanced(OPENCOLLADA)
-		set(OPENCOLLADA_LIBPATH ${OPENCOLLADA}/lib)
-		set(OPENCOLLADA_LIBRARIES OpenCOLLADAStreamWriter OpenCOLLADASaxFrameworkLoader OpenCOLLADAFramework OpenCOLLADABaseUtils GeneratedSaxParser UTF MathMLSolver pcre ftoa buffer xml2)
-		set(OPENCOLLADA_INCLUDE_DIR ${OPENCOLLADA})
-
-		set(PCRE /usr CACHE PATH "PCRE Directory")
-		mark_as_advanced(PCRE)
-		set(PCRE_LIBPATH ${PCRE}/lib)
-		set(PCRE_LIB pcre)
-
-		set(EXPAT /usr CACHE PATH "Expat Directory")
-		mark_as_advanced(EXPAT)
-		set(EXPAT_LIBPATH ${EXPAT}/lib)
-		set(EXPAT_LIB expat)
+		find_package(OpenCOLLADA)
+		if(OPENCOLLADA_FOUND)
+			find_package(XML2)
+			find_package(PCRE)
+		else()
+			set(WITH_OPENCOLLADA OFF)
+		endif()
 	endif()
 
 	if(WITH_MEM_JEMALLOC)
 		find_package(JeMalloc)
 		if(NOT JEMALLOC_FOUND)
 			set(WITH_MEM_JEMALLOC OFF)
+		endif()
+	endif()
+
+	if (WITH_INPUT_NDOF)
+		find_package(Spacenav)
+		if(NOT SPACENAV_FOUND)
+			set(WITH_INPUT_NDOF OFF)
+		endif()
+
+		# use generic names within blenders buildsystem.
+		if(SPACENAV_FOUND)
+			set(NDOF_INCLUDE_DIRS ${SPACENAV_INCLUDE_DIRS})
+			set(NDOF_LIBRARIES ${SPACENAV_LIBRARIES})
 		endif()
 	endif()
 
@@ -483,6 +511,9 @@ if(UNIX AND NOT APPLE)
 
 	# GNU Compiler
 	if(CMAKE_COMPILER_IS_GNUCC)
+		set(PLATFORM_CFLAGS "-pipe -fPIC -funsigned-char -fno-strict-aliasing")
+	# CLang is the same as GCC for now.
+	elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 		set(PLATFORM_CFLAGS "-pipe -fPIC -funsigned-char -fno-strict-aliasing")
 	# Intel C++ Compiler
 	elseif(CMAKE_C_COMPILER_ID MATCHES "Intel")
@@ -650,9 +681,15 @@ elseif(WIN32)
 		endif()
 
 		if(WITH_OPENCOLLADA)
-			set(OPENCOLLADA_INCLUDE_DIR
-				${LIBDIR}/opencollada/include
+
+			set(OPENCOLLADA_INCLUDE_DIRS
+				${LIBDIR}/opencollada/include/COLLADAStreamWriter/include
+				${LIBDIR}/opencollada/include/COLLADABaseUtils/include
+				${LIBDIR}/opencollada/include/COLLADAFramework/include
+				${LIBDIR}/opencollada/include/COLLADASaxFrameworkLoader/include
+				${LIBDIR}/opencollada/include/GeneratedSaxParser/include			
 			)
+
 			set(OPENCOLLADA_LIBRARIES
 				${LIBDIR}/opencollada/lib/OpenCOLLADASaxFrameworkLoader.lib
 				${LIBDIR}/opencollada/lib/OpenCOLLADAFramework.lib
@@ -665,7 +702,7 @@ elseif(WIN32)
 				${LIBDIR}/opencollada/lib/ftoa.lib
 				${LIBDIR}/opencollada/lib/UTF.lib
 			)
-			set(PCRE_LIB
+			set(PCRE_LIBRARIES
 				${LIBDIR}/opencollada/lib/pcre.lib
 			)
 		endif()
@@ -676,11 +713,11 @@ elseif(WIN32)
 				${LIBDIR}/ffmpeg/include/msvc
 			)
 			set(FFMPEG_LIBRARIES
-				${LIBDIR}/ffmpeg/lib/avcodec-52.lib
-				${LIBDIR}/ffmpeg/lib/avformat-52.lib
-				${LIBDIR}/ffmpeg/lib/avdevice-52.lib
-				${LIBDIR}/ffmpeg/lib/avutil-50.lib
-				${LIBDIR}/ffmpeg/lib/swscale-0.lib
+				${LIBDIR}/ffmpeg/lib/avcodec-53.lib
+				${LIBDIR}/ffmpeg/lib/avformat-53.lib
+				${LIBDIR}/ffmpeg/lib/avdevice-53.lib
+				${LIBDIR}/ffmpeg/lib/avutil-51.lib
+				${LIBDIR}/ffmpeg/lib/swscale-2.lib
 			)
 		endif()
 
@@ -753,7 +790,7 @@ elseif(WIN32)
 	else()
 		# keep GCC spesific stuff here
 		if(CMAKE_COMPILER_IS_GNUCC)
-			set(PLATFORM_LINKLIBS "-lshell32 -lshfolder -lgdi32 -lmsvcrt -lwinmm -lmingw32 -lm -lws2_32 -lz -lstdc++ -lole32 -luuid")
+			set(PLATFORM_LINKLIBS "-lshell32 -lshfolder -lgdi32 -lmsvcrt -lwinmm -lmingw32 -lm -lws2_32 -lz -lstdc++ -lole32 -luuid -lwsock32")
 			set(PLATFORM_CFLAGS "-pipe -funsigned-char -fno-strict-aliasing")
 
 			add_definitions(-D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE)
@@ -798,16 +835,22 @@ elseif(WIN32)
 
 		if(WITH_OPENCOLLADA)
 			set(OPENCOLLADA ${LIBDIR}/gcc/opencollada)
-			set(OPENCOLLADA_INCLUDE_DIR ${OPENCOLLADA}/include)
+			set(OPENCOLLADA_INCLUDE_DIRS
+				${LIBDIR}/gcc/opencollada/include/COLLADAStreamWriter/include
+				${LIBDIR}/gcc/opencollada/include/COLLADABaseUtils/include
+				${LIBDIR}/gcc/opencollada/include/COLLADAFramework/include
+				${LIBDIR}/gcc/opencollada/include/COLLADASaxFrameworkLoader/include
+				${LIBDIR}/gcc/opencollada/include/GeneratedSaxParser/include			
+			)
 			set(OPENCOLLADA_LIBPATH ${OPENCOLLADA}/lib ${OPENCOLLADA}/lib)
 			set(OPENCOLLADA_LIBRARIES OpenCOLLADAStreamWriter OpenCOLLADASaxFrameworkLoader OpenCOLLADAFramework OpenCOLLADABaseUtils GeneratedSaxParser UTF MathMLSolver expat pcre buffer ftoa)
-			set(PCRE_LIB pcre)
+			set(PCRE_LIBRARIES pcre)
 		endif()
 		
 		if(WITH_CODEC_FFMPEG)
 			set(FFMPEG ${LIBDIR}/ffmpeg)
 			set(FFMPEG_INCLUDE_DIRS ${FFMPEG}/include ${FFMPEG}/include)
-			set(FFMPEG_LIBRARIES avcodec-52 avformat-52 avdevice-52 avutil-50 swscale-0)
+			set(FFMPEG_LIBRARIES avcodec-53 avformat-53 avdevice-53 avutil-51 swscale-2)
 			set(FFMPEG_LIBPATH ${FFMPEG}/lib)
 		endif()
 
@@ -895,28 +938,15 @@ elseif(APPLE)
 	endif()
 
 	if(WITH_PYTHON)
+		# we use precompiled libraries for py 3.2 and up by default
+
+		# normally cached but not since we include them with blender
 		set(PYTHON_VERSION 3.2)
-		if(PYTHON_VERSION MATCHES 3.2)
-			# we use precompiled libraries for py 3.2 and up by default
-
-			# normally cached but not since we include them with blender
-			set(PYTHON_INCLUDE_DIR "${LIBDIR}/python/include/python${PYTHON_VERSION}")
-			# set(PYTHON_BINARY "${LIBDIR}/python/bin/python${PYTHON_VERSION}") # not used yet
-			set(PYTHON_LIBRARY python${PYTHON_VERSION})
-			set(PYTHON_LIBPATH "${LIBDIR}/python/lib/python${PYTHON_VERSION}")
-			# set(PYTHON_LINKFLAGS "-u _PyMac_Error")  # won't  build with this enabled
-		else()
-			# otherwise, use custom system framework
-			# *not used but maintained incase some dev wants to*
-
-			set(PYTHON "/System/Library/Frameworks/Python.framework/Versions/" CACHE PATH)
-			set(PYTHON_INCLUDE_DIR "${PYTHON}${PYTHON_VERSION}/include/python${PYTHON_VERSION}" CACHE PATH)
-			# set(PYTHON_BINARY ${PYTHON}${PYTHON_VERSION}/bin/python${PYTHON_VERSION}) # not used yet
-			set(PYTHON_LIBRARY "" CACHE FILEPATH)
-			set(PYTHON_LIBPATH "${PYTHON}${PYTHON_VERSION}/lib/python${PYTHON_VERSION}/config" CACHE PATH)
-			set(PYTHON_LINKFLAGS "-u _PyMac_Error -framework System -framework Python" CACHE STRING)
-			unset(PYTHON)
-		endif()
+		set(PYTHON_INCLUDE_DIR "${LIBDIR}/python/include/python${PYTHON_VERSION}")
+		# set(PYTHON_BINARY "${LIBDIR}/python/bin/python${PYTHON_VERSION}") # not used yet
+		set(PYTHON_LIBRARY python${PYTHON_VERSION})
+		set(PYTHON_LIBPATH "${LIBDIR}/python/lib/python${PYTHON_VERSION}")
+		# set(PYTHON_LINKFLAGS "-u _PyMac_Error")  # won't  build with this enabled
 
 		# uncached vars
 		set(PYTHON_INCLUDE_DIRS "${PYTHON_INCLUDE_DIR}")
@@ -971,7 +1001,17 @@ elseif(APPLE)
 		set(SAMPLERATE_LIBPATH ${SAMPLERATE}/lib)
 	endif()
 
-	set(PLATFORM_LINKLIBS stdc++ SystemStubs)
+	find_library(SYSTEMSTUBS_LIBRARY 
+		NAMES 
+		SystemStubs 
+		PATHS
+	)
+	mark_as_advanced(SYSTEMSTUBS_LIBRARY)
+	if(SYSTEMSTUBS_LIBRARY)
+		set(PLATFORM_LINKLIBS stdc++ SystemStubs)
+ 	else()
+		set(PLATFORM_LINKLIBS stdc++)
+	endif()
 
 	if(WITH_COCOA)
 		set(PLATFORM_CFLAGS "-pipe -funsigned-char -DGHOST_COCOA")
@@ -986,20 +1026,47 @@ elseif(APPLE)
 		elseif(WITH_CODEC_QUICKTIME)
 			set(PLATFORM_LINKFLAGS "${PLATFORM_LINKFLAGS} -framework QuickTime")
 		endif()
+
+		# XXX - SOME MAC DEV PLEASE TEST WITH THE SDK INSTALLED! 
+		# ALSO SHOULD BE MOVED INTO OWN MODULE WHEN FUNCTIONAL
+		if(WITH_INPUT_NDOF)
+			# This thread it *should* work and check the framework - campbell
+			# http://www.cmake.org/pipermail/cmake/2005-December/007740.html
+			find_library(3D_CONNEXION_CLIENT_LIBRARY
+				NAMES 3DconnexionClient
+			)
+			if(NOT 3D_CONNEXION_CLIENT_LIBRARY)
+				set(WITH_INPUT_NDOF OFF)
+			endif()
+
+			if(WITH_INPUT_NDOF)
+				set(PLATFORM_LINKFLAGS "${PLATFORM_LINKFLAGS} -weak_framework 3DconnexionClient")
+			endif()
+		endif()
+
 	else()
 		set(PLATFORM_CFLAGS "-pipe -funsigned-char")
 		set(PLATFORM_LINKFLAGS "-fexceptions -framework CoreServices -framework Foundation -framework IOKit -framework AppKit -framework Carbon -framework AGL -framework AudioUnit -framework AudioToolbox -framework CoreAudio -framework QuickTime")
+		set(WITH_INPUT_NDOF OFF)  # unsupported
 	endif()
 
 	if(WITH_OPENCOLLADA)
 		set(OPENCOLLADA ${LIBDIR}/opencollada)
-		set(OPENCOLLADA_INCLUDE_DIR ${OPENCOLLADA}/include)
+
+		set(OPENCOLLADA_INCLUDE_DIRS
+			${LIBDIR}/opencollada/include/COLLADAStreamWriter
+			${LIBDIR}/opencollada/include/COLLADABaseUtils
+			${LIBDIR}/opencollada/include/COLLADAFramework
+			${LIBDIR}/opencollada/include/COLLADASaxFrameworkLoader
+			${LIBDIR}/opencollada/include/GeneratedSaxParser
+		)
+
 		set(OPENCOLLADA_LIBPATH ${OPENCOLLADA}/lib)
 		set(OPENCOLLADA_LIBRARIES "OpenCOLLADASaxFrameworkLoader -lOpenCOLLADAFramework -lOpenCOLLADABaseUtils -lOpenCOLLADAStreamWriter -lMathMLSolver -lGeneratedSaxParser -lUTF -lxml2 -lbuffer -lftoa" )
 		#pcre is bundled with openCollada
 		#set(PCRE ${LIBDIR}/pcre)
 		#set(PCRE_LIBPATH ${PCRE}/lib)
-		set(PCRE_LIB pcre)
+		set(PCRE_LIBRARIES pcre)
 		#libxml2 is used
 		#set(EXPAT ${LIBDIR}/expat)
 		#set(EXPAT_LIBPATH ${EXPAT}/lib)
@@ -1028,6 +1095,10 @@ elseif(APPLE)
 		set(TIFF_LIBPATH ${TIFF}/lib)
 	endif()
 
+	if (WITH_INPUT_NDOF)
+		# linker needs "-weak_framework 3DconnexionClient"
+	endif()
+
 	set(EXETYPE MACOSX_BUNDLE)
 
 	set(CMAKE_C_FLAGS_DEBUG "-fno-strict-aliasing -g")
@@ -1053,20 +1124,34 @@ if(APPLE OR WIN32)
 	endif()
 endif()
 
+# See TEST_SSE_SUPPORT() for how this is defined.
+
 if(WITH_RAYOPTIMIZATION)
 	if(CMAKE_COMPILER_IS_GNUCC)
-		if(SUPPORT_SSE_BUILD)
-			set(PLATFORM_CFLAGS " -msse ${PLATFORM_CFLAGS}")
-			add_definitions(-D__SSE__ -D__MMX__)
-		endif()
-		if(SUPPORT_SSE2_BUILD)
-			set(PLATFORM_CFLAGS " -msse2 ${PLATFORM_CFLAGS}")
-			add_definitions(-D__SSE2__)
-			if(NOT SUPPORT_SSE_BUILD) # dont double up
-				add_definitions(-D__MMX__)
-			endif()
+		set(_sse "-msse")
+		set(_sse2 "-msse2")
+	elseif(MSVC)
+		set(_sse "/arch:SSE")
+		set(_sse2 "/arch:SSE2")
+	else()
+		message(WARNING "SSE flags for this compiler not known")
+		set(_sse)
+		set(_sse2)
+	endif()
+
+	if(SUPPORT_SSE_BUILD)
+		set(PLATFORM_CFLAGS " ${_sse} ${PLATFORM_CFLAGS}")
+		add_definitions(-D__SSE__ -D__MMX__)
+	endif()
+	if(SUPPORT_SSE2_BUILD)
+		set(PLATFORM_CFLAGS " ${_sse2} ${PLATFORM_CFLAGS}")
+		add_definitions(-D__SSE2__)
+		if(NOT SUPPORT_SSE_BUILD) # dont double up
+			add_definitions(-D__MMX__)
 		endif()
 	endif()
+	unset(_sse)
+	unset(_sse2)
 endif()
 
 if(WITH_IMAGE_OPENJPEG)
@@ -1175,6 +1260,7 @@ if(CMAKE_COMPILER_IS_GNUCC)
 	ADD_CHECK_C_COMPILER_FLAG(C_WARNINGS C_WARN_POINTER_ARITH -Wpointer-arith)
 	ADD_CHECK_C_COMPILER_FLAG(C_WARNINGS C_WARN_UNUSED_PARAMETER -Wunused-parameter)
 	ADD_CHECK_C_COMPILER_FLAG(C_WARNINGS C_WARN_WRITE_STRINGS -Wwrite-strings)
+	ADD_CHECK_C_COMPILER_FLAG(C_WARNINGS C_WARN_UNDEFINED -Wundef)
 	# disable because it gives warnings for printf() & friends.
 	# ADD_CHECK_C_COMPILER_FLAG(C_WARNINGS C_WARN_DOUBLE_PROMOTION -Wdouble-promotion -Wno-error=double-promotion)
 	ADD_CHECK_C_COMPILER_FLAG(C_WARNINGS C_WARN_NO_ERROR_UNUSED_BUT_SET_VARIABLE -Wno-error=unused-but-set-variable)
@@ -1182,6 +1268,7 @@ if(CMAKE_COMPILER_IS_GNUCC)
 	ADD_CHECK_CXX_COMPILER_FLAG(CXX_WARNINGS CXX_WARN_ALL -Wall)
 	ADD_CHECK_CXX_COMPILER_FLAG(CXX_WARNINGS CXX_WARN_NO_INVALID_OFFSETOF -Wno-invalid-offsetof)
 	ADD_CHECK_CXX_COMPILER_FLAG(CXX_WARNINGS CXX_WARN_NO_SIGN_COMPARE -Wno-sign-compare)
+	ADD_CHECK_CXX_COMPILER_FLAG(CXX_WARNINGS CXX_WARN_UNDEFINED -Wundef)
 
 elseif(CMAKE_C_COMPILER_ID MATCHES "Intel")
 
@@ -1305,6 +1392,7 @@ if(FIRST_RUN)
 	info_cfg_option(WITH_OPENCOLLADA)
 	info_cfg_option(WITH_FFTW3)
 	info_cfg_option(WITH_INTERNATIONAL)
+	info_cfg_option(WITH_INPUT_NDOF)
 
 	info_cfg_text("Compiler Options:")
 	info_cfg_option(WITH_BUILDINFO)

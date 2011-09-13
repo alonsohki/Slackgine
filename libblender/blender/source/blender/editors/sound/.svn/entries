@@ -1,15 +1,15 @@
 10
 
 dir
-38518
+40188
 https://svn.blender.org/svnroot/bf-blender/trunk/blender/source/blender/editors/sound
 https://svn.blender.org/svnroot/bf-blender
 
 
 
-2011-07-17T09:11:13.810557Z
-38443
-campbellbarton
+2011-09-11T12:24:11.650811Z
+40124
+nexyon
 
 
 
@@ -32,7 +32,7 @@ file
 
 
 
-2011-07-19T21:17:48.000000Z
+2011-09-13T17:10:23.921224Z
 600d39efd97eb2b85e2ece35243ea2ff
 2011-02-21T12:35:04.852834Z
 35028
@@ -66,11 +66,11 @@ file
 
 
 
-2011-07-19T21:17:48.000000Z
-5edb36fb2e8406a75d28af1637802fec
-2011-06-23T09:27:56.831973Z
-37750
-campbellbarton
+2011-09-13T17:10:23.921224Z
+9e108de5fc6db3809cbe1ae11ab2493f
+2011-09-11T12:24:11.650811Z
+40124
+nexyon
 has-props
 
 
@@ -92,7 +92,7 @@ has-props
 
 
 
-7775
+21623
 
 CMakeLists.txt
 file
@@ -100,11 +100,11 @@ file
 
 
 
-2011-07-19T21:17:48.000000Z
-1a2d0912b59e197a616c90727b4281f2
-2011-07-17T09:11:13.810557Z
-38443
-campbellbarton
+2011-09-13T17:10:23.921224Z
+25033f5fbe05433b7a9d453cab3ff0ea
+2011-08-30T09:15:55.930526Z
+39792
+nexyon
 has-props
 
 
@@ -126,7 +126,7 @@ has-props
 
 
 
-1282
+1410
 
 sound_intern.h
 file
@@ -134,7 +134,7 @@ file
 
 
 
-2011-07-19T21:17:48.000000Z
+2011-09-13T17:10:23.921224Z
 f1597d6b1ebb379d719ce87eaf7bf8c1
 2011-02-27T20:29:51.598877Z
 35242

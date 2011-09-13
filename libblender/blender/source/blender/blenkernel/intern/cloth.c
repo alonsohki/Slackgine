@@ -1,5 +1,5 @@
 /*
- * $Id: cloth.c 36419 2011-05-01 21:39:13Z joeedh $
+ * $Id: cloth.c 39558 2011-08-19 16:21:29Z campbellbarton $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -923,7 +923,7 @@ static int cloth_from_object(Object *ob, ClothModifierData *clmd, DerivedMesh *d
 	
 	for(i = 0; i < dm->getNumVerts(dm); i++)
 	{
-		maxdist = MAX2(maxdist, clmd->coll_parms->selfepsilon* ( cloth->verts[i].avg_spring_len*2.0));
+		maxdist = MAX2(maxdist, clmd->coll_parms->selfepsilon* ( cloth->verts[i].avg_spring_len*2.0f));
 	}
 	
 	clmd->clothObject->bvhselftree = bvhselftree_build_from_cloth ( clmd, maxdist );

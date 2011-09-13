@@ -1,15 +1,15 @@
 10
 
 dir
-2139
+2324
 https://svn.blender.org/svnroot/bf-extensions/trunk/py/scripts/addons
 https://svn.blender.org/svnroot/bf-extensions
 
 
 
-2011-07-19T14:34:58.666893Z
-2139
-trumanblending
+2011-09-13T14:31:42.978870Z
+2324
+campbellbarton
 
 
 
@@ -38,11 +38,11 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
-7a7b267ede8f74350dfe2c48423eb7ed
-2011-07-18T03:02:04.234741Z
-2128
-thomasl
+2011-09-13T17:15:37.797021Z
+22f6f5859d93bd0cce22f2cfed68f568
+2011-09-03T11:31:10.450582Z
+2296
+nazgul
 has-props
 
 
@@ -64,7 +64,7 @@ has-props
 
 
 
-86448
+86690
 
 io_convert_image_to_mesh_img
 dir
@@ -75,11 +75,11 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
-bd6970c27f013819db9c57512abd58e0
-2011-05-19T15:19:34.050102Z
-1956
-campbellbarton
+2011-09-13T17:15:37.797021Z
+25cd76a9bf23e79c4217fda7b7810629
+2011-08-27T13:38:53.418496Z
+2279
+dingto
 has-props
 
 
@@ -101,7 +101,7 @@ has-props
 
 
 
-25791
+25809
 
 io_import_scene_lwo.py
 file
@@ -109,229 +109,10 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
-f3dc4b463e8ef096cbdffa612e764828
-2011-07-18T23:25:48.190678Z
-2135
-campbellbarton
-has-props
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-44089
-
-system_demo_mode
-dir
-
-mesh_looptools.py
-file
-
-
-
-
-2011-07-19T21:18:54.000000Z
-b7fde7faeeadca5403346c3d1715481d
-2011-04-10T12:16:55.680279Z
-1806
-campbellbarton
-has-props
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-140676
-
-add_curve_torus_knots.py
-file
-
-
-
-
-2011-07-19T21:18:54.000000Z
-5dc7b81c1d318c11aec39fc1f9a40961
-2011-03-29T00:40:45.623709Z
-1740
-meta-androcto
-has-props
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-7821
-
-io_mesh_stl
-dir
-
-io_import_scene_dxf.py
-file
-
-
-
-
-2011-07-19T21:18:54.000000Z
-d3e76c42198e7cc1f02daf886ce80ece
-2011-07-10T17:28:53.891220Z
-2115
-campbellbarton
-has-props
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-75439
-
-space_view3d_math_vis
-dir
-
-texture_paint_layer_manager.py
-file
-
-
-
-
-2011-07-19T21:18:54.000000Z
-e35efa92346dbe2afba876eefb3dbe7f
-2011-07-10T17:28:53.891220Z
-2115
-campbellbarton
-has-props
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-19472
-
-modules
-dir
-
-object_cloud_gen.py
-file
-
-
-
-
-2011-07-19T21:18:54.000000Z
-4b87ac3d9f8dce68933f2582041013d7
-2011-07-10T17:28:53.891220Z
-2115
-campbellbarton
-has-props
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-26844
-
-io_scene_obj
-dir
-
-mesh_bsurfaces.py
-file
-
-
-
-
-2011-07-19T21:18:54.000000Z
-799f656b4522718e98e79c63675785c0
-2011-04-25T00:51:42.806795Z
-1864
+2011-09-13T17:15:37.807021Z
+52e58acdffc210cc3e035f024a13fe54
+2011-08-24T17:43:32.480017Z
+2261
 gsrb3d
 has-props
 
@@ -354,21 +135,21 @@ has-props
 
 
 
-41305
+44220
 
-io_scene_m3
+system_demo_mode
 dir
 
-io_export_unreal_psk_psa.py
+mesh_looptools.py
 file
 
 
 
 
-2011-07-19T21:18:54.000000Z
-d03dd7f63f146d470fbee05624636a1a
-2011-07-10T17:28:53.891220Z
-2115
+2011-09-13T17:15:37.807021Z
+ee1bfa7683088e997256745ce679556c
+2011-07-25T08:48:58.612045Z
+2179
 campbellbarton
 has-props
 
@@ -391,7 +172,263 @@ has-props
 
 
 
-100241
+140807
+
+add_curve_torus_knots.py
+file
+
+
+
+
+2011-09-13T17:15:37.807021Z
+bacf98b317141570c867482f302c27f0
+2011-08-27T12:51:34.483669Z
+2278
+dingto
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+7797
+
+mocap
+dir
+
+io_mesh_stl
+dir
+
+io_import_scene_dxf.py
+file
+
+
+
+
+2011-09-13T17:15:37.817021Z
+fce845e68aa8051f76e8f945556afa53
+2011-09-03T11:11:01.607030Z
+2294
+nazgul
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+76177
+
+space_view3d_math_vis
+dir
+
+space_view3d_screencast_keys.py
+file
+
+
+
+
+2011-09-13T17:15:37.817021Z
+572e461730a906b86d567c26443a1889
+2011-09-11T15:36:48.284531Z
+2321
+campbellbarton
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+20345
+
+texture_paint_layer_manager.py
+file
+
+
+
+
+2011-09-13T17:15:37.817021Z
+cb03efeb1f4cb60577c6087515f08b12
+2011-08-27T13:38:53.418496Z
+2279
+dingto
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+19281
+
+modules
+dir
+
+object_cloud_gen.py
+file
+
+
+
+
+2011-09-13T17:15:37.817021Z
+468b337d1f16fb4eea09a5c16396adc2
+2011-08-27T13:38:53.418496Z
+2279
+dingto
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+26839
+
+io_scene_obj
+dir
+
+mesh_bsurfaces.py
+file
+
+
+
+
+2011-09-13T17:15:37.817021Z
+390757a1f04f3344c1abaafc4371c27e
+2011-08-27T13:38:53.418496Z
+2279
+dingto
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+41174
+
+io_scene_m3
+dir
+
+io_export_unreal_psk_psa.py
+file
+
+
+
+
+2011-09-13T17:15:37.827021Z
+10620e20b0d3341ff79ab73d1a74f134
+2011-08-22T09:29:33.005027Z
+2257
+campbellbarton
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+100531
 
 add_mesh_solid.py
 file
@@ -399,11 +436,11 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
-8c8ae2a37ee1825b5884625c47b140a3
-2011-07-10T17:28:53.891220Z
-2115
-campbellbarton
+2011-09-13T17:15:37.817021Z
+d039ab402db5454a83067b5d8597beff
+2011-08-25T13:13:27.082270Z
+2264
+meta-androcto
 has-props
 
 
@@ -433,11 +470,11 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
-181d3b6f1279f97729ee9c808d9392cd
-2011-07-10T17:28:53.891220Z
-2115
-campbellbarton
+2011-09-13T17:15:37.827021Z
+0eb7a3ec7e7ee9578edf27118c4a95ed
+2011-08-25T13:13:27.082270Z
+2264
+meta-androcto
 has-props
 
 
@@ -467,11 +504,11 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
-544b0b330c3a9f3658017352364cf3fe
-2011-07-10T22:57:27.956301Z
-2116
-campbellbarton
+2011-09-13T17:15:37.827021Z
+0f06e46fed40700f1923cfa8f903b3b1
+2011-08-25T10:24:07.762416Z
+2262
+meta-androcto
 has-props
 
 
@@ -501,10 +538,10 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
-398aa78968cf53831b95873f1545d2d3
-2011-07-10T17:28:53.891220Z
-2115
+2011-09-13T17:15:37.827021Z
+808bcb3cfd93e4e92ea489a6f0205da5
+2011-08-08T05:23:00.446023Z
+2232
 campbellbarton
 has-props
 
@@ -535,9 +572,6 @@ dir
 io_scene_3ds
 dir
 
-io_export_anim_mesh_xna
-dir
-
 object_fracture
 dir
 
@@ -547,11 +581,11 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
-9d93e49b1274b59364ae8dcf220d25e0
-2011-05-28T09:35:49.253778Z
-1982
-campbellbarton
+2011-09-13T17:15:37.827021Z
+19546143aadfbd24da10385654de13ae
+2011-08-27T13:38:53.418496Z
+2279
+dingto
 has-props
 
 
@@ -573,7 +607,7 @@ has-props
 
 
 
-13029
+12848
 
 io_export_pc2.py
 file
@@ -581,10 +615,10 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
-39a015a2a5289a4463022501bdfe2719
-2011-05-16T07:52:45.372071Z
-1932
+2011-09-13T17:15:37.837021Z
+9537133b859163817f910354f91f2408
+2011-07-25T08:48:58.612045Z
+2179
 campbellbarton
 has-props
 
@@ -607,7 +641,7 @@ has-props
 
 
 
-7090
+6861
 
 space_view3d_copy_attributes.py
 file
@@ -615,10 +649,10 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
-3b6d39ee6413fa60e5e568f930ce6c59
-2011-06-21T17:18:40.317595Z
-2055
+2011-09-13T17:15:37.837021Z
+d24613d3b011d8067be800c13208641a
+2011-08-08T05:23:00.446023Z
+2232
 campbellbarton
 has-props
 
@@ -641,7 +675,7 @@ has-props
 
 
 
-29879
+29952
 
 add_mesh_ant_landscape.py
 file
@@ -649,11 +683,11 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
-146fc7844309f8b70193d37a3aab3179
-2011-07-10T17:28:53.891220Z
-2115
-campbellbarton
+2011-09-13T17:15:37.837021Z
+66e2851ad5ab8acf7eabc17e339195a6
+2011-08-27T12:51:34.483669Z
+2278
+dingto
 has-props
 
 
@@ -675,7 +709,7 @@ has-props
 
 
 
-27803
+27821
 
 render_povray
 dir
@@ -686,11 +720,11 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
-d397e8b31cc147aef94f2b00902ad5c3
-2011-07-10T17:28:53.891220Z
-2115
-campbellbarton
+2011-09-13T17:15:37.837021Z
+03714acc67c530c451f88139f1887577
+2011-08-27T18:23:02.516070Z
+2281
+axon_d
 has-props
 
 
@@ -712,7 +746,7 @@ has-props
 
 
 
-25797
+28055
 
 development_icon_get.py
 file
@@ -720,7 +754,7 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
+2011-09-13T17:15:37.837021Z
 5322de6e800ea35bf185f53768b6ebf4
 2011-07-11T05:51:27.884414Z
 2118
@@ -754,11 +788,11 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
-4a9fd03a8cba5ef9f68b9750098ce3d3
-2011-07-10T17:28:53.891220Z
-2115
-campbellbarton
+2011-09-13T17:15:37.837021Z
+33bf973c9e20f6f7804881af73e9051e
+2011-08-05T20:46:30.699565Z
+2222
+blendix
 has-props
 
 
@@ -780,7 +814,7 @@ has-props
 
 
 
-22274
+22231
 
 object_animrenderbake.py
 file
@@ -788,7 +822,7 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
+2011-09-13T17:15:37.837021Z
 89d2bbc465ca301c8bd7a194f2c40455
 2011-07-15T14:20:07.776250Z
 2122
@@ -825,11 +859,11 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
-8f5b0cbf819677c79d2ff51698a1c21d
-2011-07-10T17:28:53.891220Z
-2115
-campbellbarton
+2011-09-13T17:15:37.847021Z
+51e3347b8f3aaa1ed4b243d92c5f96aa
+2011-09-03T11:11:01.607030Z
+2294
+nazgul
 has-props
 
 
@@ -851,44 +885,10 @@ has-props
 
 
 
-33191
+33599
 
 io_curve_svg
 dir
-
-space_view3d_align_tools.py
-file
-
-
-
-
-2011-07-19T21:18:54.000000Z
-212a04c999c6e17b67baeeda1233e430
-2011-07-10T17:28:53.891220Z
-2115
-campbellbarton
-has-props
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-9938
 
 io_scene_x3d
 dir
@@ -899,11 +899,11 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
-f4142d0be94ffb42c3751c405f11f867
-2011-07-10T11:29:59.473099Z
-2113
-campbellbarton
+2011-09-13T17:15:37.847021Z
+856dd42703449c77e0cebb320bb73ee2
+2011-09-08T13:49:27.461555Z
+2319
+meta-androcto
 has-props
 
 
@@ -925,7 +925,7 @@ has-props
 
 
 
-41289
+41309
 
 io_coat3D
 dir
@@ -939,11 +939,11 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
-f54b1d675efed74470b8d12401a28421
-2011-06-21T05:02:32.251048Z
-2050
-campbellbarton
+2011-09-13T17:15:37.847021Z
+b03608aa9f2ef1fb5f11ee2a200bd515
+2011-08-27T13:38:53.418496Z
+2279
+dingto
 has-props
 
 
@@ -965,7 +965,7 @@ has-props
 
 
 
-3523
+3406
 
 object_grease_scatter.py
 file
@@ -973,44 +973,10 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
-cbdb6aa0a80696766cfdda529f8a18bd
-2011-07-18T04:02:17.155103Z
-2129
-gsrb3d
-has-props
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-13774
-
-io_export_directx_x.py
-file
-
-
-
-
-2011-07-19T21:18:54.000000Z
-17da64a82090f06ce8f4a22731d82ca8
-2011-07-03T03:12:09.766037Z
-2085
+2011-09-13T17:15:37.847021Z
+00a8373d4704890ab9979ee514179387
+2011-08-24T13:14:30.801783Z
+2260
 campbellbarton
 has-props
 
@@ -1033,19 +999,19 @@ has-props
 
 
 
-62014
+14049
 
-animation_rotobezier.py
+io_export_directx_x.py
 file
 
 
 
 
-2011-07-19T21:18:54.000000Z
-a3c65dc8c4b6323867051fc91b4dd2fc
-2011-03-30T21:12:37.691345Z
-1758
-zanqdo
+2011-09-13T17:15:37.847021Z
+758134d315daef3236e6024d68d6ffd5
+2011-08-26T17:37:49.020083Z
+2274
+kiravakaan
 has-props
 
 
@@ -1067,7 +1033,41 @@ has-props
 
 
 
-11702
+62293
+
+animation_rotobezier.py
+file
+
+
+
+
+2011-09-13T17:15:37.847021Z
+c38e2a61fbd1a47d7aef362b7cb17676
+2011-08-27T12:51:34.483669Z
+2278
+dingto
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+11631
 
 io_anim_camera.py
 file
@@ -1075,7 +1075,7 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
+2011-09-13T17:15:37.847021Z
 4486222087c58733b1321e7a8b4c7611
 2011-05-16T07:52:45.372071Z
 1932
@@ -1109,7 +1109,7 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
+2011-09-13T17:15:37.857021Z
 cbadd1caa501c9e7d27c08ead90ab8e1
 2011-03-19T13:20:33.348403Z
 1719
@@ -1146,11 +1146,11 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
-0f549bb3bc1a1eb6c6144c2a0878f92d
-2011-07-10T17:28:53.891220Z
-2115
-campbellbarton
+2011-09-13T17:15:37.857021Z
+8be2fd635d45cb1c5e7383d77e50c5c8
+2011-08-29T03:55:53.548870Z
+2286
+meta-androcto
 has-props
 
 
@@ -1172,7 +1172,7 @@ has-props
 
 
 
-51799
+49413
 
 game_engine_save_as_runtime.py
 file
@@ -1180,11 +1180,11 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
-39398fc7b31f4c902678448be13f5209
-2011-07-05T00:52:40.470605Z
-2091
-moguri
+2011-09-13T17:15:37.857021Z
+5cd202ada9c33a9917f332c19a2269da
+2011-09-08T09:57:51.446354Z
+2318
+nazgul
 has-props
 
 
@@ -1206,7 +1206,7 @@ has-props
 
 
 
-7760
+8810
 
 rigify
 dir
@@ -1220,10 +1220,10 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
-181639a795ed44192d69c60f5ffb0cc5
-2011-07-10T17:28:53.891220Z
-2115
+2011-09-13T17:15:37.857021Z
+ee5afaf974e8ac6b57e1b3e9a5237a95
+2011-07-25T02:41:44.684858Z
+2174
 campbellbarton
 has-props
 
@@ -1246,7 +1246,7 @@ has-props
 
 
 
-14717
+14637
 
 io_mesh_raw
 dir
@@ -1260,7 +1260,7 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
+2011-09-13T17:15:37.857021Z
 9f2fe1573a99f5b4d12bfa904b506449
 2011-03-19T13:20:33.348403Z
 1719
@@ -1294,7 +1294,7 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
+2011-09-13T17:15:37.857021Z
 376e05944e569be53221116d5792d3ed
 2011-03-19T13:20:33.348403Z
 1719
@@ -1322,16 +1322,50 @@ has-props
 
 9423
 
+add_curve_ivygen.py
+file
+
+
+
+
+2011-09-13T17:15:37.857021Z
+867f7f82398c63e443621b0ad1dbf60a
+2011-09-10T04:12:48.836029Z
+2320
+campbellbarton
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+26088
+
 object_add_chain.py
 file
 
 
 
 
-2011-07-19T21:18:54.000000Z
-e5db666fc1326a2f82cf449f14ba0bfd
-2011-05-04T09:36:01.999794Z
-1893
+2011-09-13T17:15:37.867021Z
+c1fdea5a71bbf90f58ae00c13eaf6566
+2011-08-25T10:24:07.762416Z
+2262
 meta-androcto
 has-props
 
@@ -1354,7 +1388,7 @@ has-props
 
 
 
-4654
+5618
 
 add_curve_sapling
 dir
@@ -1371,11 +1405,11 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
-982608ca7185c3fef5db1f2cdc493112
-2011-07-10T17:28:53.891220Z
-2115
-campbellbarton
+2011-09-13T17:15:37.867021Z
+753cd8f1834d7f253b1a665807a77d18
+2011-08-25T13:13:27.082270Z
+2264
+meta-androcto
 has-props
 
 
@@ -1405,11 +1439,11 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
-02f3f59eda0ac93b54051d86c3801031
-2011-07-10T17:28:53.891220Z
-2115
-campbellbarton
+2011-09-13T17:15:37.867021Z
+b040b3d3329cc927c92b8f3880ee1d89
+2011-08-25T13:13:27.082270Z
+2264
+meta-androcto
 has-props
 
 
@@ -1431,7 +1465,7 @@ has-props
 
 
 
-39137
+39111
 
 add_mesh_BoltFactory
 dir
@@ -1442,11 +1476,11 @@ file
 
 
 
-2011-07-19T21:18:54.000000Z
-1f7d9bad19d598f68b1fb0b9a935b93d
-2011-07-11T05:51:27.884414Z
-2118
-campbellbarton
+2011-09-13T17:15:37.867021Z
+c79d83d80d528f1f645df67725462af1
+2011-08-27T13:38:53.418496Z
+2279
+dingto
 has-props
 
 
@@ -1468,5 +1502,5 @@ has-props
 
 
 
-23467
+23417
 

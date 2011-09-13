@@ -1,5 +1,5 @@
 /*
- * $Id: object_ops.c 36458 2011-05-03 07:09:02Z campbellbarton $
+ * $Id: object_ops.c 40086 2011-09-10 04:21:58Z campbellbarton $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -117,6 +117,7 @@ void ED_operatortypes_object(void)
 	WM_operatortype_append(OBJECT_OT_armature_add);
 	WM_operatortype_append(OBJECT_OT_lamp_add);
 	WM_operatortype_append(OBJECT_OT_camera_add);
+	WM_operatortype_append(OBJECT_OT_speaker_add);
 	WM_operatortype_append(OBJECT_OT_add);
 	WM_operatortype_append(OBJECT_OT_add_named);
 	WM_operatortype_append(OBJECT_OT_effector_add);
@@ -211,7 +212,14 @@ void ED_operatortypes_object(void)
 
 	WM_operatortype_append(OBJECT_OT_bake_image);
 	WM_operatortype_append(OBJECT_OT_drop_named_material);
+
+#ifdef WITH_GAMEENGINE
+	WM_operatortype_append(OBJECT_OT_create_navmesh);
+	WM_operatortype_append(OBJECT_OT_assign_navpolygon);
+	WM_operatortype_append(OBJECT_OT_assign_new_navpolygon);
+#endif
 }
+
 
 void ED_operatormacros_object(void)
 {

@@ -1,5 +1,5 @@
 /*
- * $Id: DNA_scene_types.h 38502 2011-07-19 02:47:43Z dfelinto $ 
+ * $Id: DNA_scene_types.h 40084 2011-09-10 03:07:26Z campbellbarton $ 
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -126,6 +126,8 @@ typedef struct FFMpegCodecData {
 	int video_bitrate;
 	int audio_bitrate;
 	int audio_mixrate;
+	int audio_channels;
+	int audio_pad;
 	float audio_volume;
 	int gop_size;
 	int flags;
@@ -147,6 +149,8 @@ typedef struct AudioData {
 	int distance_model;
 	short flag;
 	short pad;
+	float volume;
+	float pad2;
 } AudioData;
 
 typedef struct SceneRenderLayer {
@@ -422,7 +426,37 @@ typedef struct GameFraming {
 #define SCE_GAMEFRAMING_EXTEND 1
 #define SCE_GAMEFRAMING_SCALE  2
 
+typedef struct RecastData
+{
+	float cellsize;
+	float cellheight;
+	float agentmaxslope;
+	float agentmaxclimb;
+	float agentheight;
+	float agentradius;
+	float edgemaxlen;
+	float edgemaxerror;
+	float regionminsize;
+	float regionmergesize;
+	int vertsperpoly;
+	float detailsampledist;
+	float detailsamplemaxerror;
+} RecastData;
+
 typedef struct GameData {
+
+	/*  standalone player */
+	struct GameFraming framing;
+	short fullscreen, xplay, yplay, freqplay;
+	short depth, attrib, rt1, rt2;
+
+	/* stereo/dome mode */
+	struct GameDome dome;
+	short stereoflag, stereomode;
+	short pad2, pad3;
+	float eyeseparation, pad1;
+	RecastData recastData;
+
 
 	/* physics (it was in world)*/
 	float gravity; /*Gravitation constant for the game world*/
@@ -436,21 +470,12 @@ typedef struct GameData {
 	 * bit 3: (gameengine): Activity culling is enabled.
 	 * bit 5: (gameengine) : enable Bullet DBVT tree for view frustrum culling
 	*/
-	short mode, flag, matmode, pad[3];
+	short mode, flag, matmode, pad[2];
 	short occlusionRes;		/* resolution of occlusion Z buffer in pixel */
 	short physicsEngine;
 	short ticrate, maxlogicstep, physubstep, maxphystep;
-
-	/*  standalone player */
-	struct GameFraming framing;
-	short fullscreen, xplay, yplay, freqplay;
-	short depth, attrib, rt1, rt2;
-
-	/* stereo/dome mode */
-	struct GameDome dome;
-	short stereoflag, stereomode;
-	short pad2, pad3;
-	float eyeseparation, pad1;
+	short obstacleSimulation;
+	float levelHeight;
 } GameData;
 
 #define STEREO_NOSTEREO		1
@@ -474,7 +499,13 @@ typedef struct GameData {
 #define WOPHY_ODE		4
 #define WOPHY_BULLET	5
 
+/* obstacleSimulation */
+#define OBSTSIMULATION_NONE		0
+#define OBSTSIMULATION_TOI_rays		1
+#define OBSTSIMULATION_TOI_cells	2
+
 /* GameData.flag */
+#define GAME_RESTRICT_ANIM_UPDATES			(1 << 0)
 #define GAME_ENABLE_ALL_FRAMES				(1 << 1)
 #define GAME_SHOW_DEBUG_PROPS				(1 << 2)
 #define GAME_SHOW_FRAMERATE					(1 << 3)
@@ -489,7 +520,9 @@ typedef struct GameData {
 #define GAME_IGNORE_DEPRECATION_WARNINGS	(1 << 12)
 #define GAME_ENABLE_ANIMATION_RECORD		(1 << 13)
 #define GAME_SHOW_MOUSE						(1 << 14)
+#define GAME_SHOW_OBSTACLE_SIMULATION		(1 << 15)
 #define GAME_GLSL_NO_COLOR_MANAGEMENT		(1 << 15)
+/* Note: GameData.flag is a short (max 16 flags). To add more flags, GameData.flag needs to be an int */
 
 /* GameData.matmode */
 #define GAME_MAT_TEXFACE	0
@@ -802,6 +835,7 @@ typedef struct Scene {
 	void *sound_scene;
 	void *sound_scene_handle;
 	void *sound_scrub_handle;
+	void *speaker_handles;
 	
 	void *fps_info;	 				/* (runtime) info/cache used for presenting playback framerate info to the user */
 	
@@ -1074,7 +1108,7 @@ typedef struct Scene {
 #define SCE_SNAP_ROTATE			2
 #define SCE_SNAP_PEEL_OBJECT	4
 #define SCE_SNAP_PROJECT		8
-#define SCE_SNAP_PROJECT_NO_SELF	16
+#define SCE_SNAP_NO_SELF		16
 /* toolsettings->snap_target */
 #define SCE_SNAP_TARGET_CLOSEST	0
 #define SCE_SNAP_TARGET_CENTER	1
@@ -1107,7 +1141,8 @@ typedef struct Scene {
 #define PROP_SHARP             3
 #define PROP_LIN               4
 #define PROP_CONST             5
-#define PROP_RANDOM		6
+#define PROP_RANDOM            6
+#define PROP_MODE_MAX          7
 
 /* toolsettings->proportional */
 #define PROP_EDIT_OFF			0
@@ -1128,9 +1163,10 @@ typedef struct Scene {
 #define F_DUPLI			3
 
 /* audio->flag */
-#define AUDIO_MUTE		1
-#define AUDIO_SYNC		2
-#define AUDIO_SCRUB		4
+#define AUDIO_MUTE                (1<<0)
+#define AUDIO_SYNC                (1<<1)
+#define AUDIO_SCRUB		          (1<<2)
+#define AUDIO_VOLUME_ANIMATED     (1<<3)
 
 #define FFMPEG_MULTIPLEX_AUDIO  1 /* deprecated, you can choose none as audiocodec now */
 #define FFMPEG_AUTOSPLIT_OUTPUT 2

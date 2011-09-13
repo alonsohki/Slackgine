@@ -50,6 +50,7 @@ class RawImporter(bpy.types.Operator):
     '''Load Raw triangle mesh data'''
     bl_idname = "import_mesh.raw"
     bl_label = "Import RAW"
+    bl_options = {'UNDO'}
 
     filepath = StringProperty(name="File Path", description="Filepath used for importing the RAW file", maxlen=1024, default="", subtype='FILE_PATH')
     filter_glob = StringProperty(default="*.raw", options={'HIDDEN'})
@@ -70,11 +71,28 @@ class RawExporter(bpy.types.Operator):
     bl_idname = "export_mesh.raw"
     bl_label = "Export RAW"
 
-    filepath = StringProperty(name="File Path", description="Filepath used for exporting the RAW file", maxlen=1024, default= "", subtype='FILE_PATH')
-    check_existing = BoolProperty(name="Check Existing", description="Check and warn on overwriting existing files", default=True, options={'HIDDEN'})
-
-    apply_modifiers = BoolProperty(name="Apply Modifiers", description="Use transformed mesh data from each object", default=True)
-    triangulate = BoolProperty(name="Triangulate", description="Triangulate quads.", default=True)
+    filepath = StringProperty(
+            name="File Path",
+            description="Filepath used for exporting the RAW file",
+            maxlen=1024,
+            subtype='FILE_PATH',
+            )
+    check_existing = BoolProperty(
+            name="Check Existing",
+            description="Check and warn on overwriting existing files",
+            default=True,
+            options={'HIDDEN'},
+            )
+    apply_modifiers = BoolProperty(
+            name="Apply Modifiers",
+            description="Use transformed mesh data from each object",
+            default=True,
+            )
+    triangulate = BoolProperty(
+            name="Triangulate",
+            description="Triangulate quads.",
+            default=True,
+            )
 
     def execute(self, context):
         from . import export_raw
@@ -106,6 +124,7 @@ def register():
 
     bpy.types.INFO_MT_file_import.append(menu_import)
     bpy.types.INFO_MT_file_export.append(menu_export)
+
 
 def unregister():
     bpy.utils.unregister_module(__name__)

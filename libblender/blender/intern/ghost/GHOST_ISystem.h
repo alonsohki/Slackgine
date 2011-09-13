@@ -1,5 +1,5 @@
 /*
- * $Id: GHOST_ISystem.h 36426 2011-05-02 08:07:24Z jesterking $
+ * $Id: GHOST_ISystem.h 38908 2011-08-02 04:28:05Z merwin $
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
  * This program is free software; you can redistribute it and/or
@@ -297,22 +297,6 @@ public:
 	 * @return Indication of success.
 	 */
 	virtual GHOST_TSuccess removeEventConsumer(GHOST_IEventConsumer* consumer) = 0;
-
-	 /***************************************************************************************
-	 ** N-degree of freedom device management functionality
-	 ***************************************************************************************/
-
-   /**
-    * Starts the N-degree of freedom device manager
-    */
-   virtual int openNDOF(GHOST_IWindow*,
-       GHOST_NDOFLibraryInit_fp setNdofLibraryInit, 
-       GHOST_NDOFLibraryShutdown_fp setNdofLibraryShutdown,
-       GHOST_NDOFDeviceOpen_fp setNdofDeviceOpen
-       // original patch only
-      // GHOST_NDOFEventHandler_fp setNdofEventHandler
-       ) = 0;
-
 
 	/***************************************************************************************
 	 ** Cursor management functionality

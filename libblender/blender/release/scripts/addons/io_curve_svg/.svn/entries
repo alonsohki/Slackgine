@@ -1,15 +1,15 @@
 10
 
 dir
-2139
+2324
 https://svn.blender.org/svnroot/bf-extensions/trunk/py/scripts/addons/io_curve_svg
 https://svn.blender.org/svnroot/bf-extensions
 
 
 
-2011-07-10T22:57:27.956301Z
-2116
-campbellbarton
+2011-09-03T11:11:01.607030Z
+2294
+nazgul
 
 
 
@@ -32,10 +32,10 @@ file
 
 
 
-2011-07-19T21:18:51.000000Z
-8b3f72b7ff6ca14cf0c6bb7931c43812
-2011-07-10T22:57:27.956301Z
-2116
+2011-09-13T17:15:24.557021Z
+f1ff6f08bca7ac1e229a0379a91f43dd
+2011-07-25T03:12:07.506731Z
+2176
 campbellbarton
 has-props
 
@@ -66,11 +66,11 @@ file
 
 
 
-2011-07-19T21:18:51.000000Z
-a353ac1a7c98a21199929d77ae2b34dd
-2011-07-10T22:57:27.956301Z
-2116
-campbellbarton
+2011-09-13T17:15:24.557021Z
+748e1ab47c9dfc8131ed98e4d1bb5a7f
+2011-09-03T11:11:01.607030Z
+2294
+nazgul
 has-props
 
 
@@ -92,7 +92,7 @@ has-props
 
 
 
-2530
+2556
 
 svg_colors.py
 file
@@ -100,7 +100,7 @@ file
 
 
 
-2011-07-19T21:18:51.000000Z
+2011-09-13T17:15:24.557021Z
 65fa5fae445a7028c65532b80fd6c557
 2011-02-20T21:49:07.765834Z
 1624

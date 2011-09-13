@@ -1,5 +1,5 @@
 /*
- * $Id: RNA_access.h 37543 2011-06-16 06:47:54Z campbellbarton $
+ * $Id: RNA_access.h 40060 2011-09-09 11:54:13Z campbellbarton $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -327,10 +327,13 @@ extern StructRNA RNA_NearSensor;
 extern StructRNA RNA_NlaStrip;
 extern StructRNA RNA_NlaTrack;
 extern StructRNA RNA_Node;
+extern StructRNA RNA_NodeForLoop;
 extern StructRNA RNA_NodeGroup;
 extern StructRNA RNA_NodeLink;
 extern StructRNA RNA_NodeSocket;
+extern StructRNA RNA_NodeSocketPanel;
 extern StructRNA RNA_NodeTree;
+extern StructRNA RNA_NodeWhileLoop;
 extern StructRNA RNA_NoiseTexture;
 extern StructRNA RNA_NorController;
 extern StructRNA RNA_Object;
@@ -376,7 +379,6 @@ extern StructRNA RNA_PropertyGroupItem;
 extern StructRNA RNA_PropertySensor;
 extern StructRNA RNA_PythonConstraint;
 extern StructRNA RNA_PythonController;
-extern StructRNA RNA_RGBANodeSocket;
 extern StructRNA RNA_RadarSensor;
 extern StructRNA RNA_RandomSensor;
 extern StructRNA RNA_RaySensor;
@@ -392,6 +394,7 @@ extern StructRNA RNA_Scene;
 extern StructRNA RNA_SceneGameData;
 extern StructRNA RNA_SceneRenderLayer;
 extern StructRNA RNA_SceneSequence;
+extern StructRNA RNA_SceneObjects;
 extern StructRNA RNA_Scopes;
 extern StructRNA RNA_Screen;
 extern StructRNA RNA_ScrewModifier;
@@ -463,6 +466,7 @@ extern StructRNA RNA_SpaceTimeline;
 extern StructRNA RNA_SpaceUVEditor;
 extern StructRNA RNA_SpaceUserPreferences;
 extern StructRNA RNA_SpaceView3D;
+extern StructRNA RNA_Speaker;
 extern StructRNA RNA_SpeedControlSequence;
 extern StructRNA RNA_Spline;
 extern StructRNA RNA_SplineIKConstraint;
@@ -551,9 +555,7 @@ extern StructRNA RNA_UserPreferencesFilePaths;
 extern StructRNA RNA_UserPreferencesSystem;
 extern StructRNA RNA_UserPreferencesView;
 extern StructRNA RNA_UserSolidLight;
-extern StructRNA RNA_ValueNodeSocket;
 extern StructRNA RNA_VectorFont;
-extern StructRNA RNA_VectorNodeSocket;
 extern StructRNA RNA_VertexGroup;
 extern StructRNA RNA_VertexGroupElement;
 extern StructRNA RNA_VertexPaint;
@@ -562,6 +564,9 @@ extern StructRNA RNA_VoxelData;
 extern StructRNA RNA_VoxelDataTexture;
 extern StructRNA RNA_WarpModifier;
 extern StructRNA RNA_WaveModifier;
+extern StructRNA RNA_WeightVGEditModifier;
+extern StructRNA RNA_WeightVGMixModifier;
+extern StructRNA RNA_WeightVGProximityModifier;
 extern StructRNA RNA_Window;
 extern StructRNA RNA_WindowManager;
 extern StructRNA RNA_WipeSequence;
@@ -596,6 +601,8 @@ void RNA_pointer_recast(PointerRNA *ptr, PointerRNA *r_ptr);
 extern const PointerRNA PointerRNA_NULL;
 
 /* Structs */
+
+StructRNA *RNA_struct_find(const char *identifier);
 
 const char *RNA_struct_identifier(StructRNA *type);
 const char *RNA_struct_ui_name(StructRNA *type);
@@ -653,7 +660,7 @@ int RNA_property_flag(PropertyRNA *prop);
 void *RNA_property_py_data_get(PropertyRNA *prop);
 
 int RNA_property_array_length(PointerRNA *ptr, PropertyRNA *prop);
-int RNA_property_array_check(PointerRNA *ptr, PropertyRNA *prop);
+int RNA_property_array_check(PropertyRNA *prop);
 int RNA_property_multi_array_length(PointerRNA *ptr, PropertyRNA *prop, int dimension);
 int RNA_property_array_dimension(PointerRNA *ptr, PropertyRNA *prop, int length[]);
 char RNA_property_array_item_char(PropertyRNA *prop, int index);
@@ -700,6 +707,10 @@ int RNA_property_path_from_ID_check(PointerRNA *ptr, PropertyRNA *prop); /* slow
 void RNA_property_update(struct bContext *C, PointerRNA *ptr, PropertyRNA *prop);
 void RNA_property_update_main(struct Main *bmain, struct Scene *scene, PointerRNA *ptr, PropertyRNA *prop);
 int RNA_property_update_check(struct PropertyRNA *prop);
+
+void RNA_property_update_cache_add(PointerRNA *ptr, PropertyRNA *prop);
+void RNA_property_update_cache_flush(struct Main *bmain, struct Scene *scene);
+void RNA_property_update_cache_free(void);
 
 /* Property Data */
 
@@ -963,7 +974,15 @@ int RNA_function_call_direct_va_lookup(struct bContext *C, struct ReportList *re
 short RNA_type_to_ID_code(StructRNA *type);
 StructRNA *ID_code_to_RNA_type(short idcode);
 
-void RNA_warning(const char *format, ...)
+
+/* macro which inserts the function name */
+#ifdef __GNUC__
+#  define RNA_warning(format, args...) _RNA_warning("%s: " format "\n", __func__, ##args)
+#else /* MSVC doesnt support variable length args in macros */
+#  define RNA_warning _RNA_warning
+#endif
+
+void _RNA_warning(const char *format, ...)
 #ifdef __GNUC__
 __attribute__ ((format (printf, 1, 2)))
 #endif

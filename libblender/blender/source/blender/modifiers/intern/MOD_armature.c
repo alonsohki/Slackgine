@@ -1,5 +1,5 @@
 /*
-* $Id: MOD_armature.c 36913 2011-05-26 10:21:09Z blendix $
+* $Id: MOD_armature.c 39342 2011-08-12 18:11:22Z blendix $
 *
 * ***** BEGIN GPL LICENSE BLOCK *****
 *
@@ -213,4 +213,5 @@ ModifierTypeInfo modifierType_Armature = {
 	/* dependsOnNormals */	NULL,
 	/* foreachObjectLink */ foreachObjectLink,
 	/* foreachIDLink */     NULL,
+	/* foreachTexLink */    NULL,
 };

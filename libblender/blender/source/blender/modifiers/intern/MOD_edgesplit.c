@@ -1,5 +1,5 @@
 /*
-* $Id: MOD_edgesplit.c 36335 2011-04-26 10:38:18Z campbellbarton $
+* $Id: MOD_edgesplit.c 39342 2011-08-12 18:11:22Z blendix $
 *
 * ***** BEGIN GPL LICENSE BLOCK *****
 *
@@ -1311,4 +1311,5 @@ ModifierTypeInfo modifierType_EdgeSplit = {
 	/* dependsOnNormals */	NULL,
 	/* foreachObjectLink */ NULL,
 	/* foreachIDLink */     NULL,
+	/* foreachTexLink */    NULL,
 };

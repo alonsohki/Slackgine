@@ -1,5 +1,5 @@
 /*
- * $Id: wm_subwindow.c 35824 2011-03-27 17:22:04Z campbellbarton $
+ * $Id: wm_subwindow.c 39358 2011-08-13 09:22:14Z campbellbarton $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -378,7 +378,8 @@ unsigned int index_to_framebuffer(int index)
 
 void WM_set_framebuffer_index_color(int index)
 {
-	cpack(index_to_framebuffer(index));
+	const int col= index_to_framebuffer(index);
+	cpack(col);
 }
 
 int WM_framebuffer_to_index(unsigned int col)

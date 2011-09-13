@@ -322,8 +322,8 @@ static int load_tex(Sculpt *sd, Brush* br, ViewContext* vc)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	if (br->mtex.brush_map_mode == MTEX_MAP_MODE_FIXED) {
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 	}
 
 	return 1;
@@ -831,6 +831,13 @@ int paint_stroke_modal(bContext *C, wmOperator *op, wmEvent *event)
 	PaintStroke *stroke = op->customdata;
 	float mouse[2];
 	int first= 0;
+
+	// let NDOF motion pass through to the 3D view so we can paint and rotate simultaneously!
+	// this isn't perfect... even when an extra MOUSEMOVE is spoofed, the stroke discards it
+	// since the 2D deltas are zero -- code in this file needs to be updated to use the
+	// post-NDOF_MOTION MOUSEMOVE
+	if (event->type == NDOF_MOTION)
+		return OPERATOR_PASS_THROUGH;
 
 	if(!stroke->stroke_started) {
 		stroke->last_mouse_position[0] = event->x;

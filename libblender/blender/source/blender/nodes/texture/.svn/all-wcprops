@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/bf-blender/!svn/ver/39975/trunk/blender/source/blender/nodes/texture
+END
+node_texture_util.c
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/texture/node_texture_util.c
+END
+node_texture_tree.c
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svnroot/bf-blender/!svn/ver/39975/trunk/blender/source/blender/nodes/texture/node_texture_tree.c
+END
+node_texture_util.h
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/texture/node_texture_util.h
+END

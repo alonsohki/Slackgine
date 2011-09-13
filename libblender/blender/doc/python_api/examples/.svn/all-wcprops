@@ -1,7 +1,7 @@
 K 25
 svn:wc:ra_dav:version-url
 V 72
-/svnroot/bf-blender/!svn/ver/38349/trunk/blender/doc/python_api/examples
+/svnroot/bf-blender/!svn/ver/40027/trunk/blender/doc/python_api/examples
 END
 bpy.types.Operator.3.py
 K 25
@@ -67,13 +67,19 @@ blf.py
 K 25
 svn:wc:ra_dav:version-url
 V 79
-/svnroot/bf-blender/!svn/ver/38217/trunk/blender/doc/python_api/examples/blf.py
+/svnroot/bf-blender/!svn/ver/38804/trunk/blender/doc/python_api/examples/blf.py
+END
+bpy.types.ID.user_clear.1.py
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svnroot/bf-blender/!svn/ver/39661/trunk/blender/doc/python_api/examples/bpy.types.ID.user_clear.1.py
 END
 mathutils.Vector.py
 K 25
 svn:wc:ra_dav:version-url
 V 92
-/svnroot/bf-blender/!svn/ver/34649/trunk/blender/doc/python_api/examples/mathutils.Vector.py
+/svnroot/bf-blender/!svn/ver/38720/trunk/blender/doc/python_api/examples/mathutils.Vector.py
 END
 mathutils.Matrix.py
 K 25
@@ -121,7 +127,7 @@ bge.texture.1.py
 K 25
 svn:wc:ra_dav:version-url
 V 89
-/svnroot/bf-blender/!svn/ver/38217/trunk/blender/doc/python_api/examples/bge.texture.1.py
+/svnroot/bf-blender/!svn/ver/40027/trunk/blender/doc/python_api/examples/bge.texture.1.py
 END
 bpy.props.1.py
 K 25
@@ -133,7 +139,7 @@ bge.texture.py
 K 25
 svn:wc:ra_dav:version-url
 V 87
-/svnroot/bf-blender/!svn/ver/38349/trunk/blender/doc/python_api/examples/bge.texture.py
+/svnroot/bf-blender/!svn/ver/38804/trunk/blender/doc/python_api/examples/bge.texture.py
 END
 bpy.props.py
 K 25
@@ -175,7 +181,7 @@ bge.constraints.py
 K 25
 svn:wc:ra_dav:version-url
 V 91
-/svnroot/bf-blender/!svn/ver/38217/trunk/blender/doc/python_api/examples/bge.constraints.py
+/svnroot/bf-blender/!svn/ver/38804/trunk/blender/doc/python_api/examples/bge.constraints.py
 END
 aud.py
 K 25
@@ -199,7 +205,7 @@ bpy.types.BlendDataLibraries.load.py
 K 25
 svn:wc:ra_dav:version-url
 V 109
-/svnroot/bf-blender/!svn/ver/36910/trunk/blender/doc/python_api/examples/bpy.types.BlendDataLibraries.load.py
+/svnroot/bf-blender/!svn/ver/39694/trunk/blender/doc/python_api/examples/bpy.types.BlendDataLibraries.load.py
 END
 bpy.types.Operator.1.py
 K 25
@@ -211,5 +217,5 @@ bpy.types.Operator.py
 K 25
 svn:wc:ra_dav:version-url
 V 94
-/svnroot/bf-blender/!svn/ver/34954/trunk/blender/doc/python_api/examples/bpy.types.Operator.py
+/svnroot/bf-blender/!svn/ver/40027/trunk/blender/doc/python_api/examples/bpy.types.Operator.py
 END

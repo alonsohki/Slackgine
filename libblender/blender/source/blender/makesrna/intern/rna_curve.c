@@ -1,5 +1,5 @@
 /*
- * $Id: rna_curve.c 38323 2011-07-12 09:30:40Z blendix $
+ * $Id: rna_curve.c 39792 2011-08-30 09:15:55Z nexyon $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -47,9 +47,17 @@
 
 EnumPropertyItem beztriple_handle_type_items[] = {
 		{HD_FREE, "FREE", 0, "Free", ""},
-		{HD_AUTO, "AUTO", 0, "Auto", ""},
 		{HD_VECT, "VECTOR", 0, "Vector", ""},
 		{HD_ALIGN, "ALIGNED", 0, "Aligned", ""},
+		{HD_AUTO, "AUTO", 0, "Auto", ""},
+		{0, NULL, 0, NULL, NULL}};
+		
+EnumPropertyItem keyframe_handle_type_items[] = {
+		{HD_FREE, "FREE", 0, "Free", ""},
+		{HD_VECT, "VECTOR", 0, "Vector", ""},
+		{HD_ALIGN, "ALIGNED", 0, "Aligned", ""},
+		{HD_AUTO, "AUTO", 0, "Automatic", ""},
+		{HD_AUTO_ANIM, "AUTO_CLAMPED", 0, "Auto Clamped", "Auto handles clamped to not overshoot"},
 		{0, NULL, 0, NULL, NULL}};
 
 EnumPropertyItem beztriple_interpolation_mode_items[] = {
@@ -651,7 +659,7 @@ static char *rna_TextBox_path(PointerRNA *ptr)
 	int index= (int)(tb - cu->tb);
 
 	if (index >= 0 && index < cu->totbox)
-		return BLI_sprintfN("textboxes[%d]", index);
+		return BLI_sprintfN("text_boxes[%d]", index);
 	else
 		return BLI_strdup("");
 }

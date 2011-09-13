@@ -16,11 +16,17 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-# <pep8 compliant>
+# <pep8-80 compliant>
 
 from mathutils import Vector
 import bpy
-from bpy.props import BoolProperty, EnumProperty, IntProperty, FloatProperty, FloatVectorProperty
+from bpy.types import Operator
+from bpy.props import (BoolProperty,
+                       EnumProperty,
+                       IntProperty,
+                       FloatProperty,
+                       FloatVectorProperty,
+                       )
 
 
 def object_ensure_material(obj, mat_name):
@@ -40,28 +46,35 @@ def object_ensure_material(obj, mat_name):
     return mat
 
 
-class QuickFur(bpy.types.Operator):
+class QuickFur(Operator):
     bl_idname = "object.quick_fur"
     bl_label = "Quick Fur"
     bl_options = {'REGISTER', 'UNDO'}
 
-    density = EnumProperty(items=(
-                        ('LIGHT', "Light", ""),
-                        ('MEDIUM', "Medium", ""),
-                        ('HEAVY', "Heavy", "")),
-                name="Fur Density",
-                description="",
-                default='MEDIUM')
-
-    view_percentage = IntProperty(name="View %",
-            default=10, min=1, max=100, soft_min=1, soft_max=100)
-
-    length = FloatProperty(name="Length",
-            default=0.1, min=0.001, max=100, soft_min=0.01, soft_max=10)
+    density = EnumProperty(
+            name="Fur Density",
+            items=(('LIGHT', "Light", ""),
+                   ('MEDIUM', "Medium", ""),
+                   ('HEAVY', "Heavy", "")),
+            default='MEDIUM',
+            )
+    view_percentage = IntProperty(
+            name="View %",
+            min=1, max=100,
+            soft_min=1, soft_max=100,
+            default=10,
+            )
+    length = FloatProperty(
+            name="Length",
+            min=0.001, max=100,
+            soft_min=0.01, soft_max=10,
+            default=0.1,
+            )
 
     def execute(self, context):
         fake_context = bpy.context.copy()
-        mesh_objects = [obj for obj in context.selected_objects if obj.type == 'MESH']
+        mesh_objects = [obj for obj in context.selected_objects
+                        if obj.type == 'MESH']
 
         if not mesh_objects:
             self.report({'ERROR'}, "Select at least one mesh object.")
@@ -92,41 +105,61 @@ class QuickFur(bpy.types.Operator):
             psys.settings.child_type = 'INTERPOLATED'
 
             obj.data.materials.append(mat)
-            obj.particle_systems[-1].settings.material = len(obj.data.materials)
+            obj.particle_systems[-1].settings.material = \
+                    len(obj.data.materials)
 
         return {'FINISHED'}
 
 
-class QuickExplode(bpy.types.Operator):
+class QuickExplode(Operator):
     bl_idname = "object.quick_explode"
     bl_label = "Quick Explode"
     bl_options = {'REGISTER', 'UNDO'}
 
-    style = EnumProperty(items=(
-                        ('EXPLODE', "Explode", ""),
-                        ('BLEND', "Blend", "")),
-                name="Explode Style",
-                description="",
-                default='EXPLODE')
+    style = EnumProperty(
+            name="Explode Style",
+            items=(('EXPLODE', "Explode", ""),
+                   ('BLEND', "Blend", "")),
+            default='EXPLODE',
+            )
+    amount = IntProperty(
+            name="Amount of pieces",
+            min=2, max=10000,
+            soft_min=2, soft_max=10000,
+            default=100,
+            )
+    frame_duration = IntProperty(
+            name="Duration",
+            min=1, max=300000,
+            soft_min=1, soft_max=10000,
+            default=50,
+            )
 
-    amount = IntProperty(name="Amount of pieces",
-            default=100, min=2, max=10000, soft_min=2, soft_max=10000)
+    frame_start = IntProperty(
+            name="Start Frame",
+            min=1, max=300000,
+            soft_min=1, soft_max=10000,
+            default=1,
+            )
+    frame_end = IntProperty(
+            name="End Frame",
+            min=1, max=300000,
+            soft_min=1, soft_max=10000,
+            default=10,
+            )
 
-    frame_duration = IntProperty(name="Duration",
-            default=50, min=1, max=300000, soft_min=1, soft_max=10000)
+    velocity = FloatProperty(
+            name="Outwards Velocity",
+            min=0, max=300000,
+            soft_min=0, soft_max=10,
+            default=1,
+            )
 
-    frame_start = IntProperty(name="Start Frame",
-            default=1, min=1, max=300000, soft_min=1, soft_max=10000)
-
-    frame_end = IntProperty(name="End Frame",
-            default=10, min=1, max=300000, soft_min=1, soft_max=10000)
-
-    velocity = FloatProperty(name="Outwards Velocity",
-            default=1, min=0, max=300000, soft_min=0, soft_max=10)
-
-    fade = BoolProperty(name="Fade",
-                description="Fade the pieces over time.",
-                default=True)
+    fade = BoolProperty(
+            name="Fade",
+            description="Fade the pieces over time.",
+            default=True,
+            )
 
     def execute(self, context):
         fake_context = bpy.context.copy()
@@ -149,7 +182,10 @@ class QuickExplode(bpy.types.Operator):
 
         for obj in mesh_objects:
             if obj.particle_systems:
-                self.report({'ERROR'}, "Object %r already has a particle system" % obj.name)
+                self.report({'ERROR'},
+                            "Object %r already has a "
+                            "particle system" % obj.name)
+
                 return {'CANCELLED'}
 
         if self.fade:
@@ -184,9 +220,7 @@ class QuickExplode(bpy.types.Operator):
 
             if self.fade:
                 explode.show_dead = False
-                bpy.ops.mesh.uv_texture_add(fake_context)
-                uv = obj.data.uv_textures[-1]
-                uv.name = "Explode fade"
+                uv = obj.data.uv_textures.new("Explode fade")
                 explode.particle_uv = uv.name
 
                 mat = object_ensure_material(obj, "Explode Fade")
@@ -247,7 +281,7 @@ class QuickExplode(bpy.types.Operator):
 
 def obj_bb_minmax(obj, min_co, max_co):
     for i in range(0, 8):
-        bb_vec = Vector(obj.bound_box[i]) * obj.matrix_world
+        bb_vec = obj.matrix_world * Vector(obj.bound_box[i])
 
         min_co[0] = min(bb_vec[0], min_co[0])
         min_co[1] = min(bb_vec[1], min_co[1])
@@ -257,26 +291,30 @@ def obj_bb_minmax(obj, min_co, max_co):
         max_co[2] = max(bb_vec[2], max_co[2])
 
 
-class QuickSmoke(bpy.types.Operator):
+class QuickSmoke(Operator):
     bl_idname = "object.quick_smoke"
     bl_label = "Quick Smoke"
     bl_options = {'REGISTER', 'UNDO'}
 
-    style = EnumProperty(items=(
-                        ('STREAM', "Stream", ""),
-                        ('PUFF', "Puff", ""),
-                        ('FIRE', "Fire", "")),
-                name="Smoke Style",
-                description="",
-                default='STREAM')
+    style = EnumProperty(
+            name="Smoke Style",
+            items=(('STREAM', "Stream", ""),
+                   ('PUFF', "Puff", ""),
+                   ('FIRE', "Fire", ""),
+                   ),
+            default='STREAM',
+            )
 
-    show_flows = BoolProperty(name="Render Smoke Objects",
-                description="Keep the smoke objects visible during rendering.",
-                default=False)
+    show_flows = BoolProperty(
+            name="Render Smoke Objects",
+            description="Keep the smoke objects visible during rendering.",
+            default=False,
+            )
 
     def execute(self, context):
         fake_context = bpy.context.copy()
-        mesh_objects = [obj for obj in context.selected_objects if obj.type == 'MESH']
+        mesh_objects = [obj for obj in context.selected_objects
+                        if obj.type == 'MESH']
         min_co = Vector((100000.0, 100000.0, 100000.0))
         max_co = -min_co
 
@@ -336,21 +374,25 @@ class QuickSmoke(bpy.types.Operator):
         mat.volume.density = 0
         mat.volume.density_scale = 5
 
-        mat.texture_slots.add()
-        mat.texture_slots[0].texture = bpy.data.textures.new("Smoke Density", 'VOXEL_DATA')
-        mat.texture_slots[0].texture.voxel_data.domain_object = obj
-        mat.texture_slots[0].use_map_color_emission = False
-        mat.texture_slots[0].use_map_density = True
+        tex = bpy.data.textures.new("Smoke Density", 'VOXEL_DATA')
+        tex.voxel_data.domain_object = obj
+
+        tex_slot = mat.texture_slots.add()
+        tex_slot.texture = tex
+        tex_slot.use_map_color_emission = False
+        tex_slot.use_map_density = True
 
         # for fire add a second texture for emission and emission color
         if self.style == 'FIRE':
             mat.volume.emission = 5
-            mat.texture_slots.add()
-            mat.texture_slots[1].texture = bpy.data.textures.new("Smoke Heat", 'VOXEL_DATA')
-            mat.texture_slots[1].texture.voxel_data.domain_object = obj
-            mat.texture_slots[1].texture.use_color_ramp = True
+            tex = bpy.data.textures.new("Smoke Heat", 'VOXEL_DATA')
+            tex.voxel_data.domain_object = obj
+            tex.use_color_ramp = True
 
-            ramp = mat.texture_slots[1].texture.color_ramp
+            tex_slot = mat.texture_slots.add()
+            tex_slot.texture = tex
+
+            ramp = tex.color_ramp
 
             elem = ramp.elements.new(0.333)
             elem.color[0] = elem.color[3] = 1
@@ -366,33 +408,40 @@ class QuickSmoke(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class QuickFluid(bpy.types.Operator):
+class QuickFluid(Operator):
     bl_idname = "object.quick_fluid"
     bl_label = "Quick Fluid"
     bl_options = {'REGISTER', 'UNDO'}
 
-    style = EnumProperty(items=(
-                        ('INFLOW', "Inflow", ""),
-                        ('BASIC', "Basic", "")),
-                name="Fluid Style",
-                description="",
-                default='BASIC')
-
-    initial_velocity = FloatVectorProperty(name="Initial Velocity",
-        description="Initial velocity of the fluid",
-        default=(0.0, 0.0, 0.0), min=-100.0, max=100.0, subtype='VELOCITY')
-
-    show_flows = BoolProperty(name="Render Fluid Objects",
-                description="Keep the fluid objects visible during rendering.",
-                default=False)
-
-    start_baking = BoolProperty(name="Start Fluid Bake",
-                description="Start baking the fluid immediately after creating the domain object.",
-                default=False)
+    style = EnumProperty(
+            name="Fluid Style",
+            items=(('INFLOW', "Inflow", ""),
+                   ('BASIC', "Basic", "")),
+            default='BASIC',
+            )
+    initial_velocity = FloatVectorProperty(
+            name="Initial Velocity",
+            description="Initial velocity of the fluid",
+            min=-100.0, max=100.0,
+            default=(0.0, 0.0, 0.0),
+            subtype='VELOCITY',
+            )
+    show_flows = BoolProperty(
+            name="Render Fluid Objects",
+            description="Keep the fluid objects visible during rendering.",
+            default=False,
+            )
+    start_baking = BoolProperty(
+            name="Start Fluid Bake",
+            description=("Start baking the fluid immediately "
+                         "after creating the domain object"),
+            default=False,
+            )
 
     def execute(self, context):
         fake_context = bpy.context.copy()
-        mesh_objects = [obj for obj in context.selected_objects if (obj.type == 'MESH' and not 0 in obj.dimensions)]
+        mesh_objects = [obj for obj in context.selected_objects
+                        if (obj.type == 'MESH' and not 0.0 in obj.dimensions)]
         min_co = Vector((100000, 100000, 100000))
         max_co = Vector((-100000, -100000, -100000))
 
@@ -405,7 +454,8 @@ class QuickFluid(bpy.types.Operator):
             # make each selected object a fluid
             bpy.ops.object.modifier_add(fake_context, type='FLUID_SIMULATION')
 
-            # fluid has to be before constructive modifiers, so it might not be the last modifier
+            # fluid has to be before constructive modifiers,
+            # so it might not be the last modifier
             for mod in obj.modifiers:
                 if mod.type == 'FLUID_SIMULATION':
                     break
@@ -429,10 +479,14 @@ class QuickFluid(bpy.types.Operator):
         obj = context.active_object
         obj.name = "Fluid Domain"
 
-        # give the fluid some room below the flows and scale with initial velocity
+        # give the fluid some room below the flows
+        # and scale with initial velocity
         v = 0.5 * self.initial_velocity
         obj.location = 0.5 * (max_co + min_co) + Vector((0.0, 0.0, -1.0)) + v
-        obj.scale = 0.5 * (max_co - min_co) + Vector((1.0, 1.0, 2.0)) + Vector((abs(v[0]), abs(v[1]), abs(v[2])))
+        obj.scale = (0.5 * (max_co - min_co) +
+                     Vector((1.0, 1.0, 2.0)) +
+                     Vector((abs(v[0]), abs(v[1]), abs(v[2])))
+                     )
 
         # setup smoke domain
         bpy.ops.object.modifier_add(type='FLUID_SIMULATION')

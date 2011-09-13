@@ -1,7 +1,7 @@
 K 25
 svn:wc:ra_dav:version-url
 V 82
-/svnroot/bf-blender/!svn/ver/38443/trunk/blender/source/gameengine/BlenderRoutines
+/svnroot/bf-blender/!svn/ver/40113/trunk/blender/source/gameengine/BlenderRoutines
 END
 KX_BlenderRenderTools.cpp
 K 25
@@ -85,13 +85,13 @@ BL_KetsjiEmbedStart.cpp
 K 25
 svn:wc:ra_dav:version-url
 V 106
-/svnroot/bf-blender/!svn/ver/37750/trunk/blender/source/gameengine/BlenderRoutines/BL_KetsjiEmbedStart.cpp
+/svnroot/bf-blender/!svn/ver/40113/trunk/blender/source/gameengine/BlenderRoutines/BL_KetsjiEmbedStart.cpp
 END
 KX_BlenderInputDevice.h
 K 25
 svn:wc:ra_dav:version-url
 V 106
-/svnroot/bf-blender/!svn/ver/35063/trunk/blender/source/gameengine/BlenderRoutines/KX_BlenderInputDevice.h
+/svnroot/bf-blender/!svn/ver/39883/trunk/blender/source/gameengine/BlenderRoutines/KX_BlenderInputDevice.h
 END
 KX_BlenderSystem.cpp
 K 25

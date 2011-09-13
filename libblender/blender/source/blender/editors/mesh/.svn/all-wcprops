@@ -1,7 +1,7 @@
 K 25
 svn:wc:ra_dav:version-url
 V 76
-/svnroot/bf-blender/!svn/ver/38443/trunk/blender/source/blender/editors/mesh
+/svnroot/bf-blender/!svn/ver/40176/trunk/blender/source/blender/editors/mesh
 END
 mesh_intern.h
 K 25
@@ -13,13 +13,13 @@ editmesh.c
 K 25
 svn:wc:ra_dav:version-url
 V 87
-/svnroot/bf-blender/!svn/ver/36296/trunk/blender/source/blender/editors/mesh/editmesh.c
+/svnroot/bf-blender/!svn/ver/40147/trunk/blender/source/blender/editors/mesh/editmesh.c
 END
 editmesh_tools.c
 K 25
 svn:wc:ra_dav:version-url
 V 93
-/svnroot/bf-blender/!svn/ver/37413/trunk/blender/source/blender/editors/mesh/editmesh_tools.c
+/svnroot/bf-blender/!svn/ver/40176/trunk/blender/source/blender/editors/mesh/editmesh_tools.c
 END
 editface.c
 K 25
@@ -31,7 +31,7 @@ editmesh_mods.c
 K 25
 svn:wc:ra_dav:version-url
 V 92
-/svnroot/bf-blender/!svn/ver/37806/trunk/blender/source/blender/editors/mesh/editmesh_mods.c
+/svnroot/bf-blender/!svn/ver/40176/trunk/blender/source/blender/editors/mesh/editmesh_mods.c
 END
 loopcut.c
 K 25
@@ -43,25 +43,25 @@ mesh_data.c
 K 25
 svn:wc:ra_dav:version-url
 V 88
-/svnroot/bf-blender/!svn/ver/37504/trunk/blender/source/blender/editors/mesh/mesh_data.c
+/svnroot/bf-blender/!svn/ver/39991/trunk/blender/source/blender/editors/mesh/mesh_data.c
 END
 SConscript
 K 25
 svn:wc:ra_dav:version-url
 V 87
-/svnroot/bf-blender/!svn/ver/35028/trunk/blender/source/blender/editors/mesh/SConscript
+/svnroot/bf-blender/!svn/ver/39584/trunk/blender/source/blender/editors/mesh/SConscript
 END
 editmesh_lib.c
 K 25
 svn:wc:ra_dav:version-url
 V 91
-/svnroot/bf-blender/!svn/ver/36007/trunk/blender/source/blender/editors/mesh/editmesh_lib.c
+/svnroot/bf-blender/!svn/ver/40176/trunk/blender/source/blender/editors/mesh/editmesh_lib.c
 END
 editmesh_add.c
 K 25
 svn:wc:ra_dav:version-url
 V 91
-/svnroot/bf-blender/!svn/ver/36368/trunk/blender/source/blender/editors/mesh/editmesh_add.c
+/svnroot/bf-blender/!svn/ver/40156/trunk/blender/source/blender/editors/mesh/editmesh_add.c
 END
 editmesh_loop.c
 K 25

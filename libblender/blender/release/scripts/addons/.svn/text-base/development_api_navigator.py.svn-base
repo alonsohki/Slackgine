@@ -464,7 +464,7 @@ class OBJECT_PT_api_navigator(ApiNavigator, bpy.types.Panel):
     bl_space_type = "TEXT_EDITOR"
     bl_region_type = "UI"
     bl_label = "API Navigator"
-    bl_options = "DEFAULT_CLOSED"
+    bl_options = {'DEFAULT_CLOSED'}
     
     
     columns = 3
@@ -627,9 +627,10 @@ class OBJECT_PT_api_navigator(ApiNavigator, bpy.types.Panel):
 
         ###### layout ######
         layout = self.layout
-        col = layout.column()
-        layout.label(text='Tree Structure')
+
+        layout.label(text="Tree Structure:")
         col = layout.column(align=True)
+        
         col.prop(bpy.context.window_manager.api_nav_props, 'path', text='')
         row = col.row()
         row.operator("api_navigator.parent", text="Parent", icon="BACK")
@@ -658,15 +659,14 @@ class OBJECT_PT_api_navigator(ApiNavigator, bpy.types.Panel):
 
 
 def register_keymaps():
-    kc = bpy.context.window_manager.keyconfigs['Blender']
-    km = kc.keymaps.get("Text")
-    if km is None:
-         km = kc.keymaps.new(name="Text")
+    kc = bpy.context.window_manager.keyconfigs.addon
+    km = kc.keymaps.new(name="Text", space_type='TEXT_EDITOR')
     km.keymap_items.new('api_navigator.toggle_doc', 'ESC', 'PRESS')
 
 
 def unregister_keymaps():
-    km = bpy.data.window_managers["WinMan"].keyconfigs.default.keymaps["Text"]
+    kc = bpy.context.window_manager.keyconfigs.addon
+    km = kc.keymaps["Text"]
     kmi = km.keymap_items["api_navigator.toggle_doc"]
     km.keymap_items.remove(kmi)
 

@@ -1,7 +1,7 @@
 K 25
 svn:wc:ra_dav:version-url
 V 82
-/svnroot/bf-blender/!svn/ver/38443/trunk/blender/source/blender/editors/space_info
+/svnroot/bf-blender/!svn/ver/39991/trunk/blender/source/blender/editors/space_info
 END
 info_intern.h
 K 25
@@ -61,5 +61,5 @@ info_ops.c
 K 25
 svn:wc:ra_dav:version-url
 V 93
-/svnroot/bf-blender/!svn/ver/35853/trunk/blender/source/blender/editors/space_info/info_ops.c
+/svnroot/bf-blender/!svn/ver/39991/trunk/blender/source/blender/editors/space_info/info_ops.c
 END

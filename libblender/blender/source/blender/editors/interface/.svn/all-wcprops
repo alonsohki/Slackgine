@@ -1,13 +1,13 @@
 K 25
 svn:wc:ra_dav:version-url
 V 81
-/svnroot/bf-blender/!svn/ver/38443/trunk/blender/source/blender/editors/interface
+/svnroot/bf-blender/!svn/ver/40139/trunk/blender/source/blender/editors/interface
 END
 interface.c
 K 25
 svn:wc:ra_dav:version-url
 V 93
-/svnroot/bf-blender/!svn/ver/38063/trunk/blender/source/blender/editors/interface/interface.c
+/svnroot/bf-blender/!svn/ver/39792/trunk/blender/source/blender/editors/interface/interface.c
 END
 view2d.c
 K 25
@@ -19,7 +19,7 @@ interface_anim.c
 K 25
 svn:wc:ra_dav:version-url
 V 98
-/svnroot/bf-blender/!svn/ver/35242/trunk/blender/source/blender/editors/interface/interface_anim.c
+/svnroot/bf-blender/!svn/ver/39792/trunk/blender/source/blender/editors/interface/interface_anim.c
 END
 SConscript
 K 25
@@ -31,43 +31,43 @@ resources.c
 K 25
 svn:wc:ra_dav:version-url
 V 93
-/svnroot/bf-blender/!svn/ver/37521/trunk/blender/source/blender/editors/interface/resources.c
+/svnroot/bf-blender/!svn/ver/40109/trunk/blender/source/blender/editors/interface/resources.c
 END
 interface_draw.c
 K 25
 svn:wc:ra_dav:version-url
 V 98
-/svnroot/bf-blender/!svn/ver/37986/trunk/blender/source/blender/editors/interface/interface_draw.c
+/svnroot/bf-blender/!svn/ver/40114/trunk/blender/source/blender/editors/interface/interface_draw.c
 END
 interface_templates.c
 K 25
 svn:wc:ra_dav:version-url
 V 103
-/svnroot/bf-blender/!svn/ver/38188/trunk/blender/source/blender/editors/interface/interface_templates.c
+/svnroot/bf-blender/!svn/ver/40050/trunk/blender/source/blender/editors/interface/interface_templates.c
 END
 interface_panel.c
 K 25
 svn:wc:ra_dav:version-url
 V 99
-/svnroot/bf-blender/!svn/ver/37205/trunk/blender/source/blender/editors/interface/interface_panel.c
+/svnroot/bf-blender/!svn/ver/40114/trunk/blender/source/blender/editors/interface/interface_panel.c
 END
 interface_utils.c
 K 25
 svn:wc:ra_dav:version-url
 V 99
-/svnroot/bf-blender/!svn/ver/36219/trunk/blender/source/blender/editors/interface/interface_utils.c
+/svnroot/bf-blender/!svn/ver/39390/trunk/blender/source/blender/editors/interface/interface_utils.c
 END
 interface_style.c
 K 25
 svn:wc:ra_dav:version-url
 V 99
-/svnroot/bf-blender/!svn/ver/37792/trunk/blender/source/blender/editors/interface/interface_style.c
+/svnroot/bf-blender/!svn/ver/39094/trunk/blender/source/blender/editors/interface/interface_style.c
 END
 interface_handlers.c
 K 25
 svn:wc:ra_dav:version-url
 V 102
-/svnroot/bf-blender/!svn/ver/38080/trunk/blender/source/blender/editors/interface/interface_handlers.c
+/svnroot/bf-blender/!svn/ver/39792/trunk/blender/source/blender/editors/interface/interface_handlers.c
 END
 interface_ops.c
 K 25
@@ -85,25 +85,25 @@ interface_intern.h
 K 25
 svn:wc:ra_dav:version-url
 V 100
-/svnroot/bf-blender/!svn/ver/37244/trunk/blender/source/blender/editors/interface/interface_intern.h
+/svnroot/bf-blender/!svn/ver/39991/trunk/blender/source/blender/editors/interface/interface_intern.h
 END
 interface_widgets.c
 K 25
 svn:wc:ra_dav:version-url
 V 101
-/svnroot/bf-blender/!svn/ver/37986/trunk/blender/source/blender/editors/interface/interface_widgets.c
+/svnroot/bf-blender/!svn/ver/40114/trunk/blender/source/blender/editors/interface/interface_widgets.c
 END
 interface_regions.c
 K 25
 svn:wc:ra_dav:version-url
 V 101
-/svnroot/bf-blender/!svn/ver/37589/trunk/blender/source/blender/editors/interface/interface_regions.c
+/svnroot/bf-blender/!svn/ver/39474/trunk/blender/source/blender/editors/interface/interface_regions.c
 END
 interface_icons.c
 K 25
 svn:wc:ra_dav:version-url
 V 99
-/svnroot/bf-blender/!svn/ver/37200/trunk/blender/source/blender/editors/interface/interface_icons.c
+/svnroot/bf-blender/!svn/ver/39694/trunk/blender/source/blender/editors/interface/interface_icons.c
 END
 CMakeLists.txt
 K 25
@@ -115,5 +115,5 @@ interface_layout.c
 K 25
 svn:wc:ra_dav:version-url
 V 100
-/svnroot/bf-blender/!svn/ver/37557/trunk/blender/source/blender/editors/interface/interface_layout.c
+/svnroot/bf-blender/!svn/ver/40139/trunk/blender/source/blender/editors/interface/interface_layout.c
 END

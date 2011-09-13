@@ -26,9 +26,8 @@ PREF_SCALE = 100
 PREF_FACE_THICK = 0.1
 PREF_GRID_SNAP = False
 # Quake 1/2?
-# PREF_DEF_TEX_OPTS = Draw.Create(' 0 0 0 1 1\n') # not user settable yet
 # Quake 3+?
-PREF_DEF_TEX_OPTS = ' 0 0 0 1 1 0 0 0\n'  # not user settable yet
+PREF_DEF_TEX_OPTS = '0 0 0 1 1 0 0 0'  # not user settable yet
 
 PREF_NULL_TEX = 'NULL'  # not user settable yet
 PREF_INVIS_TEX = 'common/caulk'
@@ -75,12 +74,12 @@ def write_cube2brush(file, faces):
             image = uf.image if uf else None
 
             if image:
-                file.write(os.path.splitext(os.path.basename(image.filepath))[0])
+                file.write(os.path.splitext(bpy.path.basename(image.filepath))[0])
             else:
                 file.write(PREF_NULL_TEX)
 
         # Texture stuff ignored for now
-        file.write(PREF_DEF_TEX_OPTS)
+        file.write(" %s\n" % PREF_DEF_TEX_OPTS)
     file.write('}\n')
 
 
@@ -112,7 +111,7 @@ def write_face2brush(file, face):
         image = uf.image if uf else None
 
         if image:
-            image_text = os.path.splitext(os.path.basename(image.filepath))[0]
+            image_text = os.path.splitext(bpy.path.basename(image.filepath))[0]
 
     # reuse face vertices
     _v = face.id_data.vertices  # XXX25
@@ -133,7 +132,7 @@ def write_face2brush(file, face):
         file.write(format_vec % co)
     file.write(image_text)
     # Texture stuff ignored for now
-    file.write(PREF_DEF_TEX_OPTS)
+    file.write(" %s\n" % PREF_DEF_TEX_OPTS)
 
     for co in new_vco[:3]:
         file.write(format_vec % co)
@@ -143,7 +142,7 @@ def write_face2brush(file, face):
         file.write(PREF_INVIS_TEX)
 
     # Texture stuff ignored for now
-    file.write(PREF_DEF_TEX_OPTS)
+    file.write(" %s\n" % PREF_DEF_TEX_OPTS)
 
     # sides.
     if len(orig_vco) == 3:  # Tri, it seemms tri brushes are supported.
@@ -155,7 +154,7 @@ def write_face2brush(file, face):
         for co in orig_vco[i1], orig_vco[i2], new_vco[i2]:
             file.write(format_vec % co)
         file.write(PREF_INVIS_TEX)
-        file.write(PREF_DEF_TEX_OPTS)
+        file.write(" %s\n" % PREF_DEF_TEX_OPTS)
 
     file.write('}\n')
 
@@ -331,7 +330,7 @@ def export_map(context, filepath):
         dummy_mesh.transform(ob.matrix_world * SCALE_MAT)
 
         if PREF_GRID_SNAP:
-            for v in dummy_mesh.verts:
+            for v in dummy_mesh.vertices:
                 v.co[:] = v.co.to_tuple(0)
 
         # High quality normals
@@ -403,10 +402,10 @@ NULL
                     # add nmapping 0 0 ?
                     if PREF_GRID_SNAP:
                         file.write(" ( %d %d %d 0 0 )" %
-                                   round_vec(p.co.xyz * mat))
+                                   round_vec(mat * p.co.xyz))
                     else:
                         file.write(' ( %.6f %.6f %.6f 0 0 )' %
-                                   (p.co.xyz * mat)[:])
+                                   (mat * p.co.xyz)[:])
 
                     # Move to next line
                     if u_iter == u:
@@ -464,7 +463,24 @@ NULL
 def save(operator,
          context,
          filepath=None,
+         global_scale=100.0,
+         face_thickness=0.1,
+         texture_null="NULL",
+         texture_opts='0 0 0 1 1 0 0 0',
+         grid_snap=False,
          ):
+
+    global PREF_SCALE
+    global PREF_FACE_THICK
+    global PREF_NULL_TEX
+    global PREF_DEF_TEX_OPTS
+    global PREF_GRID_SNAP
+
+    PREF_SCALE = global_scale
+    PREF_FACE_THICK = face_thickness
+    PREF_NULL_TEX = texture_null
+    PREF_DEF_TEX_OPTS = texture_opts
+    PREF_GRID_SNAP = grid_snap
 
     export_map(context, filepath)
 

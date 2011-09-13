@@ -1,5 +1,5 @@
 /*
- * $Id: area.c 37986 2011-06-30 15:02:03Z ton $
+ * $Id: area.c 40114 2011-09-11 06:41:09Z campbellbarton $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -233,28 +233,28 @@ static void region_draw_azone_tab(AZone *az)
 	/* add code to draw region hidden as 'too small' */
 	switch(az->edge) {
 		case AE_TOP_TO_BOTTOMRIGHT:
-			uiSetRoundBox(3 + 16);
+			uiSetRoundBox(UI_CNR_TOP_LEFT | UI_CNR_TOP_RIGHT | UI_RB_ALPHA);
 			
 			uiDrawBoxShade(GL_POLYGON, (float)az->x1, (float)az->y1, (float)az->x2, (float)az->y2, 4.0f, -0.3f, 0.05f);
 			glColor4ub(0, 0, 0, 255);
 			uiRoundRect((float)az->x1, 0.3f+(float)az->y1, (float)az->x2, 0.3f+(float)az->y2, 4.0f);
 			break;
 		case AE_BOTTOM_TO_TOPLEFT:
-			uiSetRoundBox(12 + 16);
+			uiSetRoundBox(UI_CNR_BOTTOM_RIGHT | UI_CNR_BOTTOM_LEFT | UI_RB_ALPHA);
 			
 			uiDrawBoxShade(GL_POLYGON, (float)az->x1, (float)az->y1, (float)az->x2, (float)az->y2, 4.0f, -0.3f, 0.05f);
 			glColor4ub(0, 0, 0, 255);
 			uiRoundRect((float)az->x1, 0.3f+(float)az->y1, (float)az->x2, 0.3f+(float)az->y2, 4.0f);
 			break;
 		case AE_LEFT_TO_TOPRIGHT:
-			uiSetRoundBox(9 + 16);
+			uiSetRoundBox(UI_CNR_TOP_LEFT | UI_CNR_BOTTOM_LEFT | UI_RB_ALPHA);
 			
 			uiDrawBoxShade(GL_POLYGON, (float)az->x1, (float)az->y1, (float)az->x2, (float)az->y2, 4.0f, -0.3f, 0.05f);
 			glColor4ub(0, 0, 0, 255);
 			uiRoundRect((float)az->x1, (float)az->y1, (float)az->x2, (float)az->y2, 4.0f);
 			break;
 		case AE_RIGHT_TO_TOPLEFT:
-			uiSetRoundBox(6 + 16);
+			uiSetRoundBox(UI_CNR_TOP_RIGHT | UI_CNR_BOTTOM_RIGHT | UI_RB_ALPHA);
 			
 			uiDrawBoxShade(GL_POLYGON, (float)az->x1, (float)az->y1, (float)az->x2, (float)az->y2, 4.0f, -0.3f, 0.05f);
 			glColor4ub(0, 0, 0, 255);
@@ -1406,6 +1406,7 @@ int ED_area_header_switchbutton(const bContext *C, uiBlock *block, int yco)
 						   "Displays current editor type. "
 						   "Click for menu of available types");
 	uiButSetFunc(but, spacefunc, NULL, NULL);
+	uiButClearFlag(but, UI_BUT_UNDO); /* skip undo on screen buttons */
 	
 	return xco + UI_UNIT_X + 14;
 }
@@ -1414,6 +1415,7 @@ int ED_area_header_standardbuttons(const bContext *C, uiBlock *block, int yco)
 {
 	ScrArea *sa= CTX_wm_area(C);
 	int xco= 8;
+	uiBut *but;
 	
 	if (!sa->full)
 		xco= ED_area_header_switchbutton(C, block, yco);
@@ -1421,19 +1423,21 @@ int ED_area_header_standardbuttons(const bContext *C, uiBlock *block, int yco)
 	uiBlockSetEmboss(block, UI_EMBOSSN);
 
 	if (sa->flag & HEADER_NO_PULLDOWN) {
-		uiDefIconButBitS(block, TOG, HEADER_NO_PULLDOWN, 0, 
+		but= uiDefIconButBitS(block, TOG, HEADER_NO_PULLDOWN, 0,
 						 ICON_DISCLOSURE_TRI_RIGHT,
 						 xco,yco,UI_UNIT_X,UI_UNIT_Y-2,
 						 &(sa->flag), 0, 0, 0, 0, 
 						 "Show pulldown menus");
 	}
 	else {
-		uiDefIconButBitS(block, TOG, HEADER_NO_PULLDOWN, 0, 
+		but= uiDefIconButBitS(block, TOG, HEADER_NO_PULLDOWN, 0,
 						 ICON_DISCLOSURE_TRI_DOWN,
 						 xco,yco,UI_UNIT_X,UI_UNIT_Y-2,
 						 &(sa->flag), 0, 0, 0, 0, 
 						 "Hide pulldown menus");
 	}
+
+	uiButClearFlag(but, UI_BUT_UNDO); /* skip undo on screen buttons */
 
 	uiBlockSetEmboss(block, UI_EMBOSS);
 	

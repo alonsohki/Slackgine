@@ -1,5 +1,5 @@
 /*
- * $Id: ED_object.h 36644 2011-05-12 16:47:36Z campbellbarton $
+ * $Id: ED_object.h 40095 2011-09-10 09:38:38Z campbellbarton $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -108,7 +108,7 @@ int ED_object_add_generic_get_opts(struct bContext *C, struct wmOperator *op, fl
 struct Object *ED_object_add_type(struct bContext *C, int type, float *loc, float *rot, int enter_editmode, unsigned int layer);
 
 void ED_object_single_users(struct Main *bmain, struct Scene *scene, int full);
-
+void ED_object_single_user(struct Scene *scene, struct Object *ob);
 
 /* object motion paths */
 void ED_objects_clear_paths(struct bContext *C);
@@ -136,8 +136,8 @@ void ED_setflagsLatt(struct Object *obedit, int flag);
 /* object_modifier.c */
 enum {
 	MODIFIER_APPLY_DATA=1,
-	MODIFIER_APPLY_SHAPE,
-} eModifier_Apply_Mode;
+	MODIFIER_APPLY_SHAPE
+};
 
 struct ModifierData *ED_object_modifier_add(struct ReportList *reports, struct Main *bmain, struct Scene *scene, struct Object *ob, const char *name, int type);
 int ED_object_modifier_remove(struct ReportList *reports, struct Main *bmain, struct Scene *scene, struct Object *ob, struct ModifierData *md);

@@ -1,19 +1,19 @@
 K 25
 svn:wc:ra_dav:version-url
 V 79
-/svnroot/bf-blender/!svn/ver/38111/trunk/blender/source/blender/editors/include
+/svnroot/bf-blender/!svn/ver/40128/trunk/blender/source/blender/editors/include
 END
 ED_gpencil.h
 K 25
 svn:wc:ra_dav:version-url
 V 92
-/svnroot/bf-blender/!svn/ver/36644/trunk/blender/source/blender/editors/include/ED_gpencil.h
+/svnroot/bf-blender/!svn/ver/39960/trunk/blender/source/blender/editors/include/ED_gpencil.h
 END
 ED_physics.h
 K 25
 svn:wc:ra_dav:version-url
 V 92
-/svnroot/bf-blender/!svn/ver/35016/trunk/blender/source/blender/editors/include/ED_physics.h
+/svnroot/bf-blender/!svn/ver/39991/trunk/blender/source/blender/editors/include/ED_physics.h
 END
 ED_image.h
 K 25
@@ -37,7 +37,7 @@ UI_interface.h
 K 25
 svn:wc:ra_dav:version-url
 V 94
-/svnroot/bf-blender/!svn/ver/37589/trunk/blender/source/blender/editors/include/UI_interface.h
+/svnroot/bf-blender/!svn/ver/40114/trunk/blender/source/blender/editors/include/UI_interface.h
 END
 ED_mball.h
 K 25
@@ -61,13 +61,13 @@ ED_keyframes_edit.h
 K 25
 svn:wc:ra_dav:version-url
 V 99
-/svnroot/bf-blender/!svn/ver/35016/trunk/blender/source/blender/editors/include/ED_keyframes_edit.h
+/svnroot/bf-blender/!svn/ver/39792/trunk/blender/source/blender/editors/include/ED_keyframes_edit.h
 END
 ED_keyframing.h
 K 25
 svn:wc:ra_dav:version-url
 V 95
-/svnroot/bf-blender/!svn/ver/36924/trunk/blender/source/blender/editors/include/ED_keyframing.h
+/svnroot/bf-blender/!svn/ver/39792/trunk/blender/source/blender/editors/include/ED_keyframing.h
 END
 ED_logic.h
 K 25
@@ -79,19 +79,19 @@ UI_resources.h
 K 25
 svn:wc:ra_dav:version-url
 V 94
-/svnroot/bf-blender/!svn/ver/35530/trunk/blender/source/blender/editors/include/UI_resources.h
+/svnroot/bf-blender/!svn/ver/40109/trunk/blender/source/blender/editors/include/UI_resources.h
 END
 UI_icons.h
 K 25
 svn:wc:ra_dav:version-url
 V 90
-/svnroot/bf-blender/!svn/ver/35225/trunk/blender/source/blender/editors/include/UI_icons.h
+/svnroot/bf-blender/!svn/ver/39996/trunk/blender/source/blender/editors/include/UI_icons.h
 END
 ED_view3d.h
 K 25
 svn:wc:ra_dav:version-url
 V 91
-/svnroot/bf-blender/!svn/ver/37327/trunk/blender/source/blender/editors/include/ED_view3d.h
+/svnroot/bf-blender/!svn/ver/39739/trunk/blender/source/blender/editors/include/ED_view3d.h
 END
 ED_sculpt.h
 K 25
@@ -103,7 +103,7 @@ ED_transform.h
 K 25
 svn:wc:ra_dav:version-url
 V 94
-/svnroot/bf-blender/!svn/ver/35313/trunk/blender/source/blender/editors/include/ED_transform.h
+/svnroot/bf-blender/!svn/ver/39991/trunk/blender/source/blender/editors/include/ED_transform.h
 END
 ED_fluidsim.h
 K 25
@@ -115,13 +115,13 @@ ED_anim_api.h
 K 25
 svn:wc:ra_dav:version-url
 V 93
-/svnroot/bf-blender/!svn/ver/36312/trunk/blender/source/blender/editors/include/ED_anim_api.h
+/svnroot/bf-blender/!svn/ver/39792/trunk/blender/source/blender/editors/include/ED_anim_api.h
 END
 ED_render.h
 K 25
 svn:wc:ra_dav:version-url
 V 91
-/svnroot/bf-blender/!svn/ver/35016/trunk/blender/source/blender/editors/include/ED_render.h
+/svnroot/bf-blender/!svn/ver/39991/trunk/blender/source/blender/editors/include/ED_render.h
 END
 ED_fileselect.h
 K 25
@@ -145,7 +145,7 @@ ED_node.h
 K 25
 svn:wc:ra_dav:version-url
 V 89
-/svnroot/bf-blender/!svn/ver/35016/trunk/blender/source/blender/editors/include/ED_node.h
+/svnroot/bf-blender/!svn/ver/39941/trunk/blender/source/blender/editors/include/ED_node.h
 END
 ED_lattice.h
 K 25
@@ -163,7 +163,7 @@ ED_sequencer.h
 K 25
 svn:wc:ra_dav:version-url
 V 94
-/svnroot/bf-blender/!svn/ver/35819/trunk/blender/source/blender/editors/include/ED_sequencer.h
+/svnroot/bf-blender/!svn/ver/39937/trunk/blender/source/blender/editors/include/ED_sequencer.h
 END
 ED_mesh.h
 K 25
@@ -193,19 +193,19 @@ ED_particle.h
 K 25
 svn:wc:ra_dav:version-url
 V 93
-/svnroot/bf-blender/!svn/ver/37185/trunk/blender/source/blender/editors/include/ED_particle.h
+/svnroot/bf-blender/!svn/ver/39991/trunk/blender/source/blender/editors/include/ED_particle.h
 END
 ED_keyframes_draw.h
 K 25
 svn:wc:ra_dav:version-url
 V 99
-/svnroot/bf-blender/!svn/ver/35737/trunk/blender/source/blender/editors/include/ED_keyframes_draw.h
+/svnroot/bf-blender/!svn/ver/39792/trunk/blender/source/blender/editors/include/ED_keyframes_draw.h
 END
 ED_markers.h
 K 25
 svn:wc:ra_dav:version-url
 V 92
-/svnroot/bf-blender/!svn/ver/35537/trunk/blender/source/blender/editors/include/ED_markers.h
+/svnroot/bf-blender/!svn/ver/39792/trunk/blender/source/blender/editors/include/ED_markers.h
 END
 ED_types.h
 K 25
@@ -217,13 +217,13 @@ ED_object.h
 K 25
 svn:wc:ra_dav:version-url
 V 91
-/svnroot/bf-blender/!svn/ver/36644/trunk/blender/source/blender/editors/include/ED_object.h
+/svnroot/bf-blender/!svn/ver/40095/trunk/blender/source/blender/editors/include/ED_object.h
 END
 BIF_glutil.h
 K 25
 svn:wc:ra_dav:version-url
 V 92
-/svnroot/bf-blender/!svn/ver/35016/trunk/blender/source/blender/editors/include/BIF_glutil.h
+/svnroot/bf-blender/!svn/ver/38978/trunk/blender/source/blender/editors/include/BIF_glutil.h
 END
 BIF_gl.h
 K 25

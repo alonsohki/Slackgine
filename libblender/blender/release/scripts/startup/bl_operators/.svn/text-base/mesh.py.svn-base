@@ -16,14 +16,15 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-# <pep8 compliant>
+# <pep8-80 compliant>
 
 import bpy
+from bpy.types import Operator
 
 from bpy.props import EnumProperty
 
 
-class MeshSelectInteriorFaces(bpy.types.Operator):
+class MeshSelectInteriorFaces(Operator):
     '''Select faces where all edges have more then 2 face users.'''
 
     bl_idname = "mesh.faces_select_interior"
@@ -67,17 +68,17 @@ class MeshSelectInteriorFaces(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class MeshMirrorUV(bpy.types.Operator):
+class MeshMirrorUV(Operator):
     '''Copy mirror UV coordinates on the X axis based on a mirrored mesh'''
     bl_idname = "mesh.faces_mirror_uv"
     bl_label = "Copy Mirrored UV coords"
     bl_options = {'REGISTER', 'UNDO'}
 
-    direction = EnumProperty(items=(
-                        ('POSITIVE', "Positive", ""),
-                        ('NEGATIVE', "Negative", "")),
-                name="Axis Direction",
-                description="")
+    direction = EnumProperty(
+            name="Axis Direction",
+            items=(('POSITIVE', "Positive", ""),
+                   ('NEGATIVE', "Negative", "")),
+            )
 
     @classmethod
     def poll(cls, context):
@@ -111,7 +112,8 @@ class MeshMirrorUV(bpy.types.Operator):
 
         #for i, v in enumerate(mesh.vertices):
         vmap = {}
-        for mirror_a, mirror_b in (mirror_gt, mirror_lt), (mirror_lt, mirror_gt):
+        for mirror_a, mirror_b in ((mirror_gt, mirror_lt),
+                                   (mirror_lt, mirror_gt)):
             for co, i in mirror_a.items():
                 nco = (-co[0], co[1], co[2])
                 j = mirror_b.get(nco)
@@ -120,7 +122,8 @@ class MeshMirrorUV(bpy.types.Operator):
 
         active_uv_layer = mesh.uv_textures.active.data
         fuvs = [(uv.uv1, uv.uv2, uv.uv3, uv.uv4) for uv in active_uv_layer]
-        fuvs_cpy = [(uv[0].copy(), uv[1].copy(), uv[2].copy(), uv[3].copy()) for uv in fuvs]
+        fuvs_cpy = [(uv[0].copy(), uv[1].copy(), uv[2].copy(), uv[3].copy())
+                    for uv in fuvs]
 
         # as a list
         faces = mesh.faces[:]

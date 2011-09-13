@@ -1,5 +1,5 @@
 /*
- * $Id: interface_panel.c 37205 2011-06-05 12:47:17Z campbellbarton $
+ * $Id: interface_panel.c 40114 2011-09-11 06:41:09Z campbellbarton $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -537,8 +537,8 @@ void ui_draw_aligned_panel(uiStyle *style, uiBlock *block, rcti *rect)
 		
 		/* in some occasions, draw a border */
 		if(panel->flag & PNL_SELECT) {
-			if(panel->control & UI_PNL_SOLID) uiSetRoundBox(15);
-			else uiSetRoundBox(3);
+			if(panel->control & UI_PNL_SOLID) uiSetRoundBox(UI_CNR_ALL);
+			else uiSetRoundBox(UI_CNR_TOP_LEFT | UI_CNR_TOP_RIGHT);
 			
 			UI_ThemeColorShade(TH_BACK, -120);
 			uiRoundRect(0.5f + rect->xmin, 0.5f + rect->ymin, 0.5f + rect->xmax, 0.5f + headrect.ymax+1, 8);
@@ -575,8 +575,8 @@ void ui_draw_aligned_panel(uiStyle *style, uiBlock *block, rcti *rect)
 		ui_draw_tria_rect(&itemrect, 'h');
 	else
 		ui_draw_tria_rect(&itemrect, 'v');
-	
-	
+
+	(void)ofsx;
 }
 
 /************************** panel alignment *************************/

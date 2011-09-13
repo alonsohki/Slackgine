@@ -1,5 +1,5 @@
 /*
-* $Id: MOD_explode.c 37629 2011-06-19 06:57:56Z campbellbarton $
+* $Id: MOD_explode.c 39342 2011-08-12 18:11:22Z blendix $
 *
 * ***** BEGIN GPL LICENSE BLOCK *****
 *
@@ -1037,4 +1037,5 @@ ModifierTypeInfo modifierType_Explode = {
 	/* dependsOnNormals */	NULL,
 	/* foreachObjectLink */ NULL,
 	/* foreachIDLink */     NULL,
+	/* foreachTexLink */    NULL,
 };

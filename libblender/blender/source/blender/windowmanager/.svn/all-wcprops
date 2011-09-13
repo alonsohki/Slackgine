@@ -1,7 +1,13 @@
 K 25
 svn:wc:ra_dav:version-url
 V 77
-/svnroot/bf-blender/!svn/ver/38475/trunk/blender/source/blender/windowmanager
+/svnroot/bf-blender/!svn/ver/40114/trunk/blender/source/blender/windowmanager
+END
+WM_keymap.h
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/bf-blender/!svn/ver/39084/trunk/blender/source/blender/windowmanager/WM_keymap.h
 END
 wm_window.h
 K 25
@@ -13,7 +19,7 @@ WM_api.h
 K 25
 svn:wc:ra_dav:version-url
 V 86
-/svnroot/bf-blender/!svn/ver/37246/trunk/blender/source/blender/windowmanager/WM_api.h
+/svnroot/bf-blender/!svn/ver/39749/trunk/blender/source/blender/windowmanager/WM_api.h
 END
 wm_draw.h
 K 25
@@ -25,7 +31,7 @@ SConscript
 K 25
 svn:wc:ra_dav:version-url
 V 88
-/svnroot/bf-blender/!svn/ver/37037/trunk/blender/source/blender/windowmanager/SConscript
+/svnroot/bf-blender/!svn/ver/39643/trunk/blender/source/blender/windowmanager/SConscript
 END
 wm.h
 K 25
@@ -55,13 +61,13 @@ CMakeLists.txt
 K 25
 svn:wc:ra_dav:version-url
 V 92
-/svnroot/bf-blender/!svn/ver/38443/trunk/blender/source/blender/windowmanager/CMakeLists.txt
+/svnroot/bf-blender/!svn/ver/39618/trunk/blender/source/blender/windowmanager/CMakeLists.txt
 END
 WM_types.h
 K 25
 svn:wc:ra_dav:version-url
 V 88
-/svnroot/bf-blender/!svn/ver/37247/trunk/blender/source/blender/windowmanager/WM_types.h
+/svnroot/bf-blender/!svn/ver/39293/trunk/blender/source/blender/windowmanager/WM_types.h
 END
 wm_event_system.h
 K 25
@@ -73,5 +79,5 @@ wm_event_types.h
 K 25
 svn:wc:ra_dav:version-url
 V 94
-/svnroot/bf-blender/!svn/ver/35854/trunk/blender/source/blender/windowmanager/wm_event_types.h
+/svnroot/bf-blender/!svn/ver/38908/trunk/blender/source/blender/windowmanager/wm_event_types.h
 END

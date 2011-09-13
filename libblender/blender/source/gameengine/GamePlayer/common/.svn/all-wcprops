@@ -1,7 +1,7 @@
 K 25
 svn:wc:ra_dav:version-url
 V 84
-/svnroot/bf-blender/!svn/ver/38443/trunk/blender/source/gameengine/GamePlayer/common
+/svnroot/bf-blender/!svn/ver/39834/trunk/blender/source/gameengine/GamePlayer/common
 END
 GPC_Engine.cpp
 K 25
@@ -115,7 +115,7 @@ bmfont.cpp
 K 25
 svn:wc:ra_dav:version-url
 V 95
-/svnroot/bf-blender/!svn/ver/35170/trunk/blender/source/gameengine/GamePlayer/common/bmfont.cpp
+/svnroot/bf-blender/!svn/ver/39834/trunk/blender/source/gameengine/GamePlayer/common/bmfont.cpp
 END
 GPC_RenderTools.cpp
 K 25

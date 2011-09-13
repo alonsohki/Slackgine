@@ -1,15 +1,15 @@
 10
 
 dir
-38518
+40188
 https://svn.blender.org/svnroot/bf-blender/trunk/blender/source/blenderplayer
 https://svn.blender.org/svnroot/bf-blender
 
 
 
-2011-07-17T09:11:13.810557Z
-38443
-campbellbarton
+2011-09-11T08:21:26.008804Z
+40117
+dfelinto
 
 
 
@@ -35,11 +35,11 @@ file
 
 
 
-2011-07-19T21:17:11.000000Z
-1837a74f3a751b36648728aec626a9ae
-2011-07-15T04:01:47.273730Z
-38409
-campbellbarton
+2011-09-13T17:07:40.389499Z
+592ea7ee54ea630f94e5348467cd73c5
+2011-09-11T08:21:26.008804Z
+40117
+dfelinto
 has-props
 
 
@@ -61,5 +61,5 @@ has-props
 
 
 
-5023
+5043
 

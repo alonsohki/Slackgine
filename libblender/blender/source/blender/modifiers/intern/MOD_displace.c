@@ -1,5 +1,5 @@
 /*
-* $Id: MOD_displace.c 38300 2011-07-11 09:15:20Z blendix $
+* $Id: MOD_displace.c 39342 2011-08-12 18:11:22Z blendix $
 *
 * ***** BEGIN GPL LICENSE BLOCK *****
 *
@@ -132,6 +132,12 @@ static void foreachIDLink(ModifierData *md, Object *ob,
 	walk(userData, ob, (ID **)&dmd->texture);
 
 	foreachObjectLink(md, ob, (ObjectWalkFunc)walk, userData);
+}
+
+static void foreachTexLink(ModifierData *md, Object *ob,
+					   TexWalkFunc walk, void *userData)
+{
+	walk(userData, ob, md, "texture");
 }
 
 static int isDisabled(ModifierData *md, int UNUSED(useRenderParams))
@@ -283,4 +289,5 @@ ModifierTypeInfo modifierType_Displace = {
 	/* dependsOnNormals */	dependsOnNormals,
 	/* foreachObjectLink */ foreachObjectLink,
 	/* foreachIDLink */     foreachIDLink,
+	/* foreachTexLink */    foreachTexLink,
 };

@@ -1,7 +1,7 @@
 K 25
 svn:wc:ra_dav:version-url
 V 81
-/svnroot/bf-blender/!svn/ver/38443/trunk/blender/source/gameengine/Physics/Bullet
+/svnroot/bf-blender/!svn/ver/39883/trunk/blender/source/gameengine/Physics/Bullet
 END
 CcdGraphicController.h
 K 25
@@ -19,19 +19,19 @@ CcdPhysicsEnvironment.cpp
 K 25
 svn:wc:ra_dav:version-url
 V 107
-/svnroot/bf-blender/!svn/ver/36980/trunk/blender/source/gameengine/Physics/Bullet/CcdPhysicsEnvironment.cpp
+/svnroot/bf-blender/!svn/ver/39883/trunk/blender/source/gameengine/Physics/Bullet/CcdPhysicsEnvironment.cpp
 END
 CcdPhysicsController.h
 K 25
 svn:wc:ra_dav:version-url
 V 104
-/svnroot/bf-blender/!svn/ver/37411/trunk/blender/source/gameengine/Physics/Bullet/CcdPhysicsController.h
+/svnroot/bf-blender/!svn/ver/39883/trunk/blender/source/gameengine/Physics/Bullet/CcdPhysicsController.h
 END
 CcdPhysicsEnvironment.h
 K 25
 svn:wc:ra_dav:version-url
 V 105
-/svnroot/bf-blender/!svn/ver/37836/trunk/blender/source/gameengine/Physics/Bullet/CcdPhysicsEnvironment.h
+/svnroot/bf-blender/!svn/ver/39883/trunk/blender/source/gameengine/Physics/Bullet/CcdPhysicsEnvironment.h
 END
 SConscript
 K 25

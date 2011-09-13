@@ -1,7 +1,7 @@
 K 25
 svn:wc:ra_dav:version-url
 V 69
-/svnroot/bf-blender/!svn/ver/36564/trunk/blender/extern/eltopo/common
+/svnroot/bf-blender/!svn/ver/40064/trunk/blender/extern/eltopo/common
 END
 ccd_wrapper.h
 K 25
@@ -181,7 +181,7 @@ bfstream.h
 K 25
 svn:wc:ra_dav:version-url
 V 80
-/svnroot/bf-blender/!svn/ver/36420/trunk/blender/extern/eltopo/common/bfstream.h
+/svnroot/bf-blender/!svn/ver/40064/trunk/blender/extern/eltopo/common/bfstream.h
 END
 makelevelset3.h
 K 25

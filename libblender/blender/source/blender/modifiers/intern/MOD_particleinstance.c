@@ -1,5 +1,5 @@
 /*
-* $Id: MOD_particleinstance.c 35817 2011-03-27 13:49:53Z campbellbarton $
+* $Id: MOD_particleinstance.c 39342 2011-08-12 18:11:22Z blendix $
 *
 * ***** BEGIN GPL LICENSE BLOCK *****
 *
@@ -350,4 +350,5 @@ ModifierTypeInfo modifierType_ParticleInstance = {
 	/* dependsOnNormals */	NULL,
 	/* foreachObjectLink */ foreachObjectLink,
 	/* foreachIDLink */     NULL,
+	/* foreachTexLink */    NULL,
 };

@@ -1,5 +1,5 @@
 /*
- * $Id: BKE_material.h 36332 2011-04-26 07:17:21Z campbellbarton $
+ * $Id: BKE_material.h 40162 2011-09-12 13:00:24Z campbellbarton $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -78,7 +78,7 @@ int object_remove_material_slot(struct Object *ob);
 
 /* rna api */
 void material_append_id(struct ID *id, struct Material *ma);
-struct Material *material_pop_id(struct ID *id, int index);
+struct Material *material_pop_id(struct ID *id, int index, int remove_material_slot);
 
 /* rendering */
 
@@ -89,7 +89,7 @@ void end_render_materials(struct Main *);
 
 int material_in_material(struct Material *parmat, struct Material *mat);
 
-void ramp_blend(int type, float *r, float *g, float *b, float fac, float *col);
+void ramp_blend(int type, float *r, float *g, float *b, float fac, const float col[3]);
 
 /* copy/paste */
 void clear_matcopybuf(void);

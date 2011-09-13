@@ -1,7 +1,7 @@
 K 25
 svn:wc:ra_dav:version-url
 V 65
-/svnroot/bf-blender/!svn/ver/37703/trunk/blender/source/tools/CTS
+/svnroot/bf-blender/!svn/ver/39205/trunk/blender/source/tools/CTS
 END
 empty.blend
 K 25
@@ -13,7 +13,7 @@ FBlender.py
 K 25
 svn:wc:ra_dav:version-url
 V 77
-/svnroot/bf-blender/!svn/ver/37703/trunk/blender/source/tools/CTS/FBlender.py
+/svnroot/bf-blender/!svn/ver/39205/trunk/blender/source/tools/CTS/FBlender.py
 END
 README.txt
 K 25

@@ -1,5 +1,5 @@
 /*
- * $Id: image_buttons.c 37926 2011-06-28 20:05:18Z dingto $
+ * $Id: image_buttons.c 39991 2011-09-07 06:33:29Z mont29 $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -113,7 +113,7 @@ static void image_info(Scene *scene, ImageUser *iuser, Image *ima, ImBuf *ibuf, 
 		if(ima->source==IMA_SRC_MOVIE) {
 			ofs+= sprintf(str, "Movie");
 			if(ima->anim)
-				ofs+= sprintf(str+ofs, "%d frs", IMB_anim_get_duration(ima->anim));
+				ofs+= sprintf(str+ofs, "%d frs", IMB_anim_get_duration(ima->anim, IMB_TC_RECORD_RUN));
 		}
 		else
 			ofs+= sprintf(str, "Image");
@@ -428,7 +428,7 @@ static void set_frames_cb(bContext *C, void *ima_v, void *iuser_v)
 	ImageUser *iuser= iuser_v;
 	
 	if(ima->anim) {
-		iuser->frames = IMB_anim_get_duration(ima->anim);
+		iuser->frames = IMB_anim_get_duration(ima->anim, IMB_TC_RECORD_RUN);
 		BKE_image_user_calc_frame(iuser, scene->r.cfra, 0);
 	}
 }
@@ -804,6 +804,7 @@ void uiTemplateImage(uiLayout *layout, bContext *C, PointerRNA *ptr, const char 
 				col= uiLayoutColumn(split, 1);
 				uiItemR(col, &imaptr, "generated_width", 0, "X", ICON_NONE);
 				uiItemR(col, &imaptr, "generated_height", 0, "Y", ICON_NONE);
+				uiItemR(col, &imaptr, "use_generated_float", 0, NULL, ICON_NONE);
 
 				uiItemR(split, &imaptr, "generated_type", UI_ITEM_R_EXPAND, NULL, ICON_NONE);
 			}

@@ -1,15 +1,15 @@
 10
 
 dir
-38518
+40188
 https://svn.blender.org/svnroot/bf-blender/trunk/blender/source/blender/modifiers
 https://svn.blender.org/svnroot/bf-blender
 
 
 
-2011-07-18T18:14:22.950750Z
-38484
-lukastoenne
+2011-09-12T04:14:12.436678Z
+40147
+campbellbarton
 
 
 
@@ -35,11 +35,11 @@ file
 
 
 
-2011-07-19T21:17:27.000000Z
-fd1d9f82ed33f603351f04cc7aaafec2
-2011-02-21T12:35:04.852834Z
-35028
-jesterking
+2011-09-13T17:08:47.573074Z
+4907846026c38776fb6614cde3a240ce
+2011-09-11T14:13:04.034722Z
+40127
+ben2610
 has-props
 
 
@@ -61,7 +61,7 @@ has-props
 
 
 
-694
+895
 
 MOD_modifiertypes.h
 file
@@ -69,11 +69,11 @@ file
 
 
 
-2011-07-19T21:17:27.000000Z
-100d44b5a443a15527eb1fab7041ea20
-2011-05-01T15:16:59.972795Z
-36414
-campbellbarton
+2011-09-13T17:08:47.573074Z
+4de1816c7437a1995694ee4c66ce9e7b
+2011-09-09T21:28:56.572940Z
+40080
+ben2610
 has-props
 
 
@@ -95,7 +95,7 @@ has-props
 
 
 
-3069
+3265
 
 CMakeLists.txt
 file
@@ -103,11 +103,11 @@ file
 
 
 
-2011-07-19T21:17:27.000000Z
-12ebf8ed78d277a236ce6594e0e31419
-2011-07-17T09:11:13.810557Z
-38443
-campbellbarton
+2011-09-13T17:08:47.573074Z
+fa13fefbfba0f120477136b04e6c4e8f
+2011-09-11T14:13:04.034722Z
+40127
+ben2610
 has-props
 
 
@@ -129,5 +129,5 @@ has-props
 
 
 
-2570
+2944
 

@@ -1,15 +1,15 @@
 10
 
 dir
-38518
+40188
 https://svn.blender.org/svnroot/bf-blender/trunk/blender/extern
 https://svn.blender.org/svnroot/bf-blender
 
 
 
-2011-07-17T09:11:13.810557Z
-38443
-campbellbarton
+2011-09-13T16:54:01.458633Z
+40188
+nazgul
 
 
 
@@ -26,6 +26,9 @@ campbellbarton
 
 954f8c5b-7b00-dc11-b283-0030488c597c
 
+recastnavigation
+dir
+
 eltopo
 dir
 
@@ -41,11 +44,11 @@ file
 
 
 
-2011-07-19T21:18:26.000000Z
-03a5157cfb1c8088c9657b040d1bea79
-2011-05-01T21:39:13.773231Z
-36419
-joeedh
+2011-09-13T17:13:51.787021Z
+92282b5b5c6df0094d3c414fbd3f1909
+2011-09-11T15:17:54.353899Z
+40129
+nazgul
 has-props
 
 
@@ -67,7 +70,7 @@ has-props
 
 
 
-598
+677
 
 Eigen2
 dir
@@ -87,10 +90,10 @@ file
 
 
 
-2011-07-19T21:18:26.000000Z
-5faadafb7534e30291e24349983323e9
-2011-05-02T03:44:02.634191Z
-36423
+2011-09-13T17:13:51.787021Z
+0a453a717124fe3eb61d56eb1b2e36c1
+2011-09-10T04:21:58.284257Z
+40086
 campbellbarton
 has-props
 
@@ -113,7 +116,7 @@ has-props
 
 
 
-1574
+1641
 
 glew
 dir

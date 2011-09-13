@@ -1,5 +1,5 @@
 /*
- * $Id: blf_util.c 35248 2011-02-27 20:42:42Z jesterking $
+ * $Id: blf_util.c 40116 2011-09-11 08:12:16Z campbellbarton $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -72,7 +72,7 @@ unsigned int blf_hash(unsigned int val)
  * The original name: imlib_font_utf8_get_next
  * more info here: http://docs.enlightenment.org/api/imlib2/html/
  */
-int blf_utf8_next(unsigned char *buf, int *iindex)
+int blf_utf8_next(unsigned char *buf, unsigned int *iindex)
 {
 	/* Reads UTF8 bytes from 'buf', starting at 'index' and
 	 * returns the code point of the next valid code point.

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# $Id: cmake_qtcreator_project.py 36910 2011-05-26 09:33:51Z campbellbarton $
+# $Id: cmake_qtcreator_project.py 38869 2011-07-31 03:15:37Z campbellbarton $
 # ***** BEGIN GPL LICENSE BLOCK *****
 #
 # This program is free software; you can redistribute it and/or
@@ -31,7 +31,17 @@ example linux usage
  python .~/blenderSVN/blender/build_files/cmake/cmake_qtcreator_project.py ~/blenderSVN/cmake
 """
 
-from project_info import *
+from project_info import (SIMPLE_PROJECTFILE,
+                          SOURCE_DIR,
+                          # CMAKE_DIR,
+                          PROJECT_DIR,
+                          source_list,
+                          is_project_file,
+                          is_c_header,
+                          is_py,
+                          cmake_advanced_info,
+                          cmake_compiler_defines,
+                          )
 
 import os
 import sys

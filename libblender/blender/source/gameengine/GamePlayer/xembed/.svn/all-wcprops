@@ -1,13 +1,13 @@
 K 25
 svn:wc:ra_dav:version-url
 V 84
-/svnroot/bf-blender/!svn/ver/36711/trunk/blender/source/gameengine/GamePlayer/xembed
+/svnroot/bf-blender/!svn/ver/39883/trunk/blender/source/gameengine/GamePlayer/xembed
 END
 npunix.c
 K 25
 svn:wc:ra_dav:version-url
 V 93
-/svnroot/bf-blender/!svn/ver/36276/trunk/blender/source/gameengine/GamePlayer/xembed/npunix.c
+/svnroot/bf-blender/!svn/ver/39883/trunk/blender/source/gameengine/GamePlayer/xembed/npunix.c
 END
 blender_plugin_types.h
 K 25

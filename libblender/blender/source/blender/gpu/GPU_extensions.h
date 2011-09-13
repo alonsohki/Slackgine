@@ -1,5 +1,5 @@
 /*
- * $Id: GPU_extensions.h 35376 2011-03-06 23:12:12Z campbellbarton $
+ * $Id: GPU_extensions.h 40061 2011-09-09 11:55:38Z ben2610 $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -126,6 +126,7 @@ GPUFrameBuffer *GPU_texture_framebuffer(GPUTexture *tex);
 int GPU_texture_target(GPUTexture *tex);
 int GPU_texture_opengl_width(GPUTexture *tex);
 int GPU_texture_opengl_height(GPUTexture *tex);
+int GPU_texture_opengl_bindcode(GPUTexture *tex);
 
 /* GPU Framebuffer
    - this is a wrapper for an OpenGL framebuffer object (FBO). in practice
@@ -178,6 +179,8 @@ typedef struct GPUVertexAttribs {
 	struct {
 		int type;
 		int glindex;
+		int gltexco;
+		int attribid;
 		char name[32];
 	} layer[GPU_MAX_ATTRIB];
 

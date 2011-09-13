@@ -1,5 +1,5 @@
 /*
- * $Id: info_ops.c 35853 2011-03-28 17:08:33Z campbellbarton $
+ * $Id: info_ops.c 39991 2011-09-07 06:33:29Z mont29 $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -273,7 +273,7 @@ void FILE_OT_report_missing_files(wmOperatorType *ot)
 	ot->exec= report_missing_files_exec;
 
 	/* flags */
-	ot->flag= OPTYPE_REGISTER|OPTYPE_UNDO;
+	ot->flag= 0; /* only reports so no need to undo/register */
 }
 
 /********************* find missing files operator *********************/

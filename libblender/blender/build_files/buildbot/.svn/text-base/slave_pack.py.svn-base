@@ -72,6 +72,14 @@ if builder.find('scons') != -1:
         retcode = subprocess.call(['python', 'scons/scons.py'] + scons_options)
         sys.exit(retcode)
     else:
+        if builder.find('win') != -1:
+            bitness = '32'
+
+            if builder.find('win64') != -1:
+                bitness = '64'
+
+            scons_options.append('BF_BITNESS=' + bitness)
+
         retcode = subprocess.call(['python', 'scons/scons.py'] + scons_options)
         sys.exit(retcode)
 

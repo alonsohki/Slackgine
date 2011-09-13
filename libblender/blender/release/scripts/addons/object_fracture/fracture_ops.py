@@ -38,10 +38,8 @@ def create_cutter(context, crack_type, scale, roughness):
                 False, False, False, False))
 
         for v in context.scene.objects.active.data.vertices:
-            v.co[0] += 1
-            v.co[0] *= scale
-            v.co[1] *= scale
-            v.co[2] *= scale
+            v.co[0] += 1.0
+            v.co *= scale
 
         bpy.ops.object.editmode_toggle()
         bpy.ops.mesh.faces_shade_smooth()
@@ -76,10 +74,8 @@ def create_cutter(context, crack_type, scale, roughness):
 
         bpy.ops.object.editmode_toggle()
         for v in context.scene.objects.active.data.vertices:
-            v.co[0] += 1
-            v.co[0] *= scale
-            v.co[1] *= scale
-            v.co[2] *= scale
+            v.co[0] += 1.0
+            v.co *= scale
 
         if crack_type == 'SPHERE_ROUGH':
             for v in context.scene.objects.active.data.vertices:
@@ -228,7 +224,7 @@ def boolop(ob, cutter, op):
 
          # This checks whether returned shards are non-manifold.
          # Problem is, if org mesh is non-manifold, it will always fail (e.g. with Suzanne).
-         # And disabling it does not seem to cause any problem…
+         # And disabling it does not seem to cause any problem...
 #        elif min(mesh_utils.edge_face_count(nmesh)) < 2:    # Manifold check
 #            fault = 1
 

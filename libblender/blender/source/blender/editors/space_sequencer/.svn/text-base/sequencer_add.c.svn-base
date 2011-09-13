@@ -83,9 +83,8 @@
 /* avoid passing multiple args and be more verbose */
 #define SEQPROP_STARTFRAME	(1<<0)
 #define SEQPROP_ENDFRAME	(1<<1)
-#define SEQPROP_FILES		(1<<2)
-#define SEQPROP_NOPATHS		(1<<3)
-#define SEQPROP_NOCHAN		(1<<4)
+#define SEQPROP_NOPATHS		(1<<2)
+#define SEQPROP_NOCHAN		(1<<3)
 
 #define SELECT 1
 
@@ -101,8 +100,7 @@ static void sequencer_generic_props__internal(wmOperatorType *ot, int flag)
 	
 	RNA_def_boolean(ot->srna, "replace_sel", 1, "Replace Selection", "replace the current selection");
 
-	if(flag & SEQPROP_FILES)
-		RNA_def_collection_runtime(ot->srna, "files", &RNA_OperatorFileListElement, "Files", "");
+	RNA_def_boolean(ot->srna, "overlap", 0, "Allow Overlap", "Don't correct overlap on new sequence strips");
 }
 
 static void sequencer_generic_invoke_path__internal(bContext *C, wmOperator *op, const char *identifier)
@@ -250,7 +248,11 @@ static int sequencer_add_scene_strip_exec(bContext *C, wmOperator *op)
 		seq_active_set(scene, seq);
 		seq->flag |= SELECT;
 	}
-	
+
+	if(RNA_boolean_get(op->ptr, "overlap") == FALSE) {
+		if(seq_test_overlap(ed->seqbasep, seq)) shuffle_seq(ed->seqbasep, seq, scene);
+	}
+
 	WM_event_add_notifier(C, NC_SCENE|ND_SEQUENCER, scene);
 	
 	return OPERATOR_FINISHED;
@@ -305,6 +307,7 @@ static int sequencer_add_generic_strip_exec(bContext *C, wmOperator *op, SeqLoad
 	SeqLoadInfo seq_load;
 	Sequence *seq;
 	int tot_files;
+	const short overlap= RNA_boolean_get(op->ptr, "overlap");
 
 	seq_load_operator_info(&seq_load, op);
 
@@ -325,12 +328,20 @@ static int sequencer_add_generic_strip_exec(bContext *C, wmOperator *op, SeqLoad
 			BLI_join_dirfile(seq_load.path, sizeof(seq_load.path), dir_only, file_only);
 
 			seq= seq_load_func(C, ed->seqbasep, &seq_load);
+
+			if(overlap == FALSE) {
+				if(seq_test_overlap(ed->seqbasep, seq)) shuffle_seq(ed->seqbasep, seq, scene);
+			}
 		}
 		RNA_END;
 	}
 	else {
 		/* single file */
 		seq= seq_load_func(C, ed->seqbasep, &seq_load);
+
+		if(overlap == FALSE) {
+			if(seq_test_overlap(ed->seqbasep, seq)) shuffle_seq(ed->seqbasep, seq, scene);
+		}
 	}
 
 	if (seq_load.tot_success==0) {
@@ -339,7 +350,7 @@ static int sequencer_add_generic_strip_exec(bContext *C, wmOperator *op, SeqLoad
 	}
 
 	sort_seq(scene);
-	seq_update_muting(scene, ed);
+	seq_update_muting(ed);
 
 	WM_event_add_notifier(C, NC_SCENE|ND_SEQUENCER, scene);
 
@@ -396,8 +407,8 @@ void SEQUENCER_OT_movie_strip_add(struct wmOperatorType *ot)
 	/* flags */
 	ot->flag= OPTYPE_REGISTER|OPTYPE_UNDO;
 	
-	WM_operator_properties_filesel(ot, FOLDERFILE|MOVIEFILE, FILE_SPECIAL, FILE_OPENFILE, WM_FILESEL_FILEPATH|WM_FILESEL_RELPATH);
-	sequencer_generic_props__internal(ot, SEQPROP_STARTFRAME|SEQPROP_FILES);
+	WM_operator_properties_filesel(ot, FOLDERFILE|MOVIEFILE, FILE_SPECIAL, FILE_OPENFILE, WM_FILESEL_FILEPATH|WM_FILESEL_RELPATH|WM_FILESEL_FILES);
+	sequencer_generic_props__internal(ot, SEQPROP_STARTFRAME);
 	RNA_def_boolean(ot->srna, "sound", TRUE, "Sound", "Load sound with the movie");
 }
 
@@ -451,8 +462,8 @@ void SEQUENCER_OT_sound_strip_add(struct wmOperatorType *ot)
 	/* flags */
 	ot->flag= OPTYPE_REGISTER|OPTYPE_UNDO;
 	
-	WM_operator_properties_filesel(ot, FOLDERFILE|SOUNDFILE, FILE_SPECIAL, FILE_OPENFILE, WM_FILESEL_FILEPATH|WM_FILESEL_RELPATH);
-	sequencer_generic_props__internal(ot, SEQPROP_STARTFRAME|SEQPROP_FILES);
+	WM_operator_properties_filesel(ot, FOLDERFILE|SOUNDFILE, FILE_SPECIAL, FILE_OPENFILE, WM_FILESEL_FILEPATH|WM_FILESEL_RELPATH|WM_FILESEL_FILES);
+	sequencer_generic_props__internal(ot, SEQPROP_STARTFRAME);
 	RNA_def_boolean(ot->srna, "cache", FALSE, "Cache", "Cache the sound in memory.");
 }
 
@@ -506,7 +517,11 @@ static int sequencer_add_image_strip_exec(bContext *C, wmOperator *op)
 
 	/* last active name */
 	strncpy(ed->act_imagedir, strip->dir, FILE_MAXDIR-1);
-	
+
+	if(RNA_boolean_get(op->ptr, "overlap") == FALSE) {
+		if(seq_test_overlap(ed->seqbasep, seq)) shuffle_seq(ed->seqbasep, seq, scene);
+	}
+
 	WM_event_add_notifier(C, NC_SCENE|ND_SEQUENCER, scene);
 
 	return OPERATOR_FINISHED;
@@ -554,8 +569,8 @@ void SEQUENCER_OT_image_strip_add(struct wmOperatorType *ot)
 	/* flags */
 	ot->flag= OPTYPE_REGISTER|OPTYPE_UNDO;
 	
-	WM_operator_properties_filesel(ot, FOLDERFILE|IMAGEFILE, FILE_SPECIAL, FILE_OPENFILE, WM_FILESEL_DIRECTORY|WM_FILESEL_RELPATH);
-	sequencer_generic_props__internal(ot, SEQPROP_STARTFRAME|SEQPROP_ENDFRAME|SEQPROP_FILES);
+	WM_operator_properties_filesel(ot, FOLDERFILE|IMAGEFILE, FILE_SPECIAL, FILE_OPENFILE, WM_FILESEL_DIRECTORY|WM_FILESEL_RELPATH|WM_FILESEL_FILES);
+	sequencer_generic_props__internal(ot, SEQPROP_STARTFRAME|SEQPROP_ENDFRAME);
 }
 
 
@@ -656,7 +671,9 @@ static int sequencer_add_effect_strip_exec(bContext *C, wmOperator *op)
 		}
 	}
 
-	if(seq_test_overlap(ed->seqbasep, seq)) shuffle_seq(ed->seqbasep, seq, scene);
+	if(RNA_boolean_get(op->ptr, "overlap") == FALSE) {
+		if(seq_test_overlap(ed->seqbasep, seq)) shuffle_seq(ed->seqbasep, seq, scene);
+	}
 
 	update_changed_seq_and_deps(scene, seq, 1, 1); /* runs calc_sequence */
 

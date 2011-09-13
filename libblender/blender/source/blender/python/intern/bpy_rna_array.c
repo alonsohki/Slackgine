@@ -1,5 +1,5 @@
 /*
- * $Id: bpy_rna_array.c 37576 2011-06-17 02:26:34Z campbellbarton $
+ * $Id: bpy_rna_array.c 39233 2011-08-09 20:00:53Z campbellbarton $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -285,17 +285,20 @@ static char *copy_values(PyObject *seq, PointerRNA *ptr, PropertyRNA *prop, int 
 	int totdim= RNA_property_array_dimension(ptr, prop, NULL);
 	const int seq_size= PySequence_Size(seq);
 
-	/* General note for 'data' being NULL or PySequence_GetItem() failing.
+	/* Regarding PySequence_GetItem() failing.
 	 *
 	 * This should never be NULL since we validated it, _but_ some triky python
 	 * developer could write their own sequence type which succeeds on
-	 * validating but fails later somehow, so include checks for safety. */
+	 * validating but fails later somehow, so include checks for safety.
+	 */
+
+	/* Note that 'data can be NULL' */
 
 	if(seq_size == -1) {
 		return NULL;
 	}
 
-	for (i= 0; (i < seq_size) && data; i++) {
+	for (i= 0; i < seq_size; i++) {
 		PyObject *item= PySequence_GetItem(seq, i);
 		if(item) {
 			if (dim + 1 < totdim) {

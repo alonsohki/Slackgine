@@ -1,5 +1,5 @@
 /*
-* $Id: MOD_hook.c 38300 2011-07-11 09:15:20Z blendix $
+* $Id: MOD_hook.c 39342 2011-08-12 18:11:22Z blendix $
 *
 * ***** BEGIN GPL LICENSE BLOCK *****
 *
@@ -289,4 +289,5 @@ ModifierTypeInfo modifierType_Hook = {
 	/* dependsOnNormals */	NULL,
 	/* foreachObjectLink */ foreachObjectLink,
 	/* foreachIDLink */     NULL,
+	/* foreachTexLink */    NULL,
 };

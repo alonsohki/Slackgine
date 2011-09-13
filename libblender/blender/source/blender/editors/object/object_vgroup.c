@@ -1,5 +1,5 @@
 /*
- * $Id: object_vgroup.c 37304 2011-06-07 18:48:22Z campbellbarton $
+ * $Id: object_vgroup.c 39991 2011-09-07 06:33:29Z mont29 $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *

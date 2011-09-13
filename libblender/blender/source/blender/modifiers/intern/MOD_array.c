@@ -1,5 +1,5 @@
 /*
-* $Id: MOD_array.c 36276 2011-04-21 15:53:30Z campbellbarton $
+* $Id: MOD_array.c 39342 2011-08-12 18:11:22Z blendix $
 *
 * ***** BEGIN GPL LICENSE BLOCK *****
 *
@@ -826,4 +826,5 @@ ModifierTypeInfo modifierType_Array = {
 	/* dependsOnNormals */	NULL,
 	/* foreachObjectLink */ foreachObjectLink,
 	/* foreachIDLink */     NULL,
+	/* foreachTexLink */    NULL,
 };

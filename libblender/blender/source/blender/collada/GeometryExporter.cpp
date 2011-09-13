@@ -1,5 +1,5 @@
 /*
- * $Id: GeometryExporter.cpp 38079 2011-07-04 08:59:28Z jesterking $
+ * $Id: GeometryExporter.cpp 40019 2011-09-07 18:23:30Z jesterking $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -44,16 +44,16 @@
 #include "collada_internal.h"
 
 // TODO: optimize UV sets by making indexed list with duplicates removed
-GeometryExporter::GeometryExporter(COLLADASW::StreamWriter *sw) : COLLADASW::LibraryGeometries(sw) {}
+GeometryExporter::GeometryExporter(COLLADASW::StreamWriter *sw, const ExportSettings *export_settings) : COLLADASW::LibraryGeometries(sw), export_settings(export_settings) {}
 
 
-void GeometryExporter::exportGeom(Scene *sce, bool export_selected)
+void GeometryExporter::exportGeom(Scene *sce)
 {
 	openLibrary();
 
 	mScene = sce;
 	GeometryFunctor gf;
-	gf.forEachMeshObjectInScene<GeometryExporter>(sce, *this, export_selected);
+	gf.forEachMeshObjectInScene<GeometryExporter>(sce, *this, this->export_settings->selected);
 
 	closeLibrary();
 }

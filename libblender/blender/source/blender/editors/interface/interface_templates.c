@@ -1,5 +1,5 @@
 /*
- * $Id: interface_templates.c 38188 2011-07-07 11:01:36Z blendix $
+ * $Id: interface_templates.c 40050 2011-09-09 01:29:53Z campbellbarton $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -33,12 +33,14 @@
 
 #include "MEM_guardedalloc.h"
 
+#include "DNA_anim_types.h"
 #include "DNA_key_types.h"
 #include "DNA_scene_types.h"
 #include "DNA_userdef_types.h"
 
 #include "BLI_string.h"
 #include "BLI_utildefines.h"
+#include "BLI_ghash.h"
 
 #include "BKE_animsys.h"
 #include "BKE_colortools.h"
@@ -53,9 +55,11 @@
 #include "BKE_displist.h"
 
 #include "ED_screen.h"
+#include "ED_object.h"
 #include "ED_render.h"
 
 #include "RNA_access.h"
+#include "RNA_enum_types.h"
 
 #include "WM_api.h"
 #include "WM_types.h"
@@ -235,13 +239,13 @@ static void template_id_cb(bContext *C, void *arg_litem, void *arg_event)
 {
 	TemplateID *template= (TemplateID*)arg_litem;
 	PointerRNA idptr= RNA_property_pointer_get(&template->ptr, template->prop);
-	ID *id= idptr.data, *newid;
+	ID *id= idptr.data;
 	int event= GET_INT_FROM_POINTER(arg_event);
 	
 	switch(event) {
 		case UI_ID_BROWSE:
 		case UI_ID_PIN:
-			RNA_warning("warning, id event %d shouldnt come here\n", event);
+			RNA_warning("warning, id event %d shouldnt come here", event);
 			break;
 		case UI_ID_OPEN:
 		case UI_ID_ADD_NEW:
@@ -275,18 +279,19 @@ static void template_id_cb(bContext *C, void *arg_litem, void *arg_event)
 			break;
 		case UI_ID_ALONE:
 			if(id) {
-				/* make copy */
-				if(id_copy(id, &newid, 0) && newid) {
-					/* copy animation actions too */
-					BKE_copy_animdata_id_action(id);
-					/* us is 1 by convention, but RNA_property_pointer_set
-					   will also incremement it, so set it to zero */
-					newid->us= 0;
+				const int do_scene_obj= (GS(id->name) == ID_OB) &&
+				                        (template->ptr.type == &RNA_SceneObjects);
 
-					/* assign copy */
-					RNA_id_pointer_create(newid, &idptr);
-					RNA_property_pointer_set(&template->ptr, template->prop, idptr);
-					RNA_property_update(C, &template->ptr, template->prop);
+				/* make copy */
+				if(do_scene_obj) {
+					Scene *scene= CTX_data_scene(C);
+					ED_object_single_user(scene, (struct Object *)id);
+					WM_event_add_notifier(C, NC_SCENE|ND_OB_ACTIVE, scene);
+				}
+				else {
+					if(id) {
+						id_single_user(C, id, &template->ptr, template->prop);
+					}
 				}
 			}
 			break;
@@ -309,11 +314,13 @@ static const char *template_id_browse_tip(StructRNA *type)
 			case ID_MA: return "Browse Material to be linked";
 			case ID_TE: return "Browse Texture to be linked";
 			case ID_IM: return "Browse Image to be linked";
-			case ID_LA: return "Browse Lattice Data to be linked";
+			case ID_LT: return "Browse Lattice Data to be linked";
+			case ID_LA: return "Browse Lamp Data to be linked";
 			case ID_CA: return "Browse Camera Data to be linked";
 			case ID_WO: return "Browse World Settings to be linked";
 			case ID_SCR: return "Choose Screen lay-out";
 			case ID_TXT: return "Browse Text to be linked";
+			case ID_SPK: return "Browse Speaker Data to be linked";
 			case ID_SO: return "Browse Sound to be linked";
 			case ID_AR: return "Browse Armature data to be linked";
 			case ID_AC: return "Browse Action to be linked";
@@ -404,10 +411,7 @@ static void template_ID(bContext *C, uiLayout *layout, TemplateID *template, Str
 
 			sprintf(str, "%d", id->us);
 
-			if(id->us<10)
-				but= uiDefBut(block, BUT, 0, str, 0,0,UI_UNIT_X,UI_UNIT_Y, NULL, 0, 0, 0, 0, "Displays number of users of this data. Click to make a single-user copy.");
-			else
-				but= uiDefBut(block, BUT, 0, str, 0,0,UI_UNIT_X+10,UI_UNIT_Y, NULL, 0, 0, 0, 0, "Displays number of users of this data. Click to make a single-user copy.");
+			but= uiDefBut(block, BUT, 0, str, 0,0,UI_UNIT_X + ((id->us < 10) ? 0:10), UI_UNIT_Y, NULL, 0, 0, 0, 0, "Displays number of users of this data. Click to make a single-user copy.");
 
 			uiButSetNFunc(but, template_id_cb, MEM_dupallocN(template), SET_INT_IN_POINTER(UI_ID_ALONE));
 			if(!id_copy(id, NULL, 1 /* test only */) || (idfrom && idfrom->lib) || !editable)
@@ -484,7 +488,7 @@ static void ui_template_id(uiLayout *layout, bContext *C, PointerRNA *ptr, const
 	prop= RNA_struct_find_property(ptr, propname);
 
 	if(!prop || RNA_property_type(prop) != PROP_POINTER) {
-		RNA_warning("uiTemplateID: pointer property not found: %s.%s\n", RNA_struct_identifier(ptr->type), propname);
+		RNA_warning("pointer property not found: %s.%s", RNA_struct_identifier(ptr->type), propname);
 		return;
 	}
 
@@ -545,11 +549,11 @@ void uiTemplateAnyID(uiLayout *layout, PointerRNA *ptr, const char *propname, co
 	propType= RNA_struct_find_property(ptr, proptypename);
 
 	if (!propID || RNA_property_type(propID) != PROP_POINTER) {
-		RNA_warning("uiTemplateAnyID: pointer property not found: %s.%s\n", RNA_struct_identifier(ptr->type), propname);
+		RNA_warning("pointer property not found: %s.%s", RNA_struct_identifier(ptr->type), propname);
 		return;
 	}
 	if (!propType || RNA_property_type(propType) != PROP_ENUM) { 
-		RNA_warning("uiTemplateAnyID: pointer-type property not found: %s.%s\n", RNA_struct_identifier(ptr->type), proptypename);
+		RNA_warning("pointer-type property not found: %s.%s", RNA_struct_identifier(ptr->type), proptypename);
 		return;
 	}
 	
@@ -588,7 +592,7 @@ void uiTemplatePathBuilder(uiLayout *layout, PointerRNA *ptr, const char *propna
 	/* check that properties are valid */
 	propPath= RNA_struct_find_property(ptr, propname);
 	if (!propPath || RNA_property_type(propPath) != PROP_STRING) {
-		RNA_warning("uiTemplatePathBuilder: path property not found: %s.%s\n", RNA_struct_identifier(ptr->type), propname);
+		RNA_warning("path property not found: %s.%s", RNA_struct_identifier(ptr->type), propname);
 		return;
 	}
 	
@@ -851,7 +855,7 @@ uiLayout *uiTemplateModifier(uiLayout *layout, bContext *C, PointerRNA *ptr)
 
 	/* verify we have valid data */
 	if(!RNA_struct_is_a(ptr->type, &RNA_Modifier)) {
-		RNA_warning("uiTemplateModifier: expected modifier on object.\n");
+		RNA_warning("Expected modifier on object.");
 		return NULL;
 	}
 
@@ -859,7 +863,7 @@ uiLayout *uiTemplateModifier(uiLayout *layout, bContext *C, PointerRNA *ptr)
 	md= ptr->data;
 
 	if(!ob || !(GS(ob->id.name) == ID_OB)) {
-		RNA_warning("uiTemplateModifier: expected modifier on object.\n");
+		RNA_warning("expected modifier on object.");
 		return NULL;
 	}
 	
@@ -976,9 +980,6 @@ static uiLayout *draw_constraint(uiLayout *layout, Object *ob, bConstraint *con)
 	block= uiLayoutGetBlock(box);
 
 	/* Draw constraint header */
-	
-	/* rounded header */
-	// rb_col= (con->flag & CONSTRAINT_ACTIVE)?50:20; // UNUSED
 
 	/* open/close */
 	uiBlockSetEmboss(block, UI_EMBOSSN);
@@ -1083,7 +1084,7 @@ uiLayout *uiTemplateConstraint(uiLayout *layout, PointerRNA *ptr)
 
 	/* verify we have valid data */
 	if(!RNA_struct_is_a(ptr->type, &RNA_Constraint)) {
-		RNA_warning("uiTemplateConstraint: expected constraint on object.\n");
+		RNA_warning("Expected constraint on object.");
 		return NULL;
 	}
 
@@ -1091,7 +1092,7 @@ uiLayout *uiTemplateConstraint(uiLayout *layout, PointerRNA *ptr)
 	con= ptr->data;
 
 	if(!ob || !(GS(ob->id.name) == ID_OB)) {
-		RNA_warning("uiTemplateConstraint: expected constraint on object.\n");
+		RNA_warning("Expected constraint on object.");
 		return NULL;
 	}
 	
@@ -1137,7 +1138,7 @@ void uiTemplatePreview(uiLayout *layout, ID *id, int show_buttons, ID *parent, M
 	PointerRNA texture_ptr;
 
 	if(id && !ELEM4(GS(id->name), ID_MA, ID_TE, ID_WO, ID_LA)) {
-		RNA_warning("uiTemplatePreview: expected ID of type material, texture, lamp or world.\n");
+		RNA_warning("expected ID of type material, texture, lamp or world.");
 		return;
 	}
 
@@ -1843,12 +1844,14 @@ void uiTemplateCurveMapping(uiLayout *layout, PointerRNA *ptr, const char *propn
 	PointerRNA cptr;
 
 	if(!prop) {
-		RNA_warning("uiTemplateCurveMapping: curve property not found: %s.%s\n", RNA_struct_identifier(ptr->type), propname);
+		RNA_warning("curve property not found: %s.%s",
+		            RNA_struct_identifier(ptr->type), propname);
 		return;
 	}
 
 	if(RNA_property_type(prop) != PROP_POINTER) {
-		RNA_warning("uiTemplateCurveMapping: curve is not a pointer: %s.%s\n", RNA_struct_identifier(ptr->type), propname);
+		RNA_warning("curve is not a pointer: %s.%s",
+		            RNA_struct_identifier(ptr->type), propname);
 		return;
 	}
 
@@ -1878,7 +1881,7 @@ void uiTemplateColorWheel(uiLayout *layout, PointerRNA *ptr, const char *propnam
 	float softmin, softmax, step, precision;
 	
 	if (!prop) {
-		RNA_warning("uiTemplateColorWheel: property not found: %s.%s\n", RNA_struct_identifier(ptr->type), propname);
+		RNA_warning("property not found: %s.%s", RNA_struct_identifier(ptr->type), propname);
 		return;
 	}
 
@@ -1887,7 +1890,7 @@ void uiTemplateColorWheel(uiLayout *layout, PointerRNA *ptr, const char *propnam
 	col = uiLayoutColumn(layout, 0);
 	row= uiLayoutRow(col, 1);
 	
-	but= uiDefButR(block, HSVCIRCLE, 0, "",	0, 0, WHEEL_SIZE, WHEEL_SIZE, ptr, propname, -1, 0.0, 0.0, 0, 0, "");
+	but= uiDefButR_prop(block, HSVCIRCLE, 0, "",	0, 0, WHEEL_SIZE, WHEEL_SIZE, ptr, prop, -1, 0.0, 0.0, 0, 0, "");
 
 	if(lock) {
 		but->flag |= UI_BUT_COLOR_LOCK;
@@ -1906,7 +1909,7 @@ void uiTemplateColorWheel(uiLayout *layout, PointerRNA *ptr, const char *propnam
 	uiItemS(row);
 	
 	if (value_slider)
-		uiDefButR(block, HSVCUBE, 0, "", WHEEL_SIZE+6, 0, 14, WHEEL_SIZE, ptr, propname, -1, softmin, softmax, UI_GRAD_V_ALT, 0, "");
+		uiDefButR_prop(block, HSVCUBE, 0, "", WHEEL_SIZE+6, 0, 14, WHEEL_SIZE, ptr, prop, -1, softmin, softmax, UI_GRAD_V_ALT, 0, "");
 }
 
 /********************* Layer Buttons Template ************************/
@@ -1948,7 +1951,7 @@ void uiTemplateLayers(uiLayout *layout, PointerRNA *ptr, const char *propname,
 
 	prop= RNA_struct_find_property(ptr, propname);
 	if (!prop) {
-		RNA_warning("uiTemplateLayer: layers property not found: %s.%s\n", RNA_struct_identifier(ptr->type), propname);
+		RNA_warning("layers property not found: %s.%s", RNA_struct_identifier(ptr->type), propname);
 		return;
 	}
 	
@@ -1965,7 +1968,7 @@ void uiTemplateLayers(uiLayout *layout, PointerRNA *ptr, const char *propname,
 	if(used_ptr && used_propname) {
 		used_prop= RNA_struct_find_property(used_ptr, used_propname);
 		if (!used_prop) {
-			RNA_warning("uiTemplateLayer: used layers property not found: %s.%s\n", RNA_struct_identifier(ptr->type), used_propname);
+			RNA_warning("used layers property not found: %s.%s", RNA_struct_identifier(ptr->type), used_propname);
 			return;
 		}
 
@@ -2037,7 +2040,7 @@ static int list_item_icon_get(bContext *C, PointerRNA *itemptr, int rnaicon, int
 	return rnaicon;
 }
 
-static void list_item_row(bContext *C, uiLayout *layout, PointerRNA *ptr, PointerRNA *itemptr, int i, int rnaicon, PointerRNA *activeptr, const char *activepropname)
+static void list_item_row(bContext *C, uiLayout *layout, PointerRNA *ptr, PointerRNA *itemptr, int i, int rnaicon, PointerRNA *activeptr, PropertyRNA *activeprop)
 {
 	uiBlock *block= uiLayoutGetBlock(layout);
 	uiBut *but;
@@ -2051,7 +2054,7 @@ static void list_item_row(bContext *C, uiLayout *layout, PointerRNA *ptr, Pointe
 	/* list item behind label & other buttons */
 	sub= uiLayoutRow(overlap, 0);
 
-	but= uiDefButR(block, LISTROW, 0, "", 0,0, UI_UNIT_X*10,UI_UNIT_Y, activeptr, activepropname, 0, 0, i, 0, 0, "");
+	but= uiDefButR_prop(block, LISTROW, 0, "", 0,0, UI_UNIT_X*10,UI_UNIT_Y, activeptr, activeprop, 0, 0, i, 0, 0, "");
 	uiButSetFlag(but, UI_BUT_NO_TOOLTIP);
 
 	sub= uiLayoutRow(overlap, 0);
@@ -2105,7 +2108,7 @@ static void list_item_row(bContext *C, uiLayout *layout, PointerRNA *ptr, Pointe
 	}
 	else if(itemptr->type == &RNA_ShapeKey) {
 		Object *ob= (Object*)activeptr->data;
-		Key *key= (Key*)itemptr->data;
+		Key *key= (Key*)itemptr->id.data;
 
 		split= uiLayoutSplit(sub, 0.75f, 0);
 
@@ -2120,6 +2123,15 @@ static void list_item_row(bContext *C, uiLayout *layout, PointerRNA *ptr, Pointe
 			uiLayoutSetActive(row, 0);
 		//uiItemR(row, itemptr, "mute", 0, "", ICON_MUTE_IPO_OFF);
 		uiBlockSetEmboss(block, UI_EMBOSS);
+	}
+	else if(itemptr->type == &RNA_KeyingSetPath) {
+		KS_Path *ksp = (KS_Path*)itemptr->data;
+		
+		/* icon needs to be the type of ID which is currently active */
+		RNA_enum_icon_from_value(id_type_items, ksp->idtype, &icon);
+		
+		/* nothing else special to do... */
+		uiItemL(sub, name, icon); /* fails, backdrop LISTROW... */
 	}
 	else
 		uiItemL(sub, name, icon); /* fails, backdrop LISTROW... */
@@ -2147,7 +2159,7 @@ void uiTemplateList(uiLayout *layout, bContext *C, PointerRNA *ptr, const char *
 	pa= block->panel;
 
 	if(!pa) {
-		RNA_warning("uiTemplateList: only works inside a panel.\n");
+		RNA_warning("only works inside a panel.");
 		return;
 	}
 
@@ -2157,28 +2169,28 @@ void uiTemplateList(uiLayout *layout, bContext *C, PointerRNA *ptr, const char *
 	if(ptr->data) {
 		prop= RNA_struct_find_property(ptr, propname);
 		if(!prop) {
-			RNA_warning("uiTemplateList: property not found: %s.%s\n", RNA_struct_identifier(ptr->type), propname);
+			RNA_warning("property not found: %s.%s", RNA_struct_identifier(ptr->type), propname);
 			return;
 		}
 	}
 
 	activeprop= RNA_struct_find_property(activeptr, activepropname);
 	if(!activeprop) {
-		RNA_warning("uiTemplateList: property not found: %s.%s\n", RNA_struct_identifier(ptr->type), activepropname);
+		RNA_warning("property not found: %s.%s", RNA_struct_identifier(ptr->type), activepropname);
 		return;
 	}
 
 	if(prop) {
 		type= RNA_property_type(prop);
 		if(type != PROP_COLLECTION) {
-			RNA_warning("uiTemplateList: expected collection property.\n");
+			RNA_warning("uiExpected collection property.");
 			return;
 		}
 	}
 
 	activetype= RNA_property_type(activeprop);
 	if(activetype != PROP_INT) {
-		RNA_warning("uiTemplateList: expected integer property.\n");
+		RNA_warning("expected integer property.");
 		return;
 	}
 
@@ -2200,11 +2212,11 @@ void uiTemplateList(uiLayout *layout, bContext *C, PointerRNA *ptr, const char *
 			/* create list items */
 			RNA_PROP_BEGIN(ptr, itemptr, prop) {
 				/* create button */
-				if(i == 9)
+				if(!(i % 9))
 					row= uiLayoutRow(col, 0);
 
 				icon= list_item_icon_get(C, &itemptr, rnaicon, 1);
-				but= uiDefIconButR(block, LISTROW, 0, icon, 0,0,UI_UNIT_X*10,UI_UNIT_Y, activeptr, activepropname, 0, 0, i, 0, 0, "");
+				but= uiDefIconButR_prop(block, LISTROW, 0, icon, 0,0,UI_UNIT_X*10,UI_UNIT_Y, activeptr, activeprop, 0, 0, i, 0, 0, "");
 				uiButSetFlag(but, UI_BUT_NO_TOOLTIP);
 				
 
@@ -2215,7 +2227,6 @@ void uiTemplateList(uiLayout *layout, bContext *C, PointerRNA *ptr, const char *
 	}
 	else if(listtype == 'c') {
 		/* compact layout */
-		found= 0;
 
 		row= uiLayoutRow(layout, 1);
 
@@ -2245,7 +2256,7 @@ void uiTemplateList(uiLayout *layout, bContext *C, PointerRNA *ptr, const char *
 
 		/* next/prev button */
 		sprintf(str, "%d :", i);
-		but= uiDefIconTextButR(block, NUM, 0, 0, str, 0,0,UI_UNIT_X*5,UI_UNIT_Y, activeptr, activepropname, 0, 0, 0, 0, 0, "");
+		but= uiDefIconTextButR_prop(block, NUM, 0, 0, str, 0,0,UI_UNIT_X*5,UI_UNIT_Y, activeptr, activeprop, 0, 0, 0, 0, 0, "");
 		if(i == 0)
 			uiButSetFlag(but, UI_BUT_DISABLED);
 	}
@@ -2284,7 +2295,7 @@ void uiTemplateList(uiLayout *layout, bContext *C, PointerRNA *ptr, const char *
 			/* create list items */
 			RNA_PROP_BEGIN(ptr, itemptr, prop) {
 				if(i >= pa->list_scroll && i<pa->list_scroll+items)
-					list_item_row(C, col, ptr, &itemptr, i, rnaicon, activeptr, activepropname);
+					list_item_row(C, col, ptr, &itemptr, i, rnaicon, activeptr, activeprop);
 
 				i++;
 			}
@@ -2318,10 +2329,11 @@ static void operator_call_cb(bContext *C, void *UNUSED(arg1), void *arg2)
 
 static void operator_search_cb(const bContext *C, void *UNUSED(arg), const char *str, uiSearchItems *items)
 {
-	wmOperatorType *ot = WM_operatortype_first();
-	
-	for(; ot; ot= ot->next) {
-		
+	GHashIterator *iter= WM_operatortype_iter();
+
+	for( ; !BLI_ghashIterator_isDone(iter); BLI_ghashIterator_step(iter)) {
+		wmOperatorType *ot= BLI_ghashIterator_getValue(iter);
+
 		if(BLI_strcasestr(ot->name, str)) {
 			if(WM_operator_poll((bContext*)C, ot)) {
 				char name[256];
@@ -2341,6 +2353,7 @@ static void operator_search_cb(const bContext *C, void *UNUSED(arg), const char 
 			}
 		}
 	}
+	BLI_ghashIterator_free(iter);
 }
 
 void uiTemplateOperatorSearch(uiLayout *layout)
@@ -2362,6 +2375,7 @@ void uiTemplateOperatorSearch(uiLayout *layout)
 #define B_STOPCAST		2
 #define B_STOPANIM		3
 #define B_STOPCOMPO		4
+#define B_STOPSEQ		5
 
 static void do_running_jobs(bContext *C, void *UNUSED(arg), int event)
 {
@@ -2376,6 +2390,9 @@ static void do_running_jobs(bContext *C, void *UNUSED(arg), int event)
 			WM_operator_name_call(C, "SCREEN_OT_animation_play", WM_OP_INVOKE_SCREEN, NULL);
 			break;
 		case B_STOPCOMPO:
+			WM_jobs_stop(CTX_wm_manager(C), CTX_wm_area(C), NULL);
+			break;
+		case B_STOPSEQ:
 			WM_jobs_stop(CTX_wm_manager(C), CTX_wm_area(C), NULL);
 			break;
 	}
@@ -2399,8 +2416,11 @@ void uiTemplateRunningJobs(uiLayout *layout, bContext *C)
 		if(WM_jobs_test(wm, sa))
 		   owner = sa;
 		handle_event= B_STOPCOMPO;
-	} 
-	else {
+	} else if (sa->spacetype==SPACE_SEQ) {
+		if(WM_jobs_test(wm, sa))
+			owner = sa;
+		handle_event = B_STOPSEQ;
+	} else {
 		Scene *scene;
 		/* another scene can be rendering too, for example via compositor */
 		for(scene= CTX_data_main(C)->scene.first; scene; scene= scene->id.next)

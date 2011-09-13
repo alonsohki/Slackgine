@@ -1,13 +1,13 @@
 K 25
 svn:wc:ra_dav:version-url
 V 72
-/svnroot/bf-blender/!svn/ver/38502/trunk/blender/source/blender/makesdna
+/svnroot/bf-blender/!svn/ver/40122/trunk/blender/source/blender/makesdna
 END
 DNA_anim_types.h
 K 25
 svn:wc:ra_dav:version-url
 V 89
-/svnroot/bf-blender/!svn/ver/35772/trunk/blender/source/blender/makesdna/DNA_anim_types.h
+/svnroot/bf-blender/!svn/ver/39792/trunk/blender/source/blender/makesdna/DNA_anim_types.h
 END
 DNA_lattice_types.h
 K 25
@@ -19,7 +19,7 @@ DNA_node_types.h
 K 25
 svn:wc:ra_dav:version-url
 V 89
-/svnroot/bf-blender/!svn/ver/35591/trunk/blender/source/blender/makesdna/DNA_node_types.h
+/svnroot/bf-blender/!svn/ver/39977/trunk/blender/source/blender/makesdna/DNA_node_types.h
 END
 DNA_packedFile_types.h
 K 25
@@ -39,11 +39,17 @@ svn:wc:ra_dav:version-url
 V 91
 /svnroot/bf-blender/!svn/ver/36696/trunk/blender/source/blender/makesdna/DNA_camera_types.h
 END
+DNA_speaker_types.h
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svnroot/bf-blender/!svn/ver/39792/trunk/blender/source/blender/makesdna/DNA_speaker_types.h
+END
 DNA_space_types.h
 K 25
 svn:wc:ra_dav:version-url
 V 90
-/svnroot/bf-blender/!svn/ver/37891/trunk/blender/source/blender/makesdna/DNA_space_types.h
+/svnroot/bf-blender/!svn/ver/40066/trunk/blender/source/blender/makesdna/DNA_space_types.h
 END
 DNA_mesh_types.h
 K 25
@@ -67,13 +73,13 @@ DNA_scene_types.h
 K 25
 svn:wc:ra_dav:version-url
 V 90
-/svnroot/bf-blender/!svn/ver/38502/trunk/blender/source/blender/makesdna/DNA_scene_types.h
+/svnroot/bf-blender/!svn/ver/40084/trunk/blender/source/blender/makesdna/DNA_scene_types.h
 END
 DNA_userdef_types.h
 K 25
 svn:wc:ra_dav:version-url
 V 92
-/svnroot/bf-blender/!svn/ver/37521/trunk/blender/source/blender/makesdna/DNA_userdef_types.h
+/svnroot/bf-blender/!svn/ver/40004/trunk/blender/source/blender/makesdna/DNA_userdef_types.h
 END
 DNA_fileglobal_types.h
 K 25
@@ -85,7 +91,7 @@ DNA_texture_types.h
 K 25
 svn:wc:ra_dav:version-url
 V 92
-/svnroot/bf-blender/!svn/ver/36399/trunk/blender/source/blender/makesdna/DNA_texture_types.h
+/svnroot/bf-blender/!svn/ver/39636/trunk/blender/source/blender/makesdna/DNA_texture_types.h
 END
 DNA_view2d_types.h
 K 25
@@ -103,25 +109,25 @@ DNA_object_types.h
 K 25
 svn:wc:ra_dav:version-url
 V 91
-/svnroot/bf-blender/!svn/ver/37505/trunk/blender/source/blender/makesdna/DNA_object_types.h
+/svnroot/bf-blender/!svn/ver/40080/trunk/blender/source/blender/makesdna/DNA_object_types.h
 END
 DNA_ID.h
 K 25
 svn:wc:ra_dav:version-url
 V 81
-/svnroot/bf-blender/!svn/ver/36725/trunk/blender/source/blender/makesdna/DNA_ID.h
+/svnroot/bf-blender/!svn/ver/39792/trunk/blender/source/blender/makesdna/DNA_ID.h
 END
 DNA_nla_types.h
 K 25
 svn:wc:ra_dav:version-url
 V 88
-/svnroot/bf-blender/!svn/ver/34941/trunk/blender/source/blender/makesdna/DNA_nla_types.h
+/svnroot/bf-blender/!svn/ver/39792/trunk/blender/source/blender/makesdna/DNA_nla_types.h
 END
 DNA_action_types.h
 K 25
 svn:wc:ra_dav:version-url
 V 91
-/svnroot/bf-blender/!svn/ver/36222/trunk/blender/source/blender/makesdna/DNA_action_types.h
+/svnroot/bf-blender/!svn/ver/39792/trunk/blender/source/blender/makesdna/DNA_action_types.h
 END
 DNA_boid_types.h
 K 25
@@ -139,7 +145,7 @@ DNA_gpencil_types.h
 K 25
 svn:wc:ra_dav:version-url
 V 92
-/svnroot/bf-blender/!svn/ver/35935/trunk/blender/source/blender/makesdna/DNA_gpencil_types.h
+/svnroot/bf-blender/!svn/ver/39792/trunk/blender/source/blender/makesdna/DNA_gpencil_types.h
 END
 CMakeLists.txt
 K 25
@@ -157,13 +163,13 @@ DNA_image_types.h
 K 25
 svn:wc:ra_dav:version-url
 V 90
-/svnroot/bf-blender/!svn/ver/34941/trunk/blender/source/blender/makesdna/DNA_image_types.h
+/svnroot/bf-blender/!svn/ver/38551/trunk/blender/source/blender/makesdna/DNA_image_types.h
 END
 DNA_actuator_types.h
 K 25
 svn:wc:ra_dav:version-url
 V 93
-/svnroot/bf-blender/!svn/ver/37455/trunk/blender/source/blender/makesdna/DNA_actuator_types.h
+/svnroot/bf-blender/!svn/ver/40080/trunk/blender/source/blender/makesdna/DNA_actuator_types.h
 END
 DNA_brush_types.h
 K 25
@@ -181,13 +187,13 @@ DNA_constraint_types.h
 K 25
 svn:wc:ra_dav:version-url
 V 95
-/svnroot/bf-blender/!svn/ver/34941/trunk/blender/source/blender/makesdna/DNA_constraint_types.h
+/svnroot/bf-blender/!svn/ver/39792/trunk/blender/source/blender/makesdna/DNA_constraint_types.h
 END
 DNA_curve_types.h
 K 25
 svn:wc:ra_dav:version-url
 V 90
-/svnroot/bf-blender/!svn/ver/34941/trunk/blender/source/blender/makesdna/DNA_curve_types.h
+/svnroot/bf-blender/!svn/ver/39792/trunk/blender/source/blender/makesdna/DNA_curve_types.h
 END
 DNA_property_types.h
 K 25
@@ -217,7 +223,7 @@ DNA_sdna_types.h
 K 25
 svn:wc:ra_dav:version-url
 V 89
-/svnroot/bf-blender/!svn/ver/34936/trunk/blender/source/blender/makesdna/DNA_sdna_types.h
+/svnroot/bf-blender/!svn/ver/39568/trunk/blender/source/blender/makesdna/DNA_sdna_types.h
 END
 DNA_meta_types.h
 K 25
@@ -229,13 +235,13 @@ DNA_meshdata_types.h
 K 25
 svn:wc:ra_dav:version-url
 V 93
-/svnroot/bf-blender/!svn/ver/34941/trunk/blender/source/blender/makesdna/DNA_meshdata_types.h
+/svnroot/bf-blender/!svn/ver/40080/trunk/blender/source/blender/makesdna/DNA_meshdata_types.h
 END
 DNA_ipo_types.h
 K 25
 svn:wc:ra_dav:version-url
 V 88
-/svnroot/bf-blender/!svn/ver/34941/trunk/blender/source/blender/makesdna/DNA_ipo_types.h
+/svnroot/bf-blender/!svn/ver/39792/trunk/blender/source/blender/makesdna/DNA_ipo_types.h
 END
 DNA_world_types.h
 K 25
@@ -247,7 +253,7 @@ DNA_sound_types.h
 K 25
 svn:wc:ra_dav:version-url
 V 90
-/svnroot/bf-blender/!svn/ver/34941/trunk/blender/source/blender/makesdna/DNA_sound_types.h
+/svnroot/bf-blender/!svn/ver/39792/trunk/blender/source/blender/makesdna/DNA_sound_types.h
 END
 DNA_lamp_types.h
 K 25
@@ -271,7 +277,7 @@ DNA_modifier_types.h
 K 25
 svn:wc:ra_dav:version-url
 V 93
-/svnroot/bf-blender/!svn/ver/36414/trunk/blender/source/blender/makesdna/DNA_modifier_types.h
+/svnroot/bf-blender/!svn/ver/40088/trunk/blender/source/blender/makesdna/DNA_modifier_types.h
 END
 DNA_material_types.h
 K 25
@@ -289,31 +295,31 @@ DNA_outliner_types.h
 K 25
 svn:wc:ra_dav:version-url
 V 93
-/svnroot/bf-blender/!svn/ver/34941/trunk/blender/source/blender/makesdna/DNA_outliner_types.h
+/svnroot/bf-blender/!svn/ver/40066/trunk/blender/source/blender/makesdna/DNA_outliner_types.h
 END
 DNA_view3d_types.h
 K 25
 svn:wc:ra_dav:version-url
 V 91
-/svnroot/bf-blender/!svn/ver/36787/trunk/blender/source/blender/makesdna/DNA_view3d_types.h
+/svnroot/bf-blender/!svn/ver/39683/trunk/blender/source/blender/makesdna/DNA_view3d_types.h
 END
 DNA_windowmanager_types.h
 K 25
 svn:wc:ra_dav:version-url
 V 98
-/svnroot/bf-blender/!svn/ver/36628/trunk/blender/source/blender/makesdna/DNA_windowmanager_types.h
+/svnroot/bf-blender/!svn/ver/39696/trunk/blender/source/blender/makesdna/DNA_windowmanager_types.h
 END
 DNA_customdata_types.h
 K 25
 svn:wc:ra_dav:version-url
 V 95
-/svnroot/bf-blender/!svn/ver/34941/trunk/blender/source/blender/makesdna/DNA_customdata_types.h
+/svnroot/bf-blender/!svn/ver/40080/trunk/blender/source/blender/makesdna/DNA_customdata_types.h
 END
 DNA_sequence_types.h
 K 25
 svn:wc:ra_dav:version-url
 V 93
-/svnroot/bf-blender/!svn/ver/37303/trunk/blender/source/blender/makesdna/DNA_sequence_types.h
+/svnroot/bf-blender/!svn/ver/40122/trunk/blender/source/blender/makesdna/DNA_sequence_types.h
 END
 DNA_cloth_types.h
 K 25
@@ -355,5 +361,5 @@ DNA_armature_types.h
 K 25
 svn:wc:ra_dav:version-url
 V 93
-/svnroot/bf-blender/!svn/ver/34941/trunk/blender/source/blender/makesdna/DNA_armature_types.h
+/svnroot/bf-blender/!svn/ver/39792/trunk/blender/source/blender/makesdna/DNA_armature_types.h
 END

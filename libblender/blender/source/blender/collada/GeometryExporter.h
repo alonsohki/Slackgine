@@ -1,5 +1,5 @@
 /*
- * $Id: GeometryExporter.h 38079 2011-07-04 08:59:28Z jesterking $
+ * $Id: GeometryExporter.h 40019 2011-09-07 18:23:30Z jesterking $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -42,6 +42,8 @@
 #include "DNA_object_types.h"
 #include "DNA_scene_types.h"
 
+#include "ExportSettings.h"
+
 // TODO: optimize UV sets by making indexed list with duplicates removed
 class GeometryExporter : COLLADASW::LibraryGeometries
 {
@@ -58,9 +60,9 @@ class GeometryExporter : COLLADASW::LibraryGeometries
 	Scene *mScene;
 
 public:
-	GeometryExporter(COLLADASW::StreamWriter *sw);
+	GeometryExporter(COLLADASW::StreamWriter *sw, const ExportSettings *export_settings);
 
-	void exportGeom(Scene *sce, bool export_selected);
+	void exportGeom(Scene *sce);
 
 	void operator()(Object *ob);
 
@@ -96,6 +98,8 @@ public:
 	/* int getTriCount(MFace *faces, int totface);*/
 private:
 	std::set<std::string> exportedGeometry;
+	
+	const ExportSettings *export_settings;
 };
 
 struct GeometryFunctor {
@@ -110,7 +114,8 @@ struct GeometryFunctor {
 			Object *ob = base->object;
 			
 			if (ob->type == OB_MESH && ob->data
-				&& !(export_selected && !(ob->flag && SELECT))) {
+				&& !(export_selected && !(ob->flag && SELECT))
+				&& ((sce->lay & ob->lay)!=0)) {
 				f(ob);
 			}
 			base= base->next;

@@ -1,5 +1,5 @@
 /*
- * $Id: GHOST_SystemX11.h 38329 2011-07-12 12:53:23Z campbellbarton $
+ * $Id: GHOST_SystemX11.h 38908 2011-08-02 04:28:05Z merwin $
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
  * This program is free software; you can redistribute it and/or
@@ -202,11 +202,6 @@ public:
 	) {
 		return m_display;
 	}	
-
-		void *
-	prepareNdofInfo(
-		volatile GHOST_TEventNDOFData *current_values
-	);
 
 	/* Helped function for get data from the clipboard. */
 	void getClipboard_xcout(XEvent evt, Atom sel, Atom target,

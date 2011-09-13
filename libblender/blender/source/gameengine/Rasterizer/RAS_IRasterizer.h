@@ -1,5 +1,5 @@
 /*
- * $Id: RAS_IRasterizer.h 35390 2011-03-07 19:14:17Z dfelinto $
+ * $Id: RAS_IRasterizer.h 40080 2011-09-09 21:28:56Z ben2610 $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -393,7 +393,9 @@ public:
 	virtual void	SetPolygonOffset(float mult, float add) = 0;
 	
 	virtual	void	DrawDebugLine(const MT_Vector3& from,const MT_Vector3& to,const MT_Vector3& color)=0;
-	virtual	void	FlushDebugLines()=0;
+	virtual	void	DrawDebugCircle(const MT_Vector3& center, const MT_Scalar radius, const MT_Vector3& color,
+									const MT_Vector3& normal, int nsector)=0;
+	virtual	void	FlushDebugShapes()=0;
 	
 
 
@@ -417,6 +419,9 @@ public:
 
 	virtual void	SetBlendingMode(int blendmode)=0;
 	virtual void	SetFrontFace(bool ccw)=0;
+
+	virtual void	SetAnisotropicFiltering(short level)=0;
+	virtual short	GetAnisotropicFiltering()=0;
 	
 	
 #ifdef WITH_CXX_GUARDEDALLOC

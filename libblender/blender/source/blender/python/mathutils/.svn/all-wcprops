@@ -1,13 +1,13 @@
 K 25
 svn:wc:ra_dav:version-url
 V 80
-/svnroot/bf-blender/!svn/ver/38410/trunk/blender/source/blender/python/mathutils
+/svnroot/bf-blender/!svn/ver/39986/trunk/blender/source/blender/python/mathutils
 END
 mathutils_Matrix.c
 K 25
 svn:wc:ra_dav:version-url
 V 99
-/svnroot/bf-blender/!svn/ver/38409/trunk/blender/source/blender/python/mathutils/mathutils_Matrix.c
+/svnroot/bf-blender/!svn/ver/38674/trunk/blender/source/blender/python/mathutils/mathutils_Matrix.c
 END
 mathutils_Vector.h
 K 25
@@ -55,13 +55,13 @@ mathutils_Quaternion.c
 K 25
 svn:wc:ra_dav:version-url
 V 103
-/svnroot/bf-blender/!svn/ver/38409/trunk/blender/source/blender/python/mathutils/mathutils_Quaternion.c
+/svnroot/bf-blender/!svn/ver/38674/trunk/blender/source/blender/python/mathutils/mathutils_Quaternion.c
 END
 mathutils.h
 K 25
 svn:wc:ra_dav:version-url
 V 92
-/svnroot/bf-blender/!svn/ver/38409/trunk/blender/source/blender/python/mathutils/mathutils.h
+/svnroot/bf-blender/!svn/ver/38674/trunk/blender/source/blender/python/mathutils/mathutils.h
 END
 mathutils_Quaternion.h
 K 25
@@ -73,7 +73,7 @@ mathutils_geometry.c
 K 25
 svn:wc:ra_dav:version-url
 V 101
-/svnroot/bf-blender/!svn/ver/38409/trunk/blender/source/blender/python/mathutils/mathutils_geometry.c
+/svnroot/bf-blender/!svn/ver/39986/trunk/blender/source/blender/python/mathutils/mathutils_geometry.c
 END
 mathutils_geometry.h
 K 25
@@ -85,7 +85,7 @@ mathutils_Vector.c
 K 25
 svn:wc:ra_dav:version-url
 V 99
-/svnroot/bf-blender/!svn/ver/38409/trunk/blender/source/blender/python/mathutils/mathutils_Vector.c
+/svnroot/bf-blender/!svn/ver/39445/trunk/blender/source/blender/python/mathutils/mathutils_Vector.c
 END
 CMakeLists.txt
 K 25

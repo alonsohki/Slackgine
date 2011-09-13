@@ -1,15 +1,15 @@
 10
 
 dir
-38518
+40188
 https://svn.blender.org/svnroot/bf-blender/trunk/blender/release/scripts/startup
 https://svn.blender.org/svnroot/bf-blender
 
 
 
-2011-07-19T15:30:19.690651Z
-38513
-zanqdo
+2011-09-11T15:36:11.113794Z
+40132
+campbellbarton
 
 
 
@@ -32,10 +32,10 @@ file
 
 
 
-2011-07-19T21:16:32.000000Z
-4e9082c4a67931e4a57b93f4b554c6da
-2011-07-10T17:26:15.293071Z
-38286
+2011-09-13T17:05:03.711199Z
+2e3e083110972db972c070082487c0f0
+2011-08-30T10:49:58.424165Z
+39798
 campbellbarton
 has-props
 
@@ -58,7 +58,7 @@ has-props
 
 
 
-14962
+14848
 
 bl_ui
 dir

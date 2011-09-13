@@ -1,5 +1,5 @@
 /*
- * $Id: DNA_meshdata_types.h 34941 2011-02-17 20:48:12Z jesterking $ 
+ * $Id: DNA_meshdata_types.h 40080 2011-09-09 21:28:56Z ben2610 $ 
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -183,6 +183,10 @@ typedef struct PartialVisibility {
 	MEdge *old_edges;
 	unsigned int totface, totedge, totvert, pad;
 } PartialVisibility;
+
+typedef struct MRecast{
+	int		i;
+} MRecast;
 
 /* mvert->flag (1=SELECT) */
 #define ME_SPHERETEST		2

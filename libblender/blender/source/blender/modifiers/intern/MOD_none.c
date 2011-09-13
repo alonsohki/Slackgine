@@ -1,5 +1,5 @@
 /*
- * $Id: MOD_none.c 37158 2011-06-04 03:07:56Z campbellbarton $
+ * $Id: MOD_none.c 39342 2011-08-12 18:11:22Z blendix $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -77,4 +77,5 @@ ModifierTypeInfo modifierType_None = {
 	/* dependsOnNormals */	NULL,
 	/* foreachObjectLink */ NULL,
 	/* foreachIDLink */     NULL,
+	/* foreachTexLink */    NULL,
 };

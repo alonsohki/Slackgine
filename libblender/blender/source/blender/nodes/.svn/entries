@@ -1,15 +1,15 @@
 10
 
 dir
-38518
+40188
 https://svn.blender.org/svnroot/bf-blender/trunk/blender/source/blender/nodes
 https://svn.blender.org/svnroot/bf-blender
 
 
 
-2011-07-19T08:31:53.514995Z
-38506
-jbakker
+2011-09-12T04:14:12.436678Z
+40147
+campbellbarton
 
 
 
@@ -29,17 +29,60 @@ jbakker
 intern
 dir
 
+texture
+dir
+
+composite
+dir
+
+shader
+dir
+
+NOD_texture.h
+file
+
+
+
+
+2011-09-13T17:10:09.744139Z
+adc19aa4ea0904167ef84182c40b1ded
+2011-09-05T22:04:30.578263Z
+39944
+gsrb3d
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+3327
+
 SConscript
 file
 
 
 
 
-2011-07-19T21:17:45.000000Z
-19471331ead16fce925a9d77198cc4d3
-2010-10-31T04:11:39.269118Z
-32788
-campbellbarton
+2011-09-13T17:10:09.744139Z
+2ec0014cf1120f1995d9c5ee4ed449f3
+2011-09-05T21:01:50.523009Z
+39941
+lukastoenne
 has-props
 
 
@@ -61,19 +104,19 @@ has-props
 
 
 
-1585
+1696
 
-SHD_node.h
+NOD_composite.h
 file
 
 
 
 
-2011-07-19T21:17:45.000000Z
-ac9c7cb52803818cb806f6aec9447ab9
-2011-02-21T06:58:46.816603Z
-35014
-jesterking
+2011-09-13T17:10:09.744139Z
+77038c96fda92d46c36b5acc2a1810ed
+2011-09-05T22:04:30.578263Z
+39944
+gsrb3d
 has-props
 
 
@@ -95,19 +138,19 @@ has-props
 
 
 
-2579
+4963
 
-CMP_node.h
+NOD_shader.h
 file
 
 
 
 
-2011-07-19T21:17:45.000000Z
-2ad5bc210b86ab93b692ec9afc928bcb
-2011-02-21T06:58:46.816603Z
-35014
-jesterking
+2011-09-13T17:10:09.744139Z
+6a5095b9e1b21d95fad521b412ccfabd
+2011-09-05T22:04:30.578263Z
+39944
+gsrb3d
 has-props
 
 
@@ -129,41 +172,7 @@ has-props
 
 
 
-4750
-
-TEX_node.h
-file
-
-
-
-
-2011-07-19T21:17:45.000000Z
-c268a26c80be89c6af25e2a38190a968
-2011-02-21T06:58:46.816603Z
-35014
-jesterking
-has-props
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-3124
+2781
 
 CMakeLists.txt
 file
@@ -171,11 +180,11 @@ file
 
 
 
-2011-07-19T21:17:45.000000Z
-bd8fbcece50420237d6b8b5d34f57d45
-2011-07-16T23:01:14.726348Z
-38441
-campbellbarton
+2011-09-13T17:10:09.744139Z
+e992dc67567528d0c52b362f77dc79e5
+2011-09-05T21:01:50.523009Z
+39941
+lukastoenne
 has-props
 
 
@@ -197,5 +206,39 @@ has-props
 
 
 
-4645
+5839
+
+NOD_socket.h
+file
+
+
+
+
+2011-09-13T17:10:09.744139Z
+85804bc20a4a010c79bb8e47f64a9592
+2011-09-05T22:04:30.578263Z
+39944
+gsrb3d
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+3431
 

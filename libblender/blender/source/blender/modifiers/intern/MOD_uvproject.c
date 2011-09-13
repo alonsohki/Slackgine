@@ -1,5 +1,5 @@
 /*
-* $Id: MOD_uvproject.c 36792 2011-05-20 10:09:03Z campbellbarton $
+* $Id: MOD_uvproject.c 39342 2011-08-12 18:11:22Z blendix $
 *
 * ***** BEGIN GPL LICENSE BLOCK *****
 *
@@ -42,6 +42,7 @@
 #include "DNA_object_types.h"
 
 #include "BLI_math.h"
+#include "BLI_string.h"
 #include "BLI_uvproject.h"
 #include "BLI_utildefines.h"
 
@@ -83,6 +84,7 @@ static void copyData(ModifierData *md, ModifierData *target)
 	tumd->aspecty = umd->aspecty;
 	tumd->scalex = umd->scalex;
 	tumd->scaley = umd->scaley;
+	BLI_strncpy(tumd->uvlayer_name, umd->uvlayer_name, sizeof(umd->uvlayer_name));
 }
 
 static CustomDataMask requiredDataMask(Object *UNUSED(ob), ModifierData *UNUSED(md))
@@ -432,4 +434,5 @@ ModifierTypeInfo modifierType_UVProject = {
 	/* dependsOnNormals */	NULL,
 	/* foreachObjectLink */ foreachObjectLink,
 	/* foreachIDLink */     foreachIDLink,
+	/* foreachTexLink */    NULL,
 };

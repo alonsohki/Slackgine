@@ -1,13 +1,13 @@
 K 25
 svn:wc:ra_dav:version-url
 V 74
-/svnroot/bf-extensions/!svn/ver/2116/trunk/py/scripts/addons/render_povray
+/svnroot/bf-extensions/!svn/ver/2316/trunk/py/scripts/addons/render_povray
 END
 ui.py
 K 25
 svn:wc:ra_dav:version-url
 V 80
-/svnroot/bf-extensions/!svn/ver/2116/trunk/py/scripts/addons/render_povray/ui.py
+/svnroot/bf-extensions/!svn/ver/2316/trunk/py/scripts/addons/render_povray/ui.py
 END
 __init__.py
 K 25
@@ -19,11 +19,11 @@ render.py
 K 25
 svn:wc:ra_dav:version-url
 V 84
-/svnroot/bf-extensions/!svn/ver/2116/trunk/py/scripts/addons/render_povray/render.py
+/svnroot/bf-extensions/!svn/ver/2303/trunk/py/scripts/addons/render_povray/render.py
 END
 update_files.py
 K 25
 svn:wc:ra_dav:version-url
 V 90
-/svnroot/bf-extensions/!svn/ver/2055/trunk/py/scripts/addons/render_povray/update_files.py
+/svnroot/bf-extensions/!svn/ver/2303/trunk/py/scripts/addons/render_povray/update_files.py
 END

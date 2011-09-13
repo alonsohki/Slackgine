@@ -24,7 +24,7 @@ bl_info = {
     "api": 35864,
     "location": "View3D > Properties > Measure Panel",
     "description": "Measure distances between objects",
-    "warning": "",
+    "warning": "Script needs repairs",
     "wiki_url": "http://wiki.blender.org/index.php/Extensions:2.5/Py/" \
         "Scripts/3D_interaction/Panel_Measure",
     "tracker_url": "https://projects.blender.org/tracker/index.php?" \
@@ -269,7 +269,7 @@ def getMeasurePoints(context):
                     return (p1, p2, COLOR_LOCAL)
 
                 else:
-                    p1 = vert_loc * obj.matrix_world
+                    p1 = obj.matrix_world * vert_loc
                     p2 = cur_loc
                     return (p1, p2, COLOR_GLOBAL)
 
@@ -288,8 +288,8 @@ def getMeasurePoints(context):
                     return (p1, p2, COLOR_LOCAL)
 
                 else:
-                    p1 = vert1_loc * obj.matrix_world
-                    p2 = vert2_loc * obj.matrix_world
+                    p1 = obj.matrix_world * vert1_loc
+                    p2 = obj.matrix_world * vert2_loc
                     return (p1, p2, COLOR_GLOBAL)
 
             else:
@@ -350,10 +350,10 @@ def faceAreaGlobal(face, obj):
         v4 = obj.data.vertices[v4]
 
         # Apply transform matrix to vertex coordinates.
-        v1 = v1.co * mat
-        v2 = v2.co * mat
-        v3 = v3.co * mat
-        v4 = v4.co * mat
+        v1 = mat * v1.co
+        v2 = mat * v2.co
+        v3 = mat * v3.co
+        v4 = mat * v4.co
 
         vec1 = v2 - v1
         vec2 = v4 - v1
@@ -381,9 +381,9 @@ def faceAreaGlobal(face, obj):
         v3 = obj.data.vertices[v3]
 
         # Apply transform matrix to vertex coordinates.
-        v1 = v1.co * mat
-        v2 = v2.co * mat
-        v3 = v3.co * mat
+        v1 = mat * v1.co
+        v2 = mat * v2.co
+        v3 = mat * v3.co
 
         vec1 = v3 - v2
         vec2 = v1 - v2

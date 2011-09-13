@@ -1,5 +1,5 @@
 /*
-* $Id: MOD_cloth.c 37326 2011-06-09 02:47:22Z campbellbarton $
+* $Id: MOD_cloth.c 39342 2011-08-12 18:11:22Z blendix $
 *
 * ***** BEGIN GPL LICENSE BLOCK *****
 *
@@ -229,4 +229,5 @@ ModifierTypeInfo modifierType_Cloth = {
 	/* dependsOnNormals */	NULL,
 	/* foreachObjectLink */ NULL,
 	/* foreachIDLink */     foreachIDLink,
+	/* foreachTexLink */    NULL,
 };

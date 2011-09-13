@@ -1,5 +1,5 @@
 /*
-* $Id: MOD_subsurf.c 36777 2011-05-19 11:54:03Z blendix $
+* $Id: MOD_subsurf.c 39342 2011-08-12 18:11:22Z blendix $
 *
 * ***** BEGIN GPL LICENSE BLOCK *****
 *
@@ -152,4 +152,6 @@ ModifierTypeInfo modifierType_Subsurf = {
 	/* dependsOnNormals */	NULL,
 	/* foreachObjectLink */ NULL,
 	/* foreachIDLink */     NULL,
+	/* foreachTexLink */    NULL,
 };
+

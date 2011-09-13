@@ -1,5 +1,5 @@
 /*
- * $Id: space_image.c 36788 2011-05-20 05:27:31Z campbellbarton $
+ * $Id: space_image.c 38908 2011-08-02 04:28:05Z merwin $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -469,6 +469,7 @@ static void image_operatortypes(void)
 	WM_operatortype_append(IMAGE_OT_view_zoom_in);
 	WM_operatortype_append(IMAGE_OT_view_zoom_out);
 	WM_operatortype_append(IMAGE_OT_view_zoom_ratio);
+	WM_operatortype_append(IMAGE_OT_view_ndof);
 
 	WM_operatortype_append(IMAGE_OT_new);
 	WM_operatortype_append(IMAGE_OT_open);
@@ -517,6 +518,9 @@ static void image_keymap(struct wmKeyConfig *keyconf)
 	WM_keymap_add_item(keymap, "IMAGE_OT_view_pan", MIDDLEMOUSE, KM_PRESS, 0, 0);
 	WM_keymap_add_item(keymap, "IMAGE_OT_view_pan", MIDDLEMOUSE, KM_PRESS, KM_SHIFT, 0);
 	WM_keymap_add_item(keymap, "IMAGE_OT_view_pan", MOUSEPAN, 0, 0, 0);
+
+	WM_keymap_add_item(keymap, "IMAGE_OT_view_all", NDOF_BUTTON_FIT, KM_PRESS, 0, 0); // or view selected?
+	WM_keymap_add_item(keymap, "IMAGE_OT_view_ndof", NDOF_MOTION, 0, 0, 0);
 
 	WM_keymap_add_item(keymap, "IMAGE_OT_view_zoom_in", WHEELINMOUSE, KM_PRESS, 0, 0);
 	WM_keymap_add_item(keymap, "IMAGE_OT_view_zoom_out", WHEELOUTMOUSE, KM_PRESS, 0, 0);

@@ -1,15 +1,15 @@
 10
 
 dir
-38518
+40188
 https://svn.blender.org/svnroot/bf-blender/trunk/blender/source/blender/editors/gpencil
 https://svn.blender.org/svnroot/bf-blender
 
 
 
-2011-07-17T09:11:13.810557Z
-38443
-campbellbarton
+2011-09-06T15:35:42.861863Z
+39971
+gsrb3d
 
 
 
@@ -32,11 +32,11 @@ file
 
 
 
-2011-07-19T21:17:47.000000Z
-bc94c5e355564051888b7875a9690c62
-2011-05-21T08:56:37.913513Z
-36811
-campbellbarton
+2011-09-13T17:10:18.268399Z
+1c5469dd4456cc318592ff0a218e09d6
+2011-09-06T07:59:18.812483Z
+39960
+nazgul
 has-props
 
 
@@ -58,7 +58,7 @@ has-props
 
 
 
-23760
+23696
 
 gpencil_buttons.c
 file
@@ -66,11 +66,11 @@ file
 
 
 
-2011-07-19T21:17:47.000000Z
-5193e8d4b3042e35ddd77d3f091d25c2
-2011-04-19T13:02:49.616075Z
-36223
-aligorith
+2011-09-13T17:10:18.268399Z
+bcbba7a18022ab6b34402723bf658fba
+2011-08-30T09:15:55.930526Z
+39792
+nexyon
 has-props
 
 
@@ -92,7 +92,7 @@ has-props
 
 
 
-10225
+10157
 
 gpencil_ops.c
 file
@@ -100,11 +100,11 @@ file
 
 
 
-2011-07-19T21:17:47.000000Z
-c51dafaf4bf0455b95bdd9c05b4badf3
-2011-02-27T20:29:51.598877Z
-35242
-jesterking
+2011-09-13T17:10:18.268399Z
+e2c9e33f368892e9fa58f9c45e1ddf32
+2011-09-06T08:30:17.033622Z
+39962
+nazgul
 has-props
 
 
@@ -126,7 +126,7 @@ has-props
 
 
 
-2543
+2651
 
 editaction_gpencil.c
 file
@@ -134,11 +134,11 @@ file
 
 
 
-2011-07-19T21:17:47.000000Z
-82d0830ad53636d30ff9216040c8ab6d
-2011-02-27T20:29:51.598877Z
-35242
-jesterking
+2011-09-13T17:10:18.268399Z
+c39fbd4e79f48ded81f71cd0ab541ea8
+2011-08-30T09:15:55.930526Z
+39792
+nexyon
 has-props
 
 
@@ -160,7 +160,7 @@ has-props
 
 
 
-18592
+16340
 
 gpencil_intern.h
 file
@@ -168,11 +168,11 @@ file
 
 
 
-2011-07-19T21:17:47.000000Z
-54e1f574cb140c60ea45601cb552a72a
-2011-02-27T20:29:51.598877Z
-35242
-jesterking
+2011-09-13T17:10:18.268399Z
+f6140e1b477acae6577e6947ae3ab422
+2011-09-06T08:30:17.033622Z
+39962
+nazgul
 has-props
 
 
@@ -194,7 +194,7 @@ has-props
 
 
 
-3651
+3774
 
 SConscript
 file
@@ -202,7 +202,7 @@ file
 
 
 
-2011-07-19T21:17:47.000000Z
+2011-09-13T17:10:18.268399Z
 ae0be1e7f6629c498fc1177ab95cf6d6
 2011-02-21T12:35:04.852834Z
 35028
@@ -236,11 +236,11 @@ file
 
 
 
-2011-07-19T21:17:47.000000Z
-15b49c1aab0825aecabb1ea0180fa0b5
-2011-05-28T04:53:17.313685Z
-36966
-campbellbarton
+2011-09-13T17:10:18.268399Z
+24997073c43622507a53a0eb23ffe8ac
+2011-09-06T08:30:17.033622Z
+39962
+nazgul
 has-props
 
 
@@ -262,7 +262,41 @@ has-props
 
 
 
-17295
+17227
+
+gpencil_undo.c
+file
+
+
+
+
+2011-09-13T17:10:18.268399Z
+c3a5b88cb7621a4c44758ce8625fa84a
+2011-09-06T15:35:42.861863Z
+39971
+gsrb3d
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+3701
 
 CMakeLists.txt
 file
@@ -270,11 +304,11 @@ file
 
 
 
-2011-07-19T21:17:47.000000Z
-4da919fc79708474dc2f2aa223adfccd
-2011-07-17T09:11:13.810557Z
-38443
-campbellbarton
+2011-09-13T17:10:18.268399Z
+6158d43154f88c8e5c245c036ed3dc08
+2011-09-06T07:59:18.812483Z
+39960
+nazgul
 has-props
 
 
@@ -296,7 +330,7 @@ has-props
 
 
 
-1290
+1306
 
 gpencil_paint.c
 file
@@ -304,11 +338,11 @@ file
 
 
 
-2011-07-19T21:17:47.000000Z
-362c1e72f7ba02df4c85f2d76a7da730
-2011-05-26T23:29:40.398956Z
-36939
-campbellbarton
+2011-09-13T17:10:18.268399Z
+48200cb45abf52974a2db3be0f5347cc
+2011-09-06T14:02:28.254391Z
+39969
+nazgul
 has-props
 
 
@@ -330,5 +364,5 @@ has-props
 
 
 
-52876
+56078
 

@@ -1,7 +1,7 @@
 K 25
 svn:wc:ra_dav:version-url
 V 70
-/svnroot/bf-blender/!svn/ver/38472/trunk/blender/source/blender/python
+/svnroot/bf-blender/!svn/ver/40084/trunk/blender/source/blender/python
 END
 BPY_extern.h
 K 25
@@ -13,7 +13,7 @@ SConscript
 K 25
 svn:wc:ra_dav:version-url
 V 81
-/svnroot/bf-blender/!svn/ver/38412/trunk/blender/source/blender/python/SConscript
+/svnroot/bf-blender/!svn/ver/40061/trunk/blender/source/blender/python/SConscript
 END
 rna_dump.py
 K 25

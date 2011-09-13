@@ -1,5 +1,5 @@
 /*
-* $Id: MOD_multires.c 36432 2011-05-02 10:21:07Z blendix $
+* $Id: MOD_multires.c 39342 2011-08-12 18:11:22Z blendix $
 *
 * ***** BEGIN GPL LICENSE BLOCK *****
 *
@@ -131,4 +131,5 @@ ModifierTypeInfo modifierType_Multires = {
 	/* dependsOnNormals */	NULL,
 	/* foreachObjectLink */ NULL,
 	/* foreachIDLink */     NULL,
+	/* foreachTexLink */    NULL,
 };

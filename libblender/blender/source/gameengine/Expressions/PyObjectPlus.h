@@ -1,5 +1,5 @@
 /*
- * $Id: PyObjectPlus.h 38409 2011-07-15 04:01:47Z campbellbarton $
+ * $Id: PyObjectPlus.h 39792 2011-08-30 09:15:55Z nexyon $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -55,6 +55,7 @@
 #ifdef USE_MATHUTILS
 extern "C" {
 #include "../../blender/python/mathutils/mathutils.h" /* so we can have mathutils callbacks */
+#include "../../blender/python/generic/py_capi_utils.h" /* for PyC_LineSpit only */
 }
 #endif
 
@@ -254,12 +255,15 @@ typedef struct PyObjectPlus_Proxy {
 #define KX_PYMETHODTABLE_NOARGS(class_name, method_name) \
 	{#method_name , (PyCFunction) class_name::sPy##method_name, METH_NOARGS, (const char *)class_name::method_name##_doc}
 
+#define KX_PYMETHODTABLE_KEYWORDS(class_name, method_name) \
+	{#method_name , (PyCFunction) class_name::sPy##method_name, METH_VARARGS|METH_KEYWORDS, (const char *)class_name::method_name##_doc}
+
 /**
  * Function implementation macro
  */
 #define KX_PYMETHODDEF_DOC(class_name, method_name, doc_string) \
 const char class_name::method_name##_doc[] = doc_string; \
-PyObject* class_name::Py##method_name(PyObject* args, PyObject*)
+PyObject* class_name::Py##method_name(PyObject* args, PyObject* kwds)
 
 #define KX_PYMETHODDEF_DOC_VARARGS(class_name, method_name, doc_string) \
 const char class_name::method_name##_doc[] = doc_string; \

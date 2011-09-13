@@ -1,5 +1,5 @@
 /*
-* $Id: MOD_warp.c 38300 2011-07-11 09:15:20Z blendix $
+* $Id: MOD_warp.c 39342 2011-08-12 18:11:22Z blendix $
 *
 * ***** BEGIN GPL LICENSE BLOCK *****
 *
@@ -138,6 +138,11 @@ static void foreachIDLink(ModifierData *md, Object *ob, IDWalkFunc walk, void *u
 	walk(userData, ob, (ID **)&wmd->object_from);
 	walk(userData, ob, (ID **)&wmd->object_to);
 	walk(userData, ob, (ID **)&wmd->map_object);
+}
+
+static void foreachTexLink(ModifierData *md, Object *ob, TexWalkFunc walk, void *userData)
+{
+	walk(userData, ob, md, "texture");
 }
 
 static void updateDepgraph(ModifierData *md, DagForest *forest, struct Scene *UNUSED(scene),
@@ -364,4 +369,5 @@ ModifierTypeInfo modifierType_Warp = {
 	/* dependsOnNormals */	NULL,
 	/* foreachObjectLink */ foreachObjectLink,
 	/* foreachIDLink */     foreachIDLink,
+	/* foreachTexLink */    foreachTexLink,
 };

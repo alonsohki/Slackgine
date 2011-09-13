@@ -1,15 +1,15 @@
 10
 
 dir
-38518
+40188
 https://svn.blender.org/svnroot/bf-blender/trunk/blender/source/blender/makesdna/intern
 https://svn.blender.org/svnroot/bf-blender
 
 
 
-2011-06-18T03:14:24.565455Z
-37613
-campbellbarton
+2011-08-30T09:15:55.930526Z
+39792
+nexyon
 
 
 
@@ -32,11 +32,11 @@ file
 
 
 
-2011-07-19T21:17:29.000000Z
-290a6527184fd8e2be7d26b7bb9188c1
-2011-06-18T03:14:24.565455Z
-37613
-campbellbarton
+2011-09-13T17:08:57.057814Z
+5a9c8247d9b5d02c728dcceab60753ba
+2011-08-30T09:15:55.930526Z
+39792
+nexyon
 has-props
 
 
@@ -58,7 +58,7 @@ has-props
 
 
 
-29572
+29727
 
 SConscript
 file
@@ -66,11 +66,11 @@ file
 
 
 
-2011-07-19T21:17:29.000000Z
-4dded4b10be8c2d7f14bf1a108bef308
-2011-02-21T12:35:04.852834Z
-35028
-jesterking
+2011-09-13T17:08:57.057814Z
+0de0226e837a6bd76558386fb798a628
+2011-08-20T14:23:43.919262Z
+39568
+campbellbarton
 has-props
 
 
@@ -92,7 +92,7 @@ has-props
 
 
 
-2306
+2371
 
 dna_genfile.c
 file
@@ -100,10 +100,10 @@ file
 
 
 
-2011-07-19T21:17:29.000000Z
-e9e4c9ce2402b8541c470058dc820411
-2011-04-21T15:53:30.732996Z
-36276
+2011-09-13T17:08:57.057814Z
+013627c72b82f17ccdee62ea4db55149
+2011-08-20T14:23:43.919262Z
+39568
 campbellbarton
 has-props
 
@@ -126,7 +126,7 @@ has-props
 
 
 
-26948
+27526
 
 CMakeLists.txt
 file
@@ -134,10 +134,10 @@ file
 
 
 
-2011-07-19T21:17:29.000000Z
-55ba17fe472f878d97857cb0488e8ee0
-2011-05-31T01:15:44.429162Z
-37030
+2011-09-13T17:08:57.057814Z
+9d0faa3eb9f81100f293e2456f196a44
+2011-08-20T14:23:43.919262Z
+39568
 campbellbarton
 has-props
 
@@ -160,5 +160,5 @@ has-props
 
 
 
-1876
+2408
 

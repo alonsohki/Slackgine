@@ -1,5 +1,5 @@
 # -*- mode: cmake; indent-tabs-mode: t; -*-
-# $Id: CMakeLists.txt 38409 2011-07-15 04:01:47Z campbellbarton $
+# $Id: CMakeLists.txt 40117 2011-09-11 08:21:26Z dfelinto $
 # ***** BEGIN GPL LICENSE BLOCK *****
 #
 # This program is free software; you can redistribute it and/or
@@ -138,6 +138,7 @@ endif()
 		bf_intern_ghost # duplicate for linking
 		bf_blenkernel # duplicate for linking
 		bf_intern_mikktspace
+		extern_recastnavigation
 	)
 
 	if(WITH_MOD_CLOTH_ELTOPO)

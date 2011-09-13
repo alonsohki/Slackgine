@@ -1,15 +1,15 @@
 10
 
 dir
-2139
+2324
 https://svn.blender.org/svnroot/bf-extensions/trunk/py/scripts/addons/io_scene_m3
 https://svn.blender.org/svnroot/bf-extensions
 
 
 
-2011-07-10T22:57:27.956301Z
-2116
-campbellbarton
+2011-09-03T11:31:10.450582Z
+2296
+nazgul
 has-props
 
 
@@ -32,11 +32,11 @@ file
 
 
 
-2011-07-19T21:18:47.000000Z
-d8cbb2e034ef30ef0d0ca1b30a43de25
-2011-07-10T22:57:27.956301Z
-2116
-campbellbarton
+2011-09-13T17:15:01.297021Z
+e15a6b28a9c18e6df8a3d30b8a04644f
+2011-09-03T11:31:10.450582Z
+2296
+nazgul
 has-props
 
 
@@ -58,7 +58,7 @@ has-props
 
 
 
-12067
+12093
 
 __init__.py
 file
@@ -66,11 +66,11 @@ file
 
 
 
-2011-07-19T21:18:47.000000Z
-1fa051b90f2a5345ff350ce9104104a7
-2011-07-10T22:57:27.956301Z
-2116
-campbellbarton
+2011-09-13T17:15:01.297021Z
+fecb6975ab82c312ee5475002eff3ee8
+2011-09-03T11:11:01.607030Z
+2294
+nazgul
 has-props
 
 
@@ -92,5 +92,5 @@ has-props
 
 
 
-3240
+3266
 

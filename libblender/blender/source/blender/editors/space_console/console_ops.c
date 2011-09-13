@@ -1,5 +1,5 @@
 /*
- * $Id: console_ops.c 37650 2011-06-20 03:10:02Z campbellbarton $
+ * $Id: console_ops.c 39362 2011-08-13 14:24:53Z campbellbarton $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -675,7 +675,12 @@ static int scrollback_append_exec(bContext *C, wmOperator *op)
 	
 	console_scrollback_limit(sc);
 
-	console_textview_update_rect(sc, ar);
+	/* 'ar' can be null depending on the operator that runs
+	 * rendering with invoke default for eg causes this */
+	if(ar) {
+		console_textview_update_rect(sc, ar);
+	}
+
 	ED_area_tag_redraw(CTX_wm_area(C));
 	
 	return OPERATOR_FINISHED;

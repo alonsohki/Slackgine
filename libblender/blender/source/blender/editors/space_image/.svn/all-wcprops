@@ -1,7 +1,7 @@
 K 25
 svn:wc:ra_dav:version-url
 V 83
-/svnroot/bf-blender/!svn/ver/38443/trunk/blender/source/blender/editors/space_image
+/svnroot/bf-blender/!svn/ver/39991/trunk/blender/source/blender/editors/space_image
 END
 image_draw.c
 K 25
@@ -13,13 +13,13 @@ image_buttons.c
 K 25
 svn:wc:ra_dav:version-url
 V 99
-/svnroot/bf-blender/!svn/ver/37926/trunk/blender/source/blender/editors/space_image/image_buttons.c
+/svnroot/bf-blender/!svn/ver/39991/trunk/blender/source/blender/editors/space_image/image_buttons.c
 END
 image_ops.c
 K 25
 svn:wc:ra_dav:version-url
 V 95
-/svnroot/bf-blender/!svn/ver/37246/trunk/blender/source/blender/editors/space_image/image_ops.c
+/svnroot/bf-blender/!svn/ver/39812/trunk/blender/source/blender/editors/space_image/image_ops.c
 END
 SConscript
 K 25
@@ -31,7 +31,7 @@ image_intern.h
 K 25
 svn:wc:ra_dav:version-url
 V 98
-/svnroot/bf-blender/!svn/ver/36293/trunk/blender/source/blender/editors/space_image/image_intern.h
+/svnroot/bf-blender/!svn/ver/38908/trunk/blender/source/blender/editors/space_image/image_intern.h
 END
 CMakeLists.txt
 K 25
@@ -43,5 +43,5 @@ space_image.c
 K 25
 svn:wc:ra_dav:version-url
 V 97
-/svnroot/bf-blender/!svn/ver/36788/trunk/blender/source/blender/editors/space_image/space_image.c
+/svnroot/bf-blender/!svn/ver/38908/trunk/blender/source/blender/editors/space_image/space_image.c
 END

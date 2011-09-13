@@ -1,5 +1,5 @@
 /*
- * $Id: MaterialExporter.h 38079 2011-07-04 08:59:28Z jesterking $
+ * $Id: MaterialExporter.h 40019 2011-09-07 18:23:30Z jesterking $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -44,13 +44,18 @@
 
 #include "GeometryExporter.h"
 #include "collada_internal.h"
+#include "ExportSettings.h"
 
 class MaterialsExporter: COLLADASW::LibraryMaterials
 {
 public:
-	MaterialsExporter(COLLADASW::StreamWriter *sw);
-	void exportMaterials(Scene *sce, bool export_selected);
+	MaterialsExporter(COLLADASW::StreamWriter *sw, const ExportSettings *export_settings);
+	void exportMaterials(Scene *sce);
 	void operator()(Material *ma, Object *ob);
+
+private:
+	bool hasMaterials(Scene *sce);
+	const ExportSettings *export_settings;
 };
 
 // used in forEachMaterialInScene

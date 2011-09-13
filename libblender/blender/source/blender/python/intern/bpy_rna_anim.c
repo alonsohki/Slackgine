@@ -1,5 +1,5 @@
 /*
- * $Id: bpy_rna_anim.c 36545 2011-05-08 05:41:57Z aligorith $
+ * $Id: bpy_rna_anim.c 39390 2011-08-14 10:28:18Z campbellbarton $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -107,7 +107,7 @@ static int pyrna_struct_anim_args_parse(PointerRNA *ptr, const char *error_prefi
 		return -1;
 	}
 
-	if(RNA_property_array_check(&r_ptr, prop) == 0) {
+	if(RNA_property_array_check(prop) == 0) {
 		if((*index) == -1) {
 			*index= 0;
 		}

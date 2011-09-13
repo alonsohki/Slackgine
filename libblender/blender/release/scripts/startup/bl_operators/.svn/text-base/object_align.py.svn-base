@@ -16,102 +16,110 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-# <pep8 compliant>
+# <pep8-80 compliant>
 
 import bpy
+from bpy.types import Operator
 from mathutils import Vector
 
+
 def GlobalBB_LQ(bb_world):
-    
+
     # Initialize the variables with the 8th vertex
-    left, right, front, back, down, up =\
-    bb_world[7][0],\
-    bb_world[7][0],\
-    bb_world[7][1],\
-    bb_world[7][1],\
-    bb_world[7][2],\
-    bb_world[7][2]
-    
+    left, right, front, back, down, up = (bb_world[7][0],
+                                          bb_world[7][0],
+                                          bb_world[7][1],
+                                          bb_world[7][1],
+                                          bb_world[7][2],
+                                          bb_world[7][2],
+                                          )
+
     # Test against the other 7 verts
-    for i in range (7):
-        
+    for i in range(7):
+
         # X Range
         val = bb_world[i][0]
         if val < left:
             left = val
-            
+
         if val > right:
             right = val
-            
+
         # Y Range
         val = bb_world[i][1]
         if val < front:
             front = val
-            
+
         if val > back:
             back = val
-            
+
         # Z Range
         val = bb_world[i][2]
         if val < down:
             down = val
-            
+
         if val > up:
             up = val
-        
+
     return (Vector((left, front, up)), Vector((right, back, down)))
 
+
 def GlobalBB_HQ(obj):
-    
+
     matrix_world = obj.matrix_world.copy()
-    
+
     # Initialize the variables with the last vertex
-    
+
     verts = obj.data.vertices
-    
-    val = verts[-1].co * matrix_world
-    
-    left, right, front, back, down, up =\
-    val[0],\
-    val[0],\
-    val[1],\
-    val[1],\
-    val[2],\
-    val[2]
-    
+
+    val = matrix_world * verts[-1].co
+
+    left, right, front, back, down, up = (val[0],
+                                          val[0],
+                                          val[1],
+                                          val[1],
+                                          val[2],
+                                          val[2],
+                                          )
+
     # Test against all other verts
-    for i in range (len(verts)-1):
-        
-        vco = verts[i].co * matrix_world
-        
+    for i in range(len(verts) - 1):
+
+        vco = matrix_world * verts[i].co
+
         # X Range
         val = vco[0]
         if val < left:
             left = val
-            
+
         if val > right:
             right = val
-            
+
         # Y Range
         val = vco[1]
         if val < front:
             front = val
-            
+
         if val > back:
             back = val
-            
+
         # Z Range
         val = vco[2]
         if val < down:
             down = val
-            
+
         if val > up:
             up = val
-        
-    return (Vector((left, front, up)), Vector((right, back, down)))
+
+    return Vector((left, front, up)), Vector((right, back, down))
 
 
-def align_objects(align_x, align_y, align_z, align_mode, relative_to, bb_quality):
+def align_objects(align_x,
+                  align_y,
+                  align_z,
+                  align_mode,
+                  relative_to,
+                  bb_quality):
 
     cursor = bpy.context.scene.cursor_location
 
@@ -123,20 +131,20 @@ def align_objects(align_x, align_y, align_z, align_mode, relative_to, bb_quality
     objs = []
 
     for obj in bpy.context.selected_objects:
-        matrix_world = obj.matrix_world
-        bb_world = [Vector(v[:]) * matrix_world for v in obj.bound_box]
+        matrix_world = obj.matrix_world.copy()
+        bb_world = [matrix_world * Vector(v[:]) for v in obj.bound_box]
         objs.append((obj, bb_world))
 
     if not objs:
         return False
 
     for obj, bb_world in objs:
-        
+
         if bb_quality:
             GBB = GlobalBB_HQ(obj)
         else:
             GBB = GlobalBB_LQ(bb_world)
-            
+
         Left_Front_Up = GBB[0]
         Right_Back_Down = GBB[1]
 
@@ -193,13 +201,14 @@ def align_objects(align_x, align_y, align_z, align_mode, relative_to, bb_quality
     # Main Loop
 
     for obj, bb_world in objs:
-        bb_world = [Vector(v[:]) * obj.matrix_world for v in obj.bound_box]
-        
+        matrix_world = obj.matrix_world.copy()
+        bb_world = [matrix_world * Vector(v[:]) for v in obj.bound_box]
+
         if bb_quality:
             GBB = GlobalBB_HQ(obj)
         else:
             GBB = GlobalBB_LQ(bb_world)
-            
+
         Left_Front_Up = GBB[0]
         Right_Back_Down = GBB[1]
 
@@ -331,7 +340,7 @@ def align_objects(align_x, align_y, align_z, align_mode, relative_to, bb_quality
 from bpy.props import EnumProperty, BoolProperty
 
 
-class AlignObjects(bpy.types.Operator):
+class AlignObjects(Operator):
     '''Align Objects'''
     bl_idname = "object.align"
     bl_label = "Align Objects"
@@ -339,34 +348,37 @@ class AlignObjects(bpy.types.Operator):
 
     bb_quality = BoolProperty(
             name="High Quality",
-            description="Enables high quality calculation of the bounding box for perfect results on complex shape meshes with rotation/scale (Slow)",
-            default=False)
-
-    align_mode = EnumProperty(items=(
-            ('OPT_1', "Negative Sides", ""),
-            ('OPT_2', "Centers", ""),
-            ('OPT_3', "Positive Sides", "")),
-        name="Align Mode:",
-        description="",
-        default='OPT_2')
-
-    relative_to = EnumProperty(items=(
-            ('OPT_1', "Scene Origin", ""),
-            ('OPT_2', "3D Cursor", ""),
-            ('OPT_3', "Selection", ""),
-            ('OPT_4', "Active", "")),
-        name="Relative To:",
-        description="",
-        default='OPT_4')
-
-    align_axis = EnumProperty(items=(
-            ('X', "X", ""),
-            ('Y', "Y", ""),
-            ('Z', "Z", ""),
-            ),
-                name="Align",
-                description="Align to axis",
-                options={'ENUM_FLAG'})
+            description=("Enables high quality calculation of the "
+                         "bounding box for perfect results on complex "
+                         "shape meshes with rotation/scale (Slow)"),
+            default=True,
+            )
+    align_mode = EnumProperty(
+            name="Align Mode:",
+            items=(('OPT_1', "Negative Sides", ""),
+                   ('OPT_2', "Centers", ""),
+                   ('OPT_3', "Positive Sides", ""),
+                   ),
+            default='OPT_2',
+            )
+    relative_to = EnumProperty(
+            name="Relative To:",
+            items=(('OPT_1', "Scene Origin", ""),
+                   ('OPT_2', "3D Cursor", ""),
+                   ('OPT_3', "Selection", ""),
+                   ('OPT_4', "Active", ""),
+                   ),
+            default='OPT_4',
+            )
+    align_axis = EnumProperty(
+            name="Align",
+            description="Align to axis",
+            items=(('X', "X", ""),
+                   ('Y', "Y", ""),
+                   ('Z', "Z", ""),
+                   ),
+            options={'ENUM_FLAG'},
+            )
 
     @classmethod
     def poll(cls, context):
@@ -374,7 +386,12 @@ class AlignObjects(bpy.types.Operator):
 
     def execute(self, context):
         align_axis = self.align_axis
-        ret = align_objects('X' in align_axis, 'Y' in align_axis, 'Z' in align_axis, self.align_mode, self.relative_to, self.bb_quality)
+        ret = align_objects('X' in align_axis,
+                            'Y' in align_axis,
+                            'Z' in align_axis,
+                            self.align_mode,
+                            self.relative_to,
+                            self.bb_quality)
 
         if not ret:
             self.report({'WARNING'}, "No objects with bound-box selected")

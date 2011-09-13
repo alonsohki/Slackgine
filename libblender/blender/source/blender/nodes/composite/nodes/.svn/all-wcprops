@@ -1,0 +1,341 @@
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svnroot/bf-blender/!svn/ver/39995/trunk/blender/source/blender/nodes/composite/nodes
+END
+node_composite_curves.c
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_curves.c
+END
+node_composite_colorMatte.c
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_colorMatte.c
+END
+node_composite_mapValue.c
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_mapValue.c
+END
+node_composite_sepcombHSVA.c
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_sepcombHSVA.c
+END
+node_composite_splitViewer.c
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_splitViewer.c
+END
+node_composite_valToRgb.c
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_valToRgb.c
+END
+node_composite_image.c
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_image.c
+END
+node_composite_gamma.c
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_gamma.c
+END
+node_composite_bilateralblur.c
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_bilateralblur.c
+END
+node_composite_colorbalance.c
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_colorbalance.c
+END
+node_composite_filter.c
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_filter.c
+END
+node_composite_common.c
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svnroot/bf-blender/!svn/ver/39983/trunk/blender/source/blender/nodes/composite/nodes/node_composite_common.c
+END
+node_composite_defocus.c
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_defocus.c
+END
+node_composite_normal.c
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_normal.c
+END
+node_composite_glare.c
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_glare.c
+END
+node_composite_translate.c
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_translate.c
+END
+node_composite_normalize.c
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_normalize.c
+END
+node_composite_outputFile.c
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_outputFile.c
+END
+node_composite_setalpha.c
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_setalpha.c
+END
+node_composite_composite.c
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_composite.c
+END
+node_composite_dilate.c
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_dilate.c
+END
+node_composite_vecBlur.c
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_vecBlur.c
+END
+node_composite_channelMatte.c
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_channelMatte.c
+END
+node_composite_crop.c
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_crop.c
+END
+node_composite_diffMatte.c
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_diffMatte.c
+END
+node_composite_tonemap.c
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_tonemap.c
+END
+node_composite_chromaMatte.c
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_chromaMatte.c
+END
+node_composite_lummaMatte.c
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_lummaMatte.c
+END
+node_composite_zcombine.c
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_zcombine.c
+END
+node_composite_invert.c
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_invert.c
+END
+node_composite_idMask.c
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_idMask.c
+END
+node_composite_brightness.c
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_brightness.c
+END
+node_composite_rgb.c
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_rgb.c
+END
+node_composite_value.c
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svnroot/bf-blender/!svn/ver/39995/trunk/blender/source/blender/nodes/composite/nodes/node_composite_value.c
+END
+node_composite_premulkey.c
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_premulkey.c
+END
+node_composite_alphaOver.c
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_alphaOver.c
+END
+node_composite_directionalblur.c
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_directionalblur.c
+END
+node_composite_colorSpill.c
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_colorSpill.c
+END
+node_composite_displace.c
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_displace.c
+END
+node_composite_sepcombRGBA.c
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_sepcombRGBA.c
+END
+node_composite_lensdist.c
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_lensdist.c
+END
+node_composite_distanceMatte.c
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_distanceMatte.c
+END
+node_composite_scale.c
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_scale.c
+END
+node_composite_mapUV.c
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_mapUV.c
+END
+node_composite_mixrgb.c
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_mixrgb.c
+END
+node_composite_sepcombYCCA.c
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_sepcombYCCA.c
+END
+node_composite_math.c
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_math.c
+END
+node_composite_levels.c
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_levels.c
+END
+node_composite_flip.c
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_flip.c
+END
+node_composite_hueSatVal.c
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_hueSatVal.c
+END
+node_composite_sepcombYUVA.c
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_sepcombYUVA.c
+END
+node_composite_rotate.c
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_rotate.c
+END
+node_composite_texture.c
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_texture.c
+END
+node_composite_viewer.c
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_viewer.c
+END
+node_composite_huecorrect.c
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_huecorrect.c
+END
+node_composite_blur.c
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svnroot/bf-blender/!svn/ver/39944/trunk/blender/source/blender/nodes/composite/nodes/node_composite_blur.c
+END

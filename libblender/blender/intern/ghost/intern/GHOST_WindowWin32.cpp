@@ -1,5 +1,5 @@
 /*
- * $Id: GHOST_WindowWin32.cpp 37765 2011-06-23 19:55:47Z blendix $
+ * $Id: GHOST_WindowWin32.cpp 39808 2011-08-30 17:30:35Z moguri $
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
  * This program is free software; you can redistribute it and/or
@@ -33,7 +33,7 @@
 
 /**
 
- * $Id: GHOST_WindowWin32.cpp 37765 2011-06-23 19:55:47Z blendix $
+ * $Id: GHOST_WindowWin32.cpp 39808 2011-08-30 17:30:35Z moguri $
  * Copyright (C) 2001 NaN Technologies B.V.
  * @author	Maarten Gribnau
  * @date	May 10, 2001
@@ -612,7 +612,6 @@ GHOST_TSuccess GHOST_WindowWin32::setState(GHOST_TWindowState state)
 		wp.showCmd = SW_SHOWMINIMIZED;
 		break;
 	case GHOST_kWindowStateMaximized:
-		ShowWindow(m_hWnd, SW_HIDE);
 		wp.showCmd = SW_SHOWMAXIMIZED;
 		SetWindowLongPtr(m_hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW);
 		break;
@@ -629,12 +628,12 @@ GHOST_TSuccess GHOST_WindowWin32::setState(GHOST_TWindowState state)
 		break;
 	case GHOST_kWindowStateNormal:
 	default:
-		ShowWindow(m_hWnd, SW_HIDE);
 		wp.showCmd = SW_SHOWNORMAL;
 		SetWindowLongPtr(m_hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW);
 		break;
 	}
-	return ::SetWindowPlacement(m_hWnd, &wp) == TRUE ? GHOST_kSuccess : GHOST_kFailure;
+	SetWindowPos(m_hWnd, 0, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED); /*Clears window cache for SetWindowLongPtr */
+ 	return ::SetWindowPlacement(m_hWnd, &wp) == TRUE ? GHOST_kSuccess : GHOST_kFailure;
 }
 
 
@@ -867,6 +866,8 @@ GHOST_TSuccess GHOST_WindowWin32::installDrawingContext(GHOST_TDrawingContextTyp
 				{
 
 					// Make sure we don't screw up the context
+					if (m_hGlRc == s_firsthGLRc)
+						s_firsthGLRc = NULL;
 					m_drawingContextType = GHOST_kDrawingContextTypeOpenGL;
 					removeDrawingContext();
 

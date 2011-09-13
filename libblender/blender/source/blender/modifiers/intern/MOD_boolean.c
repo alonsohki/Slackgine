@@ -1,5 +1,5 @@
 /*
-* $Id: MOD_boolean.c 37005 2011-05-29 15:53:38Z nazgul $
+* $Id: MOD_boolean.c 39342 2011-08-12 18:11:22Z blendix $
 *
 * ***** BEGIN GPL LICENSE BLOCK *****
 *
@@ -197,4 +197,5 @@ ModifierTypeInfo modifierType_Boolean = {
 	/* dependsOnNormals */	NULL,
 	/* foreachObjectLink */ foreachObjectLink,
 	/* foreachIDLink */     NULL,
+	/* foreachTexLink */    NULL,
 };

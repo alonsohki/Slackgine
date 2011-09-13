@@ -1,7 +1,7 @@
 K 25
 svn:wc:ra_dav:version-url
 V 80
-/svnroot/bf-blender/!svn/ver/38443/trunk/blender/source/blender/editors/armature
+/svnroot/bf-blender/!svn/ver/40147/trunk/blender/source/blender/editors/armature
 END
 editarmature_generate.c
 K 25
@@ -13,13 +13,13 @@ meshlaplacian.c
 K 25
 svn:wc:ra_dav:version-url
 V 96
-/svnroot/bf-blender/!svn/ver/36276/trunk/blender/source/blender/editors/armature/meshlaplacian.c
+/svnroot/bf-blender/!svn/ver/40108/trunk/blender/source/blender/editors/armature/meshlaplacian.c
 END
 armature_ops.c
 K 25
 svn:wc:ra_dav:version-url
 V 95
-/svnroot/bf-blender/!svn/ver/37987/trunk/blender/source/blender/editors/armature/armature_ops.c
+/svnroot/bf-blender/!svn/ver/39792/trunk/blender/source/blender/editors/armature/armature_ops.c
 END
 BIF_retarget.h
 K 25
@@ -31,7 +31,7 @@ armature_intern.h
 K 25
 svn:wc:ra_dav:version-url
 V 98
-/svnroot/bf-blender/!svn/ver/37850/trunk/blender/source/blender/editors/armature/armature_intern.h
+/svnroot/bf-blender/!svn/ver/39792/trunk/blender/source/blender/editors/armature/armature_intern.h
 END
 meshlaplacian.h
 K 25
@@ -43,7 +43,7 @@ SConscript
 K 25
 svn:wc:ra_dav:version-url
 V 91
-/svnroot/bf-blender/!svn/ver/35028/trunk/blender/source/blender/editors/armature/SConscript
+/svnroot/bf-blender/!svn/ver/39584/trunk/blender/source/blender/editors/armature/SConscript
 END
 reeb.c
 K 25
@@ -73,25 +73,25 @@ editarmature.c
 K 25
 svn:wc:ra_dav:version-url
 V 95
-/svnroot/bf-blender/!svn/ver/37850/trunk/blender/source/blender/editors/armature/editarmature.c
+/svnroot/bf-blender/!svn/ver/39792/trunk/blender/source/blender/editors/armature/editarmature.c
 END
 poseUtils.c
 K 25
 svn:wc:ra_dav:version-url
 V 92
-/svnroot/bf-blender/!svn/ver/38257/trunk/blender/source/blender/editors/armature/poseUtils.c
+/svnroot/bf-blender/!svn/ver/39792/trunk/blender/source/blender/editors/armature/poseUtils.c
 END
 poseSlide.c
 K 25
 svn:wc:ra_dav:version-url
 V 92
-/svnroot/bf-blender/!svn/ver/36297/trunk/blender/source/blender/editors/armature/poseSlide.c
+/svnroot/bf-blender/!svn/ver/39794/trunk/blender/source/blender/editors/armature/poseSlide.c
 END
 editarmature_sketch.c
 K 25
 svn:wc:ra_dav:version-url
 V 102
-/svnroot/bf-blender/!svn/ver/36933/trunk/blender/source/blender/editors/armature/editarmature_sketch.c
+/svnroot/bf-blender/!svn/ver/40147/trunk/blender/source/blender/editors/armature/editarmature_sketch.c
 END
 CMakeLists.txt
 K 25
@@ -103,11 +103,11 @@ poseobject.c
 K 25
 svn:wc:ra_dav:version-url
 V 93
-/svnroot/bf-blender/!svn/ver/36813/trunk/blender/source/blender/editors/armature/poseobject.c
+/svnroot/bf-blender/!svn/ver/39794/trunk/blender/source/blender/editors/armature/poseobject.c
 END
 poselib.c
 K 25
 svn:wc:ra_dav:version-url
 V 90
-/svnroot/bf-blender/!svn/ver/36924/trunk/blender/source/blender/editors/armature/poselib.c
+/svnroot/bf-blender/!svn/ver/39792/trunk/blender/source/blender/editors/armature/poselib.c
 END

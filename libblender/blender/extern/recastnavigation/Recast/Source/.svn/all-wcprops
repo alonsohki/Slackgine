@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svnroot/bf-blender/!svn/ver/40101/trunk/blender/extern/recastnavigation/Recast/Source
+END
+RecastMesh.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svnroot/bf-blender/!svn/ver/40084/trunk/blender/extern/recastnavigation/Recast/Source/RecastMesh.cpp
+END
+RecastRasterization.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svnroot/bf-blender/!svn/ver/40080/trunk/blender/extern/recastnavigation/Recast/Source/RecastRasterization.cpp
+END
+Recast.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svnroot/bf-blender/!svn/ver/40084/trunk/blender/extern/recastnavigation/Recast/Source/Recast.cpp
+END
+RecastMeshDetail.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svnroot/bf-blender/!svn/ver/40101/trunk/blender/extern/recastnavigation/Recast/Source/RecastMeshDetail.cpp
+END
+RecastTimer.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svnroot/bf-blender/!svn/ver/40080/trunk/blender/extern/recastnavigation/Recast/Source/RecastTimer.cpp
+END
+RecastLog.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svnroot/bf-blender/!svn/ver/40080/trunk/blender/extern/recastnavigation/Recast/Source/RecastLog.cpp
+END
+RecastRegion.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svnroot/bf-blender/!svn/ver/40080/trunk/blender/extern/recastnavigation/Recast/Source/RecastRegion.cpp
+END
+RecastFilter.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svnroot/bf-blender/!svn/ver/40084/trunk/blender/extern/recastnavigation/Recast/Source/RecastFilter.cpp
+END
+RecastContour.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svnroot/bf-blender/!svn/ver/40080/trunk/blender/extern/recastnavigation/Recast/Source/RecastContour.cpp
+END

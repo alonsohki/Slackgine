@@ -1,5 +1,5 @@
 /*
- * $Id: GPG_Application.cpp 37865 2011-06-27 14:34:58Z blendix $
+ * $Id: GPG_Application.cpp 40113 2011-09-11 05:54:07Z dfelinto $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -139,7 +139,7 @@ GPG_Application::GPG_Application(GHOST_ISystem* system)
 
 GPG_Application::~GPG_Application(void)
 {
-    if(m_pyGlobalDictString) {
+	if(m_pyGlobalDictString) {
 		delete [] m_pyGlobalDictString;
 		m_pyGlobalDictString = 0;
 		m_pyGlobalDictString_Length = 0;
@@ -151,7 +151,7 @@ GPG_Application::~GPG_Application(void)
 
 
 
-bool GPG_Application::SetGameEngineData(struct Main* maggie, Scene *scene, int argc, char **argv)
+bool GPG_Application::SetGameEngineData(struct Main* maggie, Scene *scene, GlobalSettings *gs, int argc, char **argv)
 {
 	bool result = false;
 
@@ -167,6 +167,9 @@ bool GPG_Application::SetGameEngineData(struct Main* maggie, Scene *scene, int a
 	/* Python needs these */
 	m_argc= argc;
 	m_argv= argv;
+
+	/* Global Settings */
+	m_globalSettings= gs;
 
 	return result;
 }
@@ -192,7 +195,7 @@ static LRESULT CALLBACK screenSaverWindowProc(HWND hwnd, UINT uMsg, WPARAM wPara
 			LONG dx = scr_save_mouse_pos.x - pt.x;
 			LONG dy = scr_save_mouse_pos.y - pt.y;
 			if (abs(dx) > SCR_SAVE_MOUSE_MOVE_THRESHOLD
-			    || abs(dy) > SCR_SAVE_MOUSE_MOVE_THRESHOLD)
+			        || abs(dy) > SCR_SAVE_MOUSE_MOVE_THRESHOLD)
 			{
 				close = TRUE;
 			}
@@ -511,6 +514,12 @@ int GPG_Application::getExitRequested(void)
 }
 
 
+GlobalSettings* GPG_Application::getGlobalSettings(void)
+{
+	return m_ketsjiengine->GetGlobalSettings();
+}
+
+
 
 const STR_String& GPG_Application::getExitString(void)
 {
@@ -545,13 +554,14 @@ bool GPG_Application::initEngine(GHOST_IWindow* window, const int stereoMode)
 		bool frameRate = (SYS_GetCommandLineInt(syshandle, "show_framerate", 0) != 0);
 		bool useLists = (SYS_GetCommandLineInt(syshandle, "displaylists", gm->flag & GAME_DISPLAY_LISTS) != 0);
 		bool nodepwarnings = (SYS_GetCommandLineInt(syshandle, "ignore_deprecation_warnings", 1) != 0);
+		bool restrictAnimFPS = gm->flag & GAME_RESTRICT_ANIM_UPDATES;
 
 		if(GLEW_ARB_multitexture && GLEW_VERSION_1_1)
 			m_blendermat = (SYS_GetCommandLineInt(syshandle, "blender_material", 1) != 0);
 
 		if(GPU_glsl_support())
 			m_blenderglslmat = (SYS_GetCommandLineInt(syshandle, "blender_glsl_material", 1) != 0);
-		else if(gm->matmode == GAME_MAT_GLSL)
+		else if(m_globalSettings->matmode == GAME_MAT_GLSL)
 			m_blendermat = false;
 
 		// create the canvas, rasterizer and rendertools
@@ -616,7 +626,6 @@ bool GPG_Application::initEngine(GHOST_IWindow* window, const int stereoMode)
 		m_ketsjiengine->SetCanvas(m_canvas);
 		m_ketsjiengine->SetRenderTools(m_rendertools);
 		m_ketsjiengine->SetRasterizer(m_rasterizer);
-		m_ketsjiengine->SetNetworkDevice(m_networkdevice);
 
 		m_ketsjiengine->SetTimingDisplay(frameRate, false, false);
 #ifdef WITH_PYTHON
@@ -627,6 +636,10 @@ bool GPG_Application::initEngine(GHOST_IWindow* window, const int stereoMode)
 
 		m_ketsjiengine->SetUseFixedTime(fixed_framerate);
 		m_ketsjiengine->SetTimingDisplay(frameRate, profile, properties);
+		m_ketsjiengine->SetRestrictAnimationFPS(restrictAnimFPS);
+
+		//set the global settings (carried over if restart/load new files)
+		m_ketsjiengine->SetGlobalSettings(m_globalSettings);
 
 		m_engineInitialized = true;
 	}
@@ -684,9 +697,9 @@ bool GPG_Application::startEngine(void)
 
 		//	if (always_use_expand_framing)
 		//		sceneconverter->SetAlwaysUseExpandFraming(true);
-		if(m_blendermat && (m_startScene->gm.matmode != GAME_MAT_TEXFACE))
+		if(m_blendermat && (m_globalSettings->matmode != GAME_MAT_TEXFACE))
 			m_sceneconverter->SetMaterials(true);
-		if(m_blenderglslmat && (m_startScene->gm.matmode == GAME_MAT_GLSL))
+		if(m_blenderglslmat && (m_globalSettings->matmode == GAME_MAT_GLSL))
 			m_sceneconverter->SetGLSLMaterials(true);
 
 		KX_Scene* startscene = new KX_Scene(m_keyboard,

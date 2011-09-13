@@ -1,5 +1,5 @@
 /*
-* $Id: cdderivedmesh.c 38241 2011-07-08 19:58:02Z nicholasbishop $
+* $Id: cdderivedmesh.c 40147 2011-09-12 04:14:12Z campbellbarton $
 *
 * ***** BEGIN GPL LICENSE BLOCK *****
 *
@@ -843,7 +843,8 @@ static void cdDM_drawFacesTex(DerivedMesh *dm, int (*setDrawOptions)(MTFace *tfa
 	cdDM_drawFacesTex_common(dm, setDrawOptions, NULL, NULL);
 }
 
-static void cdDM_drawMappedFaces(DerivedMesh *dm, int (*setDrawOptions)(void *userData, int index, int *drawSmooth_r), void *userData, int useColors, int (*setMaterial)(int, void *attribs))
+static void cdDM_drawMappedFaces(DerivedMesh *dm, int (*setDrawOptions)(void *userData, int index, int *drawSmooth_r), void *userData, int useColors, int (*setMaterial)(int, void *attribs),
+			int (*compareDrawOptions)(void *userData, int cur_index, int next_index))
 {
 	CDDerivedMesh *cddm = (CDDerivedMesh*) dm;
 	MVert *mv = cddm->mvert;
@@ -958,6 +959,7 @@ static void cdDM_drawMappedFaces(DerivedMesh *dm, int (*setDrawOptions)(void *us
 					MFace *mface= mf + actualFace;
 					int drawSmooth= (mface->flag & ME_SMOOTH);
 					int draw = 1;
+					int flush = 0;
 
 					if(i != tottri-1)
 						next_actualFace= dm->drawObject->triangle_to_mface[i+1];
@@ -972,11 +974,28 @@ static void cdDM_drawMappedFaces(DerivedMesh *dm, int (*setDrawOptions)(void *us
 					/* Goal is to draw as long of a contiguous triangle
 					   array as possible, so draw when we hit either an
 					   invisible triangle or at the end of the array */
-					if(!draw || i == tottri - 1 || mf[actualFace].mat_nr != mf[next_actualFace].mat_nr) {
-						if(prevstart != i)
-							/* Add one to the length (via `draw')
-							   if we're drawing at the end of the array */
-							glDrawArrays(GL_TRIANGLES,prevstart*3, (i-prevstart+draw)*3);
+
+					/* flush buffer if current triangle isn't drawable or it's last triangle... */
+					flush= !draw || i == tottri - 1;
+
+					/* ... or when material setting is dissferent  */
+					flush|= mf[actualFace].mat_nr != mf[next_actualFace].mat_nr;
+
+					if(!flush && compareDrawOptions) {
+						int next_orig= (index==NULL) ? next_actualFace : index[next_actualFace];
+
+						/* also compare draw options and flush buffer if they're different
+						   need for face selection highlight in edit mode */
+						flush|= compareDrawOptions(userData, orig, next_orig) == 0;
+					}
+
+					if(flush) {
+						int first= prevstart*3;
+						int count= (i-prevstart+(draw ? 1 : 0))*3; /* Add one to the length if we're drawing at the end of the array */
+
+						if(count)
+							glDrawArrays(GL_TRIANGLES, first, count);
+
 						prevstart = i + 1;
 					}
 				}
@@ -991,6 +1010,50 @@ static void cdDM_drawMappedFaces(DerivedMesh *dm, int (*setDrawOptions)(void *us
 static void cdDM_drawMappedFacesTex(DerivedMesh *dm, int (*setDrawOptions)(void *userData, int index), void *userData)
 {
 	cdDM_drawFacesTex_common(dm, NULL, setDrawOptions, userData);
+}
+
+static void cddm_draw_attrib_vertex(DMVertexAttribs *attribs, MVert *mvert, int a, int index, int vert, int smoothnormal)
+{
+	int b;
+
+	/* orco texture coordinates */
+	if(attribs->totorco) {
+		if(attribs->orco.glTexco)
+			glTexCoord3fv(attribs->orco.array[index]);
+		else
+			glVertexAttrib3fvARB(attribs->orco.glIndex, attribs->orco.array[index]);
+	}
+
+	/* uv texture coordinates */
+	for(b = 0; b < attribs->tottface; b++) {
+		MTFace *tf = &attribs->tface[b].array[a];
+
+		if(attribs->tface[b].glTexco)
+			glTexCoord2fv(tf->uv[vert]);
+		else
+			glVertexAttrib2fvARB(attribs->tface[b].glIndex, tf->uv[vert]);
+	}
+
+	/* vertex colors */
+	for(b = 0; b < attribs->totmcol; b++) {
+		MCol *cp = &attribs->mcol[b].array[a*4 + vert];
+		GLubyte col[4];
+		col[0]= cp->b; col[1]= cp->g; col[2]= cp->r; col[3]= cp->a;
+		glVertexAttrib4ubvARB(attribs->mcol[b].glIndex, col);
+	}
+
+	/* tangent for normal mapping */
+	if(attribs->tottang) {
+		float *tang = attribs->tang.array[a*4 + vert];
+		glVertexAttrib4fvARB(attribs->tang.glIndex, tang);
+	}
+
+	/* vertex normal */
+	if(smoothnormal)
+		glNormal3sv(mvert[index].no);
+	
+	/* vertex coordinate */
+	glVertex3fv(mvert[index].co);
 }
 
 static void cdDM_drawMappedFacesGLSL(DerivedMesh *dm, int (*setMaterial)(int, void *attribs), int (*setDrawOptions)(void *userData, int index), void *userData)
@@ -1083,37 +1146,14 @@ static void cdDM_drawMappedFacesGLSL(DerivedMesh *dm, int (*setMaterial)(int, vo
 				}
 			}
 
-#define PASSVERT(index, vert) {													\
-		if(attribs.totorco)															\
-			glVertexAttrib3fvARB(attribs.orco.glIndex, attribs.orco.array[index]);	\
-		for(b = 0; b < attribs.tottface; b++) {										\
-			MTFace *tf = &attribs.tface[b].array[a];								\
-			glVertexAttrib2fvARB(attribs.tface[b].glIndex, tf->uv[vert]);			\
-		}																			\
-		for(b = 0; b < attribs.totmcol; b++) {										\
-			MCol *cp = &attribs.mcol[b].array[a*4 + vert];							\
-			GLubyte col[4];															\
-			col[0]= cp->b; col[1]= cp->g; col[2]= cp->r; col[3]= cp->a;				\
-			glVertexAttrib4ubvARB(attribs.mcol[b].glIndex, col);					\
-		}																			\
-		if(attribs.tottang) {														\
-			float *tang = attribs.tang.array[a*4 + vert];							\
-			glVertexAttrib4fvARB(attribs.tang.glIndex, tang);						\
-		}																			\
-		if(smoothnormal)															\
-			glNormal3sv(mvert[index].no);											\
-		glVertex3fv(mvert[index].co);												\
-	}
+			cddm_draw_attrib_vertex(&attribs, mvert, a, mface->v1, 0, smoothnormal);
+			cddm_draw_attrib_vertex(&attribs, mvert, a, mface->v2, 1, smoothnormal);
+			cddm_draw_attrib_vertex(&attribs, mvert, a, mface->v3, 2, smoothnormal);
 
-			PASSVERT(mface->v1, 0);
-			PASSVERT(mface->v2, 1);
-			PASSVERT(mface->v3, 2);
 			if(mface->v4)
-				PASSVERT(mface->v4, 3)
+				cddm_draw_attrib_vertex(&attribs, mvert, a, mface->v4, 3, smoothnormal);
 			else
-				PASSVERT(mface->v3, 2)
-
-#undef PASSVERT
+				cddm_draw_attrib_vertex(&attribs, mvert, a, mface->v3, 2, smoothnormal);
 		}
 		glEnd();
 	}
@@ -1287,6 +1327,7 @@ static void cdDM_drawMappedFacesGLSL(DerivedMesh *dm, int (*setMaterial)(int, vo
 						QUATCOPY((float *)&varray[elementsize*curface*3+offset+elementsize*2], tang);
 						offset += sizeof(float)*4;
 					}
+					(void)offset;
 				}
 				curface++;
 				if(mface->v4) {
@@ -1327,6 +1368,7 @@ static void cdDM_drawMappedFacesGLSL(DerivedMesh *dm, int (*setMaterial)(int, vo
 							QUATCOPY((float *)&varray[elementsize*curface*3+offset+elementsize*2], tang);
 							offset += sizeof(float)*4;
 						}
+						(void)offset;
 					}
 					curface++;
 					i++;
@@ -1811,7 +1853,7 @@ void CDDM_apply_vert_normals(DerivedMesh *dm, short (*vertNormals)[3])
 	cddm->mvert = vert;
 
 	for(i = 0; i < dm->numVertData; ++i, ++vert)
-		VECCOPY(vert->no, vertNormals[i]);
+		copy_v3_v3_short(vert->no, vertNormals[i]);
 }
 
 void CDDM_calc_normals(DerivedMesh *dm)

@@ -1,13 +1,13 @@
 K 25
 svn:wc:ra_dav:version-url
 V 74
-/svnroot/bf-blender/!svn/ver/38464/trunk/blender/release/scripts/templates
+/svnroot/bf-blender/!svn/ver/39604/trunk/blender/release/scripts/templates
 END
 operator_modal_view3d.py
 K 25
 svn:wc:ra_dav:version-url
 V 99
-/svnroot/bf-blender/!svn/ver/34788/trunk/blender/release/scripts/templates/operator_modal_view3d.py
+/svnroot/bf-blender/!svn/ver/39563/trunk/blender/release/scripts/templates/operator_modal_view3d.py
 END
 gamelogic_basic.py
 K 25
@@ -25,7 +25,7 @@ operator_export.py
 K 25
 svn:wc:ra_dav:version-url
 V 93
-/svnroot/bf-blender/!svn/ver/36710/trunk/blender/release/scripts/templates/operator_export.py
+/svnroot/bf-blender/!svn/ver/39604/trunk/blender/release/scripts/templates/operator_export.py
 END
 gamelogic_module.py
 K 25
@@ -33,11 +33,17 @@ svn:wc:ra_dav:version-url
 V 94
 /svnroot/bf-blender/!svn/ver/34495/trunk/blender/release/scripts/templates/gamelogic_module.py
 END
+ui_menu.py
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svnroot/bf-blender/!svn/ver/38804/trunk/blender/release/scripts/templates/ui_menu.py
+END
 operator_simple.py
 K 25
 svn:wc:ra_dav:version-url
 V 93
-/svnroot/bf-blender/!svn/ver/34788/trunk/blender/release/scripts/templates/operator_simple.py
+/svnroot/bf-blender/!svn/ver/39604/trunk/blender/release/scripts/templates/operator_simple.py
 END
 operator_uv.py
 K 25
@@ -45,23 +51,23 @@ svn:wc:ra_dav:version-url
 V 89
 /svnroot/bf-blender/!svn/ver/34788/trunk/blender/release/scripts/templates/operator_uv.py
 END
+ui_panel_simple.py
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svnroot/bf-blender/!svn/ver/38720/trunk/blender/release/scripts/templates/ui_panel_simple.py
+END
 operator_modal_timer.py
 K 25
 svn:wc:ra_dav:version-url
 V 98
-/svnroot/bf-blender/!svn/ver/35928/trunk/blender/release/scripts/templates/operator_modal_timer.py
+/svnroot/bf-blender/!svn/ver/39248/trunk/blender/release/scripts/templates/operator_modal_timer.py
 END
 operator_modal.py
 K 25
 svn:wc:ra_dav:version-url
 V 92
-/svnroot/bf-blender/!svn/ver/35223/trunk/blender/release/scripts/templates/operator_modal.py
-END
-panel_simple.py
-K 25
-svn:wc:ra_dav:version-url
-V 90
-/svnroot/bf-blender/!svn/ver/34889/trunk/blender/release/scripts/templates/panel_simple.py
+/svnroot/bf-blender/!svn/ver/39247/trunk/blender/release/scripts/templates/operator_modal.py
 END
 background_job.py
 K 25
@@ -69,29 +75,35 @@ svn:wc:ra_dav:version-url
 V 92
 /svnroot/bf-blender/!svn/ver/36090/trunk/blender/release/scripts/templates/background_job.py
 END
+ui_menu_simple.py
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svnroot/bf-blender/!svn/ver/38750/trunk/blender/release/scripts/templates/ui_menu_simple.py
+END
 operator_mesh_add.py
 K 25
 svn:wc:ra_dav:version-url
 V 95
-/svnroot/bf-blender/!svn/ver/36710/trunk/blender/release/scripts/templates/operator_mesh_add.py
+/svnroot/bf-blender/!svn/ver/39563/trunk/blender/release/scripts/templates/operator_mesh_add.py
 END
 batch_export.py
 K 25
 svn:wc:ra_dav:version-url
 V 90
-/svnroot/bf-blender/!svn/ver/38464/trunk/blender/release/scripts/templates/batch_export.py
+/svnroot/bf-blender/!svn/ver/38804/trunk/blender/release/scripts/templates/batch_export.py
 END
 addon_add_object.py
 K 25
 svn:wc:ra_dav:version-url
 V 94
-/svnroot/bf-blender/!svn/ver/35679/trunk/blender/release/scripts/templates/addon_add_object.py
+/svnroot/bf-blender/!svn/ver/39563/trunk/blender/release/scripts/templates/addon_add_object.py
 END
 operator_modal_draw.py
 K 25
 svn:wc:ra_dav:version-url
 V 97
-/svnroot/bf-blender/!svn/ver/34788/trunk/blender/release/scripts/templates/operator_modal_draw.py
+/svnroot/bf-blender/!svn/ver/39170/trunk/blender/release/scripts/templates/operator_modal_draw.py
 END
 gamelogic.py
 K 25

@@ -1,7 +1,7 @@
 K 25
 svn:wc:ra_dav:version-url
 V 77
-/svnroot/bf-extensions/!svn/ver/2118/trunk/py/scripts/addons/system_demo_mode
+/svnroot/bf-extensions/!svn/ver/2317/trunk/py/scripts/addons/system_demo_mode
 END
 demo_mode.py
 K 25
@@ -13,7 +13,7 @@ __init__.py
 K 25
 svn:wc:ra_dav:version-url
 V 89
-/svnroot/bf-extensions/!svn/ver/2116/trunk/py/scripts/addons/system_demo_mode/__init__.py
+/svnroot/bf-extensions/!svn/ver/2317/trunk/py/scripts/addons/system_demo_mode/__init__.py
 END
 config.py
 K 25

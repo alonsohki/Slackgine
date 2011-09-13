@@ -1,7 +1,7 @@
 K 25
 svn:wc:ra_dav:version-url
 V 71
-/svnroot/bf-blender/!svn/ver/38232/trunk/blender/intern/iksolver/intern
+/svnroot/bf-blender/!svn/ver/39893/trunk/blender/intern/iksolver/intern
 END
 IK_QJacobian.h
 K 25
@@ -25,7 +25,7 @@ IK_QSegment.cpp
 K 25
 svn:wc:ra_dav:version-url
 V 87
-/svnroot/bf-blender/!svn/ver/37836/trunk/blender/intern/iksolver/intern/IK_QSegment.cpp
+/svnroot/bf-blender/!svn/ver/39893/trunk/blender/intern/iksolver/intern/IK_QSegment.cpp
 END
 IK_QTask.cpp
 K 25

@@ -67,6 +67,7 @@ set(SRC
 	intern/wm_window.c
 
 	WM_api.h
+	WM_keymap.h
 	WM_types.h
 	wm.h
 	wm_cursors.h
@@ -129,7 +130,7 @@ if(APPLE)
 endif()
 
 if(WITH_BUILDINFO)
-	add_definitions(-DNAN_BUILDINFO)
+	add_definitions(-DWITH_BUILDINFO)
 endif()
 
 blender_add_lib_nolist(bf_windowmanager "${SRC}" "${INC}" "${INC_SYS}")

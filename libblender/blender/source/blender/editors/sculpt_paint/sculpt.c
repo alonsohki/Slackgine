@@ -1,5 +1,5 @@
 /*
- * $Id: sculpt.c 37386 2011-06-10 20:59:48Z jwilkins $
+ * $Id: sculpt.c 40147 2011-09-12 04:14:12Z campbellbarton $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -48,6 +48,7 @@
 #include "BLI_rand.h"
 
 #include "DNA_meshdata_types.h"
+#include "DNA_node_types.h"
 #include "DNA_object_types.h"
 #include "DNA_scene_types.h"
 #include "DNA_brush_types.h"
@@ -2979,7 +2980,7 @@ static void sculpt_update_brush_delta(Sculpt *sd, Object *ob, Brush *brush)
 		 SCULPT_TOOL_GRAB, SCULPT_TOOL_NUDGE,
 		 SCULPT_TOOL_CLAY_TUBES, SCULPT_TOOL_SNAKE_HOOK,
 		 SCULPT_TOOL_THUMB)) {
-		float grab_location[3], imat[4][4], delta[3];
+		float grab_location[3], imat[4][4], delta[3], loc[3];
 
 		if(cache->first_time) {
 			copy_v3_v3(cache->orig_grab_location,
@@ -2989,10 +2990,8 @@ static void sculpt_update_brush_delta(Sculpt *sd, Object *ob, Brush *brush)
 			add_v3_v3(cache->true_location, cache->grab_delta);
 
 		/* compute 3d coordinate at same z from original location + mouse */
-		initgrabz(cache->vc->rv3d,
-			  cache->orig_grab_location[0],
-			  cache->orig_grab_location[1],
-			  cache->orig_grab_location[2]);
+		mul_v3_m4v3(loc, ob->obmat, cache->orig_grab_location);
+		initgrabz(cache->vc->rv3d, loc[0], loc[1], loc[2]);
 
 		ED_view3d_win_to_delta(cache->vc->ar, cache->mouse, grab_location);
 
@@ -3088,9 +3087,6 @@ static void sculpt_update_cache_variants(bContext *C, Sculpt *sd, Object *ob, st
 		else {
 			cache->initial_radius= brush_unprojected_radius(brush);
 		}
-
-		if (ELEM(brush->sculpt_tool, SCULPT_TOOL_GRAB, SCULPT_TOOL_SNAKE_HOOK))
-			cache->initial_radius *= 2.0f;
 	}
 
 	if(brush_use_size_pressure(brush)) {
@@ -3278,7 +3274,7 @@ static void sculpt_brush_init_tex(Sculpt *sd, SculptSession *ss)
 
 	/* init mtex nodes */
 	if(mtex->tex && mtex->tex->nodetree)
-		ntreeBeginExecTree(mtex->tex->nodetree); /* has internal flag to detect it only does it once */
+		ntreeTexBeginExecTree(mtex->tex->nodetree, 1); /* has internal flag to detect it only does it once */
 
 	/* TODO: Shouldn't really have to do this at the start of every
 	   stroke, but sculpt would need some sort of notification when
@@ -3334,7 +3330,7 @@ static void sculpt_restore_mesh(Sculpt *sd, SculptSession *ss)
 
 				BLI_pbvh_vertex_iter_begin(ss->pbvh, nodes[n], vd, PBVH_ITER_UNIQUE) {
 					copy_v3_v3(vd.co, unode->co[vd.i]);
-					if(vd.no) VECCOPY(vd.no, unode->no[vd.i])
+					if(vd.no) copy_v3_v3_short(vd.no, unode->no[vd.i]);
 					else normal_short_to_float_v3(vd.fno, unode->no[vd.i]);
 
 					if(vd.mvert) vd.mvert->flag |= ME_VERT_PBVH_UPDATE;
@@ -3459,7 +3455,7 @@ static void sculpt_brush_exit_tex(Sculpt *sd)
 	MTex *mtex= &brush->mtex;
 
 	if(mtex->tex && mtex->tex->nodetree)
-		ntreeEndExecTree(mtex->tex->nodetree);
+		ntreeTexEndExecTree(mtex->tex->nodetree->execdata, 1);
 }
 
 static void sculpt_stroke_done(bContext *C, struct PaintStroke *UNUSED(stroke))

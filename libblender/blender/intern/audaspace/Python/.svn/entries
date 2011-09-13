@@ -1,15 +1,15 @@
 10
 
 dir
-38518
+40188
 https://svn.blender.org/svnroot/bf-blender/trunk/blender/intern/audaspace/Python
 https://svn.blender.org/svnroot/bf-blender
 
 
 
-2011-04-15T01:32:37.741024Z
-36174
-campbellbarton
+2011-08-30T09:15:55.930526Z
+39792
+nexyon
 
 
 
@@ -32,11 +32,11 @@ file
 
 
 
-2011-07-19T21:16:19.000000Z
-0f48bd1feaa6db11f0274591790bedc1
-2011-02-25T10:21:56.373241Z
-35141
-jesterking
+2011-09-13T17:04:18.798754Z
+def1d37d44e0a014eececa2e47090032
+2011-08-30T09:15:55.930526Z
+39792
+nexyon
 has-props
 
 
@@ -58,7 +58,7 @@ has-props
 
 
 
-1579
+1779
 
 AUD_PyAPI.cpp
 file
@@ -66,11 +66,11 @@ file
 
 
 
-2011-07-19T21:16:19.000000Z
-3f6bcca53e58731e3020fc199ddfa778
-2011-04-15T01:32:37.741024Z
-36174
-campbellbarton
+2011-09-13T17:04:18.798754Z
+d3fd1124a4b44a6a5a678c8869d91518
+2011-08-30T09:15:55.930526Z
+39792
+nexyon
 has-props
 
 
@@ -92,5 +92,5 @@ has-props
 
 
 
-70157
+73752
 

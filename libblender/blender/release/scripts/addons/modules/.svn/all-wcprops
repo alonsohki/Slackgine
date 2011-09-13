@@ -1,7 +1,7 @@
 K 25
 svn:wc:ra_dav:version-url
 V 68
-/svnroot/bf-extensions/!svn/ver/2117/trunk/py/scripts/addons/modules
+/svnroot/bf-extensions/!svn/ver/2315/trunk/py/scripts/addons/modules
 END
 add_utils.py
 K 25
@@ -13,7 +13,7 @@ geometry_utils.py
 K 25
 svn:wc:ra_dav:version-url
 V 86
-/svnroot/bf-extensions/!svn/ver/2115/trunk/py/scripts/addons/modules/geometry_utils.py
+/svnroot/bf-extensions/!svn/ver/2257/trunk/py/scripts/addons/modules/geometry_utils.py
 END
 constants_utils.py
 K 25

@@ -1,13 +1,13 @@
 K 25
 svn:wc:ra_dav:version-url
 V 70
-/svnroot/bf-extensions/!svn/ver/2116/trunk/py/scripts/addons/netrender
+/svnroot/bf-extensions/!svn/ver/2230/trunk/py/scripts/addons/netrender
 END
 master.py
 K 25
 svn:wc:ra_dav:version-url
 V 80
-/svnroot/bf-extensions/!svn/ver/2116/trunk/py/scripts/addons/netrender/master.py
+/svnroot/bf-extensions/!svn/ver/2230/trunk/py/scripts/addons/netrender/master.py
 END
 __init__.py
 K 25
@@ -19,7 +19,7 @@ utils.py
 K 25
 svn:wc:ra_dav:version-url
 V 79
-/svnroot/bf-extensions/!svn/ver/2116/trunk/py/scripts/addons/netrender/utils.py
+/svnroot/bf-extensions/!svn/ver/2166/trunk/py/scripts/addons/netrender/utils.py
 END
 model.py
 K 25
@@ -49,13 +49,13 @@ operators.py
 K 25
 svn:wc:ra_dav:version-url
 V 83
-/svnroot/bf-extensions/!svn/ver/2116/trunk/py/scripts/addons/netrender/operators.py
+/svnroot/bf-extensions/!svn/ver/2221/trunk/py/scripts/addons/netrender/operators.py
 END
 client.py
 K 25
 svn:wc:ra_dav:version-url
 V 80
-/svnroot/bf-extensions/!svn/ver/2116/trunk/py/scripts/addons/netrender/client.py
+/svnroot/bf-extensions/!svn/ver/2166/trunk/py/scripts/addons/netrender/client.py
 END
 balancing.py
 K 25

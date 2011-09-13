@@ -140,6 +140,7 @@ set(SRC
 	intern/smoke.c
 	intern/softbody.c
 	intern/sound.c
+	intern/speaker.c
 	intern/subsurf_ccg.c
 	intern/suggestions.c
 	intern/text.c
@@ -220,6 +221,7 @@ set(SRC
 	BKE_smoke.h
 	BKE_softbody.h
 	BKE_sound.h
+	BKE_speaker.h
 	BKE_subsurf.h
 	BKE_suggestions.h
 	BKE_text.h
@@ -277,6 +279,10 @@ endif()
 
 if(WITH_IMAGE_CINEON)
 	add_definitions(-DWITH_CINEON)
+endif()
+
+if(WITH_IMAGE_FRAMESERVER)
+	add_definitions(-DWITH_FRAMESERVER)
 endif()
 
 if(WITH_IMAGE_HDR)
@@ -345,6 +351,16 @@ if(WITH_LZMA)
 		../../../extern/lzma
 	)
 	add_definitions(-DWITH_LZMA)
+endif()
+
+if(WITH_GAMEENGINE)
+	list(APPEND INC_SYS
+        ../../../extern/recastnavigation/Recast/Include
+	)
+	list(APPEND SRC
+		intern/navmesh_conversion.cpp
+		BKE_navmesh_conversion.h
+	)
 endif()
 
 if(MSVC)

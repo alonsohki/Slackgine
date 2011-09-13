@@ -1,5 +1,5 @@
 /*
-* $Id: MOD_mask.c 37467 2011-06-14 04:19:00Z campbellbarton $
+* $Id: MOD_mask.c 39342 2011-08-12 18:11:22Z blendix $
 *
 * ***** BEGIN GPL LICENSE BLOCK *****
 *
@@ -407,4 +407,5 @@ ModifierTypeInfo modifierType_Mask = {
 	/* dependsOnNormals */	NULL,
 	/* foreachObjectLink */ foreachObjectLink,
 	/* foreachIDLink */     NULL,
+	/* foreachTexLink */    NULL,
 };

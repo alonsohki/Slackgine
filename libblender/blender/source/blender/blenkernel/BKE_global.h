@@ -1,5 +1,5 @@
 /*
- * $Id: BKE_global.h 37098 2011-06-02 12:44:59Z elubie $ 
+ * $Id: BKE_global.h 39960 2011-09-06 07:59:18Z nazgul $ 
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -92,9 +92,6 @@ typedef struct Global {
     
 	/* save the allowed windowstate of blender when using -W or -w */
 	int windowstate;
-
-	/* ndof device found ? */
-	int ndofdevice;
 } Global;
 
 /* **************** GLOBAL ********************* */
@@ -114,7 +111,7 @@ typedef struct Global {
 #define G_SCRIPT_OVERRIDE_PREF (1 << 14) /* when this flag is set ignore the userprefs */
 
 /* #define G_NOFROZEN	(1 << 17) also removed */
-#define G_GREASEPENCIL 	(1 << 17)
+/* #define G_GREASEPENCIL 	(1 << 17)   also removed */
 
 /* #define G_AUTOMATKEYS	(1 << 30)   also removed */
 
@@ -174,5 +171,3 @@ extern Global G;
 #endif
 	
 #endif
-
-

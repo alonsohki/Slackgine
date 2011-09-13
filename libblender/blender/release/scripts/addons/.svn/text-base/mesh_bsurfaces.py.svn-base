@@ -53,21 +53,15 @@ class VIEW3D_PT_tools_SURF_SKETCH(bpy.types.Panel):
         layout = self.layout
         
         scn = context.scene
-        ob = context.object
         
         col = layout.column(align=True)
-        row = layout.row()
-        row.separator()
         col.operator("gpencil.surfsk_add_surface", text="Add Surface")
         col.prop(scn, "SURFSK_edges_U")
         col.prop(scn, "SURFSK_edges_V")
-        row.separator()
-        col.prop(scn, "SURFSK_keep_strokes")
-        col.separator()
-        row.separator()
-        col.operator("gpencil.surfsk_strokes_to_curves", text="Strokes to curves")
         
-
+        layout.prop(scn, "SURFSK_keep_strokes")
+        layout.operator("gpencil.surfsk_strokes_to_curves", text="Strokes to curves")
+        
 
 class GPENCIL_OT_SURFSK_add_surface(bpy.types.Operator):
     bl_idname = "gpencil.surfsk_add_surface"
@@ -113,15 +107,15 @@ class GPENCIL_OT_SURFSK_add_surface(bpy.types.Operator):
     
     #### Calculates length of a chain of points.
     def get_chain_length(self, object, verts_ordered):
-        matrix = object.matrix_world
+        matrix = object.matrix_world.copy()
         
         edges_lengths = []
         edges_lengths_sum = 0
         for i in range(0, len(verts_ordered)):
             if i == 0:
-                prev_v_co = verts_ordered[i].co * matrix
+                prev_v_co = matrix * verts_ordered[i].co
             else:
-                v_co = verts_ordered[i].co * matrix
+                v_co = matrix * verts_ordered[i].co
                 
                 v_difs = [prev_v_co[0] - v_co[0], prev_v_co[1] - v_co[1], prev_v_co[2] - v_co[2]]
                 edge_length = abs(sqrt(v_difs[0] * v_difs[0] + v_difs[1] * v_difs[1] + v_difs[2] * v_difs[2]))
@@ -334,11 +328,11 @@ class GPENCIL_OT_SURFSK_add_surface(bpy.types.Operator):
             points_B = []
             points_first_stroke_tips = []
             
-            points_A.append(self.main_object.data.vertices[verts_tips_parsed_idx[0]].co * self.main_object.matrix_world)
-            points_A.append(self.main_object.data.vertices[middle_vertex_idx].co * self.main_object.matrix_world)
+            points_A.append(self.main_object.matrix_world * self.main_object.data.vertices[verts_tips_parsed_idx[0]].co)
+            points_A.append(self.main_object.matrix_world * self.main_object.data.vertices[middle_vertex_idx].co)
             
-            points_B.append(self.main_object.data.vertices[verts_tips_parsed_idx[1]].co * self.main_object.matrix_world)
-            points_B.append(self.main_object.data.vertices[middle_vertex_idx].co * self.main_object.matrix_world)
+            points_B.append(self.main_object.matrix_world * self.main_object.data.vertices[verts_tips_parsed_idx[1]].co)
+            points_B.append(self.main_object.matrix_world * self.main_object.data.vertices[middle_vertex_idx].co)
             
             points_first_stroke_tips.append(ob_gp_strokes.data.splines[0].bezier_points[0].co)
             points_first_stroke_tips.append(ob_gp_strokes.data.splines[0].bezier_points[len(ob_gp_strokes.data.splines[0].bezier_points) - 1].co)
@@ -363,7 +357,7 @@ class GPENCIL_OT_SURFSK_add_surface(bpy.types.Operator):
             prev_dist = 999999999999
             for i in range(0, len(verts_tips_same_chain_idx)):
                 for v_idx in range(0, len(verts_tips_same_chain_idx[i])):
-                    dist = self.pts_distance(first_sketched_point_first_stroke_co, self.main_object.data.vertices[verts_tips_same_chain_idx[i][v_idx]].co * self.main_object.matrix_world)
+                    dist = self.pts_distance(first_sketched_point_first_stroke_co, self.main_object.matrix_world * self.main_object.data.vertices[verts_tips_same_chain_idx[i][v_idx]].co)
                     if dist < prev_dist:
                         prev_dist = dist
                         
@@ -379,7 +373,7 @@ class GPENCIL_OT_SURFSK_add_surface(bpy.types.Operator):
             prev_dist = 999999999999
             for i in range(0, len(verts_tips_same_chain_idx)):
                 for v_idx in range(0, len(verts_tips_same_chain_idx[i])):
-                    dist = self.pts_distance(last_sketched_point_first_stroke_co, self.main_object.data.vertices[verts_tips_same_chain_idx[i][v_idx]].co  * self.main_object.matrix_world)
+                    dist = self.pts_distance(last_sketched_point_first_stroke_co, self.main_object.matrix_world * self.main_object.data.vertices[verts_tips_same_chain_idx[i][v_idx]].co)
                     if dist < prev_dist:
                         prev_dist = dist
                         
@@ -391,7 +385,7 @@ class GPENCIL_OT_SURFSK_add_surface(bpy.types.Operator):
             prev_dist = 999999999999
             for i in range(0, len(verts_tips_same_chain_idx)):
                 for v_idx in range(0, len(verts_tips_same_chain_idx[i])):
-                    dist = self.pts_distance(first_sketched_point_last_stroke_co, self.main_object.data.vertices[verts_tips_same_chain_idx[i][v_idx]].co * self.main_object.matrix_world)
+                    dist = self.pts_distance(first_sketched_point_last_stroke_co, self.main_object.matrix_world * self.main_object.data.vertices[verts_tips_same_chain_idx[i][v_idx]].co)
                     if dist < prev_dist:
                         prev_dist = dist
                         
@@ -405,7 +399,7 @@ class GPENCIL_OT_SURFSK_add_surface(bpy.types.Operator):
             # Determine if the single selection will be treated as U or as V.
             edges_sum = 0
             for i in all_selected_edges_idx:
-                edges_sum += self.pts_distance(self.main_object.data.vertices[self.main_object.data.edges[i].vertices[0]].co  * self.main_object.matrix_world, self.main_object.data.vertices[self.main_object.data.edges[i].vertices[1]].co * self.main_object.matrix_world)
+                edges_sum += self.pts_distance(self.main_object.matrix_world * self.main_object.data.vertices[self.main_object.data.edges[i].vertices[0]].co, self.main_object.matrix_world * self.main_object.data.vertices[self.main_object.data.edges[i].vertices[1]].co)
             
             average_edge_length = edges_sum / len(all_selected_edges_idx)
             
@@ -430,8 +424,8 @@ class GPENCIL_OT_SURFSK_add_surface(bpy.types.Operator):
                 selection_U_exists = True
                 selection_V_exists = False
                 
-                points_tips.append(self.main_object.data.vertices[verts_tips_same_chain_idx[nearest_tip_first_st_first_pt_idx][0]].co * self.main_object.matrix_world)
-                points_tips.append(self.main_object.data.vertices[verts_tips_same_chain_idx[nearest_tip_first_st_first_pt_idx][1]].co * self.main_object.matrix_world)
+                points_tips.append(self.main_object.matrix_world * self.main_object.data.vertices[verts_tips_same_chain_idx[nearest_tip_first_st_first_pt_idx][0]].co)
+                points_tips.append(self.main_object.matrix_world * self.main_object.data.vertices[verts_tips_same_chain_idx[nearest_tip_first_st_first_pt_idx][1]].co)
                 
                 points_first_stroke_tips.append(ob_gp_strokes.data.splines[0].bezier_points[0].co)
                 points_first_stroke_tips.append(ob_gp_strokes.data.splines[0].bezier_points[len(ob_gp_strokes.data.splines[0].bezier_points) - 1].co)
@@ -565,7 +559,7 @@ class GPENCIL_OT_SURFSK_add_surface(bpy.types.Operator):
         if selection_type == "TWO_NOT_CONNECTED":
             if selection_U2_exists:
                 for i in range(0, len(sketched_splines_parsed[len(sketched_splines_parsed) - 1])):
-                    sketched_splines_parsed[len(sketched_splines_parsed) - 1][i] = verts_ordered_U2[i].co * self.main_object.matrix_world
+                    sketched_splines_parsed[len(sketched_splines_parsed) - 1][i] = self.main_object.matrix_world * verts_ordered_U2[i].co
                 
         
         #### Create temporary curves along the "control-points" found on the sketched curves and the mesh selection.
@@ -582,7 +576,7 @@ class GPENCIL_OT_SURFSK_add_surface(bpy.types.Operator):
             if selection_U_exists:
                 ob_ctrl_pts.data.vertices.add(1)
                 last_v = ob_ctrl_pts.data.vertices[len(ob_ctrl_pts.data.vertices) - 1]
-                last_v.co = verts_ordered_U[i].co * self.main_object.matrix_world
+                last_v.co = self.main_object.matrix_world * verts_ordered_U[i].co
                 
                 vert_num_in_spline += 1
                 
@@ -675,12 +669,12 @@ class GPENCIL_OT_SURFSK_add_surface(bpy.types.Operator):
         # Set the first and last verts of each spline to the locations of the respective verts in the selections.
         if selection_V_exists:
             for i in range(0, len(surface_splines_parsed[0])):
-                surface_splines_parsed[len(surface_splines_parsed) - 1][i] = verts_ordered_V[i].co * self.main_object.matrix_world
+                surface_splines_parsed[len(surface_splines_parsed) - 1][i] = self.main_object.matrix_world * verts_ordered_V[i].co
         
         if selection_type == "TWO_NOT_CONNECTED":
             if selection_V2_exists:
                 for i in range(0, len(surface_splines_parsed[0])):
-                    surface_splines_parsed[0][i] = verts_ordered_V2[i].co * self.main_object.matrix_world
+                    surface_splines_parsed[0][i] = self.main_object.matrix_world * verts_ordered_V2[i].co
         
         
         #### Delete object with control points and object from grease pencil convertion.
@@ -828,8 +822,10 @@ def register():
     bpy.types.Scene.SURFSK_precision = bpy.props.IntProperty(name="Precision", description="Precision level of the surface calculation", default=4, min=0, max=100000)
     bpy.types.Scene.SURFSK_keep_strokes = bpy.props.BoolProperty(name="Keep strokes", description="Keeps the sketched strokes after adding the surface", default=False)
 
-    keymap_item_add_surf = bpy.data.window_managers[0].keyconfigs.active.keymaps["3D View"].keymap_items.new("gpencil.surfsk_add_surface","E","PRESS", key_modifier="D")
-    keymap_item_stroke_to_curve = bpy.data.window_managers[0].keyconfigs.active.keymaps["3D View"].keymap_items.new("gpencil.surfsk_strokes_to_curves","C","PRESS", key_modifier="D")
+    kc = bpy.context.window_manager.keyconfigs.addon
+    km = kc.keymaps.new(name="3D View", space_type="VIEW_3D")
+    keymap_item_add_surf = km.keymap_items.new("gpencil.surfsk_add_surface","E","PRESS", key_modifier="D")
+    keymap_item_stroke_to_curve = km.keymap_items.new("gpencil.surfsk_strokes_to_curves","C","PRESS", key_modifier="D")
     
 
 def unregister():
@@ -842,7 +838,8 @@ def unregister():
     del bpy.types.Scene.SURFSK_precision
     del bpy.types.Scene.SURFSK_keep_strokes
     
-    km = bpy.data.window_managers[0].keyconfigs.active.keymaps["3D View"]
+    kc = bpy.context.window_manager.keyconfigs.addon
+    km = kc.keymaps["3D View"]
     for kmi in km.keymap_items:
         if kmi.idname == 'wm.call_menu':
             if kmi.properties.name == "GPENCIL_OT_SURFSK_add_surface":

@@ -1,5 +1,5 @@
 # -*- mode: cmake; indent-tabs-mode: t; -*-
-# $Id: CMakeLists.txt 38409 2011-07-15 04:01:47Z campbellbarton $
+# $Id: CMakeLists.txt 40085 2011-09-10 03:42:45Z campbellbarton $
 # ***** BEGIN GPL LICENSE BLOCK *****
 #
 # This program is free software; you can redistribute it and/or
@@ -24,9 +24,6 @@
 # Contributor(s): Jacques Beaurain.
 #
 # ***** END GPL LICENSE BLOCK *****
-
-# So BUILDINFO and BLENDERPATH strings are automatically quoted
-cmake_policy(SET CMP0005 NEW)
 
 setup_libdirs()
 
@@ -136,6 +133,7 @@ if(WIN32 AND NOT UNIX)
 endif()
 
 if(WITH_BUILDINFO)
+	add_definitions(-DWITH_BUILDINFO)
 	# --------------------------------------------------------------------------
 	# These defines could all be moved into the header below
 	string(REPLACE " " "\ " BUILDINFO_CFLAGS "${CMAKE_C_FLAGS}")
@@ -547,11 +545,11 @@ elseif(WIN32)
 	if(WITH_CODEC_FFMPEG)
 		install(
 			FILES
-				${LIBDIR}/ffmpeg/lib/avcodec-52.dll
-				${LIBDIR}/ffmpeg/lib/avformat-52.dll
-				${LIBDIR}/ffmpeg/lib/avdevice-52.dll
-				${LIBDIR}/ffmpeg/lib/avutil-50.dll
-				${LIBDIR}/ffmpeg/lib/swscale-0.dll
+				${LIBDIR}/ffmpeg/lib/avcodec-53.dll
+				${LIBDIR}/ffmpeg/lib/avformat-53.dll
+				${LIBDIR}/ffmpeg/lib/avdevice-53.dll
+				${LIBDIR}/ffmpeg/lib/avutil-51.dll
+				${LIBDIR}/ffmpeg/lib/swscale-2.dll
 			DESTINATION ${TARGETDIR}
 		)
 
@@ -720,7 +718,6 @@ if(WITH_MOD_FLUID)
 	list(APPEND BLENDER_LINK_LIBS bf_intern_elbeem)
 endif()
 
-
 #if(UNIX)
 	# Sort libraries
 	set(BLENDER_SORTED_LIBS
@@ -800,6 +797,7 @@ endif()
 		bf_intern_smoke
 		extern_minilzo
 		extern_lzma
+		extern_recastnavigation
 		ge_logic_ketsji
 		ge_phys_common
 		ge_logic
@@ -821,6 +819,8 @@ endif()
 		bf_blenfont
 		bf_intern_audaspace
 		bf_intern_mikktspace
+		extern_recastnavigation
+		bf_editor_util          # --- BAD LEVEL CALL HERE --- XXX, this should be removed before release!
 	)
 
 	if(WITH_MOD_CLOTH_ELTOPO)

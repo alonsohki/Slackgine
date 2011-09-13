@@ -68,17 +68,82 @@ x3d_names_reserved = {'Anchor', 'Appearance', 'Arc2D', 'ArcClose2D', 'AudioClip'
                       'TriangleFanSet', 'TriangleSet', 'TriangleSet2D', 'TriangleStripSet', 'Viewpoint', 'VisibilitySensor',
                       'WorldInfo', 'X3D', 'XvlShell', 'VertexShader', 'FragmentShader', 'MultiShaderAppearance', 'ShaderAppearance'}
 
+# h3d defines
+H3D_TOP_LEVEL = 'TOP_LEVEL_TI'
+H3D_VIEW_MATRIX = 'view_matrix'
+
 
 def clamp_color(col):
     return tuple([max(min(c, 1.0), 0.0) for c in col])
 
 
 def matrix_direction_neg_z(matrix):
-    return (mathutils.Vector((0.0, 0.0, -1.0)) * matrix.to_3x3()).normalized()[:]
+    return (matrix.to_3x3() * mathutils.Vector((0.0, 0.0, -1.0))).normalized()[:]
 
 
 def prefix_quoted_str(value, prefix):
     return value[0] + prefix + value[1:]
+
+
+def suffix_quoted_str(value, suffix):
+    return value[:-1] + suffix + value[-1:]
+
+
+def clean_def(str):
+    # see report [#28256]
+    if not str:
+        str = "None"
+    # no digit start
+    if str[0] in "1234567890+-":
+        str = "_" + str
+    return str.translate({  # control characters 0x0-0x1f
+                            # 0x00: "_",
+                          0x01: "_",
+                          0x02: "_",
+                          0x03: "_",
+                          0x04: "_",
+                          0x05: "_",
+                          0x06: "_",
+                          0x07: "_",
+                          0x08: "_",
+                          0x09: "_",
+                          0x0a: "_",
+                          0x0b: "_",
+                          0x0c: "_",
+                          0x0d: "_",
+                          0x0e: "_",
+                          0x0f: "_",
+                          0x10: "_",
+                          0x11: "_",
+                          0x12: "_",
+                          0x13: "_",
+                          0x14: "_",
+                          0x15: "_",
+                          0x16: "_",
+                          0x17: "_",
+                          0x18: "_",
+                          0x19: "_",
+                          0x1a: "_",
+                          0x1b: "_",
+                          0x1c: "_",
+                          0x1d: "_",
+                          0x1e: "_",
+                          0x1f: "_",
+
+                          0x7f: "_",  # 127
+
+                          0x20: "_",  # space
+                          0x22: "_",  # "
+                          0x27: "_",  # '
+                          0x23: "_",  # #
+                          0x2c: "_",  # ,
+                          0x2e: "_",  # .
+                          0x5b: "_",  # [
+                          0x5d: "_",  # ]
+                          0x5c: "_",  # \
+                          0x7b: "_",  # {
+                          0x7d: "_",  # }
+                          })
 
 
 def build_hierarchy(objects):
@@ -99,28 +164,38 @@ def build_hierarchy(objects):
         for obj, subchildren in children:
             subchildren[:] = par_lookup.get(obj, [])
 
-    return par_lookup[None]
+    return par_lookup.get(None, [])
 
 
 # -----------------------------------------------------------------------------
 # H3D Functions
 # -----------------------------------------------------------------------------
-def h3d_shader_glsl_frag_patch(filepath):
+def h3d_shader_glsl_frag_patch(filepath, global_vars):
     h3d_file = open(filepath, 'r')
     lines = []
     for l in h3d_file:
-        l = l.replace("uniform mat4 unfinvviewmat;", "")
-        l = l.replace("unfinvviewmat", "gl_ModelViewMatrixInverse")
+        if l.startswith("void main(void)"):
+            lines.append("\n")
+            lines.append("// h3d custom vars begin\n")
+            for v in global_vars:
+                lines.append("%s\n" % v)
+            lines.append("// h3d custom vars end\n")
+            lines.append("\n")
+        elif l.lstrip().startswith("lamp_visibility_other("):
+            w = l.split(', ')
+            w[1] = '(view_matrix * %s_transform * vec4(%s.x, %s.y, %s.z, 1.0)).xyz' % (w[1], w[1], w[1], w[1])
+            l = ", ".join(w)
+        elif l.lstrip().startswith("lamp_visibility_sun_hemi("):
+            w = l.split(', ')
+            w[0] = w[0][len("lamp_visibility_sun_hemi(") + 1:]
+            w[0] = '(mat3(normalize(view_matrix[0].xyz), normalize(view_matrix[1].xyz), normalize(view_matrix[2].xyz)) * -%s)' % w[0]
+            l = "\tlamp_visibility_sun_hemi(" + ", ".join(w)
+        elif l.lstrip().startswith("lamp_visibility_spot_circle("):
+            w = l.split(', ')
+            w[0] = w[0][len("lamp_visibility_spot_circle(") + 1:]
+            w[0] = '(mat3(normalize(view_matrix[0].xyz), normalize(view_matrix[1].xyz), normalize(view_matrix[2].xyz)) * -%s)' % w[0]
+            l = "\tlamp_visibility_spot_circle(" + ", ".join(w)
 
-        '''
-        l = l.replace("varying vec3 varposition;", "")
-        l = l.replace("varposition", "gl_Vertex")  # not needed int H3D
-        '''
-
-        #l = l.replace("varying vec3 varnormal;", "")
-        #l = l.replace("varnormal", "gl_Normal")  # view normal
-        #l = l.replace("varnormal", "normalize(-(gl_ModelViewMatrix * gl_Vertex).xyz)")  # view normal
-        # l = l.replace("varnormal", "gl_NormalMatrix * gl_Normal")  # view normal
         lines.append(l)
 
     h3d_file.close()
@@ -174,6 +249,7 @@ def export(file,
         import gpu
         gpu_shader_dummy_mat = bpy.data.materials.new('X3D_DYMMY_MAT')
         gpu_shader_cache[None] = gpu.export_shader(scene, gpu_shader_dummy_mat)
+        h3d_material_route = []
 
     # -------------------------------------------------------------------------
     # File Writing Functions
@@ -201,9 +277,20 @@ def export(file,
         fw('%s</head>\n' % ident)
         fw('%s<Scene>\n' % ident)
         ident += '\t'
+
+        if use_h3d:
+            # outputs the view matrix in glModelViewMatrix field
+            fw('%s<TransformInfo DEF="%s" outputGLMatrices="true" />\n' % (ident, H3D_TOP_LEVEL))
+
         return ident
 
     def writeFooter(ident):
+
+        if use_h3d:
+            # global
+            for route in h3d_material_route:
+                fw('%s%s\n' % (ident, route))
+
         ident = ident[:-1]
         fw('%s</Scene>\n' % ident)
         ident = ident[:-1]
@@ -211,7 +298,7 @@ def export(file,
         return ident
 
     def writeViewpoint(ident, obj, matrix, scene):
-        view_id = quoteattr(unique_name(obj, 'CA_' + obj.name, uuid_cache_view))
+        view_id = quoteattr(unique_name(obj, 'CA_' + obj.name, uuid_cache_view, clean_func=clean_def, sep="_"))
 
         loc, quat, scale = matrix.decompose()
 
@@ -220,7 +307,7 @@ def export(file,
         fw('DEF=%s\n' % view_id)
         fw(ident_step + 'centerOfRotation="0 0 0"\n')
         fw(ident_step + 'position="%3.2f %3.2f %3.2f"\n' % loc[:])
-        fw(ident_step + 'orientation="%3.2f %3.2f %3.2f %3.2f"\n' % (quat.axis[:] + (quat.angle, )))
+        fw(ident_step + 'orientation="%3.2f %3.2f %3.2f %3.2f"\n' % (quat.axis.normalized()[:] + (quat.angle, )))
         fw(ident_step + 'fieldOfView="%.3g"\n' % obj.data.angle)
         fw(ident_step + '/>\n')
 
@@ -263,7 +350,7 @@ def export(file,
         fw(ident_step + 'translation="%.6g %.6g %.6g"\n' % loc[:])
         # fw(ident_step + 'center="%.6g %.6g %.6g"\n' % (0, 0, 0))
         fw(ident_step + 'scale="%.6g %.6g %.6g"\n' % sca[:])
-        fw(ident_step + 'rotation="%.6g %.6g %.6g %.6g"\n' % (quat.axis[:] + (quat.angle, )))
+        fw(ident_step + 'rotation="%.6g %.6g %.6g %.6g"\n' % (quat.axis.normalized()[:] + (quat.angle, )))
         fw(ident_step + '>\n')
         ident += '\t'
         return ident
@@ -275,7 +362,7 @@ def export(file,
 
     def writeSpotLight(ident, obj, matrix, lamp, world):
         # note, lamp_id is not re-used
-        lamp_id = quoteattr(unique_name(obj, 'LA_' + obj.name, uuid_cache_lamp))
+        lamp_id = quoteattr(unique_name(obj, 'LA_' + obj.name, uuid_cache_lamp, clean_func=clean_def, sep="_"))
 
         if world:
             ambi = world.ambient_color
@@ -311,7 +398,7 @@ def export(file,
 
     def writeDirectionalLight(ident, obj, matrix, lamp, world):
         # note, lamp_id is not re-used
-        lamp_id = quoteattr(unique_name(obj, 'LA_' + obj.name, uuid_cache_lamp))
+        lamp_id = quoteattr(unique_name(obj, 'LA_' + obj.name, uuid_cache_lamp, clean_func=clean_def, sep="_"))
 
         if world:
             ambi = world.ambient_color
@@ -336,7 +423,7 @@ def export(file,
 
     def writePointLight(ident, obj, matrix, lamp, world):
         # note, lamp_id is not re-used
-        lamp_id = quoteattr(unique_name(obj, 'LA_' + obj.name, uuid_cache_lamp))
+        lamp_id = quoteattr(unique_name(obj, 'LA_' + obj.name, uuid_cache_lamp, clean_func=clean_def, sep="_"))
 
         if world:
             ambi = world.ambient_color
@@ -361,8 +448,8 @@ def export(file,
         fw(ident_step + '/>\n')
 
     def writeIndexedFaceSet(ident, obj, mesh, matrix, world):
-        obj_id = quoteattr(unique_name(obj, 'OB_' + obj.name, uuid_cache_object))
-        mesh_id = quoteattr(unique_name(mesh, 'ME_' + mesh.name, uuid_cache_mesh))
+        obj_id = quoteattr(unique_name(obj, 'OB_' + obj.name, uuid_cache_object, clean_func=clean_def, sep="_"))
+        mesh_id = quoteattr(unique_name(mesh, 'ME_' + mesh.name, uuid_cache_mesh, clean_func=clean_def, sep="_"))
         mesh_id_group = prefix_quoted_str(mesh_id, 'group_')
         mesh_id_coords = prefix_quoted_str(mesh_id, 'coords_')
         mesh_id_normals = prefix_quoted_str(mesh_id, 'normals_')
@@ -372,7 +459,7 @@ def export(file,
 
         texface_use_halo = 0
         texface_use_billboard = 0
-        texface_use_collision = 0
+        # texface_use_collision = 0
 
         use_halonode = False
         use_billnode = False
@@ -382,8 +469,13 @@ def export(file,
             for face in mesh.uv_textures.active.data:  # for face in mesh.faces:
                 texface_use_halo |= face.use_halo
                 texface_use_billboard |= face.use_billboard
-                texface_use_collision |= face.use_collision
+                # texface_use_collision |= face.use_collision
                 # texface_use_object_color |= face.use_object_color
+
+        # use modifier instead
+        texface_use_collision = bool([mod for mod in obj.modifiers
+                                      if mod.type == 'COLLISION'
+                                      if mod.show_viewport])
 
         if texface_use_halo:
             fw('%s<Billboard axisOfRotation="0 0 0">\n' % ident)
@@ -394,7 +486,7 @@ def export(file,
             use_billnode = True
             ident += '\t'
         elif texface_use_collision:
-            fw('%s<Collision enabled="false">\n' % ident)
+            fw('%s<Collision enabled="true">\n' % ident)
             use_collnode = True
             ident += '\t'
 
@@ -403,7 +495,7 @@ def export(file,
         del texface_use_collision
         # del texface_use_object_color
 
-        ident = writeTransform_begin(ident, matrix, None)
+        ident = writeTransform_begin(ident, matrix, suffix_quoted_str(obj_id, "_TRANSFORM"))
 
         if mesh.tag:
             fw('%s<Group USE=%s />\n' % (ident, mesh_id_group))
@@ -489,7 +581,10 @@ def export(file,
 
                     # UV's and VCols split verts off which effects smoothing
                     # force writing normals in this case.
-                    is_force_normals = use_triangulate and is_smooth and (is_uv or is_col)
+                    # Also, creaseAngle is not supported for IndexedTriangleSet,
+                    # so write normals when is_smooth (otherwise
+                    # IndexedTriangleSet can have only all smooth/all flat shading).
+                    is_force_normals = use_triangulate and (is_smooth or is_uv or is_col)
 
                     if use_h3d:
                         gpu_shader = gpu_shader_cache.get(material)  # material can be 'None', uses dummy cache
@@ -534,6 +629,7 @@ def export(file,
 
                             ident_step = ident + (' ' * (-len(ident) + \
                             fw('%s<TextureTransform ' % ident)))
+                            fw('\n')
                             # fw('center="%.6g %.6g" ' % (0.0, 0.0))
                             fw(ident_step + 'translation="%.6g %.6g"\n' % loc)
                             fw(ident_step + 'scale="%.6g %.6g"\n' % (sca_x, sca_y))
@@ -563,11 +659,11 @@ def export(file,
                         # --- Write IndexedTriangleSet Attributes (same as IndexedFaceSet)
                         fw('solid="%s"\n' % ('true' if mesh.show_double_sided else 'false'))
 
-                        # creaseAngle unsupported for IndexedTriangleSet's
-
                         if use_normals or is_force_normals:
-                            # currently not optional, could be made so:
                             fw(ident_step + 'normalPerVertex="true"\n')
+                        else:
+                            # Tell X3D browser to generate flat (per-face) normals
+                            fw(ident_step + 'normalPerVertex="false"\n')
 
                         slot_uv = None
                         slot_col = None
@@ -822,7 +918,7 @@ def export(file,
             fw('%s</Collision>\n' % ident)
 
     def writeMaterial(ident, material, world):
-        material_id = quoteattr(unique_name(material, 'MA_' + material.name, uuid_cache_material))
+        material_id = quoteattr(unique_name(material, 'MA_' + material.name, uuid_cache_material, clean_func=clean_def, sep="_"))
 
         # look up material name, use it if available
         if material.tag:
@@ -861,7 +957,7 @@ def export(file,
 
     def writeMaterialH3D(ident, material, world,
                          obj, gpu_shader):
-        material_id = quoteattr(unique_name(material, 'MA_' + material.name, uuid_cache_material))
+        material_id = quoteattr(unique_name(material, 'MA_' + material.name, uuid_cache_material, clean_func=clean_def, sep="_"))
 
         fw('%s<Material />\n' % ident)
         if material.tag:
@@ -960,6 +1056,16 @@ def export(file,
             if not os.path.isdir(shader_dir):
                 os.mkdir(shader_dir)
 
+            # ------------------------------------------------------
+            # shader-patch
+            fw('%s<field name="%s" type="SFMatrix4f" accessType="inputOutput" />\n' % (ident, H3D_VIEW_MATRIX))
+            frag_vars = ["uniform mat4 %s;" % H3D_VIEW_MATRIX]
+
+            h3d_material_route.append(
+                    '<ROUTE fromNode="%s" fromField="glModelViewMatrix" toNode=%s toField="%s" />' %
+                    (H3D_TOP_LEVEL, material_id, H3D_VIEW_MATRIX))
+            # ------------------------------------------------------
+
             for uniform in gpu_shader['uniforms']:
                 if uniform['type'] == gpu.GPU_DYNAMIC_SAMPLER_2DIMAGE:
                     fw('%s<field name="%s" type="SFNode" accessType="inputOutput">\n' % (ident, uniform['varname']))
@@ -968,8 +1074,27 @@ def export(file,
 
                 elif uniform['type'] == gpu.GPU_DYNAMIC_LAMP_DYNCO:
                     if uniform['datatype'] == gpu.GPU_DATA_3F:  # should always be true!
-                        value = '%.6g   %.6g   %.6g' % (global_matrix * bpy.data.objects[uniform['lamp']].matrix_world).to_translation()[:]
+                        lamp_obj = bpy.data.objects[uniform['lamp']]
+                        lamp_obj_id = quoteattr(unique_name(lamp_obj, 'LA_' + lamp_obj.name, uuid_cache_lamp, clean_func=clean_def, sep="_"))
+
+                        value = '%.6g %.6g %.6g' % (global_matrix * lamp_obj.matrix_world).to_translation()[:]
                         fw('%s<field name="%s" type="SFVec3f" accessType="inputOutput" value="%s" />\n' % (ident, uniform['varname'], value))
+
+                        # ------------------------------------------------------
+                        # shader-patch
+                        fw('%s<field name="%s_transform" type="SFMatrix4f" accessType="inputOutput" />\n' % (ident, uniform['varname']))
+
+                        # transform
+                        frag_vars.append("uniform mat4 %s_transform;" % uniform['varname'])
+                        h3d_material_route.append(
+                                '<ROUTE fromNode=%s fromField="accForwardMatrix" toNode=%s toField="%s_transform" />' %
+                                (suffix_quoted_str(lamp_obj_id, "_TRANSFORM"), material_id, uniform['varname']))
+
+                        h3d_material_route.append(
+                                '<ROUTE fromNode=%s fromField="location" toNode=%s toField="%s" />' %
+                                (suffix_quoted_str(lamp_obj_id, "_TRANSFORM"), material_id, uniform['varname']))
+                        # ------------------------------------------------------
+
                     else:
                         assert(0)
 
@@ -990,7 +1115,8 @@ def export(file,
 
                 elif uniform['type'] == gpu.GPU_DYNAMIC_LAMP_DYNVEC:
                     if uniform['datatype'] == gpu.GPU_DATA_3F:
-                        value = '%.6g %.6g %.6g' % (mathutils.Vector((0.0, 0.0, 1.0)) * (global_matrix * bpy.data.objects[uniform['lamp']].matrix_world).to_quaternion()).normalized()[:]
+                        lamp_obj = bpy.data.objects[uniform['lamp']]
+                        value = '%.6g %.6g %.6g' % ((global_matrix * lamp_obj.matrix_world).to_quaternion() * mathutils.Vector((0.0, 0.0, 1.0))).normalized()[:]
                         fw('%s<field name="%s" type="SFVec3f" accessType="inputOutput" value="%s" />\n' % (ident, uniform['varname'], value))
                     else:
                         assert(0)
@@ -1055,7 +1181,7 @@ def export(file,
             file_frag.write(gpu_shader['fragment'])
             file_frag.close()
             # patch it
-            h3d_shader_glsl_frag_patch(os.path.join(base_dst, shader_url_frag))
+            h3d_shader_glsl_frag_patch(os.path.join(base_dst, shader_url_frag), frag_vars)
 
             file_vert = open(os.path.join(base_dst, shader_url_vert), 'w')
             file_vert.write(gpu_shader['vertex'])
@@ -1068,7 +1194,7 @@ def export(file,
             fw('%s</ComposedShader>\n' % ident)
 
     def writeImageTexture(ident, image):
-        image_id = quoteattr(unique_name(image, 'IM_' + image.name, uuid_cache_image))
+        image_id = quoteattr(unique_name(image, 'IM_' + image.name, uuid_cache_image, clean_func=clean_def, sep="_"))
 
         if image.tag:
             fw('%s<ImageTexture USE=%s />\n' % (ident, image_id))
@@ -1084,11 +1210,11 @@ def export(file,
             filepath = image.filepath
             filepath_full = bpy.path.abspath(filepath)
             filepath_ref = bpy_extras.io_utils.path_reference(filepath_full, base_src, base_dst, path_mode, "textures", copy_set)
-            filepath_base = os.path.basename(filepath_ref)
+            filepath_base = os.path.basename(filepath_full)
 
             images = [
-                filepath_base,
                 filepath_ref,
+                filepath_base,
                 filepath_full,
             ]
 
@@ -1104,7 +1230,7 @@ def export(file,
             return
 
         # note, not re-used
-        world_id = quoteattr(unique_name(world, 'WO_' + world.name, uuid_cache_world))
+        world_id = quoteattr(unique_name(world, 'WO_' + world.name, uuid_cache_world, clean_func=clean_def, sep="_"))
 
         blending = world.use_sky_blend, world.use_sky_paper, world.use_sky_real
 
@@ -1150,7 +1276,7 @@ def export(file,
             if tex.type == 'IMAGE' and tex.image:
                 namemat = tex.name
                 pic = tex.image
-                basename = os.path.basename(bpy.path.abspath(pic.filepath))
+                basename = bpy.path.basename(pic.filepath)
 
                 if namemat == 'back':
                     fw(ident_step + 'backUrl="%s"\n' % basename)
@@ -1174,9 +1300,6 @@ def export(file,
         world = scene.world
         free, derived = create_derived_objects(scene, obj_main)
 
-        if derived is None:
-            return
-
         if use_hierarchy:
             obj_main_matrix_world = obj_main.matrix_world
             if obj_main_parent:
@@ -1185,11 +1308,11 @@ def export(file,
                 obj_main_matrix = obj_main_matrix_world
             obj_main_matrix_world_invert = obj_main_matrix_world.inverted()
 
-            obj_main_id = quoteattr(unique_name(obj_main, obj_main.name, uuid_cache_object))
+            obj_main_id = quoteattr(unique_name(obj_main, obj_main.name, uuid_cache_object, clean_func=clean_def, sep="_"))
 
-            ident = writeTransform_begin(ident, obj_main_matrix if obj_main_parent else global_matrix * obj_main_matrix, obj_main_id)
+            ident = writeTransform_begin(ident, obj_main_matrix if obj_main_parent else global_matrix * obj_main_matrix, suffix_quoted_str(obj_main_id, "_TRANSFORM"))
 
-        for obj, obj_matrix in derived:
+        for obj, obj_matrix in (() if derived is None else derived):
             obj_type = obj.type
 
             if use_hierarchy:
@@ -1198,7 +1321,7 @@ def export(file,
 
             if obj_type == 'CAMERA':
                 writeViewpoint(ident, obj, obj_matrix, scene)
-            elif obj_type in ('MESH', 'CURVE', 'SURF', 'FONT'):
+            elif obj_type in {'MESH', 'CURVE', 'SURF', 'FONT'}:
                 if (obj_type != 'MESH') or (use_apply_modifiers and obj.is_modified(scene, 'PREVIEW')):
                     try:
                         me = obj.to_mesh(scene, use_apply_modifiers, 'PREVIEW')

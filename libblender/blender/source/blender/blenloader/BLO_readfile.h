@@ -1,5 +1,5 @@
 /*
- * $Id: BLO_readfile.h 36932 2011-05-26 20:45:19Z campbellbarton $
+ * $Id: BLO_readfile.h 39044 2011-08-05 05:26:19Z campbellbarton $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -211,7 +211,16 @@ int BLO_has_bfile_extension(char *str);
  */
 int BLO_is_a_library(const char *path, char *dir, char *group);
 
-struct Main* BLO_library_append_begin(const struct bContext *C, BlendHandle** bh, const char *filepath);
+
+/**
+ * Initialize the BlendHandle for appending or linking library data.
+ *
+ * @param mainvar The current main database eg G.main or CTX_data_main(C).
+ * @param bh A blender file handle as returned by BLO_blendhandle_from_file or BLO_blendhandle_from_memory.
+ * @param filepath Used for relative linking, copied to the lib->name
+ * @return the library Main, to be passed to BLO_library_append_named_part as mainl.
+ */
+struct Main* BLO_library_append_begin(struct Main *mainvar, BlendHandle** bh, const char *filepath);
 
 
 /**
@@ -242,11 +251,6 @@ struct ID *BLO_library_append_named_part_ex(const struct bContext *C, struct Mai
 void BLO_library_append_end(const struct bContext *C, struct Main *mainl, BlendHandle** bh, int idcode, short flag);
 
 void *BLO_library_read_struct(struct FileData *fd, struct BHead *bh, const char *blockname);
-
-/* deprecated */
-#if 1
-void BLO_script_library_append(BlendHandle **bh, char *dir, char *name, int idcode, short flag, struct Main *mainvar, struct Scene *scene, struct ReportList *reports);
-#endif
 
 BlendFileData* blo_read_blendafterruntime(int file, char *name, int actualsize, struct ReportList *reports);
 

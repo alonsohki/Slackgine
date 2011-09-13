@@ -1,7 +1,7 @@
 K 25
 svn:wc:ra_dav:version-url
 V 78
-/svnroot/bf-extensions/!svn/ver/1760/trunk/py/scripts/addons/io_mesh_uv_layout
+/svnroot/bf-extensions/!svn/ver/2260/trunk/py/scripts/addons/io_mesh_uv_layout
 END
 export_uv_svg.py
 K 25
@@ -13,7 +13,7 @@ __init__.py
 K 25
 svn:wc:ra_dav:version-url
 V 90
-/svnroot/bf-extensions/!svn/ver/1719/trunk/py/scripts/addons/io_mesh_uv_layout/__init__.py
+/svnroot/bf-extensions/!svn/ver/2260/trunk/py/scripts/addons/io_mesh_uv_layout/__init__.py
 END
 export_uv_png.py
 K 25

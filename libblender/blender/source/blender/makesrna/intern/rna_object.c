@@ -1,5 +1,5 @@
 /*
- * $Id: rna_object.c 38471 2011-07-18 07:38:44Z campbellbarton $
+ * $Id: rna_object.c 40119 2011-09-11 10:00:43Z dingto $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -115,6 +115,7 @@ EnumPropertyItem object_type_items[] = {
 	{0, "", 0, NULL, NULL},
 	{OB_CAMERA, "CAMERA", 0, "Camera", ""},
 	{OB_LAMP, "LAMP", 0, "Lamp", ""},
+	{OB_SPEAKER, "SPEAKER", 0, "Speaker", ""},
 	{0, NULL, 0, NULL, NULL}};
 
 EnumPropertyItem object_type_curve_items[] = {
@@ -131,6 +132,7 @@ EnumPropertyItem object_type_curve_items[] = {
 #include "DNA_key_types.h"
 #include "DNA_constraint_types.h"
 #include "DNA_lattice_types.h"
+#include "DNA_node_types.h"
 
 #include "BKE_armature.h"
 #include "BKE_bullet.h"
@@ -365,6 +367,7 @@ static StructRNA *rna_Object_data_typef(PointerRNA *ptr)
 		case OB_CAMERA: return &RNA_Camera;
 		case OB_LATTICE: return &RNA_Lattice;
 		case OB_ARMATURE: return &RNA_Armature;
+		case OB_SPEAKER: return &RNA_Speaker;
 		default: return &RNA_ID;
 	}
 }
@@ -855,6 +858,8 @@ static int rna_GameObjectSettings_physics_type_get(PointerRNA *ptr)
 	if (!(ob->gameflag & OB_COLLISION)) {
 		if (ob->gameflag & OB_OCCLUDER) {
 			ob->body_type = OB_BODY_TYPE_OCCLUDER;
+		} else if (ob->gameflag & OB_NAVMESH){
+			ob->body_type = OB_BODY_TYPE_NAVMESH;
 		} else {
 			ob->body_type = OB_BODY_TYPE_NO_COLLISION;
 		}
@@ -884,31 +889,35 @@ static void rna_GameObjectSettings_physics_type_set(PointerRNA *ptr, int value)
 	switch (ob->body_type) {
 	case OB_BODY_TYPE_SENSOR:
 		ob->gameflag |= OB_SENSOR|OB_COLLISION|OB_GHOST;
-		ob->gameflag &= ~(OB_OCCLUDER|OB_DYNAMIC|OB_RIGID_BODY|OB_SOFT_BODY|OB_ACTOR|OB_ANISOTROPIC_FRICTION|OB_DO_FH|OB_ROT_FH|OB_COLLISION_RESPONSE);
+		ob->gameflag &= ~(OB_OCCLUDER|OB_DYNAMIC|OB_RIGID_BODY|OB_SOFT_BODY|OB_ACTOR|OB_ANISOTROPIC_FRICTION|OB_DO_FH|OB_ROT_FH|OB_COLLISION_RESPONSE|OB_NAVMESH);
 		break;
 	case OB_BODY_TYPE_OCCLUDER:
 		ob->gameflag |= OB_OCCLUDER;
-		ob->gameflag &= ~(OB_SENSOR|OB_COLLISION|OB_DYNAMIC);
+		ob->gameflag &= ~(OB_SENSOR|OB_COLLISION|OB_DYNAMIC|OB_NAVMESH);
+		break;
+	case OB_BODY_TYPE_NAVMESH:
+		ob->gameflag |= OB_NAVMESH;
+		ob->gameflag &= ~(OB_SENSOR|OB_COLLISION|OB_DYNAMIC|OB_OCCLUDER);
 		break;
 	case OB_BODY_TYPE_NO_COLLISION:
-		ob->gameflag &= ~(OB_SENSOR|OB_COLLISION|OB_OCCLUDER|OB_DYNAMIC);
+		ob->gameflag &= ~(OB_SENSOR|OB_COLLISION|OB_OCCLUDER|OB_DYNAMIC|OB_NAVMESH);
 		break;
 	case OB_BODY_TYPE_STATIC:
 		ob->gameflag |= OB_COLLISION;
-		ob->gameflag &= ~(OB_DYNAMIC|OB_RIGID_BODY|OB_SOFT_BODY|OB_OCCLUDER|OB_SENSOR);
+		ob->gameflag &= ~(OB_DYNAMIC|OB_RIGID_BODY|OB_SOFT_BODY|OB_OCCLUDER|OB_SENSOR|OB_NAVMESH);
 		break;
 	case OB_BODY_TYPE_DYNAMIC:
 		ob->gameflag |= OB_COLLISION|OB_DYNAMIC|OB_ACTOR;
-		ob->gameflag &= ~(OB_RIGID_BODY|OB_SOFT_BODY|OB_OCCLUDER|OB_SENSOR);
+		ob->gameflag &= ~(OB_RIGID_BODY|OB_SOFT_BODY|OB_OCCLUDER|OB_SENSOR|OB_NAVMESH);
 		break;
 	case OB_BODY_TYPE_RIGID:
 		ob->gameflag |= OB_COLLISION|OB_DYNAMIC|OB_RIGID_BODY|OB_ACTOR;
-		ob->gameflag &= ~(OB_SOFT_BODY|OB_OCCLUDER|OB_SENSOR);
+		ob->gameflag &= ~(OB_SOFT_BODY|OB_OCCLUDER|OB_SENSOR|OB_NAVMESH);
 		break;
 	default:
 	case OB_BODY_TYPE_SOFT:
 		ob->gameflag |= OB_COLLISION|OB_DYNAMIC|OB_SOFT_BODY|OB_ACTOR;
-		ob->gameflag &= ~(OB_RIGID_BODY|OB_OCCLUDER|OB_SENSOR);
+		ob->gameflag &= ~(OB_RIGID_BODY|OB_OCCLUDER|OB_SENSOR|OB_NAVMESH);
 
 		/* assume triangle mesh, if no bounds chosen for soft body */
 		if ((ob->gameflag & OB_BOUNDS) && (ob->boundtype<OB_BOUND_POLYH))
@@ -1340,6 +1349,7 @@ static void rna_def_object_game_settings(BlenderRNA *brna)
 		{OB_BODY_TYPE_SOFT, "SOFT_BODY", 0, "Soft Body", "Soft body"},
 		{OB_BODY_TYPE_OCCLUDER, "OCCLUDE", 0, "Occlude", "Occluder for optimizing scene rendering"},
 		{OB_BODY_TYPE_SENSOR, "SENSOR", 0, "Sensor", "Collision Sensor, detects static and dynamic objects but not the other collision sensor objects"},
+		{OB_BODY_TYPE_NAVMESH, "NAVMESH", 0, "Navigation Mesh", "Navigation mesh"},
 		{0, NULL, 0, NULL, NULL}};
 
 	srna= RNA_def_struct(brna, "GameObjectSettings", NULL);
@@ -1509,6 +1519,15 @@ static void rna_def_object_game_settings(BlenderRNA *brna)
 	RNA_def_property_pointer_sdna(prop, NULL, "bsoft");
 	RNA_def_property_ui_text(prop, "Soft Body Settings", "Settings for Bullet soft body simulation");
 
+	prop= RNA_def_property(srna, "create_obstacle", PROP_BOOLEAN, PROP_NONE);
+	RNA_def_property_boolean_sdna(prop, NULL, "gameflag", OB_HASOBSTACLE);
+	RNA_def_property_ui_text(prop, "Create obstacle", "Create representation for obstacle simulation");
+
+	prop= RNA_def_property(srna, "obstacle_radius", PROP_FLOAT, PROP_NONE|PROP_UNIT_LENGTH);
+	RNA_def_property_float_sdna(prop, NULL, "obstacleRad");
+	RNA_def_property_range(prop, 0.0, 1000.0);
+	RNA_def_property_ui_text(prop, "Obstacle Radius", "Radius of object representation in obstacle simulation");
+	
 	/* state */
 
 	prop= RNA_def_property(srna, "states_visible", PROP_BOOLEAN, PROP_LAYER_MEMBER);
@@ -2025,18 +2044,26 @@ static void rna_def_object(BlenderRNA *brna)
 	RNA_def_property_ui_text(prop, "Input Matrix", "Matrix access to location, rotation and scale (including deltas), before constraints and parenting are applied.");
 	RNA_def_property_float_funcs(prop, "rna_Object_matrix_basis_get", "rna_Object_matrix_basis_set", NULL);
 	RNA_def_property_update(prop, NC_OBJECT|ND_TRANSFORM, "rna_Object_internal_update");
-	
-	/* collections */
+
+	/*parent_inverse*/
+	prop= RNA_def_property(srna, "matrix_parent_inverse", PROP_FLOAT, PROP_MATRIX);
+	RNA_def_property_float_sdna(prop, NULL, "parentinv");
+	RNA_def_property_multi_array(prop, 2, rna_matrix_dimsize_4x4);
+	RNA_def_property_ui_text(prop, "Matrix", "Inverse of object's parent matrix at time of parenting");
+	RNA_def_property_update(prop, NC_OBJECT|ND_TRANSFORM, "rna_Object_internal_update");
+
+	/* modifiers */
+	prop= RNA_def_property(srna, "modifiers", PROP_COLLECTION, PROP_NONE);
+	RNA_def_property_struct_type(prop, "Modifier");
+	RNA_def_property_ui_text(prop, "Modifiers", "Modifiers affecting the geometric data of the object");
+	rna_def_object_modifiers(brna, prop);
+
+	/* constraints */
 	prop= RNA_def_property(srna, "constraints", PROP_COLLECTION, PROP_NONE);
 	RNA_def_property_struct_type(prop, "Constraint");
 	RNA_def_property_ui_text(prop, "Constraints", "Constraints affecting the transformation of the object");
 //	RNA_def_property_collection_funcs(prop, 0, 0, 0, 0, 0, 0, 0, "constraints__add", "constraints__remove");
 	rna_def_object_constraints(brna, prop);
-
-	prop= RNA_def_property(srna, "modifiers", PROP_COLLECTION, PROP_NONE);
-	RNA_def_property_struct_type(prop, "Modifier");
-	RNA_def_property_ui_text(prop, "Modifiers", "Modifiers affecting the geometric data of the object");
-	rna_def_object_modifiers(brna, prop);
 
 	/* game engine */
 	prop= RNA_def_property(srna, "game", PROP_POINTER, PROP_NONE);
@@ -2274,12 +2301,12 @@ static void rna_def_object(BlenderRNA *brna)
 	
 	prop= RNA_def_property(srna, "show_transparent", PROP_BOOLEAN, PROP_NONE);
 	RNA_def_property_boolean_sdna(prop, NULL, "dtx", OB_DRAWTRANSP);
-	RNA_def_property_ui_text(prop, "Draw Transparent", "Displays material transparency in the object");
+	RNA_def_property_ui_text(prop, "Draw Transparent", "Displays material transparency in the object (unsupported for duplicator drawing)");
 	RNA_def_property_update(prop, NC_OBJECT|ND_DRAW, NULL);
 	
 	prop= RNA_def_property(srna, "show_x_ray", PROP_BOOLEAN, PROP_NONE);
 	RNA_def_property_boolean_sdna(prop, NULL, "dtx", OB_DRAWXRAY);
-	RNA_def_property_ui_text(prop, "X-Ray", "Makes the object draw in front of others");
+	RNA_def_property_ui_text(prop, "X-Ray", "Makes the object draw in front of others (unsupported for duplicator drawing)");
 	RNA_def_property_update(prop, NC_OBJECT|ND_DRAW, NULL);
 	
 	/* Grease Pencil */
@@ -2288,6 +2315,7 @@ static void rna_def_object(BlenderRNA *brna)
 	RNA_def_property_flag(prop, PROP_EDITABLE);
 	RNA_def_property_struct_type(prop, "GreasePencil");
 	RNA_def_property_ui_text(prop, "Grease Pencil Data", "Grease Pencil datablock");
+	RNA_def_property_update(prop, NC_OBJECT|ND_DRAW, NULL);
 	
 	/* pose */
 	prop= RNA_def_property(srna, "pose_library", PROP_POINTER, PROP_NONE);

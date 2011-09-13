@@ -430,9 +430,9 @@ def write_pov(filename, scene=None, info_callback=None):
                         #Could use brilliance 2(or varying around 2 depending on ior or factor) too.
 
                     elif material.specular_shader == 'TOON':
-                        tabWrite("phong %.3g\n" % (material.specular_intensity * 2))
+                        tabWrite("phong %.3g\n" % (material.specular_intensity * 2.0))
                         # use extreme phong_size
-                        tabWrite("phong_size %.3g\n" % (0.1 + material.specular_toon_smooth / 2))
+                        tabWrite("phong_size %.3g\n" % (0.1 + material.specular_toon_smooth / 2.0))
 
                     elif material.specular_shader == 'WARDISO':
                         # find best suited default constant for brilliance Use both phong and
@@ -645,7 +645,7 @@ def write_pov(filename, scene=None, info_callback=None):
 
             # Sun shouldn't be attenuated. Hemi and area lights have no falloff attribute so they
             # are put to type 2 attenuation a little higher above.
-            if lamp.type not in ('SUN', 'AREA', 'HEMI'):
+            if lamp.type not in {'SUN', 'AREA', 'HEMI'}:
                 tabWrite("fade_distance %.6f\n" % (lamp.distance / 5.0))
                 if lamp.falloff_type == 'INVERSE_SQUARE':
                     tabWrite("fade_power %d\n" % 2)  # Use blenders lamp quad equivalent
@@ -682,7 +682,7 @@ def write_pov(filename, scene=None, info_callback=None):
             meta = ob.data
 
             # important because no elements will break parsing.
-            elements = [elem for elem in meta.elements if elem.type in ('BALL', 'ELLIPSOID')]
+            elements = [elem for elem in meta.elements if elem.type in {'BALL', 'ELLIPSOID'}]
 
             if elements:
                 tabWrite("blob {\n")
@@ -777,11 +777,11 @@ def write_pov(filename, scene=None, info_callback=None):
 #                        return True
 #            return False
         # For objects using local material(s) only!
-        # This is a mapping between a tuple (dataname, materialnames, …), and the POV dataname.
+        # This is a mapping between a tuple (dataname, materialnames, ...), and the POV dataname.
         # As only objects using:
         #     * The same data.
         #     * EXACTLY the same materials, in EXACTLY the same sockets.
-        # … can share a same instance in POV export.
+        # ... can share a same instance in POV export.
         obmats2data = {}
 
         def checkObjectMaterials(ob, name, dataname):
@@ -794,14 +794,14 @@ def write_pov(filename, scene=None, info_callback=None):
                         if ms.link == 'OBJECT' and not has_local_mats:
                             has_local_mats = True
                     else:
-                        # Even if the slot is empty, it is important to grab it…
+                        # Even if the slot is empty, it is important to grab it...
                         key.append("")
                 if has_local_mats:
                     # If this object uses local material(s), lets find if another object
                     # using the same data and exactly the same list of materials
-                    # (in the same slots) has already been processed…
+                    # (in the same slots) has already been processed...
                     # Note that here also, we use object name as new, unique dataname for Pov.
-                    key = tuple(key)  # Lists are not hashable…
+                    key = tuple(key)  # Lists are not hashable...
                     if key not in obmats2data:
                         obmats2data[key] = name
                     return obmats2data[key]
@@ -839,7 +839,7 @@ def write_pov(filename, scene=None, info_callback=None):
 
             # XXX I moved all those checks here, as there is no need to compute names
             #     for object we won’t export here!
-            if ob.type in ('LAMP', 'CAMERA', 'EMPTY', 'META', 'ARMATURE', 'LATTICE'):
+            if ob.type in {'LAMP', 'CAMERA', 'EMPTY', 'META', 'ARMATURE', 'LATTICE'}:
                 continue
 
             try:

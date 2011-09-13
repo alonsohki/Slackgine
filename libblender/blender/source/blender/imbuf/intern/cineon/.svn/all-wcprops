@@ -1,7 +1,7 @@
 K 25
 svn:wc:ra_dav:version-url
 V 83
-/svnroot/bf-blender/!svn/ver/38443/trunk/blender/source/blender/imbuf/intern/cineon
+/svnroot/bf-blender/!svn/ver/39936/trunk/blender/source/blender/imbuf/intern/cineon
 END
 dpxfile.h
 K 25
@@ -13,13 +13,13 @@ logImageCore.h
 K 25
 svn:wc:ra_dav:version-url
 V 98
-/svnroot/bf-blender/!svn/ver/35239/trunk/blender/source/blender/imbuf/intern/cineon/logImageCore.h
+/svnroot/bf-blender/!svn/ver/39936/trunk/blender/source/blender/imbuf/intern/cineon/logImageCore.h
 END
 cineonlib.c
 K 25
 svn:wc:ra_dav:version-url
 V 95
-/svnroot/bf-blender/!svn/ver/36594/trunk/blender/source/blender/imbuf/intern/cineon/cineonlib.c
+/svnroot/bf-blender/!svn/ver/39936/trunk/blender/source/blender/imbuf/intern/cineon/cineonlib.c
 END
 SConscript
 K 25

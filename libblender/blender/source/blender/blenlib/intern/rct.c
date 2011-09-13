@@ -4,7 +4,7 @@
  * 
  * april 95
  * 
- * $Id: rct.c 36836 2011-05-23 14:51:31Z blendix $
+ * $Id: rct.c 39558 2011-08-19 16:21:29Z campbellbarton $
  *
  * A minimalist lib for functions doing stuff with rectangle structs.
  *
@@ -233,10 +233,10 @@ int BLI_isect_rcti(rcti *src1, rcti *src2, rcti *dest)
 
 void BLI_copy_rcti_rctf(rcti *tar, const rctf *src)
 {
-	tar->xmin= floor(src->xmin + 0.5);
-	tar->xmax= floor((src->xmax - src->xmin) + 0.5);
-	tar->ymin= floor(src->ymin + 0.5);
-	tar->ymax= floor((src->ymax - src->ymin) + 0.5);
+	tar->xmin= floor(src->xmin + 0.5f);
+	tar->xmax= floor((src->xmax - src->xmin) + 0.5f);
+	tar->ymin= floor(src->ymin + 0.5f);
+	tar->ymax= floor((src->ymax - src->ymin) + 0.5f);
 }
 
 void print_rctf(const char *str, rctf *rect)

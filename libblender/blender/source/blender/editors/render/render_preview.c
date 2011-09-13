@@ -1,5 +1,5 @@
 /* 
- * $Id: render_preview.c 38375 2011-07-13 19:27:42Z campbellbarton $
+ * $Id: render_preview.c 39991 2011-09-07 06:33:29Z mont29 $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -64,6 +64,7 @@
 #include "DNA_brush_types.h"
 #include "DNA_screen_types.h"
 
+#include "BKE_brush.h"
 #include "BKE_context.h"
 #include "BKE_depsgraph.h"
 #include "BKE_global.h"

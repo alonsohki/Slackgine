@@ -1,4 +1,4 @@
-# $Id: CMakeLists.txt 38443 2011-07-17 09:11:13Z campbellbarton $
+# $Id: CMakeLists.txt 40080 2011-09-09 21:28:56Z ben2610 $
 # ***** BEGIN GPL LICENSE BLOCK *****
 #
 # This program is free software; you can redistribute it and/or
@@ -51,10 +51,12 @@ set(INC
 	../../blender/makesrna
 	../../blender/windowmanager
 	../../../extern/bullet2/src
+	../../../extern/Eigen2
 	../../../intern/container
 	../../../intern/guardedalloc
 	../../../intern/moto/include
 	../../../intern/string
+	../../../extern/recastnavigation/Detour/Include
 )
 
 set(INC_SYS

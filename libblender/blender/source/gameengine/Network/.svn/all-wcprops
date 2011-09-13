@@ -1,7 +1,7 @@
 K 25
 svn:wc:ra_dav:version-url
 V 74
-/svnroot/bf-blender/!svn/ver/38443/trunk/blender/source/gameengine/Network
+/svnroot/bf-blender/!svn/ver/39883/trunk/blender/source/gameengine/Network
 END
 NG_NetworkScene.h
 K 25
@@ -19,7 +19,7 @@ NG_NetworkDeviceInterface.h
 K 25
 svn:wc:ra_dav:version-url
 V 102
-/svnroot/bf-blender/!svn/ver/35072/trunk/blender/source/gameengine/Network/NG_NetworkDeviceInterface.h
+/svnroot/bf-blender/!svn/ver/39883/trunk/blender/source/gameengine/Network/NG_NetworkDeviceInterface.h
 END
 NG_NetworkObject.cpp
 K 25

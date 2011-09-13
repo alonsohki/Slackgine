@@ -1,5 +1,5 @@
 /*
- * $Id: GHOST_WindowWin32.h 36470 2011-05-04 01:50:17Z dfelinto $
+ * $Id: GHOST_WindowWin32.h 38908 2011-08-02 04:28:05Z merwin $
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
  * This program is free software; you can redistribute it and/or
@@ -39,19 +39,11 @@
 #endif // WIN32
 
 #include "GHOST_Window.h"
-
-/* MinGW needs it */
-#ifdef FREE_WINDOWS
-#ifdef WINVER
-#undef WINVER
-#endif
-#define WINVER 0x0501
-#endif
-
-
-
-#include <windows.h>
 #include "GHOST_TaskbarWin32.h"
+
+#define _WIN32_WINNT 0x501 // require Windows XP or newer
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 
 
 #include <wintab.h>

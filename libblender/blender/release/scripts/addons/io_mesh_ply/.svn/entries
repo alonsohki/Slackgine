@@ -1,15 +1,15 @@
 10
 
 dir
-2139
+2324
 https://svn.blender.org/svnroot/bf-extensions/trunk/py/scripts/addons/io_mesh_ply
 https://svn.blender.org/svnroot/bf-extensions
 
 
 
-2011-07-10T22:57:27.956301Z
-2116
-campbellbarton
+2011-09-03T11:11:01.607030Z
+2294
+nazgul
 
 
 
@@ -32,10 +32,10 @@ file
 
 
 
-2011-07-19T21:18:51.000000Z
-8b1100ce35ed277e1cc9ad5d6ad1c33e
-2011-07-10T22:57:27.956301Z
-2116
+2011-09-13T17:15:26.297021Z
+f14151840dd98667f7cf8705d309f52d
+2011-08-08T05:23:00.446023Z
+2232
 campbellbarton
 has-props
 
@@ -66,11 +66,11 @@ file
 
 
 
-2011-07-19T21:18:51.000000Z
-7c13bfacf2cd32a10057969acff800ce
-2011-05-16T07:52:45.372071Z
-1932
-campbellbarton
+2011-09-13T17:15:26.297021Z
+aad9304e966d5f01926c4b724ef955b1
+2011-09-03T11:11:01.607030Z
+2294
+nazgul
 has-props
 
 
@@ -92,7 +92,7 @@ has-props
 
 
 
-4568
+4848
 
 export_ply.py
 file
@@ -100,7 +100,7 @@ file
 
 
 
-2011-07-19T21:18:51.000000Z
+2011-09-13T17:15:26.297021Z
 23eddce5158037697b0fb1a50680fedc
 2011-03-14T01:38:56.603641Z
 1707

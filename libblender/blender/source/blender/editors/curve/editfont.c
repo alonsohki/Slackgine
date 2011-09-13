@@ -1,5 +1,5 @@
 /*
- * $Id: editfont.c 36221 2011-04-19 11:17:29Z ton $
+ * $Id: editfont.c 39062 2011-08-05 09:04:11Z campbellbarton $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -1649,10 +1649,10 @@ static int open_exec(bContext *C, wmOperator *op)
 	VFont *font;
 	PropertyPointerRNA *pprop;
 	PointerRNA idptr;
-	char str[FILE_MAX];
-	RNA_string_get(op->ptr, "filepath", str);
+	char filepath[FILE_MAX];
+	RNA_string_get(op->ptr, "filepath", filepath);
 
-	font = load_vfont(str);
+	font= load_vfont(filepath);
 
 	if(!font) {
 		if(op->customdata) MEM_freeN(op->customdata);

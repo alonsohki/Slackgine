@@ -1,7 +1,7 @@
 K 25
 svn:wc:ra_dav:version-url
 V 72
-/svnroot/bf-blender/!svn/ver/38504/trunk/blender/release/scripts/modules
+/svnroot/bf-blender/!svn/ver/40037/trunk/blender/release/scripts/modules
 END
 animsys_refactor.py
 K 25
@@ -31,7 +31,7 @@ rna_info.py
 K 25
 svn:wc:ra_dav:version-url
 V 84
-/svnroot/bf-blender/!svn/ver/35764/trunk/blender/release/scripts/modules/rna_info.py
+/svnroot/bf-blender/!svn/ver/39170/trunk/blender/release/scripts/modules/rna_info.py
 END
 rna_prop_ui.py
 K 25
@@ -49,35 +49,35 @@ bpy_types.py
 K 25
 svn:wc:ra_dav:version-url
 V 85
-/svnroot/bf-blender/!svn/ver/38279/trunk/blender/release/scripts/modules/bpy_types.py
+/svnroot/bf-blender/!svn/ver/40037/trunk/blender/release/scripts/modules/bpy_types.py
 END
 bpyml_ui.py
 K 25
 svn:wc:ra_dav:version-url
 V 84
-/svnroot/bf-blender/!svn/ver/38279/trunk/blender/release/scripts/modules/bpyml_ui.py
+/svnroot/bf-blender/!svn/ver/39170/trunk/blender/release/scripts/modules/bpyml_ui.py
 END
 console_python.py
 K 25
 svn:wc:ra_dav:version-url
 V 90
-/svnroot/bf-blender/!svn/ver/37361/trunk/blender/release/scripts/modules/console_python.py
+/svnroot/bf-blender/!svn/ver/39701/trunk/blender/release/scripts/modules/console_python.py
 END
 bpyml.py
 K 25
 svn:wc:ra_dav:version-url
 V 81
-/svnroot/bf-blender/!svn/ver/35810/trunk/blender/release/scripts/modules/bpyml.py
+/svnroot/bf-blender/!svn/ver/39170/trunk/blender/release/scripts/modules/bpyml.py
 END
 addon_utils.py
 K 25
 svn:wc:ra_dav:version-url
 V 87
-/svnroot/bf-blender/!svn/ver/38468/trunk/blender/release/scripts/modules/addon_utils.py
+/svnroot/bf-blender/!svn/ver/39117/trunk/blender/release/scripts/modules/addon_utils.py
 END
 keyingsets_utils.py
 K 25
 svn:wc:ra_dav:version-url
 V 92
-/svnroot/bf-blender/!svn/ver/36023/trunk/blender/release/scripts/modules/keyingsets_utils.py
+/svnroot/bf-blender/!svn/ver/38869/trunk/blender/release/scripts/modules/keyingsets_utils.py
 END

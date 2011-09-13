@@ -1,5 +1,5 @@
 /*
- * $Id: object_relations.c 38264 2011-07-09 17:09:28Z ton $
+ * $Id: object_relations.c 39991 2011-09-07 06:33:29Z mont29 $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -45,6 +45,7 @@
 #include "DNA_meta_types.h"
 #include "DNA_particle_types.h"
 #include "DNA_scene_types.h"
+#include "DNA_speaker_types.h"
 #include "DNA_world_types.h"
 #include "DNA_object_types.h"
 
@@ -75,6 +76,7 @@
 #include "BKE_report.h"
 #include "BKE_sca.h"
 #include "BKE_scene.h"
+#include "BKE_speaker.h"
 #include "BKE_texture.h"
 
 #include "WM_api.h"
@@ -971,8 +973,8 @@ static int track_set_exec(bContext *C, wmOperator *op)
 				data->tar = obact;
 				ob->recalc |= OB_RECALC_OB|OB_RECALC_DATA|OB_RECALC_TIME;
 				
-				/* Lamp and Camera track differently by default */
-				if (ob->type == OB_LAMP || ob->type == OB_CAMERA)
+				/* Lamp, Camera and Speaker track differently by default */
+				if (ob->type == OB_LAMP || ob->type == OB_CAMERA || ob->type == OB_SPEAKER)
 					data->trackflag = TRACK_nZ;
 			}
 		}
@@ -990,8 +992,8 @@ static int track_set_exec(bContext *C, wmOperator *op)
 				data->tar = obact;
 				ob->recalc |= OB_RECALC_OB|OB_RECALC_DATA|OB_RECALC_TIME;
 				
-				/* Lamp and Camera track differently by default */
-				if (ob->type == OB_LAMP || ob->type == OB_CAMERA) {
+				/* Lamp, Camera and Speaker track differently by default */
+				if (ob->type == OB_LAMP || ob->type == OB_CAMERA || ob->type == OB_SPEAKER) {
 					data->reserved1 = TRACK_nZ;
 					data->reserved2 = UP_Y;
 				}
@@ -1011,8 +1013,8 @@ static int track_set_exec(bContext *C, wmOperator *op)
 				data->tar = obact;
 				ob->recalc |= OB_RECALC_OB|OB_RECALC_DATA|OB_RECALC_TIME;
 				
-				/* Lamp and Camera track differently by default */
-				if (ob->type == OB_LAMP || ob->type == OB_CAMERA) {
+				/* Lamp, Camera and Speaker track differently by default */
+				if (ob->type == OB_LAMP || ob->type == OB_CAMERA || ob->type == OB_SPEAKER) {
 					data->trackflag = TRACK_nZ;
 					data->lockflag = LOCK_Y;
 				}
@@ -1096,7 +1098,7 @@ static int move_to_layer_exec(bContext *C, wmOperator *op)
 	Scene *scene= CTX_data_scene(C);
 	View3D *v3d= CTX_wm_view3d(C);
 	unsigned int lay, local;
-	int islamp= 0;
+	/* int islamp= 0; */ /* UNUSED */
 	
 	lay= move_to_layer_init(C, op);
 	lay &= 0xFFFFFF;
@@ -1112,7 +1114,7 @@ static int move_to_layer_exec(bContext *C, wmOperator *op)
 			base->object->lay= lay;
 			base->object->flag &= ~SELECT;
 			base->flag &= ~SELECT;
-			if(base->object->type==OB_LAMP) islamp= 1;
+			/* if(base->object->type==OB_LAMP) islamp= 1; */
 		}
 		CTX_DATA_END;
 	}
@@ -1124,7 +1126,7 @@ static int move_to_layer_exec(bContext *C, wmOperator *op)
 			local= base->lay & 0xFF000000;  
 			base->lay= lay + local;
 			base->object->lay= lay;
-			if(base->object->type==OB_LAMP) islamp= 1;
+			/* if(base->object->type==OB_LAMP) islamp= 1; */
 		}
 		CTX_DATA_END;
 	}
@@ -1402,6 +1404,20 @@ static void single_object_users(Scene *scene, View3D *v3d, int flag)
 	set_sca_new_poins();
 }
 
+/* not an especially efficient function, only added so the single user
+ * button can be functional.*/
+void ED_object_single_user(Scene *scene, Object *ob)
+{
+	Base *base;
+
+	for(base= FIRSTBASE; base; base= base->next) {
+		if(base->object == ob)  base->flag |=  OB_DONE;
+		else					base->flag &= ~OB_DONE;
+	}
+
+	single_object_users(scene, NULL, OB_DONE);
+}
+
 static void new_id_matar(Material **matar, int totcol)
 {
 	ID *id;
@@ -1480,6 +1496,9 @@ static void single_obdata_users(Main *bmain, Scene *scene, int flag)
 					ob->recalc |= OB_RECALC_DATA;
 					ob->data= copy_armature(ob->data);
 					armature_rebuild_pose(ob, ob->data);
+					break;
+				case OB_SPEAKER:
+					ob->data= copy_speaker(ob->data);
 					break;
 				default:
 					if (G.f & G_DEBUG)

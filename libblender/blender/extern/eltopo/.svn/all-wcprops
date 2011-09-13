@@ -1,7 +1,7 @@
 K 25
 svn:wc:ra_dav:version-url
 V 62
-/svnroot/bf-blender/!svn/ver/38443/trunk/blender/extern/eltopo
+/svnroot/bf-blender/!svn/ver/40064/trunk/blender/extern/eltopo
 END
 eltopo-capi.h
 K 25
@@ -13,7 +13,7 @@ SConscript
 K 25
 svn:wc:ra_dav:version-url
 V 73
-/svnroot/bf-blender/!svn/ver/36420/trunk/blender/extern/eltopo/SConscript
+/svnroot/bf-blender/!svn/ver/39584/trunk/blender/extern/eltopo/SConscript
 END
 readme.txt
 K 25

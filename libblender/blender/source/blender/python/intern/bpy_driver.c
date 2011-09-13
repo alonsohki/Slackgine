@@ -1,5 +1,5 @@
 /*
- * $Id: bpy_driver.c 38265 2011-07-09 17:41:39Z campbellbarton $
+ * $Id: bpy_driver.c 39919 2011-09-05 05:42:49Z zanqdo $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -41,8 +41,6 @@
 
 #include "bpy_driver.h"
 
-#include "../generic/py_capi_utils.h"
-
 /* for pydrivers (drivers using one-line Python expressions to express relationships between targets) */
 PyObject *bpy_pydriver_Dict= NULL;
 
@@ -78,6 +76,13 @@ int bpy_pydriver_create_dict(void)
 		Py_DECREF(mod);
 	}
 
+	/* add noise to global namespace */
+	mod= PyImport_ImportModuleLevel((char *)"noise", NULL, NULL, NULL, 0);
+	if (mod) {
+		PyDict_SetItemString(bpy_pydriver_Dict, "noise", mod);
+		Py_DECREF(mod);
+	}
+
 	return 0;
 }
 
@@ -89,7 +94,7 @@ int bpy_pydriver_create_dict(void)
 void BPY_driver_reset(void)
 {
 	PyGILState_STATE gilstate;
-	int use_gil= !PYC_INTERPRETER_ACTIVE;
+	int use_gil= 1; /* !PYC_INTERPRETER_ACTIVE; */
 
 	if(use_gil)
 		gilstate= PyGILState_Ensure();
@@ -120,9 +125,14 @@ static void pydriver_error(ChannelDriver *driver)
 /* This evals py driver expressions, 'expr' is a Python expression that
  * should evaluate to a float number, which is returned.
  *
- * note: PyGILState_Ensure() isnt always called because python can call the
- * bake operator which intern starts a thread which calls scene update which
- * does a driver update. to avoid a deadlock check PYC_INTERPRETER_ACTIVE if PyGILState_Ensure() is needed.
+ * (old)note: PyGILState_Ensure() isnt always called because python can call
+ * the bake operator which intern starts a thread which calls scene update
+ * which does a driver update. to avoid a deadlock check PYC_INTERPRETER_ACTIVE
+ * if PyGILState_Ensure() is needed - see [#27683]
+ *
+ * (new)note: checking if python is running is not threadsafe [#28114]
+ * now release the GIL on python operator execution instead, using
+ * PyEval_SaveThread() / PyEval_RestoreThread() so we dont lock up blender.
  */
 float BPY_driver_exec(ChannelDriver *driver)
 {
@@ -149,7 +159,7 @@ float BPY_driver_exec(ChannelDriver *driver)
 		return 0.0f;
 	}
 
-	use_gil= !PYC_INTERPRETER_ACTIVE;
+	use_gil= 1; /* !PYC_INTERPRETER_ACTIVE; */
 
 	if(use_gil)
 		gilstate= PyGILState_Ensure();

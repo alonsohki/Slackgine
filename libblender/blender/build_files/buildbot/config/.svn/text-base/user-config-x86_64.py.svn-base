@@ -81,6 +81,16 @@ WITH_BF_STATICJEMALLOC = True
 BF_JEMALLOC = '/home/sources/staticlibs/jemalloc'
 BF_JEMALLOC_LIBPATH = '${BF_JEMALLOC}/lib64'
 
+# Use 3d mouse library
+WITH_BF_3DMOUSE = True
+WITH_BF_STATIC3DMOUSE = True
+BF_3DMOUSE = '/home/sources/staticlibs/spnav'
+BF_3DMOUSE_LIBPATH = '${BF_3DMOUSE}/lib64'
+
+# FFT
+WITH_BF_FFTW3 = True
+WITH_BF_STATICFFTW3 = True
+
 # Compilation and optimization
 BF_DEBUG = False
 REL_CFLAGS = ['-O2']

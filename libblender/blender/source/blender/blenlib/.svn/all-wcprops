@@ -1,7 +1,7 @@
 K 25
 svn:wc:ra_dav:version-url
 V 71
-/svnroot/bf-blender/!svn/ver/38443/trunk/blender/source/blender/blenlib
+/svnroot/bf-blender/!svn/ver/40162/trunk/blender/source/blender/blenlib
 END
 BLI_dlrbTree.h
 K 25
@@ -91,7 +91,7 @@ BLI_ghash.h
 K 25
 svn:wc:ra_dav:version-url
 V 83
-/svnroot/bf-blender/!svn/ver/34966/trunk/blender/source/blender/blenlib/BLI_ghash.h
+/svnroot/bf-blender/!svn/ver/39316/trunk/blender/source/blender/blenlib/BLI_ghash.h
 END
 BLI_args.h
 K 25
@@ -139,7 +139,7 @@ BLI_string.h
 K 25
 svn:wc:ra_dav:version-url
 V 84
-/svnroot/bf-blender/!svn/ver/36933/trunk/blender/source/blender/blenlib/BLI_string.h
+/svnroot/bf-blender/!svn/ver/39655/trunk/blender/source/blender/blenlib/BLI_string.h
 END
 BLI_blenlib.h
 K 25
@@ -157,19 +157,19 @@ BLI_math_rotation.h
 K 25
 svn:wc:ra_dav:version-url
 V 91
-/svnroot/bf-blender/!svn/ver/35954/trunk/blender/source/blender/blenlib/BLI_math_rotation.h
+/svnroot/bf-blender/!svn/ver/39724/trunk/blender/source/blender/blenlib/BLI_math_rotation.h
 END
 BLI_math_vector.h
 K 25
 svn:wc:ra_dav:version-url
 V 89
-/svnroot/bf-blender/!svn/ver/37276/trunk/blender/source/blender/blenlib/BLI_math_vector.h
+/svnroot/bf-blender/!svn/ver/40147/trunk/blender/source/blender/blenlib/BLI_math_vector.h
 END
 BLI_utildefines.h
 K 25
 svn:wc:ra_dav:version-url
 V 89
-/svnroot/bf-blender/!svn/ver/37276/trunk/blender/source/blender/blenlib/BLI_utildefines.h
+/svnroot/bf-blender/!svn/ver/40050/trunk/blender/source/blender/blenlib/BLI_utildefines.h
 END
 SConscript
 K 25
@@ -187,7 +187,7 @@ BLI_math_matrix.h
 K 25
 svn:wc:ra_dav:version-url
 V 89
-/svnroot/bf-blender/!svn/ver/36792/trunk/blender/source/blender/blenlib/BLI_math_matrix.h
+/svnroot/bf-blender/!svn/ver/40162/trunk/blender/source/blender/blenlib/BLI_math_matrix.h
 END
 BLI_heap.h
 K 25
@@ -211,7 +211,7 @@ BLI_callbacks.h
 K 25
 svn:wc:ra_dav:version-url
 V 87
-/svnroot/bf-blender/!svn/ver/37799/trunk/blender/source/blender/blenlib/BLI_callbacks.h
+/svnroot/bf-blender/!svn/ver/39821/trunk/blender/source/blender/blenlib/BLI_callbacks.h
 END
 BLI_uvproject.h
 K 25
@@ -241,7 +241,7 @@ BLI_math_inline.h
 K 25
 svn:wc:ra_dav:version-url
 V 89
-/svnroot/bf-blender/!svn/ver/34966/trunk/blender/source/blender/blenlib/BLI_math_inline.h
+/svnroot/bf-blender/!svn/ver/40064/trunk/blender/source/blender/blenlib/BLI_math_inline.h
 END
 BLI_cpu.h
 K 25

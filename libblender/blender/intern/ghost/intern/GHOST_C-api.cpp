@@ -1,5 +1,5 @@
 /*
- * $Id: GHOST_C-api.cpp 36426 2011-05-02 08:07:24Z jesterking $
+ * $Id: GHOST_C-api.cpp 38908 2011-08-02 04:28:05Z merwin $
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
  * This program is free software; you can redistribute it and/or
@@ -37,7 +37,7 @@
  *
  * C Api for GHOST
  *
- * Version: $Id: GHOST_C-api.cpp 36426 2011-05-02 08:07:24Z jesterking $
+ * Version: $Id: GHOST_C-api.cpp 38908 2011-08-02 04:28:05Z merwin $
  */
 
 #include <stdlib.h>
@@ -273,23 +273,6 @@ GHOST_TSuccess GHOST_EndProgressBar(GHOST_WindowHandle windowhandle)
 
 	return window->endProgressBar();
 }
-
-
-int GHOST_OpenNDOF(GHOST_SystemHandle systemhandle, GHOST_WindowHandle windowhandle,
-   GHOST_NDOFLibraryInit_fp setNdofLibraryInit, 
-    GHOST_NDOFLibraryShutdown_fp setNdofLibraryShutdown,
-    GHOST_NDOFDeviceOpen_fp setNdofDeviceOpen)
-  //original patch only
-  /*  GHOST_NDOFEventHandler_fp setNdofEventHandler)*/
-{
-	GHOST_ISystem* system = (GHOST_ISystem*) systemhandle;
-
-    return system->openNDOF((GHOST_IWindow*) windowhandle,
-        setNdofLibraryInit, setNdofLibraryShutdown, setNdofDeviceOpen);
-//	original patch
-//        setNdofLibraryInit, setNdofLibraryShutdown, setNdofDeviceOpen, setNdofEventHandler);
-}
-
 
 
 GHOST_TStandardCursor GHOST_GetCursorShape(GHOST_WindowHandle windowhandle)

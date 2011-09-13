@@ -1,5 +1,5 @@
 /*
- * $Id: rna_ui_api.c 36577 2011-05-09 16:31:54Z campbellbarton $
+ * $Id: rna_ui_api.c 40050 2011-09-09 01:29:53Z campbellbarton $
  *
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -46,7 +46,7 @@ static void rna_uiItemR(uiLayout *layout, PointerRNA *ptr, const char *propname,
 	int flag= 0;
 
 	if(!prop) {
-		RNA_warning("rna_uiItemR: property not found: %s.%s\n", RNA_struct_identifier(ptr->type), propname);
+		RNA_warning("property not found: %s.%s", RNA_struct_identifier(ptr->type), propname);
 		return;
 	}
 
