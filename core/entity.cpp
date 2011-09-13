@@ -28,6 +28,7 @@ Entity::Entity ( l3m::Model* pModel, Entity* parent )
 : m_parent ( 0 )
 , Transformable ( IdentityTransform() )
 , m_modelRenderer ( 0 )
+, m_beingDeleted ( false )
 {
     setParent ( parent );
     setModel ( pModel );
@@ -37,15 +38,20 @@ Entity::Entity ( Entity* parent )
 : m_parent ( 0 )
 , Transformable ( IdentityTransform() )
 , m_modelRenderer ( 0 )
+, m_beingDeleted ( false )
 {
     setParent ( parent );
 }
 
 Entity::~Entity()
 {
+    m_beingDeleted = true;
+    
     // Recursively delete all the child entities
     for ( EntityVector::iterator iter = m_children.begin(); iter != m_children.end(); ++iter )
+    {
         delete *iter;
+    }
     
     // Unlink us from our parent
     if ( m_parent )
@@ -81,14 +87,17 @@ Entity::~Entity()
 
 void Entity::unlinkChild ( Entity* entity )
 {
-    for ( EntityVector::iterator iter = m_children.begin();
-          iter != m_children.end();
-          ++iter )
+    if ( !m_beingDeleted )
     {
-        if ( *iter == entity )
+        for ( EntityVector::iterator iter = m_children.begin();
+              iter != m_children.end();
+              ++iter )
         {
-            m_children.erase ( iter );
-            break;
+            if ( *iter == entity )
+            {
+                m_children.erase ( iter );
+                break;
+            }
         }
     }
 }
@@ -96,7 +105,9 @@ void Entity::unlinkChild ( Entity* entity )
 void Entity::linkChild ( Entity* entity )
 {
     if ( entity != this )
+    {
         m_children.push_back ( entity );
+    }
 }
 
 void Entity::setParent ( Entity* parent )

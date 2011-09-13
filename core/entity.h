@@ -61,6 +61,7 @@ private:
     Entity*                     m_parent;
     EntityVector                m_children;
     l3m::Model*                 m_model;
+    bool                        m_beingDeleted;
     
     ComponentVector             m_tickableComponents;
     ComponentVector             m_renderableComponents;
