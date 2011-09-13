@@ -308,7 +308,7 @@ static bool ImportMesh ( Renderer::Geometry* g, const std::string& name, u32 mat
     
     // Import the material
     Renderer::Material mat;
-    if ( me->mat != 0 )
+    if ( me->mat != 0 && me->mat[mat_index] != 0 )
     {
         ::Material* ma = me->mat[mat_index];
         Color ambient ( ma->ambr * 255.0f, ma->ambg * 255.0f, ma->ambb * 255.0f, 1.0f );
