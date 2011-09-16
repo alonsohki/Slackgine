@@ -20,31 +20,17 @@
 #pragma once
 
 #include "render_strategy.h"
-#include "core/slackgine.h"
 
 namespace Renderer { namespace Strategy
 {
     
-class Celshading : public IRenderStrategy
+class Celshading : public RenderStrategy
 {
 public:
     //--------------------------------------------------------------------------
     // Constructor/Destructor
     Celshading  ();
     ~Celshading ();
-    
-    //--------------------------------------------------------------------------
-    // Method to render the scene
-    bool        render          ( Core::Slackgine* sg );
-    
-    //--------------------------------------------------------------------------
-    // Error management
-    void        getError        ( char* error ) const;
-    
-private:
-    //--------------------------------------------------------------------------
-    // Private class attributes
-    char        m_error [ 256 ];
 };
     
 }

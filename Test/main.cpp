@@ -66,6 +66,7 @@ void display ( void )
         sg = new Slackgine ();
         sg->initialize ();
         sg->getModelManager().addLookupPath ( ".." );
+        sg->setRenderStrategy < Renderer::Strategy::Celshading > ();
     }
 
     if ( model == 0 )
@@ -78,12 +79,10 @@ void display ( void )
     }
     
     sg->tick ();
-    Renderer::Strategy::Celshading strategy;
-    
-    if ( !strategy.render (sg) )
+    if ( !sg->render() )
     {
         char error [ 1024 ];
-        strategy.getError ( error );
+        sg->getError ( error );
         fprintf ( stderr, "Error rendering the scene: %s\n", error );
     }
     

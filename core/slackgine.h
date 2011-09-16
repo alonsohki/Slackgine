@@ -20,11 +20,14 @@
 #pragma once
 
 #include "renderer/renderer.h"
+#include "renderer/strategies/render_strategy.h"
 #include "l3m/l3m.h"
 #include "shared/platform.h"
 #include "model_manager.h"
 #include "time.h"
 #include "world.h"
+
+namespace Renderer { class RenderStrategy; }
 
 namespace Core
 {
@@ -54,6 +57,7 @@ public:
     
     void                        tick                    ();
     bool                        render                  ();
+    bool                        renderGeometry          ();
                 
     Renderer::IRenderer*        getRenderer             () { return m_renderer; }
     ModelManager&               getModelManager         () { return m_modelManager; }
@@ -63,6 +67,14 @@ public:
     
     void                        getError                ( char* dest ) const;
     
+    //--------------------------------------------------------------------------
+    // Stuff related to the render strategy
+    template < class T >
+    void                        setRenderStrategy       ()
+    {
+        m_renderStrategy = new T ();
+    }
+    
 private:
     Renderer::IRenderer*        m_renderer;
     Time                        m_time;
@@ -70,6 +82,7 @@ private:
     ModelManager                m_modelManager;
     World                       m_world;
     char                        m_error [ 256 ];
+    Renderer::RenderStrategy*   m_renderStrategy;
 };
 
 }

@@ -23,24 +23,8 @@ using namespace Renderer::Strategy;
 
 Celshading::Celshading ()
 {
-    m_error[0] = '\0';
 }
 
 Celshading::~Celshading ()
 {
-}
-
-bool Celshading::render ( Core::Slackgine* sg )
-{
-    if ( !sg->render () )
-    {
-        sg->getError ( m_error );
-        return false;
-    }
-    return true;
-}
-
-void Celshading::getError(char* error) const
-{
-    strcpy ( error, m_error );
 }

@@ -70,9 +70,15 @@ bool Slackgine::render ()
     }
     else
     {
-        getWorld().render ( getRenderer() );
+        m_renderStrategy->execute ( this );
         getRenderer()->endScene();
     }
+    return true;
+}
+
+bool Slackgine::renderGeometry ()
+{
+    getWorld().render ( getRenderer() );
     return true;
 }
 

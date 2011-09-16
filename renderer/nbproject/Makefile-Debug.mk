@@ -36,6 +36,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/strategies/celshading.o \
 	${OBJECTDIR}/vertex.o \
+	${OBJECTDIR}/strategies/render_strategy.o \
 	${OBJECTDIR}/renderers/opengl3/opengl3.o \
 	${OBJECTDIR}/geometry.o \
 	${OBJECTDIR}/renderers/opengl3/renderer.o \
@@ -81,6 +82,11 @@ ${OBJECTDIR}/vertex.o: vertex.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/vertex.o vertex.cpp
+
+${OBJECTDIR}/strategies/render_strategy.o: strategies/render_strategy.cpp 
+	${MKDIR} -p ${OBJECTDIR}/strategies
+	${RM} $@.d
+	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/strategies/render_strategy.o strategies/render_strategy.cpp
 
 ${OBJECTDIR}/renderers/opengl3/opengl3.o: renderers/opengl3/opengl3.cpp 
 	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3
