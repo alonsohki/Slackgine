@@ -41,11 +41,32 @@ RenderStrategy::~RenderStrategy ()
 
 bool RenderStrategy::execute ( Core::Slackgine* sg )
 {
-    if ( !sg->renderGeometry () )
+    // Perform the geometry passes
+    for ( PassVector::iterator iter = m_passes[PASS_GEOMETRY].begin();
+          iter != m_passes[PASS_GEOMETRY].end();
+          ++iter )
     {
-        sg->getError ( m_error );
-        return false;
+        if ( !sg->renderGeometry () )
+        {
+            sg->getError( m_error );
+            return false;
+        }
     }
+    
+    // Perform the composition passes
+    for ( PassVector::iterator iter = m_passes[PASS_COMPOSITION].begin();
+          iter != m_passes[PASS_COMPOSITION].end();
+          ++iter )
+    {
+    }
+    
+    // Perform the post-process passes
+    for ( PassVector::iterator iter = m_passes[PASS_POSTPROCESS].begin();
+          iter != m_passes[PASS_POSTPROCESS].end();
+          ++iter )
+    {
+    }
+
     return true;
 }
 
@@ -59,4 +80,17 @@ void RenderStrategy::addPass ( Pass* pass )
     if ( pass->getType() >= PASS_MAX )
         return;
     m_passes[pass->getType()].push_back ( pass );
+}
+
+void RenderStrategy::blendStrategy ( RenderStrategy* strategy )
+{
+    for ( u32 i = 0; i < PASS_MAX; ++i )
+    {
+        for ( PassVector::iterator iter = strategy->m_passes[i].begin();
+              iter != strategy->m_passes[i].end();
+              ++iter )
+        {
+            m_passes[i].push_back ( (*iter)->clone() );
+        }
+    }
 }

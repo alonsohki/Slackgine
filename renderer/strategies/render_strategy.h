@@ -35,7 +35,6 @@ class RenderStrategy
     enum PassType
     {
         PASS_GEOMETRY = 0,
-        PASS_RASTER,
         PASS_COMPOSITION,
         PASS_POSTPROCESS,
         PASS_MAX
@@ -48,6 +47,10 @@ class RenderStrategy
         // Constructor/Destructor
                         Pass    ( PassType type );
         virtual         ~Pass   ();
+        
+        //----------------------------------------------------------------------
+        // Pass blending, used in strategy blending.
+        virtual Pass*   clone           () = 0;
         
         //----------------------------------------------------------------------
         // Pass type
@@ -76,6 +79,11 @@ public:
     // Functions to allow the child classes to define their passes
 protected:
     void        addPass                 ( Pass* pass );
+    
+    //--------------------------------------------------------------------------
+    // Also allow strategy blending.
+    void        blendStrategy           ( RenderStrategy* strategy );
+    
 public:
     
     //--------------------------------------------------------------------------
