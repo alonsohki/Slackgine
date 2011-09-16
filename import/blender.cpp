@@ -207,42 +207,19 @@ std::string get_material_id(Material *mat)
 	return translate_id(id_name(mat)) + "-material";
 }
 
-static Transform get_node_transform_ob(Object *ob, Vector3* scaling)
+static Transform get_node_transform_ob(Object *ob, Matrix3* scaling)
 {
     Transform transform;
-	if (ob->parent)
-    {
-		float C[4][4], tmat[4][4], imat[4][4], mat[4][4];
-        float scale[3];
 
-		// factor out scale from obmat
-		copy_v3_v3(scale, ob->size);
-
-		ob->size[0] = ob->size[1] = ob->size[2] = 1.0f;
-		object_to_mat4(ob, C);
-		copy_v3_v3(ob->size, scale);
-
-		mul_serie_m4(tmat, ob->parent->obmat, ob->parentinv, C, NULL, NULL, NULL, NULL, NULL);
-
-		// calculate local mat
-
-		invert_m4_m4(imat, ob->parent->obmat);
-		mul_m4_m4m4(mat, tmat, imat);
-                
-		// done
-                for ( u8 i = 0; i < 3; ++i )
-                     for ( u8 j = 0; j < 3; ++j )
-                         transform.orientation().vector()[i*3+j] = mat[i][j];
-                transform.translation() = Vector3 ( mat[3][0], mat[3][1], mat[3][2] );
-                copy_v3_v3 ( reinterpret_cast<float *>(scaling), ob->size );
-	}
-	else {
-            transform.translation() = Vector3 ( ob->loc[0], ob->loc[1], ob->loc[2] );
-            for ( u8 i = 0; i < 3; ++i )
-                 for ( u8 j = 0; j < 3; ++j )
-                     transform.orientation().vector()[i*3+j] = ob->obmat[i][j];
-            copy_v3_v3(reinterpret_cast<float *>(scaling), ob->size);
-	}
+    transform.translation() = Vector3 ( ob->obmat[3][0], ob->obmat[3][1], ob->obmat[3][2] );
+    Matrix3 basis;
+    for ( u8 i = 0; i < 3; ++i )
+         for ( u8 j = 0; j < 3; ++j )
+             basis.vector()[i*3+j] = ob->obmat[i][j];
+    Matrix3 Q, R;
+    Matrix3::QRDecompose ( basis, &Q, &R );
+    transform.orientation() = Q;
+    *scaling = R;
 
     return transform;
 }
@@ -461,7 +438,7 @@ static bool ImportSceneObject ( l3m::Model* model, Object* ob, ::Scene* sce, l3m
             node.url = get_geometry_id(ob);
             
             // Get the transform
-            Vector3 scale;
+            Matrix3 scale;
             node.transform = get_node_transform_ob(ob, &scale );
             
             // Apply the scale and mirroring
@@ -478,7 +455,7 @@ static bool ImportSceneObject ( l3m::Model* model, Object* ob, ::Scene* sce, l3m
                     Renderer::Vertex* v = g.vertices();
                     for ( u32 i = 0; i < g.numVertices(); ++i )
                     {
-                        Vector3 pos = v[i].pos() * ScalingMatrix ( scale );
+                        Vector3 pos = v[i].pos() * scale;
                         v[i].pos() = pos;
                     }
                 }
