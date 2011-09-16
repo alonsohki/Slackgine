@@ -72,6 +72,8 @@ public:
     template < class T >
     void                        setRenderStrategy       ()
     {
+        if ( m_renderStrategy != 0 )
+            delete m_renderStrategy;
         m_renderStrategy = new T ();
     }
     
