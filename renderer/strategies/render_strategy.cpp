@@ -37,6 +37,15 @@ RenderStrategy::RenderStrategy ()
 
 RenderStrategy::~RenderStrategy ()
 {
+    for ( u32 i = 0; i < PASS_MAX; ++i )
+    {
+        for ( PassVector::iterator iter = m_passes[i].begin();
+              iter != m_passes[i].end();
+              ++iter )
+        {
+            delete *iter;
+        }
+    }
 }
 
 bool RenderStrategy::execute ( Core::Slackgine* sg )
