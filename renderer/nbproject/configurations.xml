@@ -24,6 +24,14 @@
       </logicalFolder>
       <itemPath>renderers/renderer_selection.h</itemPath>
     </logicalFolder>
+    <logicalFolder name="f2"
+                   displayName="strategies"
+                   projectFiles="true"
+                   kind="ROOT">
+      <itemPath>strategies/celshading.cpp</itemPath>
+      <itemPath>strategies/celshading.h</itemPath>
+      <itemPath>strategies/render_strategy.h</itemPath>
+    </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
                    projectFiles="false"

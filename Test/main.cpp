@@ -24,6 +24,7 @@
 #include "slackgine.h"
 #include "l3m/l3m.h"
 #include "core/entity_components/scene.h"
+#include "renderer/strategies/celshading.h"
 
 void display ( void );
 
@@ -77,10 +78,12 @@ void display ( void )
     }
     
     sg->tick ();
-    if ( !sg->render () )
+    Renderer::Strategy::Celshading strategy;
+    
+    if ( !strategy.render (sg) )
     {
         char error [ 1024 ];
-        sg->getError ( error );
+        strategy.getError ( error );
         fprintf ( stderr, "Error rendering the scene: %s\n", error );
     }
     
