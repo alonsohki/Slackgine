@@ -39,15 +39,15 @@ Time::~Time ()
 
 u32 Time::getSystemTime () const
 {
-    return time(0);
+    return getSystemTimeMS() / 1000;
 }
 
 u64 Time::getSystemTimeMS () const
 {
-    timeval tv;
-    gettimeofday ( &tv, 0 );
-    u64 ms = tv.tv_sec * 1000;
-    ms += tv.tv_usec / 1000;
+    timespec ts;
+    clock_gettime ( CLOCK_MONOTONIC, &ts );
+    u64 ms = ts.tv_sec * 1000;
+    ms += ts.tv_nsec / 1000000;
     return ms;
 }
 

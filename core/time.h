@@ -33,7 +33,7 @@ public:
     u32         getSystemTime           () const;
     u64         getSystemTimeMS         () const;
     u64         getTimeMS               () const { return m_timeMS; }
-    void        setTimeStep             ( float step ) { m_timestep = step; }
+    void        setTimeStep             ( f32 step ) { m_timestep = step; }
     float       getTimeStep             () const { return m_timestep; }
     
     void        sleepMS                 ( u32 ms ) const;
