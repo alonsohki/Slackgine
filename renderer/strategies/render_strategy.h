@@ -49,8 +49,13 @@ class RenderStrategy
         virtual         ~Pass   ();
         
         //----------------------------------------------------------------------
-        // Pass blending, used in strategy blending.
+        // Pass cloning, used in strategy blending.
         virtual Pass*   clone           () = 0;
+        
+        //----------------------------------------------------------------------
+        // Virtual function used to let the passes set up. Specially useful when
+        // executing passes that got blended from other strategies.
+        virtual void    setup           () = 0;
         
         //----------------------------------------------------------------------
         // Pass type

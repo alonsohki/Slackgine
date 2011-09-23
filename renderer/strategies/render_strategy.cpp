@@ -55,6 +55,7 @@ bool RenderStrategy::execute ( Core::Slackgine* sg )
           iter != m_passes[PASS_GEOMETRY].end();
           ++iter )
     {
+        (*iter)->setup ();
         if ( !sg->renderGeometry () )
         {
             sg->getError( m_error );
@@ -67,6 +68,7 @@ bool RenderStrategy::execute ( Core::Slackgine* sg )
           iter != m_passes[PASS_COMPOSITION].end();
           ++iter )
     {
+        (*iter)->setup ();
     }
     
     // Perform the post-process passes
@@ -74,6 +76,7 @@ bool RenderStrategy::execute ( Core::Slackgine* sg )
           iter != m_passes[PASS_POSTPROCESS].end();
           ++iter )
     {
+        (*iter)->setup ();
     }
 
     return true;
