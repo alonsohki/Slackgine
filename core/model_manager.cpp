@@ -137,7 +137,7 @@ bool ModelManager::addLookupPath (const std::string& path)
     if ( !S_ISDIR(status.st_mode) )
         return false;
     m_paths.push_back ( path );
-    LOG_V ( "ModelManager", "Added a new lookup path: %s", path.c_str() );
+    LOG_I ( "ModelManager", "Added a new lookup path: %s", path.c_str() );
     
     return true;
 }

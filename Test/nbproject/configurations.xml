@@ -143,6 +143,16 @@
                         CC="${MAKE} -j9 -f Makefile CONF=Debug clean"
                         OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a">
           </makeArtifact>
+          <makeArtifact PL="../shaders"
+                        CT="3"
+                        CN="Debug"
+                        AC="true"
+                        BL="false"
+                        WD="../shaders"
+                        BC="${MAKE} -j9 -f Makefile CONF=Debug"
+                        CC="${MAKE} -j9 -f Makefile CONF=Debug clean"
+                        OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libshaders.a">
+          </makeArtifact>
         </requiredProjects>
       </compileType>
     </conf>
@@ -281,6 +291,16 @@
                         BC="${MAKE} -j9 -f Makefile CONF=Release"
                         CC="${MAKE} -j9 -f Makefile CONF=Release clean"
                         OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a">
+          </makeArtifact>
+          <makeArtifact PL="../shaders"
+                        CT="3"
+                        CN="Release"
+                        AC="false"
+                        BL="false"
+                        WD="../shaders"
+                        BC="${MAKE} -j9 -f Makefile CONF=Release"
+                        CC="${MAKE} -j9 -f Makefile CONF=Release clean"
+                        OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libshaders.a">
           </makeArtifact>
         </requiredProjects>
       </compileType>

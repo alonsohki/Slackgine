@@ -51,6 +51,7 @@ Slackgine::~Slackgine ()
 bool Slackgine::initialize ()
 {
     LOG_V ( "Slackgine", "Initializing the engine" );
+    setContext ( this );
     return m_renderer->initialize ();
 }
 

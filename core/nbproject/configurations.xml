@@ -28,6 +28,10 @@
     <itemPath>model_manager.h</itemPath>
     <itemPath>model_renderer_factory.cpp</itemPath>
     <itemPath>model_renderer_factory.h</itemPath>
+    <itemPath>shader.cpp</itemPath>
+    <itemPath>shader.h</itemPath>
+    <itemPath>shader_manager.cpp</itemPath>
+    <itemPath>shader_manager.h</itemPath>
     <itemPath>slackgine.cpp</itemPath>
     <itemPath>slackgine.h</itemPath>
     <itemPath>texture_manager.cpp</itemPath>

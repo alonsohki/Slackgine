@@ -23,6 +23,7 @@
 #include "renderer/strategies/render_strategy.h"
 #include "l3m/l3m.h"
 #include "shared/platform.h"
+#include "shader_manager.h"
 #include "model_manager.h"
 #include "time.h"
 #include "world.h"
@@ -62,6 +63,7 @@ public:
     Renderer::IRenderer*        getRenderer             () { return m_renderer; }
     ModelManager&               getModelManager         () { return m_modelManager; }
     TextureManager&             getTextureManager       () { return m_textureManager; }
+    ShaderManager&              getShaderManager        () { return m_shaderManager; }
     Time&                       getTime                 () { return m_time; }
     World&                      getWorld                () { return m_world; }
     
@@ -82,6 +84,7 @@ private:
     Time                        m_time;
     TextureManager              m_textureManager;
     ModelManager                m_modelManager;
+    ShaderManager               m_shaderManager;
     World                       m_world;
     char                        m_error [ 256 ];
     Renderer::RenderStrategy*   m_renderStrategy;

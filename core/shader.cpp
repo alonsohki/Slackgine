@@ -12,21 +12,27 @@
 // For more detailed information, see the LICENSE file in
 // the top-level directory.
 //
-// FILE:        celshading.cpp
-// PURPOSE:     Cel-shading strategy.
+// FILE:        shader.cpp
+// PURPOSE:     Class defining a handle to the shaders loaded by the shader
+//              manager.
 // AUTHORS:     Alberto Alonso <rydencillo@gmail.com>
 //
 
-#include "celshading.h"
-#include "slackgine.h"
+#include "shader.h"
 
-using namespace Renderer::Strategy;
+using namespace Core;
 
-Celshading::Celshading ()
+Shader::Shader ( const std::string& name )
+: m_name ( name )
+, m_vert ( 0 )
+, m_frag ( 0 )
 {
-    Core::Slackgine::getInstance()->getShaderManager().load ( "celshading" );
 }
 
-Celshading::~Celshading ()
+Shader::~Shader ()
 {
+    if ( m_vert != 0 )
+        delete m_vert;
+    if ( m_frag != 0 )
+        delete m_frag;
 }
