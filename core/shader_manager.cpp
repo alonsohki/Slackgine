@@ -32,6 +32,12 @@ ShaderManager::ShaderManager ()
 
 ShaderManager::~ShaderManager ()
 {
+    for ( ShaderMap::iterator iter = m_shaders.begin();
+          iter != m_shaders.end();
+          ++iter )
+    {
+        delete iter->second;
+    }
 }
 
 bool ShaderManager::addLookupPath ( const std::string& path )

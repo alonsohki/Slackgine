@@ -40,6 +40,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/time.o \
 	${OBJECTDIR}/shader_manager.o \
 	${OBJECTDIR}/entity_components/scene.o \
+	${OBJECTDIR}/program.o \
 	${OBJECTDIR}/model_manager.o \
 	${OBJECTDIR}/transformable.o \
 	${OBJECTDIR}/texture_manager.o \
@@ -104,6 +105,11 @@ ${OBJECTDIR}/entity_components/scene.o: entity_components/scene.cpp
 	${MKDIR} -p ${OBJECTDIR}/entity_components
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/entity_components/scene.o entity_components/scene.cpp
+
+${OBJECTDIR}/program.o: program.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/program.o program.cpp
 
 ${OBJECTDIR}/model_manager.o: model_manager.cpp 
 	${MKDIR} -p ${OBJECTDIR}
