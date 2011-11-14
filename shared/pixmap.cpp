@@ -29,6 +29,9 @@ Pixmap::Pixmap ()
 }
 
 Pixmap::Pixmap ( u32 width, u32 height )
+: m_width ( 0 )
+, m_height ( 0 )
+, m_pixels ( 0 )
 {
     Create ( width, height );
 }
