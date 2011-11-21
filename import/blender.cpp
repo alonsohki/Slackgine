@@ -9,11 +9,111 @@
 // PURPOSE:     Import models from .blend files.
 // AUTHORS:     Alberto Alonso <rydencillo@gmail.com>
 //
+/* copied from BLI_utildefines.h */
+#define STRINGIFY_ARG(x) #x
+#define STRINGIFY(x) STRINGIFY_ARG(x)
+
+
+#if defined(__linux__) && defined(__GNUC__)
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif
+#include <fenv.h>
+#endif
+
+#if (defined(__APPLE__) && (defined(__i386__) || defined(__x86_64__)))
+#define OSX_SSE_FPE
+#include <xmmintrin.h>
+#endif
+
+#include <stdlib.h>
+#include <stddef.h>
+#include <string.h>
+
+/* for setuid / getuid */
+#ifdef __sgi
+#include <sys/types.h>
+#include <unistd.h>
+#endif
+
+/* This little block needed for linking to Blender... */
+
+#include "MEM_guardedalloc.h"
+
+#ifdef WIN32
+#include "BLI_winstuff.h"
+#endif
+
+#include "BLI_args.h"
+#include "BLI_threads.h"
+#include "BLI_scanfill.h" // for BLI_setErrorCallBack, TODO, move elsewhere
+#include "BLI_utildefines.h"
+#include "BLI_callbacks.h"
+
+#include "DNA_ID.h"
+#include "DNA_scene_types.h"
+
+#include "BLI_blenlib.h"
+
+#include "BKE_utildefines.h"
+#include "BKE_blender.h"
+#include "BKE_context.h"
+#include "BKE_depsgraph.h" // for DAG_on_visible_update
+#include "BKE_font.h"
+#include "BKE_global.h"
+#include "BKE_main.h"
+#include "BKE_material.h"
+#include "BKE_packedFile.h"
+#include "BKE_scene.h"
+#include "BKE_node.h"
+#include "BKE_report.h"
+#include "BKE_sound.h"
+
+#include "IMB_imbuf.h"	// for IMB_init
+
+#ifdef WITH_PYTHON
+#include "BPY_extern.h"
+#endif
+
+#include "RE_pipeline.h"
+
+//XXX #include "playanim_ext.h"
+#include "ED_datafiles.h"
+
+#include "WM_api.h"
+
+#include "RNA_define.h"
+
+#include "GPU_draw.h"
+#include "GPU_extensions.h"
+
+#ifdef WITH_BUILDINFO_HEADER
+#define BUILD_DATE
+#endif
+
+/* for passing information between creator and gameengine */
+#ifdef WITH_GAMEENGINE
+#include "BL_System.h"
+#else /* dummy */
+#define SYS_SystemHandle int
+#endif
+
+#include <signal.h>
+
+#ifdef __FreeBSD__
+# include <sys/types.h>
+# include <floatingpoint.h>
+# include <sys/rtprio.h>
+#endif
+
+#ifdef WITH_BINRELOC
+#include "binreloc.h"
+#endif
+
 #include <algorithm>
 #include <set>
 #include <string>
 #include <sstream>
-#include "blender_stuff.h"
 #include "BLO_readfile.h"
 #include "DNA_armature_types.h"
 #include "DNA_camera_types.h"
@@ -33,6 +133,8 @@
 #include "l3m/l3m.h"
 #include "l3m/Components/components.h"
 #include "renderer/mesh.h"
+
+extern void startup_blender (int argc, const char** argv);
 
 /**
 Translation map.

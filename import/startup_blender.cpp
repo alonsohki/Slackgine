@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  * $Id: creator.c 38290 2011-07-10 18:54:02Z campbellbarton $
  *
@@ -823,7 +821,9 @@ static int set_addons(int argc, const char **argv, void *data)
 	}
 }
 
-static void startup_blender (int argc, const char** argv)
+} // extern "C"
+
+void startup_blender (int argc, const char** argv)
 {
 	SYS_SystemHandle syshandle;
 	bArgs *ba;
@@ -846,5 +846,3 @@ static void startup_blender (int argc, const char** argv)
 
 	syshandle= 0;
 }
-
-} // extern "C"

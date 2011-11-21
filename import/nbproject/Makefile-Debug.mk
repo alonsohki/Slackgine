@@ -34,6 +34,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/startup_blender.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/blender.o \
 	${OBJECTDIR}/post_process.o
@@ -70,6 +71,11 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/import: ../libsquish/dist/Debug/GNU-L
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/import: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/import ${OBJECTFILES} ${LDLIBSOPTIONS} 
+
+${OBJECTDIR}/startup_blender.o: startup_blender.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -DUSE_THREADS -I. -I.. -I../libblender/blender/source/blender/blenkernel -I../libblender/blender/source/blender/blenlib -I../libblender/blender/source/blender/makesdna -I../libblender/blender/source/blender/makesrna -I../libblender/blender/intern/guardedalloc -I../libblender/blender/source/blender/imbuf -I../libblender/blender/source/blender/windowmanager -I../libblender/blender/source/blender/gpu -I../libblender/blender/source/blender/render/extern/include -I../libblender/blender/source/blender/nodes -I../libblender/blender/source/blender/editors/include -I../libblender/blender/source/blender/blenloader -MMD -MP -MF $@.d -o ${OBJECTDIR}/startup_blender.o startup_blender.cpp
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}

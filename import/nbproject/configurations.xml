@@ -17,6 +17,7 @@
     <itemPath>main.cpp</itemPath>
     <itemPath>post_process.cpp</itemPath>
     <itemPath>post_process.h</itemPath>
+    <itemPath>startup_blender.cpp</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -291,6 +292,12 @@
           </makeArtifact>
         </requiredProjects>
       </compileType>
+      <item path="startup_blender.cpp" ex="false" tool="1" flavor="0">
+        <ccTool>
+          <architecture>0</architecture>
+          <commandLine>-O0</commandLine>
+        </ccTool>
+      </item>
     </conf>
   </confs>
 </configurationDescriptor>
