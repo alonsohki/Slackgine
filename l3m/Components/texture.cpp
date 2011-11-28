@@ -38,7 +38,7 @@ bool Texture::Load ( IStream& stream, float version )
     m_image.Create ( size[0], size[1] );
     
     // Load the pixels
-    if ( stream.ReadColor ( m_image.pixels(), size[0]*size[1] ) != size[0]*size[1] )
+    if ( stream.ReadColor ( m_image.pixels(), size[0]*size[1] ) != (ssize_t)(size[0]*size[1]) )
         return SetError ( "Error reading the texture pixel data" );
     
     return true;

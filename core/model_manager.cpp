@@ -73,8 +73,8 @@ void* ModelManager::requestThread ( Thread*, void* )
 bool ModelManager::processOne ( ModelNode** nodeptr )
 {
     // First of all, check if any request is starving.
-    for ( u32 i = (m_nostarveQueue + 1) % PRIORITY_COUNT;
-          i != m_nostarveQueue;
+    for ( u32 i = ((u32)m_nostarveQueue + 1) % PRIORITY_COUNT;
+          i != (u32)m_nostarveQueue;
           i = ( i + 1 ) % PRIORITY_COUNT )
     {
         if ( m_queues[i].size() > 0 )
@@ -615,12 +615,12 @@ void ModelManager::tick ()
     }
 #else
     // Process models using SYNCHRONOUS_MAX_TIME as time limit.
-    u64 timeLimit = m_time.GetSystemTimeMS() + SYNCHRONOUS_MAX_TIME;
+    u64 timeLimit = m_time.getSystemTimeMS() + SYNCHRONOUS_MAX_TIME;
     std::vector<ModelNode*> processed_nodes;
     ModelNode* node;
-    while ( timeLimit > m_time.GetSystemTimeMS() )
+    while ( timeLimit > m_time.getSystemTimeMS() )
     {
-        if ( ProcessOne ( &node ) == false )
+        if ( processOne ( &node ) == false )
             break;
         processed_nodes.push_back ( node );
     }
@@ -629,7 +629,7 @@ void ModelManager::tick ()
           iter != processed_nodes.end();
           ++iter )
     {
-        DispatchRequest ( *iter );
+        dispatchRequest ( *iter );
     }
 #endif
 

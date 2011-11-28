@@ -1,5 +1,1 @@
-LOCAL_MODULE            := shared
-LOCAL_MODULE_FILENAME   := shared
-LOCAL_SRC_FILES         := 
-
-include $(BUILD_STATIC_LIBRARY)
+LOCAL_SRC_FILES := log.cpp  mutex.cpp  pixmap.cpp  thread_condition.cpp  thread.cpp

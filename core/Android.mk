@@ -1,5 +1,1 @@
-LOCAL_MODULE            := core
-LOCAL_MODULE_FILENAME   := core
-LOCAL_SRC_FILES         := slackgine.cpp entity.cpp extensible_entity.cpp
-
-include $(BUILD_STATIC_LIBRARY)
+LOCAL_SRC_FILES := camera.cpp entity.cpp model_manager.cpp model_renderer_factory.cpp shader.cpp shader_manager.cpp slackgine.cpp texture_manager.cpp time.cpp transformable.cpp world.cpp

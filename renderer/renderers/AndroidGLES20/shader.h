@@ -4,6 +4,10 @@
 #include <string>
 #include "gles20.h"
 
+
+namespace Renderer
+{
+
 class GLES20_Shader : public IShader
 {
     bool        m_loaded;
@@ -20,6 +24,8 @@ public:
     
     GLuint&             handler                 () { return m_handler; }
     const GLuint&       handler                 () const { return m_handler; }
+};
+
 };
 
 #endif	/* GLES20_SHADER_H */

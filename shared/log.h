@@ -13,7 +13,6 @@
 #include <cstdarg>
 
 #define LOGGING
-#define DEBUG
 #define DEBUG_VERY_VERBOSE
 
 #ifdef LOGGING

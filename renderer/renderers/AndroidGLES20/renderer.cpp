@@ -37,7 +37,7 @@ GLES20_Renderer::~GLES20_Renderer()
     }
 }
 
-bool GLES20_Renderer::Initialize()
+bool GLES20_Renderer::initialize()
 {
     if ( m_initialized )
         return true;

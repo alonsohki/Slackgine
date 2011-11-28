@@ -51,7 +51,7 @@ bool Geometry::Load(l3m::IStream& fp, float version)
     if ( fp.Read32 ( &numVertices, 1 ) != 1 )
         return SetError ( "Error reading the vertex count" );
     Vertex* vertices = ( Vertex* )malloc ( sizeof(Vertex) * numVertices );
-    if ( fp.ReadFloat(vertices->base(), numVertices*sizeof(Vertex)/sizeof(float)) != numVertices*sizeof(Vertex)/sizeof(float) )
+    if ( fp.ReadFloat(vertices->base(), numVertices*sizeof(Vertex)/sizeof(float)) != (ssize_t)(numVertices*sizeof(Vertex)/sizeof(float)) )
         return SetError ( "Error reading the vertex data" );
     m_geometry.Set ( vertices, numVertices );
 
@@ -78,7 +78,7 @@ bool Geometry::Load(l3m::IStream& fp, float version)
         
         // Vertex layer data
         void* data = m_geometry.CreateVertexLayer ( name, numLevels, 0, elementSize );
-        if ( fp.ReadData ( reinterpret_cast < char * > ( data ), elementSize, numLevels*numVertices ) != numLevels*numVertices )
+        if ( fp.ReadData ( reinterpret_cast < char * > ( data ), elementSize, numLevels*numVertices ) != (ssize_t)(numLevels*numVertices) )
             return SetError ( "Error reading the vertex layer data" );
     }
     
@@ -116,7 +116,7 @@ bool Geometry::Load(l3m::IStream& fp, float version)
         if ( fp.Read32 ( &numIndices, 1 ) != 1 )
             return SetError ( "Error reading the index count" );
         u32* indices = ( u32* )malloc ( sizeof(u32) * numIndices );
-        if ( fp.Read32 ( indices, numIndices ) != numIndices )
+        if ( fp.Read32 ( indices, numIndices ) != (ssize_t)numIndices )
             return SetError ( "Error reading the index data" );
         
         // Create the mesh

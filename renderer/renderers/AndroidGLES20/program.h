@@ -3,6 +3,9 @@
 
 #include "gles20.h"
 
+namespace Renderer
+{
+
 class GLES20_Program : public IProgram
 {
 public:
@@ -27,12 +30,20 @@ public:
     bool                Link                    ();
     bool                Use                     ();
     
+    bool                SetUniform              ( const std::string& name, f32 value );
+    bool                SetUniform              ( const std::string& name, i32 value );
+    bool                SetUniform              ( const std::string& name, const Vector2& vec );
+    bool                SetUniform              ( const std::string& name, const Vector3& vec );
+    bool                SetUniform              ( const std::string& name, const Matrix& mat );
+
     bool                Ok                      () const { return m_linked && m_handler > 0; }
     void                GetError                ( char* dest ) const { strcpy(dest, m_error); }
     
     GLuint&             handler                 () { return m_handler; }
     const GLuint&       handler                 () const { return m_handler; }
 };
+
+}
 
 #endif	/* GLES20_PROGRAM_H */
 

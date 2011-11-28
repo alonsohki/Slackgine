@@ -38,40 +38,52 @@ break; \
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 
+#include "../../texture.h"
 #include "../../shader.h"
 #include "../../program.h"
 #include "../../renderer.h"
 #include "shader.h"
 #include "program.h"
 #include "renderer.h"
+#include "texture.h"
 
-class Renderer
+namespace Renderer
 {
-public:
-    static IRenderer* CreateRenderer ()
+
+    class Factory
     {
-        return new GLES20_Renderer ();
-    }
+    public:
+        static IRenderer* CreateRenderer ()
+        {
+            return new GLES20_Renderer ();
+        }
     
-    static IProgram* CreateProgram ()
-    {
-        return new GLES20_Program ();
-    }
+        static IProgram* CreateProgram ()
+        {
+            return new GLES20_Program ();
+        }
     
-    static IShader* CreateShader ( IShader::Type type, const char* file )
-    {
-        IShader* shader = new GLES20_Shader ( type );
-        shader->Load ( file );
-        return shader;
-    }
+        static IShader* CreateShader ( IShader::Type type, const char* file )
+        {
+            IShader* shader = new GLES20_Shader ( type );
+            shader->Load ( file );
+            return shader;
+        }
     
-    static IShader* CreateShader ( IShader::Type type, std::istream& fp )
-    {
-        IShader* shader = new GLES20_Shader ( type );
-        shader->Load ( fp );
-        return shader;
-    }
-};
+        static IShader* CreateShader ( IShader::Type type, std::istream& fp )
+        {
+            IShader* shader = new GLES20_Shader ( type );
+            shader->Load ( fp );
+            return shader;
+        }
+
+        static ITexture*    CreateTexture   ( u32 width, u32 height, ITexture::Format format = ITexture::RGBA8 );
+    };
+
+}
+
+// Geometry definition
+#include "geometry.h"
 
 #endif
 

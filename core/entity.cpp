@@ -18,20 +18,20 @@
 using namespace Core;
 
 Entity::Entity ( l3m::Model* pModel, Entity* parent )
-: m_parent ( 0 )
-, Transformable ( IdentityTransform() )
-, m_modelRenderer ( 0 )
+: Transformable ( IdentityTransform() )
+, m_parent ( 0 )
 , m_beingDeleted ( false )
+, m_modelRenderer ( 0 )
 {
     setParent ( parent );
     setModel ( pModel );
 }
 
 Entity::Entity ( Entity* parent )
-: m_parent ( 0 )
-, Transformable ( IdentityTransform() )
-, m_modelRenderer ( 0 )
+: Transformable ( IdentityTransform() )
+, m_parent ( 0 )
 , m_beingDeleted ( false )
+, m_modelRenderer ( 0 )
 {
     setParent ( parent );
 }

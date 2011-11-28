@@ -12,45 +12,46 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-MY_LOCAL_PATH := $(call my-dir)
-MY_LOCAL_MODULES := 
 
-LOCAL_CFLAGS := -Wall -ansi -pipe -O3 -fno-exceptions -fno-rtti -DANDROID -I. -I.. -DDEBUG
-LOCAL_CXXFLAGS := $(LOCAL_CFLAGS)
+ANDROID_LEVEL=android-9
+MY_LOCAL_CFLAGS := -Wall -ansi -pipe -fno-exceptions -fno-rtti -DANDROID -I. -I.. -I../Android/platform_external_libpng -I/soft/dev/android-ndk/platforms/android-9/arch-arm/usr/include/
+MY_LOCAL_CXXFLAGS := $(LOCAL_CFLAGS)
 
-# shared
-LOCAL_PATH := $(MY_LOCAL_PATH)/../../shared
-include ../shared/Android.mk
-MY_LOCAL_MODULES += $(LOCAL_MODULE)
+include platform_external_libpng/Android.mk
 
-# math
-LOCAL_PATH := $(MY_LOCAL_PATH)/../../math
-include ../math/Android.mk
-MY_LOCAL_MODULES += $(LOCAL_MODULE)
-
-# core
-LOCAL_PATH := $(MY_LOCAL_PATH)/../../core
-include ../core/Android.mk
-MY_LOCAL_MODULES += $(LOCAL_MODULE)
-
-# l3m
-LOCAL_PATH := $(MY_LOCAL_PATH)/../../l3m
-include ../l3m/Android.mk
-MY_LOCAL_MODULES += $(LOCAL_MODULE)
-
-# renderer
-LOCAL_PATH := $(MY_LOCAL_PATH)/../../renderer
-include ../renderer/Android.mk
-MY_LOCAL_MODULES += $(LOCAL_MODULE)
-
-# Binding
-LOCAL_PATH := $(MY_LOCAL_PATH)
+LOCAL_PATH := ../core
 include $(CLEAR_VARS)
-LOCAL_MODULE    := Slackgine-jni-bind
-LOCAL_SRC_FILES := Slackgine.cpp l3m.cpp STLiostream.cpp Renderer.cpp
-LOCAL_STATIC_LIBRARIES := $(MY_LOCAL_MODULES)
-LOCAL_CFLAGS += -I../.. -I.. -I../../..
-LOCAL_CXXFLAGS += -I../.. -I.. -I../../..
-LOCAL_LDLIBS := -lGLESv2 -llog
+LOCAL_CFLAGS            := $(MY_LOCAL_CFLAGS)
+LOCAL_CXXFLAGS          := $(MY_LOCAL_CXXFLAGS)
+LOCAL_MODULE            := core
+LOCAL_MODULE_FILENAME   := core
+include ../core/Android.mk
+include $(BUILD_STATIC_LIBRARY)
 
-include $(BUILD_SHARED_LIBRARY)
+LOCAL_PATH := ../shared
+include $(CLEAR_VARS)
+LOCAL_CFLAGS            := $(MY_LOCAL_CFLAGS)
+LOCAL_CXXFLAGS          := $(MY_LOCAL_CXXFLAGS)
+LOCAL_MODULE            := shared
+LOCAL_MODULE_FILENAME   := shared
+include ../shared/Android.mk
+include $(BUILD_STATIC_LIBRARY)
+
+LOCAL_PATH := ../math
+include $(CLEAR_VARS)
+LOCAL_CFLAGS            := $(MY_LOCAL_CFLAGS)
+LOCAL_CXXFLAGS          := $(MY_LOCAL_CXXFLAGS)
+LOCAL_MODULE            := math
+LOCAL_MODULE_FILENAME   := math
+include ../math/Android.mk
+include $(BUILD_STATIC_LIBRARY)
+
+LOCAL_PATH := ../l3m
+include $(CLEAR_VARS)
+LOCAL_CFLAGS            := $(MY_LOCAL_CFLAGS)
+LOCAL_CXXFLAGS          := $(MY_LOCAL_CXXFLAGS)
+LOCAL_MODULE            := l3m
+LOCAL_MODULE_FILENAME   := l3m
+include ../l3m/Android.mk
+include $(BUILD_STATIC_LIBRARY)
+

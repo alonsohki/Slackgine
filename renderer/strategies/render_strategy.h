@@ -29,8 +29,7 @@ class RenderStrategy
     {
         PASS_GEOMETRY = 0,
         PASS_COMPOSITION,
-        PASS_POSTPROCESS,
-        PASS_MAX
+        PASS_POSTPROCESS
     };
     
     class Pass

@@ -59,17 +59,17 @@ public:
     bool        WriteTransform  ( const Transform* v, u32 nmemb );
     bool        WriteData       ( const char* data, u32 size, u32 nmemb );
     
-    size_t      Read16          ( u16* v, u32 nmemb );
-    size_t      Read32          ( u32* v, u32 nmemb );
-    size_t      Read64          ( u64* v, u32 nmemb );
-    size_t      ReadFloat       ( float* v, u32 nmemb );
-    size_t      ReadStr         ( std::string& str );
-    size_t      ReadMatrix      ( Matrix& mat );
-    size_t      ReadVector      ( Vector3& vec );
-    size_t      ReadColor       ( Color* col, u32 nmemb );
-    size_t      ReadQuaternion  ( Quaternion* v, u32 nmemb );
-    size_t      ReadTransform   ( Transform* v, u32 nmemb );
-    size_t      ReadData        ( char* data, u32 size, u32 nmemb );
+    ssize_t     Read16          ( u16* v, u32 nmemb );
+    ssize_t     Read32          ( u32* v, u32 nmemb );
+    ssize_t     Read64          ( u64* v, u32 nmemb );
+    ssize_t     ReadFloat       ( float* v, u32 nmemb );
+    ssize_t     ReadStr         ( std::string& str );
+    ssize_t     ReadMatrix      ( Matrix& mat );
+    ssize_t     ReadVector      ( Vector3& vec );
+    ssize_t     ReadColor       ( Color* col, u32 nmemb );
+    ssize_t     ReadQuaternion  ( Quaternion* v, u32 nmemb );
+    ssize_t     ReadTransform   ( Transform* v, u32 nmemb );
+    ssize_t     ReadData        ( char* data, u32 size, u32 nmemb );
     
     u32         flags           () const { return m_flags; }
     const u32&  totalIn         () const { return m_totalIn; }
@@ -77,12 +77,12 @@ public:
     
 private:
     void        SetupFlags    ();
-    size_t (*m_endian16writer)(const u16*, u32, std::ostream&);
-    size_t (*m_endian32writer)(const u32*, u32, std::ostream&);
-    size_t (*m_endian64writer)(const u64*, u32, std::ostream&);
-    size_t (*m_endian16reader)(u16*, u32, std::istream&);
-    size_t (*m_endian32reader)(u32*, u32, std::istream&);
-    size_t (*m_endian64reader)(u64*, u32, std::istream&);
+    ssize_t (*m_endian16writer)(const u16*, u32, std::ostream&);
+    ssize_t (*m_endian32writer)(const u32*, u32, std::ostream&);
+    ssize_t (*m_endian64writer)(const u64*, u32, std::ostream&);
+    ssize_t (*m_endian16reader)(u16*, u32, std::istream&);
+    ssize_t (*m_endian32reader)(u32*, u32, std::istream&);
+    ssize_t (*m_endian64reader)(u64*, u32, std::istream&);
 
 private:
     std::istream*       m_istream;

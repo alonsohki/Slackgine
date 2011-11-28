@@ -4,6 +4,9 @@
 #include <sstream>
 #include "gles20.h"
 
+namespace Renderer
+{
+    
 class GLES20_Renderer : public IRenderer
 {
 private:
@@ -17,16 +20,20 @@ public:
                 GLES20_Renderer        ();
                 ~GLES20_Renderer       ();
     
-    bool        Initialize              ();
-    bool        SetupModel              ( const l3mComponent* model );
+    bool        initialize              ();
 
-    bool        BeginScene              ();
-    bool        Render                  ( const l3mComponent* model );
-    bool        EndScene                ();
+    bool        beginScene              ();
+    bool        render                  ( Geometry* geometry, const Transform& transform );
+    bool        endScene                ();
 
-    void        GetError                ( char* dest ) const { strcpy(dest, m_error); }
+    void        setCamera               ( const Matrix& matProjection, const Matrix& matLookat );
+    void        pushState               ();
+    void        popState                ();
+
+    void        getError                ( char* dest ) const { strcpy(dest, m_error); }
 };
 
+};
 
 #endif	/* GLES20_RENDERER_H */
 

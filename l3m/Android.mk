@@ -1,5 +1,1 @@
-LOCAL_MODULE            := l3m
-LOCAL_MODULE_FILENAME   := l3m
-LOCAL_SRC_FILES         := l3m.cpp vertex.cpp mesh.cpp l3mFactory.cpp
-
-include $(BUILD_STATIC_LIBRARY)
+LOCAL_SRC_FILES := ./model.cpp ./stream.cpp ./Components/scene.cpp ./Components/require.cpp ./Components/factory.cpp ./Components/texture.cpp ./Components/camera.cpp ./Components/geometry.cpp

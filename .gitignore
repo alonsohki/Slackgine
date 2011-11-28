@@ -1,3 +1,5 @@
+Android/libs
+Android/obj
 Test/.dep.inc
 Test/build/
 Test/dist/

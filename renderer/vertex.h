@@ -49,6 +49,7 @@ public:
     {
         m_pos = Right.m_pos;
         m_norm = Right.m_norm;
+        return *this;
     }
     
     bool operator== ( const Vertex& Right ) const
