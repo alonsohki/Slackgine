@@ -17,3 +17,10 @@ all:
         cp ../$$i dist/include/$$i ; \
     done
 	mkdir -p dist/lib && cp obj/local/armeabi/*.a dist/lib/
+
+clean:
+	NDK_DEBUG=1 NDK_PROJECT_PATH="`pwd`" /soft/dev/android-ndk/ndk-build clean
+
+distclean:
+	NDK_DEBUG=1 NDK_PROJECT_PATH="`pwd`" /soft/dev/android-ndk/ndk-build distclean
+	rm -rf dist libs obj
