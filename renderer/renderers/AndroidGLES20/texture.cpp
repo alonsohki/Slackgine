@@ -76,19 +76,10 @@ GLenum GLES20_Texture::ConvertFormat (ITexture::Format format)
     
     switch ( format )
     {
-        case ALPHA4: ret = GL_ALPHA4; break;
-        case ALPHA8: ret = GL_ALPHA8; break;
-        case ALPHA12: ret = GL_ALPHA12; break;
-        case ALPHA16: ret = GL_ALPHA16; break;
-        case RGB4: ret = GL_RGB4; break;
-        case RGBA4: ret = GL_RGBA4;
-        case RGB5: ret = GL_RGB5; break;
+        case RGB8: ret = GL_RGB; break;
+        case RGBA8: ret = GL_RGBA; break;
+        case RGBA4: ret = GL_RGBA4; break;
         case RGB5_A1: ret = GL_RGB5_A1; break;
-        case RGB8: ret = GL_RGB8; break;
-        case RGBA8: ret = GL_RGBA8; break;
-        case RGB10_A2: ret = GL_RGB10_A2; break;
-        case RGBA12: ret = GL_RGBA12; break;
-        case RGBA16: ret = GL_RGBA16; break;
         default:
             ret = GL_INVALID_ENUM;
             break;

@@ -81,7 +81,7 @@ GLenum OpenGL3_Texture::ConvertFormat (ITexture::Format format)
         case ALPHA12: ret = GL_ALPHA12; break;
         case ALPHA16: ret = GL_ALPHA16; break;
         case RGB4: ret = GL_RGB4; break;
-        case RGBA4: ret = GL_RGBA4;
+        case RGBA4: ret = GL_RGBA4; break;
         case RGB5: ret = GL_RGB5; break;
         case RGB5_A1: ret = GL_RGB5_A1; break;
         case RGB8: ret = GL_RGB8; break;

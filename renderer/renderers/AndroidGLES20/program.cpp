@@ -1,5 +1,9 @@
 #include "gles20.h"
 
+using namespace Renderer;
+
+#if 0
+
 GLES20_Program::GLES20_Program ()
 : m_linked ( false )
 {
@@ -76,3 +80,4 @@ bool GLES20_Program::Use ()
     return Ok ();
 }
 
+#endif

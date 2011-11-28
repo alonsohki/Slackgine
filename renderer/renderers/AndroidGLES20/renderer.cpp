@@ -1,5 +1,7 @@
 #include "gles20.h"
 
+#if 0
+
 struct RendererData : public l3m::IRendererData
 {
     GLsizei         m_numbuffers;
@@ -210,3 +212,5 @@ bool GLES20_Renderer::EndScene()
 {
     return true;
 }
+
+#endif

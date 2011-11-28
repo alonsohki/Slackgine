@@ -24,7 +24,7 @@ include $(CLEAR_VARS)
 LOCAL_CFLAGS            := $(MY_LOCAL_CFLAGS)
 LOCAL_CXXFLAGS          := $(MY_LOCAL_CXXFLAGS)
 LOCAL_MODULE            := core
-LOCAL_MODULE_FILENAME   := core
+LOCAL_MODULE_FILENAME   := libcore
 include ../core/Android.mk
 include $(BUILD_STATIC_LIBRARY)
 
@@ -33,7 +33,7 @@ include $(CLEAR_VARS)
 LOCAL_CFLAGS            := $(MY_LOCAL_CFLAGS)
 LOCAL_CXXFLAGS          := $(MY_LOCAL_CXXFLAGS)
 LOCAL_MODULE            := shared
-LOCAL_MODULE_FILENAME   := shared
+LOCAL_MODULE_FILENAME   := libshared
 include ../shared/Android.mk
 include $(BUILD_STATIC_LIBRARY)
 
@@ -42,7 +42,7 @@ include $(CLEAR_VARS)
 LOCAL_CFLAGS            := $(MY_LOCAL_CFLAGS)
 LOCAL_CXXFLAGS          := $(MY_LOCAL_CXXFLAGS)
 LOCAL_MODULE            := math
-LOCAL_MODULE_FILENAME   := math
+LOCAL_MODULE_FILENAME   := libmath
 include ../math/Android.mk
 include $(BUILD_STATIC_LIBRARY)
 
@@ -51,7 +51,16 @@ include $(CLEAR_VARS)
 LOCAL_CFLAGS            := $(MY_LOCAL_CFLAGS)
 LOCAL_CXXFLAGS          := $(MY_LOCAL_CXXFLAGS)
 LOCAL_MODULE            := l3m
-LOCAL_MODULE_FILENAME   := l3m
+LOCAL_MODULE_FILENAME   := libl3m
 include ../l3m/Android.mk
+include $(BUILD_STATIC_LIBRARY)
+
+LOCAL_PATH := ../renderer
+include $(CLEAR_VARS)
+LOCAL_CFLAGS            := $(MY_LOCAL_CFLAGS)
+LOCAL_CXXFLAGS          := $(MY_LOCAL_CXXFLAGS)
+LOCAL_MODULE            := renderer
+LOCAL_MODULE_FILENAME   := librenderer
+include ../renderer/Android.mk
 include $(BUILD_STATIC_LIBRARY)
 

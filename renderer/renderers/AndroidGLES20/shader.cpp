@@ -1,5 +1,7 @@
 #include "gles20.h"
 
+using namespace Renderer;
+
 GLES20_Shader::GLES20_Shader ( IShader::Type type )
 : m_loaded ( false )
 {
