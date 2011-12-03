@@ -17,6 +17,10 @@ all:
         mkdir -p dist/include/`dirname $$i` ; \
         cp ../$$i dist/include/$$i ; \
     done
+	for i in `cd .. && find renderer -type f -name "*.h"` ; do \
+        mkdir -p dist/include/`dirname $$i` ; \
+        cp ../$$i dist/include/$$i ; \
+    done
 	mkdir -p dist/lib && cp obj/local/armeabi/*.a dist/lib/
 
 clean:
