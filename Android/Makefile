@@ -1,5 +1,6 @@
 all:
 	NDK_DEBUG=1 NDK_PROJECT_PATH="`pwd`" /soft/dev/android-ndk/ndk-build -j4
+	cp ../slackgine.h dist/include/
 	for i in `cd .. && find core -type f -name "*.h"` ; do \
 	    mkdir -p dist/include/`dirname $$i` ; \
         cp ../$$i dist/include/$$i ; \
