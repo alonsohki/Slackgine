@@ -3,6 +3,7 @@ all:
 	cd math && make -f Makefile all CONF=Release
 	cd l3m && make -f Makefile all CONF=Release
 	cd core && make -f Makefile all CONF=Release
+	cd renderer && make -f Makefile all CONF=Release
 	cd import && make -f Makefile all CONF=Release
 	cd model_optimizer && make -f Makefile all CONF=Release
 	cd model_splitter && make -f Makefile all CONF=Release
@@ -34,18 +35,21 @@ all:
 	cp `find math/dist -name "libmath.a" | grep Release` dist/lib/
 	cp `find l3m/dist -name "libl3m.a" | grep Release` dist/lib/
 	cp `find core/dist -name "libcore.a" | grep Release` dist/lib/
+	cp `find renderer/dist -name "librenderer.a" | grep Release` dist/lib/
 	cp `find import/dist -name "import" | grep Release` dist/bin/
 	cp `find model_optimizer/dist -name "model_optimizer" | grep Release` dist/bin/
 	cp `find model_splitter/dist -name "model_splitter" | grep Release` dist/bin/
 
 clean:
-	make -f shared/Makefile clean CONF=Release
-	make -f math/Makefile clean CONF=Release
-	make -f l3m/Makefile clean CONF=Release
-	make -f core/Makefile clean CONF=Release
-	make -f import/Makefile clean CONF=Release
-	make -f model_optimizer/Makefile clean CONF=Release
-	make -f model_splitter/Makefile clean CONF=Release
+	cd shared && make -f Makefile clean CONF=Release
+	cd math && make -f Makefile clean CONF=Release
+	cd l3m && make -f Makefile clean CONF=Release
+	cd core && make -f Makefile clean CONF=Release
+	cd renderer && make -f Makefile clean CONF=Release
+	cd import && make -f Makefile clean CONF=Release
+	cd model_optimizer && make -f Makefile clean CONF=Release
+	cd model_splitter && make -f Makefile clean CONF=Release
 
 distclean: clean
 	rm -rf dist
+
