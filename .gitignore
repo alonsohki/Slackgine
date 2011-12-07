@@ -1,3 +1,8 @@
+dist/
+model_splitter/.dep.inc
+model_splitter/build/
+model_splitter/dist/
+model_splitter/nbproject/private/
 Android/dist
 Android/libs
 Android/obj

@@ -1,0 +1,51 @@
+all:
+	cd shared && make -f Makefile all CONF=Release
+	cd math && make -f Makefile all CONF=Release
+	cd l3m && make -f Makefile all CONF=Release
+	cd core && make -f Makefile all CONF=Release
+	cd import && make -f Makefile all CONF=Release
+	cd model_optimizer && make -f Makefile all CONF=Release
+	cd model_splitter && make -f Makefile all CONF=Release
+	mkdir -p dist/include
+	mkdir -p dist/lib
+	mkdir -p dist/bin
+	cp slackgine.h dist/include/
+	for i in `find core -type f -name "*.h"` ; do \
+	    mkdir -p dist/include/`dirname $$i` ; \
+        cp $$i dist/include/$$i ; \
+	done
+	for i in `find shared -type f -name "*.h"` ; do \
+        mkdir -p dist/include/`dirname $$i` ; \
+        cp $$i dist/include/$$i ; \
+    done
+	for i in `find math -type f -name "*.h"` ; do \
+        mkdir -p dist/include/`dirname $$i` ; \
+        cp $$i dist/include/$$i ; \
+    done
+	for i in `find l3m -type f -name "*.h"` ; do \
+        mkdir -p dist/include/`dirname $$i` ; \
+        cp $$i dist/include/$$i ; \
+    done
+	for i in `find renderer -type f -name "*.h"` ; do \
+        mkdir -p dist/include/`dirname $$i` ; \
+        cp $$i dist/include/$$i ; \
+    done
+	cp `find shared/dist -name "libshared.a" | grep Release` dist/lib/
+	cp `find math/dist -name "libmath.a" | grep Release` dist/lib/
+	cp `find l3m/dist -name "libl3m.a" | grep Release` dist/lib/
+	cp `find core/dist -name "libcore.a" | grep Release` dist/lib/
+	cp `find import/dist -name "import" | grep Release` dist/bin/
+	cp `find model_optimizer/dist -name "model_optimizer" | grep Release` dist/bin/
+	cp `find model_splitter/dist -name "model_splitter" | grep Release` dist/bin/
+
+clean:
+	make -f shared/Makefile clean CONF=Release
+	make -f math/Makefile clean CONF=Release
+	make -f l3m/Makefile clean CONF=Release
+	make -f core/Makefile clean CONF=Release
+	make -f import/Makefile clean CONF=Release
+	make -f model_optimizer/Makefile clean CONF=Release
+	make -f model_splitter/Makefile clean CONF=Release
+
+distclean: clean
+	rm -rf dist

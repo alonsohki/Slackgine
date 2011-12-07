@@ -95,7 +95,7 @@ private:
     //--------------------------------------------------------------------------
     // Private class attributes
     char        m_error [ 256 ];
-    PassVector  m_passes [ PASS_MAX ];
+    PassVector  m_passes [ 3 ];
 };
 
 }

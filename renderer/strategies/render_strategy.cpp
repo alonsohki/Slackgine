@@ -12,6 +12,8 @@
 
 #include "render_strategy.h"
 
+static const unsigned int PASS_MAX = 3;
+
 using namespace Renderer;
 
 RenderStrategy::Pass::Pass ( PassType type )
