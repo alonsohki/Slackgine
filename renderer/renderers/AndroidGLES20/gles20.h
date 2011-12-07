@@ -53,29 +53,10 @@ namespace Renderer
     class Factory
     {
     public:
-        static IRenderer* CreateRenderer ()
-        {
-            return new GLES20_Renderer ();
-        }
-    
-        static IProgram* CreateProgram ()
-        {
-            return new GLES20_Program ();
-        }
-    
-        static IShader* CreateShader ( IShader::Type type, const char* file )
-        {
-            IShader* shader = new GLES20_Shader ( type );
-            shader->Load ( file );
-            return shader;
-        }
-    
-        static IShader* CreateShader ( IShader::Type type, std::istream& fp )
-        {
-            IShader* shader = new GLES20_Shader ( type );
-            shader->Load ( fp );
-            return shader;
-        }
+        static IRenderer*   CreateRenderer  ();
+        static IProgram*    CreateProgram   ();
+        static IShader*     CreateShader    ( IShader::Type type, const char* file );
+        static IShader*     CreateShader    ( IShader::Type type, std::istream& fp );
 
         static ITexture*    CreateTexture   ( u32 width, u32 height, ITexture::Format format = ITexture::RGBA8 );
     };

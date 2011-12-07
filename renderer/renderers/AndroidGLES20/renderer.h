@@ -15,6 +15,8 @@ private:
     IShader*    m_fragmentShader;
     IProgram*   m_program;
     char        m_error [ 512 ];
+    Matrix      m_matProjection;
+    Matrix      m_matLookat;
 
 public:
                 GLES20_Renderer        ();
