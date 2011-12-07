@@ -12,8 +12,6 @@
 
 #include "render_strategy.h"
 
-static const unsigned int PASS_MAX = 3;
-
 using namespace Renderer;
 
 RenderStrategy::Pass::Pass ( PassType type )
@@ -32,7 +30,7 @@ RenderStrategy::RenderStrategy ()
 
 RenderStrategy::~RenderStrategy ()
 {
-    for ( u32 i = 0; i < PASS_MAX; ++i )
+    for ( u32 i = 0; i < PASS_COUNT; ++i )
     {
         for ( PassVector::iterator iter = m_passes[i].begin();
               iter != m_passes[i].end();
@@ -84,14 +82,14 @@ void RenderStrategy::getError(char* error) const
 
 void RenderStrategy::addPass ( Pass* pass )
 {
-    if ( pass->getType() >= PASS_MAX )
+    if ( pass->getType() >= PASS_COUNT )
         return;
     m_passes[pass->getType()].push_back ( pass );
 }
 
 void RenderStrategy::blendStrategy ( RenderStrategy* strategy )
 {
-    for ( u32 i = 0; i < PASS_MAX; ++i )
+    for ( u32 i = 0; i < PASS_COUNT; ++i )
     {
         for ( PassVector::iterator iter = strategy->m_passes[i].begin();
               iter != strategy->m_passes[i].end();

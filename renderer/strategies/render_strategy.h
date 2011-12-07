@@ -29,7 +29,8 @@ class RenderStrategy
     {
         PASS_GEOMETRY = 0,
         PASS_COMPOSITION,
-        PASS_POSTPROCESS
+        PASS_POSTPROCESS,
+        PASS_COUNT
     };
     
     class Pass
@@ -95,7 +96,7 @@ private:
     //--------------------------------------------------------------------------
     // Private class attributes
     char        m_error [ 256 ];
-    PassVector  m_passes [ 3 ];
+    PassVector  m_passes [ PASS_COUNT ];
 };
 
 }
