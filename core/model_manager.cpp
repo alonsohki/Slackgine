@@ -313,6 +313,8 @@ l3m::Model* ModelManager::requestBlocking (const std::string& model)
 
 l3m::Model* ModelManager::internalRequestBlocking (const std::string& model)
 {
+    LOG_V ( "ModelManager", "Requesting model '%s'...", model.c_str() );
+
     // Check if the model has already been loaded.
     ModelNode* node = findModelNode ( model );
     if ( node != 0 )
@@ -777,7 +779,7 @@ void ModelManager::unlink ( ModelNode* node, bool toTheGraveyard )
     }
     else
     {
-        LOG_V ( "ModelManager", "Sending model '%s' to the graveyard (%p)", node->name.c_str(), node->model );
+        LOG_VV ( "ModelManager", "Sending model '%s' to the graveyard (%p)", node->name.c_str(), node->model );
         
         // Make sure that it loses its identity.
         node->refCount = 0;

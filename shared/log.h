@@ -15,6 +15,18 @@
 #define LOGGING
 #define DEBUG_VERY_VERBOSE
 
+#ifdef ANDROID
+
+#include <android/log.h>
+
+#   ifdef LOGGING
+#       define LOG_I(tag, msg, ...) __android_log_print(ANDROID_LOG_INFO, tag, msg, ## __VA_ARGS__ )
+#       define LOG_W(tag, msg, ...) __android_log_print(ANDROID_LOG_WARN, tag, msg, ## __VA_ARGS__ )
+#       define LOG_E(tag, msg, ...) __android_log_print(ANDROID_LOG_ERROR, tag, msg, ## __VA_ARGS__ )
+#       define LOG_V(tag, msg, ...) __android_log_print(ANDROID_LOG_VERBOSE, tag, msg, ## __VA_ARGS__ )
+#       define LOG_VV(tag, msg, ...)
+#   endif
+#else
 #ifdef LOGGING
 #       define LOG_I(tag, msg,...) Log("INFO", tag, msg, ## __VA_ARGS__ )
 #       define LOG_W(tag, msg,...) Log("WARNING", tag, msg, ## __VA_ARGS__ )
@@ -37,6 +49,8 @@
 #       define LOG_E(...)
 #       define LOG_V(...)
 #       define LOG_VV(...)
+#endif
+
 #endif
 
 extern void vLog ( const char* level, const char* tag, const char* msg, va_list vl );
