@@ -41,6 +41,7 @@ bool GLES20_Renderer::initialize()
 
     // Initialize the main shaders
     static const char* const s_defaultVertexShader =
+        "precision mediump float;\n"
         "attribute vec3 in_Position;\n"
         "attribute vec3 in_Normal;\n"
         "attribute vec2 in_Tex2D;\n"
@@ -60,6 +61,7 @@ bool GLES20_Renderer::initialize()
         "}\n";
 
     static const char* const s_defaultFragmentShader =
+        "precision mediump float;\n"
         "varying vec3 ex_Normal;\n"
         "\n"
         "void main(void)\n"

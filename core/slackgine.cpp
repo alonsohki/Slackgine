@@ -45,7 +45,13 @@ bool Slackgine::initialize ()
 {
     LOG_V ( "Slackgine", "Initializing the engine" );
     setContext ( this );
-    return m_renderer->initialize ();
+    if ( m_renderer->initialize () == false )
+    {
+        m_renderer->getError ( m_error );
+        return false;
+    }
+    
+    return true;
 }
 
 void Slackgine::tick ()
@@ -60,16 +66,25 @@ void Slackgine::tick ()
 
 bool Slackgine::render ()
 {
-    if ( getRenderer()->beginScene() == false )
+    if ( m_renderStrategy != 0 )
     {
-        getRenderer()->getError ( m_error );
-        return false;
+        if ( getRenderer()->beginScene() == false )
+        {
+            getRenderer()->getError ( m_error );
+            return false;
+        }
+        else
+        {
+            m_renderStrategy->execute ( this );
+            getRenderer()->endScene();
+        }
     }
     else
     {
-        m_renderStrategy->execute ( this );
-        getRenderer()->endScene();
+        strcpy ( m_error, "Trying to render without having defined a render strategy" );
+        return false;
     }
+
     return true;
 }
 
