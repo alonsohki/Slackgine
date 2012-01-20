@@ -13,8 +13,7 @@
 # limitations under the License.
 #
 
-ANDROID_LEVEL=android-9
-MY_LOCAL_CFLAGS := -Wall -ansi -pipe -fno-exceptions -fno-rtti -DANDROID -I. -I.. -I../Android/platform_external_libpng -I/soft/dev/android-ndk/platforms/android-9/arch-arm/usr/include/
+MY_LOCAL_CFLAGS := -Wall -pipe -fno-exceptions -fno-rtti -DANDROID -I. -I.. -I../Android/platform_external_libpng
 MY_LOCAL_CXXFLAGS := $(MY_LOCAL_CFLAGS)
 
 include platform_external_libpng/Android.mk

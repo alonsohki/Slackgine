@@ -1,5 +1,5 @@
 all:
-	NDK_DEBUG=1 NDK_PROJECT_PATH="`pwd`" /soft/dev/android-ndk/ndk-build -j4
+	NDK_PROJECT_PATH="`pwd`" ndk-build -j4
 	mkdir -p dist/include
 	cp ../slackgine.h dist/include/
 	for i in `cd .. && find core -type f -name "*.h"` ; do \
@@ -25,8 +25,8 @@ all:
 	mkdir -p dist/lib && cp obj/local/armeabi/*.a dist/lib/
 
 clean:
-	NDK_DEBUG=1 NDK_PROJECT_PATH="`pwd`" /soft/dev/android-ndk/ndk-build clean
+	NDK_PROJECT_PATH="`pwd`" ndk-build clean
 
 distclean:
-	NDK_DEBUG=1 NDK_PROJECT_PATH="`pwd`" /soft/dev/android-ndk/ndk-build distclean
+	NDK_PROJECT_PATH="`pwd`" ndk-build distclean
 	rm -rf dist libs obj
