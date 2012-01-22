@@ -12,7 +12,6 @@
 
 #pragma once
 
-#include <cstdint>
 #include <sstream>
 #include <cmath>
 #include <cstring>

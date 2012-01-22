@@ -5,8 +5,8 @@
 //
 // See the LICENSE file in the top-level directory.
 //
-// FILE:        celshading.h
-// PURPOSE:     Cel-shading strategy.
+// FILE:        default.h
+// PURPOSE:     Default strategy.
 // AUTHORS:     Alberto Alonso <rydencillo@gmail.com>
 //
 
@@ -17,14 +17,17 @@
 namespace Renderer { namespace Strategy
 {
     
-class Celshading : public RenderStrategy
+class Default : public RenderStrategy
 {
 public:
     //--------------------------------------------------------------------------
     // Constructor/Destructor
-    Celshading  ();
-    ~Celshading ();
+                Default         ();
+                ~Default        ();
+    
+    //--------------------------------------------------------------------------
+    // Execute
+    bool        execute         ( Core::Slackgine* sg );
 };
     
-}
-}
+} }

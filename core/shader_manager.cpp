@@ -100,6 +100,9 @@ Shader* ShaderManager::load ( const std::string& shader )
         sh = new Shader ( shader );
         sh->vert() = vert;
         sh->frag() = frag;
+        
+        // Register it in the loaded shaders map
+        m_shaders.insert ( ShaderMap::value_type(sh->name(), sh) );
     }
     else
     {

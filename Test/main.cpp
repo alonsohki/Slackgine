@@ -17,7 +17,7 @@
 #include "slackgine.h"
 #include "l3m/l3m.h"
 #include "core/entity_components/scene.h"
-#include "renderer/strategies/celshading.h"
+#include "renderer/strategies/default.h"
 
 void display ( void );
 
@@ -60,7 +60,7 @@ void display ( void )
         sg->initialize ();
         sg->getModelManager().addLookupPath ( ".." );
         sg->getShaderManager().addLookupPath( "../shaders" );
-        sg->setRenderStrategy < Renderer::Strategy::Celshading > ();
+        sg->setRenderStrategy < Renderer::Strategy::Default > ();
     }
 
     if ( model == 0 )

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="79">
+<configurationDescriptor version="80">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="f1" displayName="Renderers" projectFiles="true">
       <logicalFolder name="f2" displayName="AndroidGLES20" projectFiles="true">
@@ -24,12 +24,9 @@
       </logicalFolder>
       <itemPath>renderers/renderer_selection.h</itemPath>
     </logicalFolder>
-    <logicalFolder name="f2"
-                   displayName="strategies"
-                   projectFiles="true"
-                   kind="ROOT">
-      <itemPath>strategies/celshading.cpp</itemPath>
-      <itemPath>strategies/celshading.h</itemPath>
+    <logicalFolder name="f2" displayName="strategies" projectFiles="true">
+      <itemPath>strategies/default.cpp</itemPath>
+      <itemPath>strategies/default.h</itemPath>
       <itemPath>strategies/render_strategy.cpp</itemPath>
       <itemPath>strategies/render_strategy.h</itemPath>
     </logicalFolder>

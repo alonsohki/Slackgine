@@ -44,6 +44,11 @@ public:
     
     bool                        addComponent    ( Entities::IComponent* component );
     
+    Entity*                     getParent       () { return m_parent; }
+    const Entity*               getParent       () const { return m_parent; }
+    EntityVector&               getChildren     () { return m_children; }
+    const EntityVector&         getChildren     () const { return m_children; }
+    
 private:
     //--------------------------------------------------------------------------
     // Child entities linkage.
