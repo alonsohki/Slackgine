@@ -69,7 +69,10 @@
 #include "BKE_report.h"
 #include "BKE_sound.h"
 
+extern "C" {
 #include "IMB_imbuf.h"	// for IMB_init
+#include "IMB_imbuf_types.h"
+}
 
 #ifdef WITH_PYTHON
 #include "BPY_extern.h"
@@ -318,8 +321,6 @@ static Transform get_node_transform_ob(Object *ob, Matrix3* scaling)
 
     return transform;
 }
-
-
 
 
 
@@ -607,7 +608,7 @@ static bool ImportScene ( l3m::Model* model, ::Scene* sce, l3m::Scene* modelScen
 static bool ImportImages ( ::Scene* sce, const char* filename, l3m::Model* model )
 {
     std::vector<std::string> mImages;
-    
+
     // For each mesh...
     Base *base= (Base*) sce->base.first;
     while(base) {
@@ -632,25 +633,45 @@ static bool ImportImages ( ::Scene* sce, const char* filename, l3m::Model* model
                             
                             std::string name(id_name(image));
                             name = translate_id(name);
-                            char rel[FILE_MAX];
-                            char abs[FILE_MAX];
-                            char dir[FILE_MAX];
-
-                            BLI_split_dirfile(filename, dir, NULL);
-                            BKE_rebase_path(abs, sizeof(abs), rel, sizeof(rel), G.main->name, image->name, dir);
-
                             if (std::find(mImages.begin(), mImages.end(), name) == mImages.end())
                             {
-                                Pixmap pix;
-                                if ( !pix.Load(abs) )
-                                {
-                                    fprintf ( stderr, "Warning: Cannot open the image: %s\n", abs );
-                                    continue;
-                                }
-                                l3m::Texture* tex = model->CreateComponent<l3m::Texture>("texture");
-                                tex->id() = name;
-                                tex->pixmap() = pix;
                                 mImages.push_back(name);
+                                
+                                // The image is packed
+                                if (image->packedfile)
+                                {
+                                    int flag = IB_rect|IB_multilayer;
+                                    if(image->flag & IMA_DO_PREMUL) flag |= IB_premul;
+                                    ImBuf* ibuf = IMB_ibImageFromMemory((unsigned char*)image->packedfile->data, (size_t)image->packedfile->size, flag);
+                                    if (ibuf)
+                                    {
+                                        Pixmap pix;
+                                        pix.Create( ibuf->x, ibuf->y, (Color *)ibuf->rect );
+                                        l3m::Texture* tex = model->CreateComponent<l3m::Texture>("texture");
+                                        tex->id() = name;
+                                        tex->pixmap() = pix;
+                                    }
+                                }
+                                else
+                                {
+                                    char rel[FILE_MAX];
+                                    char abs[FILE_MAX];
+                                    char dir[FILE_MAX];
+
+                                    BLI_split_dirfile(filename, dir, NULL);
+                                    BKE_rebase_path(abs, sizeof(abs), rel, sizeof(rel), G.main->name, image->name, dir);
+
+
+                                    Pixmap pix;
+                                    if ( !pix.Load(abs) )
+                                    {
+                                        fprintf ( stderr, "Warning: Cannot open the image: %s\n", abs );
+                                        continue;
+                                    }
+                                    l3m::Texture* tex = model->CreateComponent<l3m::Texture>("texture");
+                                    tex->id() = name;
+                                    tex->pixmap() = pix;
+                                }
                             }
                         }
                     }
