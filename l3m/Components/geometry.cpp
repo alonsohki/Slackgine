@@ -13,6 +13,8 @@
 #include "geometry.h"
 #include "renderer/vertex.h"
 #include "renderer/mesh.h"
+#include "material.h"
+#include "l3m/util.h"
 
 using namespace l3m;
 using Renderer::Vertex;
@@ -29,7 +31,7 @@ Geometry::~Geometry ()
 
 
 // Load/Save
-bool Geometry::Load(l3m::IStream& fp, float version)
+bool Geometry::Load(l3m::Model* model, l3m::IStream& fp, float version)
 {
     // Geometry name
     if ( fp.ReadStr( m_geometry.name() ) == -1 )
@@ -100,16 +102,17 @@ bool Geometry::Load(l3m::IStream& fp, float version)
             return SetError ( "Error reading the polygon type" );
         Mesh::PolygonType polyType = static_cast < Mesh::PolygonType > ( polyType_ );
         
-        // Read the color attributes
-        Renderer::Material mat;
-        if ( fp.ReadColor (&mat.ambient (), 1) != 1 )
-            return SetError ( "Error reading the material ambient value" );
-        if ( fp.ReadColor (&mat.diffuse (), 1) != 1 )
-            return SetError ( "Error reading the material diffuse value" );
-        if ( fp.ReadColor (&mat.specular (), 1) != 1 )
-            return SetError ( "Error reading the material specular value" );
-        if ( fp.ReadFloat (&mat.shininess (), 1) != 1 )
-            return SetError ( "Error reading the material shininess value" );
+        // Read the material
+        b8 thereIsMaterial;
+        std::string materialName;
+        
+        if ( !fp.ReadBoolean(&thereIsMaterial) )
+            return SetError ( "Error reading the material" );
+        if ( thereIsMaterial )
+        {
+            if ( fp.ReadStr ( materialName ) == 0 )
+                return SetError ( "Error reading the material name" );
+        }
         
         // Read the index data
         u32 numIndices;
@@ -124,12 +127,21 @@ bool Geometry::Load(l3m::IStream& fp, float version)
         mesh->name () = name;
         mesh->Set ( indices, numIndices, polyType );
         m_geometry.LoadMesh( mesh );
+        
+        // Defer the material reference
+        if ( thereIsMaterial )
+        {
+            MaterialDeltaData* matDelta = new MaterialDeltaData ();
+            matDelta->name = materialName;
+            matDelta->mesh = mesh;
+            model->RegisterDeltaResolver ( this, Geometry::ResolveMaterialDelta, matDelta );
+        }
     }
     
     return true;
 }
 
-bool Geometry::Save(l3m::OStream& fp)
+bool Geometry::Save(l3m::Model*, l3m::OStream& fp)
 {
     // Geometry name
     if ( !fp.WriteStr( m_geometry.name() ) )
@@ -205,15 +217,16 @@ bool Geometry::Save(l3m::OStream& fp)
         if ( ! fp.Write32 ( &polyType, 1 ) )
             return SetError ( "Error writing the mesh polygon type" );
         
-        // Write the color attributes
-        if ( ! fp.WriteColor (&mesh->material().ambient (), 1) )
-            return SetError ( "Error writing the material ambient value" );
-        if ( ! fp.WriteColor (&mesh->material().diffuse (), 1) )
-            return SetError ( "Error writing the material diffuse value" );
-        if ( ! fp.WriteColor (&mesh->material().specular (), 1) )
-            return SetError ( "Error writing the material specular value" );
-        if ( ! fp.WriteFloat (&mesh->material().shininess (), 1) )
-            return SetError ( "Error writing the material shininess value" );
+        // Write the material id
+        if ( mesh->material() != 0 )
+        {
+            fp.WriteBoolean ( true );
+            if ( ! fp.WriteStr ( mesh->material()->name() ) )
+                return SetError ( "Error writing the material name" );
+        }
+        else
+            fp.WriteBoolean ( false );
+            
         
         // Write the index data
         num = mesh->numIndices();
@@ -224,4 +237,16 @@ bool Geometry::Save(l3m::OStream& fp)
     }
     
     return true;
+}
+
+bool Geometry::ResolveMaterialDelta ( IComponent* comp, Model* model, void* data )
+{
+    MaterialDeltaData* dd = (MaterialDeltaData *)data;
+    
+    // Find the material with the given id
+    l3m::Material* mat = l3m::Util::findMaterial ( model, dd->name );
+    if ( mat )
+        dd->mesh->material() = &mat->material();
+    delete dd;
+    return true; 
 }

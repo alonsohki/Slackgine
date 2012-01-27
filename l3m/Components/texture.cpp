@@ -24,7 +24,7 @@ Texture::~Texture ()
 {
 }
 
-bool Texture::Load ( IStream& stream, float version )
+bool Texture::Load ( l3m::Model*, IStream& stream, float version )
 {
     // Load the texture string
     if ( stream.ReadStr ( m_id ) <= 0 )
@@ -49,7 +49,7 @@ bool Texture::Load ( IStream& stream, float version )
     return true;
 }
 
-bool Texture::Save ( OStream& stream )
+bool Texture::Save ( l3m::Model*, OStream& stream )
 {
     // Write the texture id
     if ( !stream.WriteStr ( m_id ) )

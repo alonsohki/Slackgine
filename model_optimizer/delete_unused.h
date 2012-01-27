@@ -5,16 +5,15 @@
 //
 // See the LICENSE file in the top-level directory.
 //
-// FILE:        optimizations.h
-// PURPOSE:     File to include all the existing optimization strategies.
+// FILE:        delete_unused.h
+// PURPOSE:     Strategy to filter unused components.
 // AUTHORS:     Alberto Alonso <rydencillo@gmail.com>
 //
 
 #pragma once
 
+#include <vector>
+#include <string>
 #include "l3m/l3m.h"
 
-#include "delete_duplicates.h"
-#include "filter.h"
-#include "clean_texture_ids.h"
-#include "delete_unused.h"
+extern bool delete_unused ( l3m::Model* model );

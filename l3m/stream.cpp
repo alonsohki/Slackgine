@@ -160,6 +160,32 @@ void IOStream::SetupFlags ()
     // the given stream with data compression.
 }
 
+bool IOStream::WriteBoolean ( const b8& v )
+{
+    return WriteBoolean ( &v, 1 );
+}
+
+bool IOStream::WriteBoolean ( const b8* v, u32 nmemb )
+{
+#ifdef DEBUG
+    assert ( m_ostream != 0 );
+#endif
+    return WriteData ( v, sizeof(b8), nmemb );
+}
+
+bool IOStream::ReadBoolean ( b8* v )
+{
+    return ReadBoolean ( v, 1 ) == 1;
+}
+
+ssize_t IOStream::ReadBoolean ( b8* v, u32 nmemb )
+{
+#ifdef DEBUG
+    assert ( m_istream != 0 );
+#endif
+    return ReadData ( v, sizeof(b8), nmemb );
+}
+
 bool IOStream::Write16 ( const u16* v, u32 nmemb )
 {
 #ifdef DEBUG

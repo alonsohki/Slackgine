@@ -19,6 +19,7 @@ Mesh::Mesh()
 : m_indices ( 0 )
 , m_numIndices ( 0 )
 , m_polyType ( TRIANGLES )
+, m_material ( 0 )
 {}
 
 Mesh::~Mesh ()

@@ -47,6 +47,8 @@ public:
         SetupFlags ();
     }
     
+    bool        WriteBoolean    ( const b8* v, u32 nmemb );
+    bool        WriteBoolean    ( const b8& v );
     bool        Write16         ( const u16* v, u32 nmemb );
     bool        Write32         ( const u32* v, u32 nmemb );
     bool        Write64         ( const u64* v, u32 nmemb );
@@ -59,6 +61,8 @@ public:
     bool        WriteTransform  ( const Transform* v, u32 nmemb );
     bool        WriteData       ( const char* data, u32 size, u32 nmemb );
     
+    bool        ReadBoolean     ( b8* v );
+    ssize_t     ReadBoolean     ( b8* v, u32 nmemb );
     ssize_t     Read16          ( u16* v, u32 nmemb );
     ssize_t     Read32          ( u32* v, u32 nmemb );
     ssize_t     Read64          ( u64* v, u32 nmemb );

@@ -34,7 +34,7 @@ Camera::~Camera ()
 //------------------------------------------------------------------------------
 // Camera::Load
 // Load the camera data depending on the camera type
-bool Camera::Load(l3m::IStream& fp, float version)
+bool Camera::Load(l3m::Model*, l3m::IStream& fp, float version)
 {
     // Read this camera name
     if ( fp.ReadStr(m_name) < 0 )
@@ -70,7 +70,7 @@ bool Camera::Load(l3m::IStream& fp, float version)
 //------------------------------------------------------------------------------
 // Camera::Save
 // Save the camera data depending on the camera type
-bool Camera::Save(l3m::OStream& fp)
+bool Camera::Save(l3m::Model*, l3m::OStream& fp)
 {
     // Write this camera name
     if ( !fp.WriteStr(m_name) )

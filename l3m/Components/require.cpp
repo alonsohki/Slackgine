@@ -23,7 +23,7 @@ Require::~Require ()
 {
 }
 
-bool Require::Load ( l3m::IStream& fp, float version )
+bool Require::Load ( l3m::Model*, l3m::IStream& fp, float version )
 {
     u16 reqType;
     if ( fp.Read16 ( &reqType, 1 ) != 1 )
@@ -35,7 +35,7 @@ bool Require::Load ( l3m::IStream& fp, float version )
     return true;
 }
 
-bool Require::Save ( l3m::OStream& fp )
+bool Require::Save ( l3m::Model*, l3m::OStream& fp )
 {
     u16 reqType = m_reqType;
     if ( fp.Write16 ( &reqType, 1 ) == false )

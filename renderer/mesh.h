@@ -38,7 +38,7 @@ private:
     unsigned int*       m_indices;
     unsigned int        m_numIndices;
     PolygonType         m_polyType;
-    Material            m_material;
+    Material*           m_material;
     
 public:
                                 Mesh ();
@@ -53,12 +53,12 @@ public:
     const unsigned int*         indices         () const { return m_indices; }
     const unsigned int&         numIndices      () const { return m_numIndices; }
     const PolygonType&          polyType        () const { return m_polyType; }
-    const Material&             material        () const { return m_material; }
+    const Material*             material        () const { return m_material; }
     
     std::string&                name            () { return m_name; }
     unsigned int*&              indices         () { return m_indices; }
     PolygonType&                polyType        () { return m_polyType; }
-    Material&                   material        () { return m_material; }
+    Material*&                  material        () { return m_material; }
 
     // Loads the face data, allocating space for it.
     void Load ( const unsigned int* pIndices, unsigned int indexCount, PolygonType polyType = TRIANGLES );

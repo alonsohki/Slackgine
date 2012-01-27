@@ -12,6 +12,7 @@
 
 #pragma once
 
-#include "component.h"
 #include "stream.h"
 #include "model.h"
+#include "component.h"
+#include "util.h"

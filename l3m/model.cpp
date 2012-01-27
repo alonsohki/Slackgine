@@ -77,13 +77,15 @@ bool Model::Load(std::istream& fp)
         IComponent* component = ComponentFactory::Create( type );
         if ( component == 0 )
             return SetError ( "Unable to create a component of type '%s'", type.c_str() );
-        if ( component->Load ( is, version ) == false )
+        if ( component->Load ( this, is, version ) == false )
             return SetError ( "Unable to load a component of type '%s': %s", type.c_str(), component->error() );
         
         m_vecComponents.push_back ( component );
     }
     
     m_size = is.totalIn ();
+    
+    ResolveDeltas ();
     
     return true;
 }
@@ -132,9 +134,27 @@ bool Model::Save(std::ostream& fp)
             return SetError ( "Unable to write the component version" );
         
         // Write the component
-        if ( !m_vecComponents[i]->Save ( os ) )
+        if ( !m_vecComponents[i]->Save ( this, os ) )
             return SetError ( m_vecComponents[i]->error() );
     }
     
     return true;
+}
+
+void Model::ResolveDeltas ()
+{
+    for ( DeltaResolverMap::iterator iter = m_deltas.begin();
+          iter != m_deltas.end();
+          ++iter )
+    {
+        for ( std::vector<DeltaData>::iterator iter2 = iter->second.begin();
+              iter2 != iter->second.end();
+              ++iter2 )
+        {
+            DeltaData& dd = *iter2;
+            dd.fn ( iter->first, this, dd.data );
+        }
+    }
+    
+    m_deltas.clear ();
 }

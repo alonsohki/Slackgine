@@ -13,7 +13,7 @@
 #pragma once
 
 #if defined(__arm__)
-typedef bool b8;
+typedef char b8;
 typedef unsigned char byte;
 typedef char i8;
 typedef unsigned char u8;
@@ -26,7 +26,7 @@ typedef unsigned long long u64;
 typedef float f32;
 typedef double f64;
 #elif defined(__x86_64)
-typedef bool b8;
+typedef char b8;
 typedef unsigned char byte;
 typedef char i8;
 typedef unsigned char u8;
@@ -39,7 +39,7 @@ typedef unsigned long u64;
 typedef float f32;
 typedef double f64;
 #elif defined(__i586__) || defined(__i686__) || defined(_X86) || defined(_WIN32) || defined(__i386__) || defined(__i486__)
-typedef bool b8;
+typedef char b8;
 typedef unsigned char byte;
 typedef char i8;
 typedef unsigned char u8;

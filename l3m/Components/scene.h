@@ -49,8 +49,8 @@ public:
     {
     }
     
-    bool                Load                    ( l3m::IStream& fp, float version );
-    bool                Save                    ( l3m::OStream& fp );
+    bool                Load                    ( l3m::Model*, l3m::IStream& fp, float version );
+    bool                Save                    ( l3m::Model*, l3m::OStream& fp );
     
     Node&               CreateGeometryNode      ();
     

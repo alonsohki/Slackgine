@@ -12,6 +12,7 @@
 
 #pragma once
 
+#include "l3m/model.h"
 #include "l3m/component.h"
 #include "renderer/geometry.h"
 
@@ -32,8 +33,19 @@ public:
                 Geometry        ();
                 ~Geometry       ();
     
-    bool        Load            ( l3m::IStream& fp, f32 version );
-    bool        Save            ( l3m::OStream& fp );
+    bool        Load            ( l3m::Model*, l3m::IStream& fp, f32 version );
+    bool        Save            ( l3m::Model*, l3m::OStream& fp );
+    
+private:
+    struct MaterialDeltaData
+    {
+        Renderer::Mesh* mesh;
+        std::string     name;
+    };
+    
+    //--------------------------------------------------------------------------
+    // Delta resolver for the mesh materials
+    static bool     ResolveMaterialDelta    ( IComponent* comp, l3m::Model* model, void* data );
     
     
     // Accessors

@@ -24,4 +24,5 @@ void l3m::ComponentFactory::Initialize()
     Register ( "texture", Texture::Create );
     Register ( "require", Require::Create );
     Register ( "camera", Camera::Create );
+    Register ( "material", Material::Create );
 }

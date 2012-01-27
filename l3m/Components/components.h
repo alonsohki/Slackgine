@@ -17,3 +17,4 @@
 #include "texture.h"
 #include "require.h"
 #include "camera.h"
+#include "material.h"

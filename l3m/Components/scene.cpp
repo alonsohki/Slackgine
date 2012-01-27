@@ -14,7 +14,7 @@
 
 using namespace l3m;
 
-bool Scene::Load(l3m::IStream& fp, float version)
+bool Scene::Load(l3m::Model*, l3m::IStream& fp, float version)
 {
     // Load the camera
     if ( fp.ReadStr ( m_camera ) < 0 )
@@ -49,7 +49,7 @@ bool Scene::Load(l3m::IStream& fp, float version)
     return true;
 }
 
-bool Scene::Save(l3m::OStream& fp)
+bool Scene::Save(l3m::Model*, l3m::OStream& fp)
 {
     // Save the camera
     if ( !fp.WriteStr ( m_camera ) )

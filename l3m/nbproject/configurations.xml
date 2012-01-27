@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="79">
+<configurationDescriptor version="80">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="f1" displayName="Components" projectFiles="true">
       <itemPath>Components/camera.cpp</itemPath>
@@ -9,6 +9,8 @@
       <itemPath>Components/factory.h</itemPath>
       <itemPath>Components/geometry.cpp</itemPath>
       <itemPath>Components/geometry.h</itemPath>
+      <itemPath>Components/material.cpp</itemPath>
+      <itemPath>Components/material.h</itemPath>
       <itemPath>Components/require.cpp</itemPath>
       <itemPath>Components/require.h</itemPath>
       <itemPath>Components/scene.cpp</itemPath>
@@ -34,6 +36,7 @@
     <itemPath>model.h</itemPath>
     <itemPath>stream.cpp</itemPath>
     <itemPath>stream.h</itemPath>
+    <itemPath>util.h</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>

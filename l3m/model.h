@@ -12,13 +12,14 @@
 
 #pragma once
 
+#include "component.h"
+#include "Components/factory.h"
+#include "shared/FastDelegate.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <cstdarg>
-#include "l3m/component.h"
 #include "l3m/stream.h"
-#include "Components/factory.h"
 
 namespace l3m
 {
@@ -27,6 +28,20 @@ class Model
 {
 public:
     typedef std::vector < IComponent* > componentVector;
+    
+    //--------------------------------------------------------------------------
+    // Delta resolver datatypes
+private:
+    typedef FastDelegate3 < IComponent*, Model*, void*, bool > DeltaResolverFn;
+    struct DeltaData
+    {
+        DeltaData () : data(0) {}
+ 
+        DeltaResolverFn fn;
+        void* data;
+    };
+    typedef std::map < IComponent*, std::vector<DeltaData> > DeltaResolverMap;
+
     
 public:
                 Model           ()
@@ -78,6 +93,23 @@ public:
     
     const u32&                  size            () const { return m_size; }
     
+    //--------------------------------------------------------------------------
+    // Function to register a delta resolver function, which will be called
+    // at the end of the model loading to make it resolve all unresolved deltas.
+    // A delta is a reference from a component to another component that must be
+    // resolved after the model has been completely loaded.
+    void        RegisterDeltaResolver   ( IComponent* comp, DeltaResolverFn fn, void* data )
+    {
+        DeltaData d;
+        d.fn = fn;
+        d.data = data;
+        m_deltas [ comp ].push_back(d);
+    }
+
+private:
+    void        ResolveDeltas       ();
+    
+    
 private:
     bool        SetError        ( const char* msg, ... )
     {
@@ -91,6 +123,7 @@ public:
     const char* error           () const { return m_error; }
     
 private:
+    DeltaResolverMap            m_deltas;
     componentVector             m_vecComponents;
     char                        m_error [ 1024 ];
     u32                         m_size;
@@ -98,3 +131,4 @@ private:
 
 
 };
+

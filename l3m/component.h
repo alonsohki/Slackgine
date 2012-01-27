@@ -15,18 +15,21 @@
 #include <cstdarg>
 #include <cstdio>
 #include "l3m/stream.h"
+#include "shared/FastDelegate.h"
 
 namespace l3m
 {
-
+    
+class Model;
+    
 class IComponent
 {
 public:
                         IComponent      ( const char* type, float version ): m_type ( type ), m_version ( version ) {}
     virtual             ~IComponent     () {}
     
-    virtual bool        Load            ( l3m::IStream& fp, float version ) = 0;
-    virtual bool        Save            ( l3m::OStream& fp ) = 0;
+    virtual bool        Load            ( l3m::Model*, l3m::IStream& fp, float version ) = 0;
+    virtual bool        Save            ( l3m::Model*, l3m::OStream& fp ) = 0;
     
     const std::string&  type            () const { return m_type; }
     float               version         () const { return m_version; }

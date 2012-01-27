@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="79">
+<configurationDescriptor version="80">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
@@ -16,6 +16,8 @@
     <itemPath>clean_texture_ids.h</itemPath>
     <itemPath>delete_duplicates.cpp</itemPath>
     <itemPath>delete_duplicates.h</itemPath>
+    <itemPath>delete_unused.cpp</itemPath>
+    <itemPath>delete_unused.h</itemPath>
     <itemPath>filter.cpp</itemPath>
     <itemPath>filter.h</itemPath>
     <itemPath>main.cpp</itemPath>

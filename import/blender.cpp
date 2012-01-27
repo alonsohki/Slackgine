@@ -139,6 +139,8 @@ extern "C" {
 
 extern void startup_blender (int argc, const char** argv);
 
+static std::map<std::string, l3m::Material*> gMaterials;
+
 /**
 Translation map.
 Used to translate every COLLADA id to a valid id, no matter what "wrong" letters may be
@@ -379,28 +381,20 @@ static bool ImportMesh ( Renderer::Geometry* g, const std::string& name, u32 mat
     }
 
     
-    // Import the material
-    Renderer::Material mat;
-    if ( me->mat != 0 && me->mat[mat_index] != 0 )
-    {
-        ::Material* ma = me->mat[mat_index];
-        Color ambient ( ma->ambr * 255.0f, ma->ambg * 255.0f, ma->ambb * 255.0f, 1.0f );
-        Color diffuse ( ma->r * ma->ref * 255.0f, ma->g * ma->ref * 255.0f, ma->b * ma->ref * 255.0f, 1.0f );
-        Color specular ( ma->specr * 255.0f, ma->specg * 255.0f, ma->specb * 255.0f, 1.0f );
-        float shininess = ma->har;
-
-
-        mat.ambient () = ambient;
-        mat.diffuse () = diffuse;
-        mat.specular () = specular;
-        mat.shininess () = shininess;
-    }
-
-    
     Renderer::Mesh* mesh = new Renderer::Mesh ();
     mesh->Set ( indices, actualFaceCount * 3, Renderer::Mesh::TRIANGLES );
     mesh->name() = name;
-    mesh->material() = mat;
+    // Import the material
+    if ( me->mat != 0 && me->mat[mat_index] != 0 )
+    {
+        ::Material* ma = me->mat[mat_index];
+        std::string material_id = get_material_id(ma);
+        std::map<std::string, l3m::Material*>::iterator iter = gMaterials.find(material_id);
+        if ( iter != gMaterials.end() )
+        {
+            mesh->material() = &iter->second->material();
+        }
+    }
     g->LoadMesh( mesh );
     
     return true;
@@ -706,11 +700,28 @@ static bool ImportMaterials ( ::Scene* sce, l3m::Model* model )
                     if (!ma)
                         continue;
 
-                    std::string translated_id = translate_id(id_name(ma));
+                    std::string translated_id = get_material_id(ma);
                     if (std::find(mMat.begin(), mMat.end(), translated_id) == mMat.end())
                     {
-
+                        l3m::Material* comp = model->CreateComponent<l3m::Material>("material");
                         
+                        Renderer::Material mat;
+                        Color ambient ( ma->ambr * 255.0f, ma->ambg * 255.0f, ma->ambb * 255.0f, 255.0f );
+                        Color diffuse ( ma->r * 255.0f, ma->g * 255.0f, ma->b * 255.0f, 255.0f );
+                        Color specular ( ma->specr * 255.0f, ma->specg * 255.0f, ma->specb * 255.0f, 255.0f );
+                        Color emission ( ma->r * ma->emit * 255.0f, ma->g * ma->emit * 255.0f, ma->b * ma->emit * 255.0f, 255.0f );
+                        float shininess = ma->har;
+                        
+                        mat.name() = translated_id;
+                        mat.ambient() = ambient;
+                        mat.diffuse() = diffuse;
+                        mat.specular() = specular;
+                        mat.emission() = emission;
+                        mat.shininess() = shininess;
+                        
+                        comp->material() = mat;
+                        
+                        gMaterials[translated_id] = comp;
                         mMat.push_back(translated_id);
                     }
                 }
@@ -774,6 +785,13 @@ static bool ImportCamera ( l3m::Camera* cam, ::Object* ob, ::Scene* sce )
 
 static bool import_blender ( ::Scene* sce, const char* filename, l3m::Model* model )
 {
+    // Import the materials
+    if ( !ImportMaterials ( sce, model ) )
+    {
+        fprintf ( stderr, "Error importing the model materials\n" );
+        return false;
+    }
+    
     // Import all geometries
     std::set<std::string> exportedGeometry;
     for ( Base* base = (Base *)sce->base.first; base != 0; base = base->next )
