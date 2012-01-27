@@ -284,12 +284,12 @@ std::string id_name(void *id)
 
 std::string get_geometry_id(Object *ob)
 {
-	return translate_id(id_name(ob->data)) + "-mesh";
+	return translate_id(id_name(ob->data)) + "";
 }
 
 std::string get_light_id(Object *ob)
 {
-	return translate_id(id_name(ob)) + "-light";
+	return translate_id(id_name(ob)) + "";
 }
 
 std::string get_joint_id(Bone *bone, Object *ob_arm)
@@ -299,12 +299,12 @@ std::string get_joint_id(Bone *bone, Object *ob_arm)
 
 std::string get_camera_id(Object *ob)
 {
-	return translate_id(id_name(ob)) + "-camera";
+	return translate_id(id_name(ob)) + "";
 }
 
 std::string get_material_id(Material *mat)
 {
-	return translate_id(id_name(mat)) + "-material";
+	return translate_id(id_name(mat)) + "";
 }
 
 static Transform get_node_transform_ob(Object *ob, Matrix3* scaling)
