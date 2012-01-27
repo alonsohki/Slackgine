@@ -39,6 +39,7 @@ bool delete_unused ( l3m::Model* model )
             }
         }
     }
+    
     for ( l3m::Model::componentVector::iterator iter = components.begin();
           iter != components.end();
         )
@@ -57,4 +58,5 @@ bool delete_unused ( l3m::Model* model )
         ++iter;
     }    
     
+    return true;
 }

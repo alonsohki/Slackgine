@@ -30,10 +30,13 @@ public:
                         , m_specular ( specular )
                         , m_shininess ( shininess )
                         , m_emission ( emission )
+                        , m_bIsShadeless ( false )
                         {}
                         ~Material       () {}
     
+    //--------------------------------------------------------------------------
     // Accessors
+    const b8&           isShadeless     () const { return m_bIsShadeless; }
     const std::string&  name            () const { return m_name; }
     const Color&        ambient         () const { return m_ambient; }
     const Color&        diffuse         () const { return m_diffuse; }
@@ -41,6 +44,7 @@ public:
     const float&        shininess       () const { return m_shininess; }
     const Color&        emission        () const { return m_emission; }
     
+    b8&                 isShadeless     () { return m_bIsShadeless; }
     std::string&        name            () { return m_name; }
     Color&              ambient         () { return m_ambient; }
     Color&              diffuse         () { return m_diffuse; }
@@ -55,6 +59,7 @@ private:
     Color               m_specular;
     float               m_shininess;
     Color               m_emission;
+    b8                  m_bIsShadeless;
 };
 
 }

@@ -718,6 +718,7 @@ static bool ImportMaterials ( ::Scene* sce, l3m::Model* model )
                         mat.specular() = specular;
                         mat.emission() = emission;
                         mat.shininess() = shininess;
+                        mat.isShadeless() = ma->vol.shade_type == MA_VOL_SHADE_SHADELESS;
                         
                         comp->material() = mat;
                         
@@ -748,7 +749,7 @@ static bool ImportCamera ( l3m::Camera* cam, ::Object* ob, ::Scene* sce )
             orientation[i*3+j] = ob->obmat[i][j];
     // WARNING: Here we rotate the camera because, for some reason, Blender cameras look forward by looking downwards.
     transform.orientation() = Matrix3(orientation) * RotationMatrix(EulerAngles(0.0f,deg2rad(-90.0f), 0.0f));
-    cam->transform() = transform * Transform (Vector3(0,2.5,0), IdentityMatrix3());
+    cam->transform() = transform;
     
     // Get the camera type
     ::Camera* c = (::Camera *)ob->data;
