@@ -40,8 +40,8 @@ bool Texture::Load ( l3m::Model*, IStream& stream, float version )
     // Fill it
     if ( stream.ReadData ( buffer, size, 1 ) != 1 )
         return SetError ( "Error reading the texture pixel data" );
-
-    std::istringstream is ( buffer );
+    
+    std::istringstream is ( std::string(buffer, size) );
     m_image.Load ( is );
 
     delete [] buffer;
