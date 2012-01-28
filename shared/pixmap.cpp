@@ -167,23 +167,41 @@ bool Pixmap::LoadPNG ( std::istream& stream )
     
     png_set_sig_bytes ( png_ptr, 8 );
     png_set_read_fn ( png_ptr, &stream, read_from_png );
-    png_read_png ( png_ptr, info_ptr, PNG_TRANSFORM_IDENTITY, 0 );
+    png_read_png ( png_ptr, info_ptr, PNG_TRANSFORM_STRIP_16 | PNG_TRANSFORM_PACKING | PNG_TRANSFORM_GRAY_TO_RGB, 0 );
     
-    m_width = (u32)info_ptr->width;
-    m_height = (u32)info_ptr->height;
-    //png_get_IHDR(png_ptr, info_ptr, (png_uint_32*)&m_width, (png_uint_32*)&m_height, 0, 0, 0, 0, 0);
+    //m_width = (u32)info_ptr->width;
+    //m_height = (u32)info_ptr->height;
+    int bit_depth;
+    int color_type;
+    png_get_IHDR(png_ptr, info_ptr, (png_uint_32*)&m_width, (png_uint_32*)&m_height, &bit_depth, &color_type, 0, 0, 0);
 
     m_pixels = new Color [ m_width * m_height ] ();
     png_bytep* row_pointers = png_get_rows( png_ptr, info_ptr );
     
-    for ( u32 h = 0; h < m_height; ++h )
+    if ( color_type == PNG_COLOR_TYPE_RGB )
     {
-        png_bytep row = row_pointers[h];
-        
-        for ( u32 w = 0; w < m_width; ++w )
+        for ( u32 h = 0; h < m_height; ++h )
         {
-            m_pixels [ w + h*m_width ] = Color ( row[0], row[1], row[2], row[3] );
-            row += 4;
+            png_bytep row = row_pointers[h];
+
+            for ( u32 w = 0; w < m_width; ++w )
+            {
+                m_pixels [ w + h*m_width ] = Color ( row[0], row[1], row[2], 255 );
+                row += 3;
+            }
+        }
+    }
+    else if ( color_type == PNG_COLOR_TYPE_RGB_ALPHA )
+    {
+        for ( u32 h = 0; h < m_height; ++h )
+        {
+            png_bytep row = row_pointers[h];
+
+            for ( u32 w = 0; w < m_width; ++w )
+            {
+                m_pixels [ w + h*m_width ] = Color ( row[0], row[1], row[2], row[3] );
+                row += 4;
+            }
         }
     }
     
