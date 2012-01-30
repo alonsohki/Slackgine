@@ -227,6 +227,5 @@ bool OpenGL3_Renderer::endScene()
         glVertex3f ( 0.0f, 0.0f, 10.0f );
     glEnd ();
 
-    glutSwapBuffers ();
     return true;
 }

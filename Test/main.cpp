@@ -85,5 +85,7 @@ void display ( void )
         fprintf ( stderr, "Error rendering the scene: %s\n", error );
     }
     
+    glutSwapBuffers ();
+    
     glutPostRedisplay ();
 }
