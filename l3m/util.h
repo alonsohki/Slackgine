@@ -23,7 +23,7 @@ namespace Util
 
     //--------------------------------------------------------------------------
     // Function to find a given material in a model given its name.
-    static l3m::Material* findMaterial ( Model* model, const std::string& name )
+    static inline l3m::Material* findMaterial ( Model* model, const std::string& name )
     {
         for ( Model::componentVector::iterator iter = model->components().begin();
               iter != model->components().end();
@@ -42,7 +42,7 @@ namespace Util
     
     //--------------------------------------------------------------------------
     // Function to find the scenes in a model
-    static l3m::Scene* findScene ( Model* model, u32 idx = 0 )
+    static inline l3m::Scene* findScene ( Model* model, u32 idx = 0 )
     {
         for ( Model::componentVector::iterator iter = model->components().begin();
               iter != model->components().end();
