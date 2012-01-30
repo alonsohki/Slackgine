@@ -19,6 +19,10 @@ bool Scene::Load(l3m::Model*, l3m::IStream& fp, float version)
     // Load the camera
     if ( fp.ReadStr ( m_camera ) < 0 )
         return SetError ( "Error reading the scene camera" );
+    
+    // Load the width and height
+    if ( fp.Read16(&m_width, 1) != 1 || fp.Read16(&m_height, 1) != 1 )
+        return SetError ( "Error reading the scene width/height" );
 
     // Load the geometry nodes.
     u32 numGeometryNodes;
@@ -54,6 +58,10 @@ bool Scene::Save(l3m::Model*, l3m::OStream& fp)
     // Save the camera
     if ( !fp.WriteStr ( m_camera ) )
         return SetError ( "Error writing the scene camera" );
+    
+    // Save the width and height
+    if ( !fp.Write16(&m_width, 1) || !fp.Write16(&m_height, 1) )
+        return SetError ( "Error writing the scene width and height" );
 
     // Save all the geometry nodes.
     u32 numGeometryNodes = m_geometryNodes.size();

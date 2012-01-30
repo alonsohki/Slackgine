@@ -43,6 +43,7 @@ public:
     Scene ()
     : IComponent ( "scene", 1.0f )
     {
+        m_width = m_height = 0;
     }
     
     ~Scene ()
@@ -60,18 +61,24 @@ public:
 public:
     nodesVector&                geometryNodes           () { return m_geometryNodes; }
     std::string&                camera                  () { return m_camera; }
+    u16&                        width                   () { return m_width; }
+    u16&                        height                  () { return m_height; }
     
     //--------------------------------------------------------------------------
     // Constant accessors
 public:
     const nodesVector&          geometryNodes           () const { return m_geometryNodes; }
     const std::string&          camera                  () const { return m_camera; }
+    const u16&                  width                   () const { return m_width; }
+    const u16&                  height                  () const { return m_height; }
     
 
 
 private:
     nodesVector         m_geometryNodes;
     std::string         m_camera;
+    u16                 m_width;
+    u16                 m_height;
 };
 
 }

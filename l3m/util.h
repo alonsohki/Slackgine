@@ -40,5 +40,25 @@ namespace Util
         return 0;
     }
     
+    //--------------------------------------------------------------------------
+    // Function to find the scenes in a model
+    static l3m::Scene* findScene ( Model* model, u32 idx = 0 )
+    {
+        for ( Model::componentVector::iterator iter = model->components().begin();
+              iter != model->components().end();
+              ++iter )
+        {
+            if ( (*iter)->type() == "scene" )
+            {
+                if ( idx == 0 )
+                    return static_cast<l3m::Scene*>(*iter);
+                else
+                    --idx;
+            }
+        }
+        
+        return 0;
+    }
+
 }
 }

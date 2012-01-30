@@ -64,7 +64,12 @@ void display ( void )
     }
 
     if ( model == 0 )
+    {
         model = sg->getModelManager().requestBlocking ("spherecube.l3m");
+        l3m::Scene* sce = l3m::Util::findScene(model);
+        if ( sce != 0 )
+            glutReshapeWindow( sce->width(), sce->height() );
+    }
     if ( entity == 0 )
     {
         entity = new Entity ( model );
