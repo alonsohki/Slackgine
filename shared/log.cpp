@@ -34,7 +34,7 @@ void vLog ( const char* level, const char* tag, const char* msg, va_list vl )
 #if USE_THREADS
     logMutex->Lock();
 #endif
-    fprintf ( stdout, "[%s] [%lu.%lu] \"%s\": %s\n", level, tv.tv_sec, tv.tv_usec, tag, buffer );
+    fprintf ( stderr, "[%s] [%lu.%lu] \"%s\": %s\n", level, tv.tv_sec, tv.tv_usec, tag, buffer );
 #if USE_THREADS
     logMutex->Unlock();
 #endif
