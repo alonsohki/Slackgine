@@ -17,6 +17,8 @@
       <itemPath>Components/scene.h</itemPath>
       <itemPath>Components/texture.cpp</itemPath>
       <itemPath>Components/texture.h</itemPath>
+      <itemPath>Components/unknown.cpp</itemPath>
+      <itemPath>Components/unknown.h</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"

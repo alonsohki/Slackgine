@@ -13,6 +13,7 @@
 #include <cstring>
 #include "l3m.h"
 #include "Components/factory.h"
+#include "Components/unknown.h"
 
 using namespace l3m;
 
@@ -63,20 +64,33 @@ bool Model::Load(std::istream& fp)
     u32 numComponents;
     if ( is.Read32(&numComponents, 1) != 1 )
         return SetError ( "Unable to read the number of components" );
-    
+
     for ( u32 i = 0; i < numComponents; ++i )
     {
         // Read the component type
         std::string type;
-        is.ReadStr ( type );
+        if ( is.ReadStr ( type ) <= 0 )
+            return SetError ( "Unable to read the component type" );
+        if ( type == "unknown" )
+            return SetError ( "Invalid component type 'unknown'" );
         
         // Read the component version
         if ( is.ReadFloat ( &version, 1 ) != 1 )
             return SetError ( "Unable to read the component version for a component of type '%s'", type.c_str() );
         
+        // Load the component data length
+        u32 len;
+        if ( is.Read32 ( &len, 1 ) != 1 )
+            return SetError ( "Unable to read the component data length" );
+        
         IComponent* component = ComponentFactory::Create( type );
         if ( component == 0 )
-            return SetError ( "Unable to create a component of type '%s'", type.c_str() );
+        {
+            // If we don't know how to handle this component type, create an unknown component.
+            component = new l3m::UnknownComponent ( type, version, len );
+        }
+        
+        // Load the component data
         if ( component->Load ( this, is, version ) == false )
             return SetError ( "Unable to load a component of type '%s': %s", type.c_str(), component->error() );
         
@@ -133,9 +147,17 @@ bool Model::Save(std::ostream& fp)
         if ( os.WriteFloat ( &version, 1 ) != 1 )
             return SetError ( "Unable to write the component version" );
         
-        // Write the component
-        if ( !m_vecComponents[i]->Save ( this, os ) )
+        // Write the component to a temporary buffer
+        std::ostringstream oss;
+        OStream data ( &oss, IOStream::NONE );
+        if ( !m_vecComponents[i]->Save ( this, data ) )
             return SetError ( m_vecComponents[i]->error() );
+        
+        // Write this buffer length
+        u32 len = oss.str().length();
+        if ( !os.Write32 ( &len, 1 ) )
+            return SetError ( "Error writing the component data length" );
+        os.WriteData ( oss.str().c_str(), len, 1 );
     }
     
     return true;
