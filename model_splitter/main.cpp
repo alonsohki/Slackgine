@@ -36,8 +36,8 @@ int main ( int argc, const char** argv )
         return EXIT_FAILURE;
     }
 
-    Model::componentVector& components = model.components();
-    for ( Model::componentVector::iterator iter = components.begin ();
+    Model::ComponentVector& components = model.components();
+    for ( Model::ComponentVector::iterator iter = components.begin ();
           iter != components.end(); )
     {
         l3m::IComponent* comp = *iter;

@@ -496,8 +496,8 @@ void ModelManager::processRequest (ModelNode* node)
         LOG_VV ( "ModelManager", "Model took %u bytes. GC status: %u/%u bytes (%.2f%%)", model->size(), m_currentMemory, getMaxMemory (), 100.0f*m_currentMemory/(float)getMaxMemory() );
 
         // Check every component for special actions.
-        Model::componentVector& comps = model->components ();
-        for ( Model::componentVector::iterator iter = comps.begin ();
+        Model::ComponentVector& comps = model->components ();
+        for ( Model::ComponentVector::iterator iter = comps.begin ();
               iter != comps.end();
               ++iter )
         {
@@ -724,8 +724,8 @@ void ModelManager::unlink ( ModelNode* node, bool toTheGraveyard )
             LOG_VV ( "ModelManager", "GC status after freeing model: %u/%u bytes (%.2f%%)", m_currentMemory, getMaxMemory (), 100.0f*m_currentMemory/(float)getMaxMemory() );
             
             // Unregister the textures from the texture manager.
-            l3m::Model::componentVector& components = node->model->components ();
-            for ( l3m::Model::componentVector::iterator iter = components.begin();
+            l3m::Model::ComponentVector& components = node->model->components ();
+            for ( l3m::Model::ComponentVector::iterator iter = components.begin();
                   iter != components.end();
                   ++iter )
             {

@@ -27,7 +27,7 @@ namespace l3m
 class Model
 {
 public:
-    typedef std::vector < IComponent* > componentVector;
+    typedef std::vector < IComponent* > ComponentVector;
     
     //--------------------------------------------------------------------------
     // Delta resolver datatypes
@@ -50,7 +50,7 @@ public:
     }
                 ~Model          ()
     {
-        for ( componentVector::const_iterator iter = m_vecComponents.begin();
+        for ( ComponentVector::const_iterator iter = m_vecComponents.begin();
               iter != m_vecComponents.end();
               ++iter )
         {
@@ -88,8 +88,8 @@ public:
     }
     
     unsigned int                numComponents   () const { return m_vecComponents.size(); }
-    componentVector&            components      () { return m_vecComponents; }
-    const componentVector&      components      () const { return m_vecComponents; }
+    ComponentVector&            components      () { return m_vecComponents; }
+    const ComponentVector&      components      () const { return m_vecComponents; }
     
     const u32&                  size            () const { return m_size; }
     
@@ -124,7 +124,7 @@ public:
     
 private:
     DeltaResolverMap            m_deltas;
-    componentVector             m_vecComponents;
+    ComponentVector             m_vecComponents;
     char                        m_error [ 1024 ];
     u32                         m_size;
 };

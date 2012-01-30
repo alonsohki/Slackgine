@@ -533,7 +533,7 @@ static bool ImportSceneObject ( l3m::Model* model, Object* ob, ::Scene* sce, l3m
             
             // Apply the scale and mirroring
             // Find the geometry associated to this url.
-            for ( l3m::Model::componentVector::iterator miter = model->components().begin();
+            for ( l3m::Model::ComponentVector::iterator miter = model->components().begin();
                   miter != model->components().end();
                   ++miter )
             {

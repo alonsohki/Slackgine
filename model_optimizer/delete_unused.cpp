@@ -21,8 +21,8 @@ bool delete_unused ( l3m::Model* model )
     CheckMap materials;
     
     // Check for the used materials
-    l3m::Model::componentVector& components = model->components();
-    for ( l3m::Model::componentVector::iterator iter = components.begin();
+    l3m::Model::ComponentVector& components = model->components();
+    for ( l3m::Model::ComponentVector::iterator iter = components.begin();
           iter != components.end();
           ++iter )
     {
@@ -40,7 +40,7 @@ bool delete_unused ( l3m::Model* model )
         }
     }
     
-    for ( l3m::Model::componentVector::iterator iter = components.begin();
+    for ( l3m::Model::ComponentVector::iterator iter = components.begin();
           iter != components.end();
         )
     {

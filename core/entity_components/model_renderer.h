@@ -27,7 +27,7 @@ public:
         Renderer::Geometry*     geometry;
         Transform               transform;
     };
-    typedef std::vector < Node > nodesVector;
+    typedef std::vector < Node > NodesVector;
     
 public:
                         ModelRenderer           ( l3m::Model* model );
@@ -42,7 +42,7 @@ private:
 private:
     l3m::Model*         m_model;
     l3m::Scene*         m_scene;
-    nodesVector         m_vecNodes;
+    NodesVector         m_vecNodes;
 };
 
 } }

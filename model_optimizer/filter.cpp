@@ -16,9 +16,9 @@ using namespace l3m;
 
 bool filter_types ( Model* model, const std::vector < std::string >& types )
 {
-    Model::componentVector& components = model->components();
+    Model::ComponentVector& components = model->components();
     
-    for ( Model::componentVector::iterator iter = components.begin();
+    for ( Model::ComponentVector::iterator iter = components.begin();
           iter != components.end (); )
     {
         const std::string& type = (*iter)->type ();

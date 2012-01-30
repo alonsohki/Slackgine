@@ -51,8 +51,8 @@ void Scene::findTheModelCamera ( const l3m::Model* model )
     
     // Find the scene component
     l3m::Scene* scene = 0;
-    const l3m::Model::componentVector& components = m_model->components();
-    for ( l3m::Model::componentVector::const_iterator iter = components.begin();
+    const l3m::Model::ComponentVector& components = m_model->components();
+    for ( l3m::Model::ComponentVector::const_iterator iter = components.begin();
           iter != components.end();
           ++iter )
     {
@@ -71,7 +71,7 @@ void Scene::findTheModelCamera ( const l3m::Model* model )
     if ( scene->camera() != "" )
     {
         // Find the referenced camera
-        for ( l3m::Model::componentVector::const_iterator iter = components.begin();
+        for ( l3m::Model::ComponentVector::const_iterator iter = components.begin();
               iter != components.end();
               ++iter )
         {

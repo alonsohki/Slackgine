@@ -20,7 +20,7 @@
 
 static bool ProcessScene ( l3m::Model* model, l3m::Scene* sce, const char** error )
 {
-    for ( l3m::Scene::nodesVector::iterator iter = sce->geometryNodes().begin();
+    for ( l3m::Scene::NodesVector::iterator iter = sce->geometryNodes().begin();
           iter != sce->geometryNodes().end();
           ++iter )
     {
@@ -103,7 +103,7 @@ bool PostProcess ( l3m::Model* model, const char** error )
     using namespace l3m;
     
     // Process the scenes
-    for ( Model::componentVector::iterator iter = model->components().begin();
+    for ( Model::ComponentVector::iterator iter = model->components().begin();
           iter != model->components().end();
           ++iter )
     {
@@ -116,7 +116,7 @@ bool PostProcess ( l3m::Model* model, const char** error )
     }
     
     // Process the geometries
-    for ( Model::componentVector::iterator iter = model->components().begin();
+    for ( Model::ComponentVector::iterator iter = model->components().begin();
           iter != model->components().end();
           ++iter )
     {
@@ -129,7 +129,7 @@ bool PostProcess ( l3m::Model* model, const char** error )
     }
     
     // Process the textures
-    for ( Model::componentVector::iterator iter = model->components().begin();
+    for ( Model::ComponentVector::iterator iter = model->components().begin();
           iter != model->components().end();
           ++iter )
     {

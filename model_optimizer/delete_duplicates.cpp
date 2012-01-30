@@ -113,8 +113,8 @@ bool delete_duplicates ( Model* model )
     
     fprintf ( stderr, "Deleting duplicates...\n" );
     
-    Model::componentVector& components = model->components();
-    for ( Model::componentVector::iterator iter = components.begin ();
+    Model::ComponentVector& components = model->components();
+    for ( Model::ComponentVector::iterator iter = components.begin ();
           iter != components.end();
           ++iter )
     {

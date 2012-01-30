@@ -23,8 +23,8 @@ bool clean_texture_ids ( l3m::Model* model )
     using l3m::IComponent;
     using l3m::Scene;
     
-    Model::componentVector& components = model->components();
-    for ( Model::componentVector::iterator iter = components.begin();
+    Model::ComponentVector& components = model->components();
+    for ( Model::ComponentVector::iterator iter = components.begin();
           iter != components.end();
           ++iter )
     {
@@ -44,7 +44,7 @@ bool clean_texture_ids ( l3m::Model* model )
                 tex->id() = id_copy;
                 
                 // Update the scene uris
-                for ( Model::componentVector::iterator iter2 = components.begin();
+                for ( Model::ComponentVector::iterator iter2 = components.begin();
                       iter2 != components.end();
                       ++iter2 )
                 {
@@ -53,7 +53,7 @@ bool clean_texture_ids ( l3m::Model* model )
                     {
                         Scene* sce = static_cast < Scene* > ( comp2 );
                         // Loop all the geometry nodes
-                        for ( Scene::nodesVector::iterator iter3 = sce->geometryNodes ().begin ();
+                        for ( Scene::NodesVector::iterator iter3 = sce->geometryNodes ().begin ();
                               iter3 != sce->geometryNodes().end();
                               ++iter3 )
                         {

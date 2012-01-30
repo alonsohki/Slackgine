@@ -35,7 +35,7 @@ void ModelRenderer::render ( Renderer::IRenderer* renderer, const Transform& tra
     if ( !m_model || !m_scene )
         return;
     
-    for ( nodesVector::iterator iter = m_vecNodes.begin ();
+    for ( NodesVector::iterator iter = m_vecNodes.begin ();
           iter != m_vecNodes.end ();
           ++iter )
     {
@@ -51,8 +51,8 @@ void ModelRenderer::initialize ()
     
     // Find the scene
     l3m::Scene* scene = 0;
-    const l3m::Model::componentVector& components = m_model->components ();
-    for ( l3m::Model::componentVector::const_iterator iter = components.begin();
+    const l3m::Model::ComponentVector& components = m_model->components ();
+    for ( l3m::Model::ComponentVector::const_iterator iter = components.begin();
           iter != components.end();
           ++iter )
     {
