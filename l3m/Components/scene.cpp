@@ -11,10 +11,11 @@
 //
 
 #include "scene.h"
+#include <l3m/util.h>
 
 using namespace l3m;
 
-bool Scene::Load(l3m::Model*, l3m::IStream& fp, float version)
+bool Scene::Load(l3m::Model* model, l3m::IStream& fp, float version)
 {
     // Load the camera
     if ( fp.ReadStr ( m_camera ) < 0 )
@@ -29,12 +30,17 @@ bool Scene::Load(l3m::Model*, l3m::IStream& fp, float version)
     if ( fp.Read32 ( &numGeometryNodes, 1 ) != 1 )
         return SetError ( "Error reading the number of geometry nodes" );
     
+    geometryNodes().reserve(numGeometryNodes);
     for ( u32 i = 0; i < numGeometryNodes; ++i )
     {
         Scene::Node& node = CreateGeometryNode();
         
         if ( fp.ReadStr(node.url) < 1 )
             return SetError ( "Error reading the geometry node url" );
+        
+        // Defer the geometry url resolution
+        model->RegisterDeltaResolver(this, ResolveNodeData, &node);
+        
         if ( fp.ReadTransform ( &node.transform, 1 ) != 1 )
             return SetError ( "Error reading the geometry node transform" );
         
@@ -68,7 +74,7 @@ bool Scene::Save(l3m::Model*, l3m::OStream& fp)
     if ( !fp.Write32 ( &numGeometryNodes, 1 ) )
         return SetError ( "Unable to write the number of geometry nodes" );
     
-    for ( nodesVector::const_iterator i = m_geometryNodes.begin();
+    for ( NodesVector::const_iterator i = m_geometryNodes.begin();
           i != m_geometryNodes.end();
           ++i )
     {
@@ -96,4 +102,14 @@ Scene::Node& Scene::CreateGeometryNode ()
 {
     m_geometryNodes.push_back ( Node() );
     return m_geometryNodes.back ();
+}
+
+bool Scene::ResolveNodeData(IComponent* comp, l3m::Model* model, void* data)
+{
+    Node* node = (Node*)data;
+
+    l3m::Geometry* g = l3m::Util::findGeometry ( model, node->url );
+    node->geometry = g;
+    
+    return true;
 }

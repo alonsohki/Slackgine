@@ -44,24 +44,6 @@ void ModelRenderer::render ( Renderer::IRenderer* renderer, const Transform& tra
     }
 }
 
-static Renderer::Geometry* findGeometryByURL ( l3m::Model* model, const std::string& url )
-{
-    const l3m::Model::componentVector& components = model->components ();
-    for ( l3m::Model::componentVector::const_iterator iter = components.begin();
-          iter != components.end();
-          ++iter )
-    {
-        if ( (*iter)->type() == "geometry" )
-        {
-            l3m::Geometry* g = static_cast < l3m::Geometry* > ( *iter );
-            if ( g->geometry().name() == url )
-                return &(g->geometry());
-        }
-    }
-    
-    return 0;
-}
-
 void ModelRenderer::initialize ()
 {
     if ( !m_model )
@@ -85,14 +67,16 @@ void ModelRenderer::initialize ()
     if ( m_scene )
     {
         // Find the actual memory references to every geometry in the scene.
-        const l3m::Scene::nodesVector& geometries = m_scene->geometryNodes();
-        for ( l3m::Scene::nodesVector::const_iterator iter = geometries.begin();
+        const l3m::Scene::NodesVector& geometries = m_scene->geometryNodes();
+        for ( l3m::Scene::NodesVector::const_iterator iter = geometries.begin();
               iter != geometries.end ();
               ++iter )
         {
             const l3m::Scene::Node& node = *iter;
-            const std::string& url = node.url;
-            Renderer::Geometry* g = findGeometryByURL(m_model, url);
+            Renderer::Geometry* g = 0;
+            if ( node.geometry != 0 )
+                g = &node.geometry->geometry();
+            
             if ( g != 0 )
             {
                 Node newNode;

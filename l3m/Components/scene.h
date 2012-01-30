@@ -28,11 +28,17 @@ public:
     struct Node
     {
         std::string                     url;
+        l3m::Geometry*                  geometry;
         Transform                       transform;
         std::vector<std::string>        textures;
         Node () : transform (IdentityTransform()) {}
     };
-    typedef std::vector < Node > nodesVector;
+    typedef std::vector < Node > NodesVector;
+    
+    //--------------------------------------------------------------------------
+    // Delta resolver for the nodes geometry
+private:
+    static bool     ResolveNodeData     ( IComponent* comp, l3m::Model* model, void* data );
     
 public:
     static IComponent* Create ()
@@ -59,7 +65,7 @@ public:
     //--------------------------------------------------------------------------
     // Accessors
 public:
-    nodesVector&                geometryNodes           () { return m_geometryNodes; }
+    NodesVector&                geometryNodes           () { return m_geometryNodes; }
     std::string&                camera                  () { return m_camera; }
     u16&                        width                   () { return m_width; }
     u16&                        height                  () { return m_height; }
@@ -67,7 +73,7 @@ public:
     //--------------------------------------------------------------------------
     // Constant accessors
 public:
-    const nodesVector&          geometryNodes           () const { return m_geometryNodes; }
+    const NodesVector&          geometryNodes           () const { return m_geometryNodes; }
     const std::string&          camera                  () const { return m_camera; }
     const u16&                  width                   () const { return m_width; }
     const u16&                  height                  () const { return m_height; }
@@ -75,7 +81,7 @@ public:
 
 
 private:
-    nodesVector         m_geometryNodes;
+    NodesVector         m_geometryNodes;
     std::string         m_camera;
     u16                 m_width;
     u16                 m_height;

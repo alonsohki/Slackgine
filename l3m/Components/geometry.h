@@ -36,15 +36,14 @@ public:
     bool        Load            ( l3m::Model*, l3m::IStream& fp, f32 version );
     bool        Save            ( l3m::Model*, l3m::OStream& fp );
     
+    //--------------------------------------------------------------------------
+    // Delta resolver for the mesh materials
 private:
     struct MaterialDeltaData
     {
         Renderer::Mesh* mesh;
         std::string     name;
     };
-    
-    //--------------------------------------------------------------------------
-    // Delta resolver for the mesh materials
     static bool     ResolveMaterialDelta    ( IComponent* comp, l3m::Model* model, void* data );
     
     

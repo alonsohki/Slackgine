@@ -56,9 +56,28 @@ namespace Util
                     --idx;
             }
         }
-        
+
         return 0;
     }
 
+    //--------------------------------------------------------------------------
+    // Function to find a geometry in a model
+    static inline l3m::Geometry* findGeometry ( Model* model, const std::string& name )
+    {
+        for ( Model::componentVector::iterator iter = model->components().begin();
+              iter != model->components().end();
+              ++iter )
+        {
+            if ( (*iter)->type() == "geometry" )
+            {
+                l3m::Geometry* g = static_cast<l3m::Geometry*>(*iter);
+                
+                if ( g->geometry().name() == name )
+                    return g;
+            }
+        }
+        
+        return 0;
+    }
 }
 }
