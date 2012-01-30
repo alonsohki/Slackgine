@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="80">
+<configurationDescriptor version="79">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="f1" displayName="threads" projectFiles="true">
       <itemPath>mutex.cpp</itemPath>
@@ -47,8 +47,6 @@
           </incDir>
           <commandLine>-ansi -pipe</commandLine>
           <preprocessorList>
-            <Elem>DEBUG</Elem>
-            <Elem>DEBUG_VERY_VERBOSE</Elem>
             <Elem>USE_THREADS</Elem>
           </preprocessorList>
         </ccTool>

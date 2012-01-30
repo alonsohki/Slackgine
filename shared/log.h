@@ -13,6 +13,7 @@
 #include <cstdarg>
 
 #define LOGGING
+#define DEBUG_VERY_VERBOSE
 
 #ifdef ANDROID
 
