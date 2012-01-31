@@ -83,6 +83,15 @@ bool GLES20_Renderer::beginScene ( const Matrix& matProjection, const Matrix& ma
     return true;
 }
 
+void GLES20_Renderer::setupLighting()
+{
+    m_program->SetUniform("un_Lights[0].diffuse", Color(255, 255, 255, 255), false );
+    m_program->SetUniform("un_Lights[0].ambient", Color(0, 0, 0, 255), false );
+    m_program->SetUniform("un_Lights[0].specular", Color(255, 255, 255, 255), false );
+    m_program->SetUniform("un_Lights[0].position", Vector3(0, -2, 0) );
+    m_program->SetUniform("un_Lights[0].direction", Vector3(0, 1, 0) );
+}
+
 bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, MeshRenderFn fn )
 {
     if ( m_program == 0 || m_program->Ok() == false )
@@ -102,6 +111,8 @@ bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, M
     if ( !geometry->initialized() )
         if ( !geometry->Initialize() )
             return false;
+    
+    setupLighting ();
     
     Matrix mat = Transform2Matrix ( transform );
     Matrix matNormals = MatrixForNormals ( mat );

@@ -33,6 +33,9 @@ public:
     void        popState                ();
 
     void        getError                ( char* dest ) const { strcpy(dest, m_error); }
+        
+private:
+    void        setupLighting           ();
 };
 
 };
