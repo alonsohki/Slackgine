@@ -31,6 +31,7 @@ Entity::Entity ( Entity* parent )
 , m_beingDeleted ( false )
 {
     setParent ( parent );
+    setModel ( 0 );
 }
 
 Entity::~Entity()

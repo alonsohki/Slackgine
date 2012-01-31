@@ -1,4 +1,3 @@
-precision mediump float;
 attribute vec3 in_Position;
 attribute vec3 in_Normal;
 attribute vec2 in_Tex2D;

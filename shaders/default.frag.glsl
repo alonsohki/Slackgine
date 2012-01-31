@@ -1,4 +1,3 @@
-precision mediump float;
 varying vec3 ex_Normal;
 
 void main(void)

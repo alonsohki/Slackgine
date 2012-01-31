@@ -47,6 +47,7 @@ GLES20_Shader::~GLES20_Shader()
 
 bool GLES20_Shader::Load ( std::istream& fp )
 {
+    static const char* prefix = "precision mediump float;\n";
     if ( m_handler == 0 )
         return false;
 
@@ -59,8 +60,12 @@ bool GLES20_Shader::Load ( std::istream& fp )
         out.append ( buffer, fp.gcount() );
     }
 
-    const char* source = static_cast < const char* > ( out.c_str() );
-    glShaderSource ( m_handler, 1, &source, 0 );
+    int prefixLen = strlen(prefix);
+    char* source = new char [ out.length() + prefixLen + 1 ];
+    strncpy ( source, prefix, prefixLen );
+    memcpy ( &source[prefixLen], out.c_str(), out.length() );
+    glShaderSource ( m_handler, 1, (const GLchar **)&source, 0 );
+    delete [] source;
     eglGetError();
     glCompileShader ( m_handler );
     eglGetError();

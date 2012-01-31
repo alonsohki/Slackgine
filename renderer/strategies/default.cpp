@@ -62,7 +62,7 @@ bool Default::execute (Core::Slackgine* sg)
         // Push its children to the back of the deque
         for ( Entity::EntityVector::iterator iter = cur->getChildren().begin(); iter != cur->getChildren().end(); ++iter )
             entities.push_back ( *iter );
-        
+
         // Render it!
         if ( cur->getModel() != 0 )
         {
@@ -81,6 +81,8 @@ bool Default::execute (Core::Slackgine* sg)
             }
         }
     }
+    
+    delete defaultProgram;
 
     return true;
 }
