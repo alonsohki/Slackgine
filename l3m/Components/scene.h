@@ -16,6 +16,7 @@
 #include "math/transform.h"
 #include "l3m/component.h"
 #include "l3m/Components/geometry.h"
+#include "l3m/Components/camera.h"
 
 namespace l3m
 {
@@ -28,7 +29,7 @@ public:
     struct Node
     {
         std::string                     url;
-        l3m::Geometry*                  geometry;
+        Renderer::Geometry*             geometry;
         Transform                       transform;
         std::vector<std::string>        textures;
         Node () : transform (IdentityTransform()) {}
@@ -38,7 +39,12 @@ public:
     //--------------------------------------------------------------------------
     // Delta resolver for the nodes geometry
 private:
-    static bool     ResolveNodeData     ( IComponent* comp, l3m::Model* model, void* data );
+    static bool     resolveNodeData     ( IComponent* comp, l3m::Model* model, void* data );
+    
+    //--------------------------------------------------------------------------
+    // Delta resolver for the scene camera
+private:
+    static bool     resolveCamera       ( IComponent* comp, l3m::Model* model, void* data );
     
 public:
     static IComponent* Create ()
@@ -66,7 +72,8 @@ public:
     // Accessors
 public:
     NodesVector&                geometryNodes           () { return m_geometryNodes; }
-    std::string&                camera                  () { return m_camera; }
+    l3m::Camera*&               camera                  () { return m_camera; }
+    std::string&                cameraUrl               () { return m_cameraUrl; }
     u16&                        width                   () { return m_width; }
     u16&                        height                  () { return m_height; }
     
@@ -74,7 +81,8 @@ public:
     // Constant accessors
 public:
     const NodesVector&          geometryNodes           () const { return m_geometryNodes; }
-    const std::string&          camera                  () const { return m_camera; }
+    const l3m::Camera*          camera                  () const { return m_camera; }
+    const std::string&          cameraUrl               () const { return m_cameraUrl; }
     const u16&                  width                   () const { return m_width; }
     const u16&                  height                  () const { return m_height; }
     
@@ -82,7 +90,8 @@ public:
 
 private:
     NodesVector         m_geometryNodes;
-    std::string         m_camera;
+    std::string         m_cameraUrl;
+    l3m::Camera*        m_camera;
     u16                 m_width;
     u16                 m_height;
 };

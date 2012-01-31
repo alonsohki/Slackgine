@@ -34,18 +34,15 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/model_renderer_factory.o \
 	${OBJECTDIR}/shader.o \
 	${OBJECTDIR}/world.o \
 	${OBJECTDIR}/time.o \
 	${OBJECTDIR}/shader_manager.o \
-	${OBJECTDIR}/entity_components/scene.o \
 	${OBJECTDIR}/model_manager.o \
 	${OBJECTDIR}/transformable.o \
 	${OBJECTDIR}/texture_manager.o \
 	${OBJECTDIR}/camera.o \
 	${OBJECTDIR}/slackgine.o \
-	${OBJECTDIR}/entity_components/model_renderer.o \
 	${OBJECTDIR}/entity.o
 
 
@@ -75,11 +72,6 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libcore.a: ${OBJECTFILES}
 	${AR} -rv ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libcore.a ${OBJECTFILES} 
 	$(RANLIB) ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libcore.a
 
-${OBJECTDIR}/model_renderer_factory.o: model_renderer_factory.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/model_renderer_factory.o model_renderer_factory.cpp
-
 ${OBJECTDIR}/shader.o: shader.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
@@ -99,11 +91,6 @@ ${OBJECTDIR}/shader_manager.o: shader_manager.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/shader_manager.o shader_manager.cpp
-
-${OBJECTDIR}/entity_components/scene.o: entity_components/scene.cpp 
-	${MKDIR} -p ${OBJECTDIR}/entity_components
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/entity_components/scene.o entity_components/scene.cpp
 
 ${OBJECTDIR}/model_manager.o: model_manager.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -129,11 +116,6 @@ ${OBJECTDIR}/slackgine.o: slackgine.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/slackgine.o slackgine.cpp
-
-${OBJECTDIR}/entity_components/model_renderer.o: entity_components/model_renderer.cpp 
-	${MKDIR} -p ${OBJECTDIR}/entity_components
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/entity_components/model_renderer.o entity_components/model_renderer.cpp
 
 ${OBJECTDIR}/entity.o: entity.cpp 
 	${MKDIR} -p ${OBJECTDIR}

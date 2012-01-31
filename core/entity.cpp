@@ -12,7 +12,6 @@
 
 #include <set>
 #include "entity.h"
-#include "model_renderer_factory.h"
 #include "slackgine.h"
 
 using namespace Core;
@@ -21,7 +20,6 @@ Entity::Entity ( l3m::Model* pModel, Entity* parent )
 : Transformable ( IdentityTransform() )
 , m_parent ( 0 )
 , m_beingDeleted ( false )
-, m_modelRenderer ( 0 )
 {
     setParent ( parent );
     setModel ( pModel );
@@ -31,7 +29,6 @@ Entity::Entity ( Entity* parent )
 : Transformable ( IdentityTransform() )
 , m_parent ( 0 )
 , m_beingDeleted ( false )
-, m_modelRenderer ( 0 )
 {
     setParent ( parent );
 }
@@ -72,10 +69,6 @@ Entity::~Entity()
     {
         delete *iter;
     }
-    
-    // Delete the model renderer component
-    if ( m_modelRenderer != 0 )
-        ModelRendererFactory::Release ( m_modelRenderer );
 }
 
 void Entity::unlinkChild ( Entity* entity )
@@ -119,17 +112,7 @@ void Entity::setParent ( Entity* parent )
 
 void Entity::setModel ( l3m::Model* pModel )
 {
-    if ( m_modelRenderer != 0 )
-    {
-        ModelRendererFactory::Release ( m_modelRenderer );
-        m_modelRenderer = 0;
-    }
     m_model = pModel;
-    
-    if ( m_model != 0 )
-    {
-        m_modelRenderer = ModelRendererFactory::Create ( m_model );
-    }
 }
 
 void Entity::tick ()
@@ -152,6 +135,7 @@ void Entity::tick ()
     }
 }
 
+#if 0
 void Entity::render ( Renderer::IRenderer* renderer )
 {
     // Render all the child entities
@@ -185,6 +169,7 @@ void Entity::render ( Renderer::IRenderer* renderer )
     
     renderer->popState ();
 }
+#endif
 
 bool Entity::addComponent( Entities::IComponent* component )
 {

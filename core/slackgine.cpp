@@ -64,11 +64,20 @@ void Slackgine::tick ()
     m_world.tick ();
 }
 
-bool Slackgine::render ()
+bool Slackgine::render (Camera* cam)
 {
     if ( m_renderStrategy != 0 )
     {
-        if ( getRenderer()->beginScene() == false )
+        Matrix lookAt = IdentityMatrix ();
+        Matrix projection = IdentityMatrix ();
+        
+        if ( cam != 0 )
+        {
+            projection = cam->getProjection ();
+            lookAt = LookatMatrix ( cam->transform().orientation(), cam->transform().translation() );
+        }
+        
+        if ( getRenderer()->beginScene(projection, lookAt) == false )
         {
             getRenderer()->getError ( m_error );
             return false;
@@ -85,12 +94,6 @@ bool Slackgine::render ()
         return false;
     }
 
-    return true;
-}
-
-bool Slackgine::renderGeometry ()
-{
-    getWorld().render ( getRenderer() );
     return true;
 }
 

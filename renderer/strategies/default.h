@@ -27,7 +27,11 @@ public:
     
     //--------------------------------------------------------------------------
     // Execute
-    bool        execute         ( Core::Slackgine* sg );
+    bool        execute             ( Core::Slackgine* sg );
+    
+    //--------------------------------------------------------------------------
+    // For each geometry mesh
+    bool        forEachMesh         ( Renderer::Mesh* mesh );
 };
     
 } }

@@ -15,6 +15,7 @@
 #include "shared/platform.h"
 #include "math/matrix.h"
 #include "transformable.h"
+#include "l3m/Components/camera.h"
 
 namespace Core
 {
@@ -29,8 +30,10 @@ private:
     };
     
 public:
-                        Camera          ();
+                        Camera          ( const l3m::Camera* cam = 0 );
     virtual             ~Camera         ();
+    
+    void                create          ( const l3m::Camera* cam );
     
     void                setOrthographic ( const f32& left, const f32& right,
                                           const f32& top,  const f32& bottom,

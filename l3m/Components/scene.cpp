@@ -18,8 +18,9 @@ using namespace l3m;
 bool Scene::Load(l3m::Model* model, l3m::IStream& fp, float version)
 {
     // Load the camera
-    if ( fp.ReadStr ( m_camera ) < 0 )
+    if ( fp.ReadStr ( m_cameraUrl ) < 0 )
         return SetError ( "Error reading the scene camera" );
+    model->RegisterDeltaResolver( this, resolveCamera, 0 );
     
     // Load the width and height
     if ( fp.Read16(&m_width, 1) != 1 || fp.Read16(&m_height, 1) != 1 )
@@ -39,7 +40,7 @@ bool Scene::Load(l3m::Model* model, l3m::IStream& fp, float version)
             return SetError ( "Error reading the geometry node url" );
         
         // Defer the geometry url resolution
-        model->RegisterDeltaResolver(this, ResolveNodeData, &node);
+        model->RegisterDeltaResolver(this, resolveNodeData, &node);
         
         if ( fp.ReadTransform ( &node.transform, 1 ) != 1 )
             return SetError ( "Error reading the geometry node transform" );
@@ -62,7 +63,7 @@ bool Scene::Load(l3m::Model* model, l3m::IStream& fp, float version)
 bool Scene::Save(l3m::Model*, l3m::OStream& fp)
 {
     // Save the camera
-    if ( !fp.WriteStr ( m_camera ) )
+    if ( !fp.WriteStr ( m_cameraUrl ) )
         return SetError ( "Error writing the scene camera" );
     
     // Save the width and height
@@ -104,12 +105,22 @@ Scene::Node& Scene::CreateGeometryNode ()
     return m_geometryNodes.back ();
 }
 
-bool Scene::ResolveNodeData(IComponent* comp, l3m::Model* model, void* data)
+bool Scene::resolveNodeData(IComponent* comp, l3m::Model* model, void* data)
 {
     Node* node = (Node*)data;
 
     l3m::Geometry* g = l3m::Util::findGeometry ( model, node->url );
-    node->geometry = g;
+    node->geometry = 0;
+    if ( g != 0 )
+        node->geometry = &g->geometry ();
+    
+    return true;
+}
+
+bool Scene::resolveCamera(IComponent* comp, l3m::Model* model, void* data)
+{
+    Scene* sce = (Scene *)comp;
+    sce->camera() = l3m::Util::findCamera ( model, sce->m_cameraUrl );
     
     return true;
 }

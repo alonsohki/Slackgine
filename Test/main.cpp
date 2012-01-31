@@ -16,7 +16,6 @@
 #include <cstring>
 #include "slackgine.h"
 #include "l3m/l3m.h"
-#include "core/entity_components/scene.h"
 #include "renderer/strategies/default.h"
 
 void display ( void );
@@ -26,6 +25,7 @@ using namespace Core;
 static Entity* entity = 0;
 static l3m::Model* model = 0;
 static Slackgine* sg = 0;
+static Camera* cam = 0;
 
 static void cleanup ()
 {
@@ -74,11 +74,15 @@ void display ( void )
     {
         entity = new Entity ( model );
         entity->setParent( &sg->getWorld() );
-        entity->addComponent( new Core::Entities::Scene() );
+        l3m::Scene* sce = l3m::Util::findScene ( model );
+        if ( sce != 0 )
+        {
+            cam = new Camera ( sce->camera() );
+        }
     }
     
     sg->tick ();
-    if ( !sg->render() )
+    if ( !sg->render(cam) )
     {
         char error [ 1024 ];
         sg->getError ( error );

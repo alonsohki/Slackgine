@@ -14,6 +14,7 @@
 #define	RENDERER_H
 
 #include "shared/platform.h"
+#include "shared/FastDelegate.h"
 #include "math/transform.h"
 #include "geometry.h"
 
@@ -25,12 +26,14 @@ namespace Renderer
 class IRenderer
 {
 public:
+    typedef FastDelegate1<Mesh*, bool> MeshRenderFn;
+    
+public:
     virtual bool        initialize      () = 0;
     
-    virtual bool        beginScene      () = 0;
+    virtual bool        beginScene      ( const Matrix& matProjection = IdentityMatrix(), const Matrix& matLookat = IdentityMatrix() ) = 0;
     virtual void        pushState       () = 0;
-    virtual void        setCamera       ( const Matrix& matProjection = IdentityMatrix(), const Matrix& matLookat = IdentityMatrix() ) = 0;
-    virtual bool        render          ( Geometry* geometry, const Transform& transform = IdentityTransform() ) = 0;
+    virtual bool        render          ( Geometry* geometry, const Transform& transform = IdentityTransform(), MeshRenderFn fn = 0 ) = 0;
     virtual void        popState        () = 0;
     virtual bool        endScene        () = 0;
     

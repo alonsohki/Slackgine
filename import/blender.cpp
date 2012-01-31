@@ -594,7 +594,7 @@ static bool ImportScene ( l3m::Model* model, ::Scene* sce, l3m::Scene* modelScen
     
     // Import the scene camera
     if ( sce->camera != 0 )
-        modelScene->camera() = get_camera_id ( sce->camera );
+        modelScene->cameraUrl() = get_camera_id ( sce->camera );
     
     // Import the scene rendering size
     modelScene->width() = sce->r.xsch;

@@ -79,5 +79,25 @@ namespace Util
         
         return 0;
     }
+    
+    //--------------------------------------------------------------------------
+    // Function to find a geometry in a model
+    static inline l3m::Camera* findCamera ( Model* model, const std::string& name )
+    {
+        for ( Model::ComponentVector::iterator iter = model->components().begin();
+              iter != model->components().end();
+              ++iter )
+        {
+            if ( (*iter)->type() == "camera" )
+            {
+                l3m::Camera* cam = static_cast<l3m::Camera*>(*iter);
+                
+                if ( cam->name() == name )
+                    return cam;
+            }
+        }
+        
+        return 0;
+    }
 }
 }

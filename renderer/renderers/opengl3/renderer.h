@@ -37,11 +37,10 @@ public:
                 ~OpenGL3_Renderer       ();
     
     bool        initialize              ();
-    
-    void        setCamera               ( const Matrix& matProjection = IdentityMatrix(), const Matrix& matLookat = IdentityMatrix() );
-    bool        beginScene              ();
+
+    bool        beginScene              ( const Matrix& projection, const Matrix& lookAt);
     void        pushState               ();
-    bool        render                  ( Geometry* geometry, const Transform& transform = IdentityTransform() );
+    bool        render                  ( Geometry* geometry, const Transform& transform = IdentityTransform(), MeshRenderFn fn = 0 );
     void        popState                ();
     bool        endScene                ();
     

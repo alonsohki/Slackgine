@@ -20,6 +20,7 @@
 #include "model_manager.h"
 #include "time.h"
 #include "world.h"
+#include "camera.h"
 
 namespace Renderer { class RenderStrategy; }
 
@@ -50,8 +51,7 @@ public:
     bool                        initialize              ();
     
     void                        tick                    ();
-    bool                        render                  ();
-    bool                        renderGeometry          ();
+    bool                        render                  ( Camera* cam );
                 
     Renderer::IRenderer*        getRenderer             () { return m_renderer; }
     ModelManager&               getModelManager         () { return m_modelManager; }

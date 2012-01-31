@@ -15,7 +15,6 @@
 #include "math/matrix.h"
 #include "l3m/l3m.h"
 #include "entity_components/component.h"
-#include "entity_components/model_renderer.h"
 #include "renderer/renderer.h"
 #include "transformable.h"
 
@@ -40,7 +39,6 @@ public:
     void                        setModel        ( l3m::Model* pModel );
     
     void                        tick            ();
-    void                        render          ( Renderer::IRenderer* renderer );
     
     bool                        addComponent    ( Entities::IComponent* component );
     
@@ -63,7 +61,6 @@ private:
     
     ComponentVector             m_tickableComponents;
     ComponentVector             m_renderableComponents;
-    Entities::ModelRenderer*    m_modelRenderer;
 };
 
 }

@@ -14,13 +14,43 @@
 
 using namespace Core;
 
-Camera::Camera ()
+Camera::Camera ( const l3m::Camera* cam )
 {
     setOrthographic ( -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f );
+    if ( cam != 0 )
+        create ( cam );
 }
 
 Camera::~Camera ()
 {
+}
+
+void Camera::create ( const l3m::Camera* cam )
+{
+    if ( cam == 0 )
+        return;
+
+    switch ( cam->type() )
+    {
+        case l3m::Camera::CAMERA_ORTHOGRAPHIC:
+            setOrthographic( cam->orthographicData().left,
+                             cam->orthographicData().right,
+                             cam->orthographicData().top,
+                             cam->orthographicData().bottom,
+                             cam->orthographicData().near,
+                             cam->orthographicData().far );
+            break;
+        case l3m::Camera::CAMERA_PERSPECTIVE:
+            setPerspective( cam->perspectiveData().fov,
+                            cam->perspectiveData().aspect,
+                            cam->perspectiveData().near,
+                            cam->perspectiveData().far );
+            break;
+        default:
+            return;
+    }
+
+    transform() = cam->transform();
 }
 
 void Camera::setOrthographic ( const float& left, const float& right,

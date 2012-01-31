@@ -24,12 +24,17 @@ Default::~Default ()
 {
 }
 
+bool Default::forEachMesh ( Renderer::Mesh* mesh )
+{
+    return true;
+}
+
 bool Default::execute (Core::Slackgine* sg)
 {
     std::deque < Entity* > entities;
+    IRenderer* renderer = sg->getRenderer ();
     
     // Begin the scene and push the world root to the deque
-    sg->getRenderer()->beginScene();
     entities.push_back( &sg->getWorld() );
     
     // Repeat until no more entities
@@ -44,11 +49,22 @@ bool Default::execute (Core::Slackgine* sg)
             entities.push_back ( *iter );
         
         // Render it!
-        cur->render(sg->getRenderer());
+        if ( cur->getModel() != 0 )
+        {
+            l3m::Scene* sce = l3m::Util::findScene ( cur->getModel() );
+            if ( sce != 0 )
+            {
+                // For each geometry...
+                for ( l3m::Scene::NodesVector::iterator iter = sce->geometryNodes().begin();
+                      iter != sce->geometryNodes().end();
+                      ++iter )
+                {
+                    l3m::Scene::Node& node = *iter;
+                    renderer->render( node.geometry, cur->transform() * node.transform, MakeDelegate(this, &Default::forEachMesh) );
+                }
+            }
+        }
     }
-    
-    // End the scene
-    sg->getRenderer()->endScene();
 
     return true;
 }
