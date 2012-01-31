@@ -24,11 +24,10 @@ public:
     
     bool        initialize              ();
 
-    bool        beginScene              ();
-    bool        render                  ( Geometry* geometry, const Transform& transform );
+    bool        beginScene              ( const Matrix& projection, const Matrix& lookAt );
+    bool        render                  ( Geometry* geometry, const Transform& transform, MeshRenderFn fn = 0 );
     bool        endScene                ();
 
-    void        setCamera               ( const Matrix& matProjection, const Matrix& matLookat );
     void        pushState               ();
     void        popState                ();
 

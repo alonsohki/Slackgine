@@ -104,8 +104,17 @@ bool GLES20_Renderer::initialize()
     return m_initialized;
 }
 
-void GLES20_Renderer::setCamera ( const Matrix& matProjection, const Matrix& matLookat )
+bool GLES20_Renderer::beginScene ( const Matrix& matProjection, const Matrix& matLookat )
 {
+    glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    eglGetError();
+
+    if ( !m_program->Use () )
+        return false;
+    
+    glEnable ( GL_DEPTH_TEST );
+    glCullFace ( GL_BACK );
+    
     // Change the basis to the OpenGL basis
     static const f32 m [ 16 ] = {
         1.0f,   0.0f,   0.0f,   0.0f,
@@ -128,25 +137,11 @@ void GLES20_Renderer::setCamera ( const Matrix& matProjection, const Matrix& mat
     
     m_matProjection = Matrix ( projectionM );
     m_matLookat = s_matBasisChanger * matLookat;
-}
-
-bool GLES20_Renderer::beginScene ( )
-{
-    glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    eglGetError();
-
-    if ( !m_program->Use () )
-        return false;
-    
-    glEnable ( GL_DEPTH_TEST );
-    glCullFace ( GL_BACK );
-    
-    setCamera ( IdentityMatrix(), IdentityMatrix() );
     
     return true;
 }
 
-bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform )
+bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, MeshRenderFn fn )
 {
     if ( !geometry->initialized() )
         if ( !geometry->Initialize() )
@@ -171,30 +166,33 @@ bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform )
     // Bind the indices buffer
     glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, geometry->m_elementBuffer );
     
-    for ( Geometry::meshNodeVector::const_iterator iter = geometry->m_meshNodes.begin();
+    for ( Geometry::meshNodeVector::iterator iter = geometry->m_meshNodes.begin();
           iter != geometry->m_meshNodes.end();
           ++iter )
     {
-        const Mesh* mesh = (*iter).mesh;
+        Mesh* mesh = (*iter).mesh;
 
-        GLenum polyType = GL_INVALID_ENUM;
-        switch ( mesh->polyType() )
+        if ( !fn || fn(mesh) == true )
         {
-            case Mesh::TRIANGLES: polyType = GL_TRIANGLES; break;
-            case Mesh::TRIANGLE_STRIP: polyType = GL_TRIANGLE_STRIP; break;
-            case Mesh::TRIANGLE_FAN: polyType = GL_TRIANGLE_FAN; break;
-            default: break;
-        }
+            GLenum polyType = GL_INVALID_ENUM;
+            switch ( mesh->polyType() )
+            {
+                case Mesh::TRIANGLES: polyType = GL_TRIANGLES; break;
+                case Mesh::TRIANGLE_STRIP: polyType = GL_TRIANGLE_STRIP; break;
+                case Mesh::TRIANGLE_FAN: polyType = GL_TRIANGLE_FAN; break;
+                default: break;
+            }
 
-        if ( polyType != GL_INVALID_ENUM )
-        {
-            m_program->SetUniform("un_ProjectionMatrix", m_matProjection );
-            m_program->SetUniform("un_LookatMatrix", m_matLookat );
-            m_program->SetUniform("un_ModelviewMatrix", mat);
-            m_program->SetUniform("un_NormalMatrix", matNormals);
-            m_program->SetUniform("un_Matrix", matGeometry );
-            glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, reinterpret_cast<const GLvoid *>((*iter).offset * sizeof(u32)) );
-            eglGetError();
+            if ( polyType != GL_INVALID_ENUM )
+            {
+                m_program->SetUniform("un_ProjectionMatrix", m_matProjection );
+                m_program->SetUniform("un_LookatMatrix", m_matLookat );
+                m_program->SetUniform("un_ModelviewMatrix", mat);
+                m_program->SetUniform("un_NormalMatrix", matNormals);
+                m_program->SetUniform("un_Matrix", matGeometry );
+                glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, reinterpret_cast<const GLvoid *>((*iter).offset * sizeof(u32)) );
+                eglGetError();
+            }
         }
     }
     

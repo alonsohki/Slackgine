@@ -120,7 +120,7 @@
 #define FASTDELEGATE_GCC_BUG_8271
 #endif
 
-
+#include <cstring>
 
 ////////////////////////////////////////////////////////////////////////////////
 //						General tricks used in this code
