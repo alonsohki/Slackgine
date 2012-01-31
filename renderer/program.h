@@ -16,6 +16,7 @@
 #include "shader.h"
 #include "math/vector.h"
 #include "math/matrix.h"
+#include "shared/color.h"
 
 namespace Renderer
 {
@@ -34,6 +35,7 @@ public:
     virtual bool        SetUniform      ( const std::string& name, i32 value ) = 0;
     virtual bool        SetUniform      ( const std::string& name, const Vector2& vec ) = 0;
     virtual bool        SetUniform      ( const std::string& name, const Vector3& vec ) = 0;
+    virtual bool        SetUniform      ( const std::string& name, const Color& col, bool includeAlpha = true ) = 0;
     virtual bool        SetUniform      ( const std::string& name, const Matrix& mat ) = 0;
     
     virtual bool        Ok              ( ) const = 0;

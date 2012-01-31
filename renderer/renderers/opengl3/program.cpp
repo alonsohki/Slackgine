@@ -117,7 +117,7 @@ bool OpenGL3_Program::SetUniform(const std::string& name, const Vector2& vec)
     eglGetError();
     if ( loc == -1 )
         return false;
-    glUniform2fv ( loc, 2, vec.vector() );
+    glUniform2fv ( loc, 1, vec.vector() );
     eglGetError();
     return true;
 }
@@ -128,7 +128,7 @@ bool OpenGL3_Program::SetUniform(const std::string& name, const Vector3& vec)
     eglGetError();
     if ( loc == -1 )
         return false;
-    glUniform3fv ( loc, 3, vec.vector() );
+    glUniform3fv ( loc, 1, vec.vector() );
     eglGetError();
     return true;
 }
@@ -140,6 +140,27 @@ bool OpenGL3_Program::SetUniform(const std::string& name, const Matrix& mat)
     if ( loc == -1 )
         return false;
     glUniformMatrix4fv ( loc, 1, GL_FALSE, mat.vector() );
+    eglGetError();
+    return true;
+}
+
+bool OpenGL3_Program::SetUniform(const std::string& name, const Color& col, bool includeAlpha)
+{
+    GLint loc = glGetUniformLocation ( handler(), name.c_str() );
+    eglGetError();
+    if ( loc == -1 )
+        return false;
+    
+    float values [ 4 ];
+    values[0] = col.r() / 255.0f;
+    values[1] = col.g() / 255.0f;
+    values[2] = col.b() / 255.0f;
+    values[3] = col.a() / 255.0f;
+    
+    if ( includeAlpha )
+        glUniform4fv ( loc, 1, &values[0] );
+    else
+        glUniform3fv ( loc, 1, &values[0] );
     eglGetError();
     return true;
 }

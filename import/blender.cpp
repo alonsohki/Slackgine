@@ -712,7 +712,7 @@ static bool ImportMaterials ( ::Scene* sce, l3m::Model* model )
                         Renderer::Material mat;
                         Color ambient ( ma->ambr * 255.0f, ma->ambg * 255.0f, ma->ambb * 255.0f, 255.0f );
                         Color diffuse ( ma->r * ma->ref * 255.0f, ma->g * ma->ref * 255.0f, ma->b * ma->ref * 255.0f, 255.0f );
-                        Color specular ( ma->specr * 255.0f, ma->specg * 255.0f, ma->specb * 255.0f, 255.0f );
+                        Color specular ( ma->specr * ma->spec * 255.0f, ma->specg * ma->spec * 255.0f, ma->specb * ma->spec * 255.0f, 255.0f );
                         Color emission ( ma->r * ma->emit * 255.0f, ma->g * ma->emit * 255.0f, ma->b * ma->emit * 255.0f, 255.0f );
                         float shininess = ma->har;
                         

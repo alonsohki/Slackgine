@@ -48,6 +48,7 @@ public:
     bool                SetUniform              ( const std::string& name, const Vector2& vec );
     bool                SetUniform              ( const std::string& name, const Vector3& vec );
     bool                SetUniform              ( const std::string& name, const Matrix& mat );
+    bool                SetUniform              ( const std::string& name, const Color& col, bool includeAlpha );
     
     bool                Ok                      () const { return m_linked && m_handler > 0; }
     void                GetError                ( char* dest ) const { strcpy(dest, m_error); }
