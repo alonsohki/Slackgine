@@ -25,8 +25,6 @@ class OpenGL3_Renderer : public IRenderer
 {
 private:
     bool        m_initialized;
-    IShader*    m_vertexShader;
-    IShader*    m_fragmentShader;
     IProgram*   m_program;
     char        m_error [ 512 ];
     Matrix      m_matProjection;
@@ -39,6 +37,7 @@ public:
     bool        initialize              ();
 
     bool        beginScene              ( const Matrix& projection, const Matrix& lookAt);
+    void        setProgram              ( IProgram* program );
     void        pushState               ();
     bool        render                  ( Geometry* geometry, const Transform& transform = IdentityTransform(), MeshRenderFn fn = 0 );
     void        popState                ();

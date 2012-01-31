@@ -35,9 +35,6 @@ public:
     const Renderer::IShader*    vert            () const { return m_vert; }
     const Renderer::IShader*    frag            () const { return m_frag; }
     
-    //--------------------------------------------------------------------------
-    // Private accessors
-private:
     std::string&                name            () { return m_name; }
     Renderer::IShader*&         vert            () { return m_vert; }
     Renderer::IShader*&         frag            () { return m_frag; }

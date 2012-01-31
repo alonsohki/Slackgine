@@ -12,6 +12,7 @@
 
 #include "default.h"
 #include "slackgine.h"
+#include "core/shader_manager.h"
 
 using namespace Renderer::Strategy;
 using Core::Entity;
@@ -29,10 +30,24 @@ bool Default::forEachMesh ( Renderer::Mesh* mesh )
     return true;
 }
 
+bool Default::setup (Core::Slackgine* sg)
+{
+    return true;
+}
+
 bool Default::execute (Core::Slackgine* sg)
 {
     std::deque < Entity* > entities;
     IRenderer* renderer = sg->getRenderer ();
+    
+    Core::Shader* sh = sg->getShaderManager ().load ( "default" );
+    if ( !sh )
+        return false;
+    Renderer::IProgram* defaultProgram = Renderer::Factory::CreateProgram();
+    defaultProgram->AttachShader ( sh->vert() );
+    defaultProgram->AttachShader ( sh->frag() );
+    if ( !defaultProgram->Link() )
+        return false;
     
     // Begin the scene and push the world root to the deque
     entities.push_back( &sg->getWorld() );
@@ -60,11 +75,17 @@ bool Default::execute (Core::Slackgine* sg)
                       ++iter )
                 {
                     l3m::Scene::Node& node = *iter;
+                    renderer->setProgram( defaultProgram );
                     renderer->render( node.geometry, cur->transform() * node.transform, MakeDelegate(this, &Default::forEachMesh) );
                 }
             }
         }
     }
 
+    return true;
+}
+
+bool Default::cleanup ( Core::Slackgine* sg )
+{
     return true;
 }

@@ -71,6 +71,9 @@ bool Slackgine::render (Camera* cam)
         Matrix lookAt = IdentityMatrix ();
         Matrix projection = IdentityMatrix ();
         
+        if ( !m_renderStrategy->setup( this ) )
+            return false;
+        
         if ( cam != 0 )
         {
             projection = cam->getProjection ();
@@ -87,6 +90,8 @@ bool Slackgine::render (Camera* cam)
             m_renderStrategy->execute ( this );
             getRenderer()->endScene();
         }
+        
+        m_renderStrategy->cleanup ( this );
     }
     else
     {

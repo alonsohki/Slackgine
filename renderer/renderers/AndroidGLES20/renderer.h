@@ -25,6 +25,7 @@ public:
     bool        initialize              ();
 
     bool        beginScene              ( const Matrix& projection, const Matrix& lookAt );
+    void        setProgram              ( IProgram* program );
     bool        render                  ( Geometry* geometry, const Transform& transform, MeshRenderFn fn = 0 );
     bool        endScene                ();
 

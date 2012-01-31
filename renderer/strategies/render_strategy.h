@@ -30,6 +30,10 @@ public:
     virtual         ~RenderStrategy         ();
     
 public:
+    //--------------------------------------------------------------------------
+    // Abstract methods to handle initialization/finalization
+    virtual bool    setup                   ( Core::Slackgine* sg ) = 0;
+    virtual bool    cleanup                 ( Core::Slackgine* sg ) = 0;
     
     //--------------------------------------------------------------------------
     // Method to execute this strategy

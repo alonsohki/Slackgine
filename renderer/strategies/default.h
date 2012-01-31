@@ -26,6 +26,11 @@ public:
                 ~Default        ();
     
     //--------------------------------------------------------------------------
+    // Abstract methods to handle initialization/finalization
+    bool        setup               ( Core::Slackgine* sg );
+    bool        cleanup             ( Core::Slackgine* sg );
+    
+    //--------------------------------------------------------------------------
     // Execute
     bool        execute             ( Core::Slackgine* sg );
     

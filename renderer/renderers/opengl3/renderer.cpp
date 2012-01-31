@@ -17,8 +17,6 @@ using namespace Renderer;
 
 OpenGL3_Renderer::OpenGL3_Renderer()
 : m_initialized(false)
-, m_vertexShader(0)
-, m_fragmentShader(0)
 , m_program(0)
 {
     strcpy ( m_error, "Success" );
@@ -28,8 +26,6 @@ OpenGL3_Renderer::~OpenGL3_Renderer()
 {
     if ( m_program != 0 )
     {
-        delete m_vertexShader;
-        delete m_fragmentShader;
         delete m_program;
     }
 }
@@ -43,76 +39,21 @@ bool OpenGL3_Renderer::initialize()
     if ( glewInit () != 0 )
             return false;
 
-    // Initialize the main shaders
-    static const char* const s_defaultVertexShader =
-        "attribute vec3 in_Position;\n"
-        "attribute vec3 in_Normal;\n"
-        "attribute vec2 in_Tex2D;\n"
-        "\n"
-        "uniform mat4 un_Matrix;\n"
-        "uniform mat4 un_ProjectionMatrix;\n"
-        "uniform mat4 un_LookatMatrix;\n"
-        "uniform mat4 un_ModelviewMatrix;\n"
-        "\n"
-        "uniform mat4 un_NormalMatrix;\n"
-        "\n"
-        "varying vec3 ex_Normal;\n"
-        "void main(void)\n"
-        "{\n"
-        "    gl_Position = un_Matrix * vec4(in_Position, 1.0);"
-        "    ex_Normal = (un_NormalMatrix * vec4(in_Normal, 1.0)).xyz;\n"
-        "}\n";
-
-    static const char* const s_defaultFragmentShader =
-        "varying vec3 ex_Normal;\n"
-        "\n"
-        "void main(void)\n"
-        "{\n"
-        "    gl_FragColor = vec4((ex_Normal + 1.0) * 0.5, 1.0);\n"
-        "}\n";
-
-    std::istringstream vertexShaderSource ( s_defaultVertexShader );
-    std::istringstream fragmentShaderSource ( s_defaultFragmentShader );
-
-    m_program = new OpenGL3_Program ();
-    m_vertexShader = new OpenGL3_Shader (IShader::VERTEX_SHADER);
-    m_fragmentShader = new OpenGL3_Shader (IShader::FRAGMENT_SHADER);
-
     strcpy ( m_error, "Success" );
-    
-    char error [ 1024 ];
-    if ( !m_vertexShader->Load (vertexShaderSource) )
-    {
-        m_vertexShader->GetError ( error );
-        snprintf ( m_error, sizeof(m_error), "Error loading the vertex shader: %s", error );
-    }
-    else if ( !m_fragmentShader->Load ( fragmentShaderSource ) )
-    {
-        m_fragmentShader->GetError( error );
-        snprintf ( m_error, sizeof(m_error), "Error loading the fragment shader: %s", error );
-    }
-    else if ( !m_program->AttachShader(m_vertexShader) || !m_program->AttachShader(m_fragmentShader) )
-    {
-        m_program->GetError ( error );
-        snprintf ( m_error, sizeof(m_error), "Error attaching the shaders: %s", error );
-    }
-    else if ( !m_program->Link() )
-    {
-        m_program->GetError( error );
-        snprintf ( m_error, sizeof(m_error), "Error linking the shaders: %s", error );
-    }
 
     m_initialized = ( strcmp(m_error, "Success") == 0 );
     return m_initialized;
+}
+
+void OpenGL3_Renderer::setProgram ( IProgram* program )
+{
+    m_program = program;
 }
 
 bool OpenGL3_Renderer::beginScene ( const Matrix& matProjection, const Matrix& matLookat )
 {
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     eglGetError();
-
-    if ( !m_program->Use () )
-        return false;
     
     glEnable ( GL_DEPTH_TEST );
     glCullFace ( GL_BACK );
@@ -145,6 +86,20 @@ bool OpenGL3_Renderer::beginScene ( const Matrix& matProjection, const Matrix& m
 
 bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, MeshRenderFn fn )
 {
+    if ( m_program == 0 || m_program->Ok() == false )
+    {
+        if ( !m_program )
+            strcpy ( m_error, "Invalid program" );
+        else
+            m_program->GetError ( m_error );
+        return false;
+    }
+    if ( !m_program->Use () )
+    {
+        m_program->GetError ( m_error );
+        return false;
+    }
+        
     if ( !geometry->initialized() )
         if ( !geometry->Initialize() )
             return false;
