@@ -199,6 +199,7 @@ bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, 
 
 bool OpenGL3_Renderer::endScene()
 {
+#if 0
     // Draw the debug coordinate system
     glDisable ( GL_LIGHTING );
     glUseProgram ( 0 );
@@ -218,6 +219,7 @@ bool OpenGL3_Renderer::endScene()
         glVertex3f ( 0.0f, 0.0f, 0.0f );
         glVertex3f ( 0.0f, 0.0f, 10.0f );
     glEnd ();
+#endif
 
     return true;
 }
