@@ -70,7 +70,7 @@ bool OpenGL3_Texture::bind ()
     return false;
 }
 
-GLenum OpenGL3_Texture::ConvertFormat (ITexture::Format format)
+GLenum OpenGL3_Texture::convertFormat (ITexture::Format format)
 {
     GLenum ret;
     
