@@ -30,6 +30,7 @@ public:
     bool                link                    ();
     bool                use                     ();
     
+    bool                setUniform              ( const std::string& name, b8 value );
     bool                setUniform              ( const std::string& name, f32 value );
     bool                setUniform              ( const std::string& name, i32 value );
     bool                setUniform              ( const std::string& name, const Vector2& vec );

@@ -168,24 +168,25 @@ bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, 
 
             if ( polyType != GL_INVALID_ENUM )
             {
-                
                 // Set the material
                 Material* mat = mesh->material();
                 if ( mat != 0 )
                 {
-                    m_program->setUniform( "un_Material.diffuse", mat->diffuse(), false );
+                    m_program->setUniform( "un_Material.diffuse", mat->diffuse(), true );
                     m_program->setUniform( "un_Material.ambient", mat->ambient(), false );
                     m_program->setUniform( "un_Material.specular", mat->specular(), false );
                     m_program->setUniform( "un_Material.emission", mat->emission(), false );
                     m_program->setUniform( "un_Material.shininess", mat->shininess() );
+                    m_program->setUniform( "un_Material.isShadeless", mat->isShadeless() );
                 }
                 else
                 {
-                    m_program->setUniform( "un_Material.diffuse", Vector3(0.7f, 0.7f, 0.7f) );
+                    m_program->setUniform( "un_Material.diffuse", Color(255*0.7f, 255*0.7f, 255*0.7f, 255) );
                     m_program->setUniform( "un_Material.ambient", Vector3(0.7f, 0.7f, 0.7f) );
                     m_program->setUniform( "un_Material.specular", Vector3(0.0f, 0.0f, 0.0f) );
                     m_program->setUniform( "un_Material.emission", Vector3(0.0f, 0.0f, 0.0f) );
                     m_program->setUniform( "un_Material.shininess", 0.0f );
+                    m_program->setUniform( "un_Material.isShadeless", false );
                 }
                 
                 glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, reinterpret_cast<const GLvoid *>((*iter).offset * sizeof(u32)) );

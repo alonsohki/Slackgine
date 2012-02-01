@@ -722,7 +722,7 @@ static bool ImportMaterials ( ::Scene* sce, l3m::Model* model )
                         mat.specular() = specular;
                         mat.emission() = emission;
                         mat.shininess() = shininess;
-                        mat.isShadeless() = ma->vol.shade_type == MA_VOL_SHADE_SHADELESS;
+                        mat.isShadeless() = (ma->mode & MA_SHLESS) == MA_SHLESS;
                         
                         comp->material() = mat;
                         

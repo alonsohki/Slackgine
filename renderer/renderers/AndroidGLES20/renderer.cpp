@@ -80,6 +80,9 @@ bool GLES20_Renderer::beginScene ( const Matrix& matProjection, const Matrix& ma
     m_matProjection = Matrix ( projectionM );
     m_matLookat = s_matBasisChanger * matLookat;
     
+    m_viewVector = Vector3 ( 0.0f, 1.0f, 0.0 ) * m_matLookat;
+    m_viewVector.Normalize();
+    
     return true;
 }
 
@@ -133,6 +136,13 @@ bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, M
     // Bind the indices buffer
     glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, geometry->m_elementBuffer );
     
+    m_program->setUniform("un_ProjectionMatrix", m_matProjection );
+    m_program->setUniform("un_LookatMatrix", m_matLookat );
+    m_program->setUniform("un_ModelviewMatrix", mat);
+    m_program->setUniform("un_NormalMatrix", matNormals);
+    m_program->setUniform("un_Matrix", matGeometry );
+    m_program->setUniform("un_ViewVector", m_viewVector );
+    
     for ( Geometry::meshNodeVector::iterator iter = geometry->m_meshNodes.begin();
           iter != geometry->m_meshNodes.end();
           ++iter )
@@ -152,11 +162,27 @@ bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, M
 
             if ( polyType != GL_INVALID_ENUM )
             {
-                m_program->setUniform("un_ProjectionMatrix", m_matProjection );
-                m_program->setUniform("un_LookatMatrix", m_matLookat );
-                m_program->setUniform("un_ModelviewMatrix", mat);
-                m_program->setUniform("un_NormalMatrix", matNormals);
-                m_program->setUniform("un_Matrix", matGeometry );
+                // Set the material
+                Material* mat = mesh->material();
+                if ( mat != 0 )
+                {
+                    m_program->setUniform( "un_Material.diffuse", mat->diffuse(), true );
+                    m_program->setUniform( "un_Material.ambient", mat->ambient(), false );
+                    m_program->setUniform( "un_Material.specular", mat->specular(), false );
+                    m_program->setUniform( "un_Material.emission", mat->emission(), false );
+                    m_program->setUniform( "un_Material.shininess", mat->shininess() );
+                    m_program->setUniform( "un_Material.isShadeless", mat->isShadeless() );
+                }
+                else
+                {
+                    m_program->setUniform( "un_Material.diffuse", Color(255*0.7f, 255*0.7f, 255*0.7f, 255) );
+                    m_program->setUniform( "un_Material.ambient", Vector3(0.7f, 0.7f, 0.7f) );
+                    m_program->setUniform( "un_Material.specular", Vector3(0.0f, 0.0f, 0.0f) );
+                    m_program->setUniform( "un_Material.emission", Vector3(0.0f, 0.0f, 0.0f) );
+                    m_program->setUniform( "un_Material.shininess", 0.0f );
+                    m_program->setUniform( "un_Material.isShadeless", false );
+                }
+
                 glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, reinterpret_cast<const GLvoid *>((*iter).offset * sizeof(u32)) );
                 eglGetError();
             }

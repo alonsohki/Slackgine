@@ -17,6 +17,7 @@ private:
     char        m_error [ 512 ];
     Matrix      m_matProjection;
     Matrix      m_matLookat;
+    Vector3     m_viewVector;
 
 public:
                 GLES20_Renderer        ();

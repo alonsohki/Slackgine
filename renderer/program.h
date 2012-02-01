@@ -31,6 +31,7 @@ public:
     virtual bool        link            ( ) = 0;
     virtual bool        use             ( ) = 0;
     
+    virtual bool        setUniform      ( const std::string& name, b8 value ) = 0;
     virtual bool        setUniform      ( const std::string& name, f32 value ) = 0;
     virtual bool        setUniform      ( const std::string& name, i32 value ) = 0;
     virtual bool        setUniform      ( const std::string& name, const Vector2& vec ) = 0;

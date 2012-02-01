@@ -76,6 +76,17 @@ bool GLES20_Program::use ()
     return ok ();
 }
 
+bool GLES20_Program::setUniform(const std::string& name, b8 value)
+{
+    GLint loc = glGetUniformLocation ( handler(), name.c_str() );
+    eglGetError();
+    if ( loc == -1 )
+        return false;
+    glUniform1i ( loc, value );
+    eglGetError();
+    return true;
+}
+
 bool GLES20_Program::setUniform(const std::string& name, f32 value)
 {
     GLint loc = glGetUniformLocation ( handler(), name.c_str() );

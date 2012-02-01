@@ -4,11 +4,12 @@ uniform vec3 un_ViewVector;
 
 struct Material
 {
-    vec3 diffuse;
+    vec4 diffuse;
     vec3 ambient;
     vec3 specular;
     vec3 emission;
     float shininess;
+    bool isShadeless;
 };
 uniform Material un_Material;
 
@@ -24,8 +25,8 @@ uniform Light un_Lights [ 1 ];
 
 void doLight(int light)
 {
-    float diffuse = max(-dot(ex_Normal, un_Lights[light].direction), 0);
-    vec3 cDiffuse = un_Material.diffuse * un_Lights[light].diffuse * diffuse;
+    float diffuseFactor = max(-dot(ex_Normal, un_Lights[light].direction), 0);
+    vec4 cDiffuse = un_Material.diffuse * vec4(un_Lights[light].diffuse, 1.0) * diffuseFactor;
     vec3 cAmbient = un_Material.ambient * un_Lights[light].ambient;
     vec3 cEmission = un_Material.emission;
     
@@ -34,11 +35,18 @@ void doLight(int light)
     float specularFactor = temp / (un_Material.shininess - temp*un_Material.shininess + temp);
     vec3 cSpecular = un_Material.specular * un_Lights[light].specular * specularFactor;
 
-    gl_FragColor += vec4 ( cDiffuse + cAmbient + cEmission + cSpecular, 1.0 );
+    gl_FragColor += cDiffuse + vec4 ( cAmbient + cEmission + cSpecular, 1.0 );
 }
 
 void main(void)
 {
-    gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-    doLight(0);
+    if ( un_Material.isShadeless == true )
+    {
+        gl_FragColor = un_Material.diffuse;
+    }
+    else
+    {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+        doLight(0);
+    }
 }
