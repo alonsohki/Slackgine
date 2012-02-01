@@ -23,25 +23,25 @@ Require::~Require ()
 {
 }
 
-bool Require::Load ( l3m::Model*, l3m::IStream& fp, float version )
+bool Require::load ( l3m::Model*, l3m::IStream& fp, float version )
 {
     u16 reqType;
     if ( fp.read16 ( &reqType, 1 ) != 1 )
-        return SetError ( "Unable to load the requirement type" );
+        return setError ( "Unable to load the requirement type" );
     m_reqType = static_cast < RequireType > ( reqType );
     
     if ( fp.readStr ( m_path ) < 1 )
-        return SetError ( "Unable to load the requirement path" );
+        return setError ( "Unable to load the requirement path" );
     return true;
 }
 
-bool Require::Save ( l3m::Model*, l3m::OStream& fp )
+bool Require::save ( l3m::Model*, l3m::OStream& fp )
 {
     u16 reqType = m_reqType;
     if ( fp.write16 ( &reqType, 1 ) == false )
-        return SetError ( "Unable to write the requirement type" );
+        return setError ( "Unable to write the requirement type" );
     
     if ( fp.writeStr ( m_path ) == false )
-        return SetError ( "Unable to write the requirement path" );
+        return setError ( "Unable to write the requirement path" );
     return true;
 }

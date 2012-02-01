@@ -23,8 +23,8 @@ public:
                         UnknownComponent         ( const std::string& type, float version, u32 len );
                         ~UnknownComponent        ();
 
-    bool                Load            ( l3m::Model*, l3m::IStream& stream, float version );
-    bool                Save            ( l3m::Model*, l3m::OStream& stream );
+    bool                load            ( l3m::Model*, l3m::IStream& stream, float version );
+    bool                save            ( l3m::Model*, l3m::OStream& stream );
     
 private:
     u32     m_len;

@@ -123,7 +123,7 @@ bool Model::load(std::istream& fp)
         if ( is.read32 ( &len, 1 ) != 1 )
             return setError ( "Unable to read the component data length" );
         
-        IComponent* component = ComponentFactory::Create( type );
+        IComponent* component = ComponentFactory::create( type );
         if ( component == 0 )
         {
             // If we don't know how to handle this component type, create an unknown component.
@@ -131,7 +131,7 @@ bool Model::load(std::istream& fp)
         }
         
         // Load the component data
-        if ( component->Load ( this, is, version ) == false )
+        if ( component->load ( this, is, version ) == false )
             return setError ( "Unable to load a component of type '%s': %s", type.c_str(), component->error() );
         
         m_vecComponents.push_back ( component );
@@ -191,7 +191,7 @@ bool Model::save(std::ostream& fp)
         // Write the component to a temporary buffer
         std::ostringstream oss;
         OStream data ( &oss, IOStream::NONE );
-        if ( !m_vecComponents[i]->Save ( this, data ) )
+        if ( !m_vecComponents[i]->save ( this, data ) )
             return setError ( m_vecComponents[i]->error() );
         
         // Write this buffer length
@@ -227,7 +227,7 @@ void Model::resolveDeltas ()
 // Component stuff
 IComponent* Model::createComponent(const std::string& type)
 {
-    IComponent* component = ComponentFactory::Create( type );
+    IComponent* component = ComponentFactory::create( type );
     m_vecComponents.push_back(component);
     return component;
 }

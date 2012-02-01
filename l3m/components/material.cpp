@@ -23,11 +23,11 @@ Material::~Material ()
 {
 }
 
-bool Material::Load(l3m::Model*, l3m::IStream& stream, float version)
+bool Material::load(l3m::Model*, l3m::IStream& stream, float version)
 {
     // Load the material name
     if ( stream.readStr(m_material.name()) == 0 )
-        return SetError ( "Error reading the material name" );
+        return setError ( "Error reading the material name" );
     
     // Load the material data
     Color components[4];
@@ -35,11 +35,11 @@ bool Material::Load(l3m::Model*, l3m::IStream& stream, float version)
     b8 shadeless;
     
     if ( stream.readBoolean(&shadeless) == false )
-        return SetError ( "Error reading the material '%s' shadeless atributte", m_material.name().c_str() );
+        return setError ( "Error reading the material '%s' shadeless atributte", m_material.name().c_str() );
     if ( stream.readColor(&components[0], 4) != 4 )
-        return SetError ( "Error reading the material '%s' color components", m_material.name().c_str() );
+        return setError ( "Error reading the material '%s' color components", m_material.name().c_str() );
     if ( stream.readFloat(&shininess, 1) != 1 )
-        return SetError ( "Error reading the material '%s' shininess component", m_material.name().c_str() );
+        return setError ( "Error reading the material '%s' shininess component", m_material.name().c_str() );
     
     m_material.isShadeless() = shadeless;
     m_material.ambient() = components[0];
@@ -51,25 +51,25 @@ bool Material::Load(l3m::Model*, l3m::IStream& stream, float version)
     return true;
 }
 
-bool Material::Save(l3m::Model*, l3m::OStream& stream)
+bool Material::save(l3m::Model*, l3m::OStream& stream)
 {
     // Save the material name
     if ( stream.writeStr(m_material.name()) == false )
-        return SetError ( "Error writing the material name: %s", m_material.name().c_str() );
+        return setError ( "Error writing the material name: %s", m_material.name().c_str() );
     
     // Save the material data
     if ( stream.writeBoolean(m_material.isShadeless()) == false )
-        return SetError ( "Error writing the material '%s' shadeless attribute", m_material.name().c_str() );
+        return setError ( "Error writing the material '%s' shadeless attribute", m_material.name().c_str() );
     if ( stream.writeColor(&m_material.ambient(), 1) == false )
-        return SetError ( "Error writing the material '%s' ambient component", m_material.name().c_str() );
+        return setError ( "Error writing the material '%s' ambient component", m_material.name().c_str() );
     if ( stream.writeColor(&m_material.diffuse(), 1) == false )
-        return SetError ( "Error writing the material '%s' diffuse component", m_material.name().c_str() );
+        return setError ( "Error writing the material '%s' diffuse component", m_material.name().c_str() );
     if ( stream.writeColor(&m_material.specular(), 1) == false )
-        return SetError ( "Error writing the material '%s' specular component", m_material.name().c_str() );
+        return setError ( "Error writing the material '%s' specular component", m_material.name().c_str() );
     if ( stream.writeColor(&m_material.emission(), 1) == false )
-        return SetError ( "Error writing the material '%s' emission component", m_material.name().c_str() );
+        return setError ( "Error writing the material '%s' emission component", m_material.name().c_str() );
     if ( stream.writeFloat(&m_material.shininess(), 1) == false )
-        return SetError ( "Error writing the material '%s' shininess component", m_material.name().c_str() );
+        return setError ( "Error writing the material '%s' shininess component", m_material.name().c_str() );
 
     return true;
 }

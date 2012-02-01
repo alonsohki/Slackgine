@@ -31,63 +31,63 @@ Geometry::~Geometry ()
 
 
 // Load/Save
-bool Geometry::Load(l3m::Model* model, l3m::IStream& fp, float version)
+bool Geometry::load(l3m::Model* model, l3m::IStream& fp, float version)
 {
     // Geometry name
     if ( fp.readStr( m_geometry.name() ) == -1 )
-        return SetError ( "Error reading the geometry name" );
+        return setError ( "Error reading the geometry name" );
     
     // Geometry boundaries
     float values[7];
     if ( fp.readFloat(values, 7) != 7 )
-        return SetError ( "Error reading the geometry boundary data" );
+        return setError ( "Error reading the geometry boundary data" );
     m_geometry.boundingBox() = BoundingBox ( values[0], values[1], values[2], values[3], values[4], values[5] );
     m_geometry.boundingSphere() = BoundingSphere ( values[6] );
     
     // Geometry centroid
     if ( fp.readVector(m_geometry.centroid()) != 1 )
-        return SetError ( "Error reading the geometry centroid" );
+        return setError ( "Error reading the geometry centroid" );
     
     // Read the vertex data
     u32 numVertices;
     if ( fp.read32 ( &numVertices, 1 ) != 1 )
-        return SetError ( "Error reading the vertex count" );
+        return setError ( "Error reading the vertex count" );
     Vertex* vertices = ( Vertex* )malloc ( sizeof(Vertex) * numVertices );
     if ( fp.readFloat(vertices->base(), numVertices*sizeof(Vertex)/sizeof(float)) != (ssize_t)(numVertices*sizeof(Vertex)/sizeof(float)) )
-        return SetError ( "Error reading the vertex data" );
+        return setError ( "Error reading the vertex data" );
     m_geometry.Set ( vertices, numVertices );
 
     // Vertex layers
     u32 numLayers;
     if ( fp.read32 ( &numLayers, 1 ) != 1 )
-        return SetError ( "Error reading the vertex layer count" );
+        return setError ( "Error reading the vertex layer count" );
     for ( u32 i = 0; i < numLayers; ++i )
     {
         // Vertex layer name
         std::string name;
         if ( fp.readStr ( name ) == -1 )
-            return SetError ( "Error reading the vertex layer name" );
+            return setError ( "Error reading the vertex layer name" );
         
         // Vertex layer level count
         u32 numLevels;
         if ( fp.read32 ( &numLevels, 1 ) != 1 )
-            return SetError ( "Error reading the vertex layer level count" );
+            return setError ( "Error reading the vertex layer level count" );
         
         // Vertex layer element size
         u32 elementSize;
         if ( fp.read32 ( &elementSize, 1 ) != 1 )
-            return SetError ( "Error reading the vertex layer element size" );
+            return setError ( "Error reading the vertex layer element size" );
         
         // Vertex layer data
         void* data = m_geometry.CreateVertexLayer ( name, numLevels, 0, elementSize );
         if ( fp.readData ( reinterpret_cast < char * > ( data ), elementSize, numLevels*numVertices ) != (ssize_t)(numLevels*numVertices) )
-            return SetError ( "Error reading the vertex layer data" );
+            return setError ( "Error reading the vertex layer data" );
     }
     
     // Read the meshes headers
     u32 numMeshes;
     if ( fp.read32 ( &numMeshes, 1 ) != 1 )
-        return SetError ( "Error reading the number of meshes" );
+        return setError ( "Error reading the number of meshes" );
     
     // Read the meshes
     for ( u32 i = 0; i < numMeshes; ++i )
@@ -99,7 +99,7 @@ bool Geometry::Load(l3m::Model* model, l3m::IStream& fp, float version)
         // Read the polygon type
         u32 polyType_;
         if ( fp.read32 ( &polyType_, 1 ) != 1 )
-            return SetError ( "Error reading the polygon type" );
+            return setError ( "Error reading the polygon type" );
         Mesh::PolygonType polyType = static_cast < Mesh::PolygonType > ( polyType_ );
         
         // Read the material
@@ -107,20 +107,20 @@ bool Geometry::Load(l3m::Model* model, l3m::IStream& fp, float version)
         std::string materialName;
         
         if ( !fp.readBoolean(&thereIsMaterial) )
-            return SetError ( "Error reading the material" );
+            return setError ( "Error reading the material" );
         if ( thereIsMaterial )
         {
             if ( fp.readStr ( materialName ) == 0 )
-                return SetError ( "Error reading the material name" );
+                return setError ( "Error reading the material name" );
         }
         
         // Read the index data
         u32 numIndices;
         if ( fp.read32 ( &numIndices, 1 ) != 1 )
-            return SetError ( "Error reading the index count" );
+            return setError ( "Error reading the index count" );
         u32* indices = ( u32* )malloc ( sizeof(u32) * numIndices );
         if ( fp.read32 ( indices, numIndices ) != (ssize_t)numIndices )
-            return SetError ( "Error reading the index data" );
+            return setError ( "Error reading the index data" );
         
         // Create the mesh
         Mesh* mesh = new Mesh ();
@@ -141,11 +141,11 @@ bool Geometry::Load(l3m::Model* model, l3m::IStream& fp, float version)
     return true;
 }
 
-bool Geometry::Save(l3m::Model*, l3m::OStream& fp)
+bool Geometry::save(l3m::Model*, l3m::OStream& fp)
 {
     // Geometry name
     if ( !fp.writeStr( m_geometry.name() ) )
-        return SetError ( "Error writing the geometry name" );
+        return setError ( "Error writing the geometry name" );
     
     // Geometry boundaries
     float values[7];
@@ -155,24 +155,24 @@ bool Geometry::Save(l3m::Model*, l3m::OStream& fp)
     values[4] = bbox.minZ(); values[5] = bbox.maxZ();
     values[6] = m_geometry.boundingSphere().radius();
     if ( ! fp.writeFloat ( values, 7 ) )
-        return SetError ( "Error writing the geometry boundary data" );
+        return setError ( "Error writing the geometry boundary data" );
     
     // Geometry centroid
     if ( ! fp.writeVector( m_geometry.centroid() ) )
-        return SetError ( "Error writing the geometry centroid" );
+        return setError ( "Error writing the geometry centroid" );
     
     // Geometry vertices
     u32 num = m_geometry.numVertices();
     if ( ! fp.write32 ( &num, 1 ) )
-        return SetError ( "Error writing the vertex count" );
+        return setError ( "Error writing the vertex count" );
     if ( ! fp.writeFloat ( m_geometry.vertices()->base(), num * sizeof(Vertex) / sizeof(f32) ) )
-        return SetError ( "Error writing the vertex data" );
+        return setError ( "Error writing the vertex data" );
     
     // Vertex layers
     const Renderer::Geometry::layerMap& vertexLayers = m_geometry.vertexLayers ();
     num = vertexLayers.size();
     if ( ! fp.write32 ( &num, 1 ) )
-        return SetError ( "Error writing the vertex layer count" );
+        return setError ( "Error writing the vertex layer count" );
     for ( Renderer::Geometry::layerMap::const_iterator iter = vertexLayers.begin();
           iter != vertexLayers.end();
           ++iter )
@@ -182,27 +182,27 @@ bool Geometry::Save(l3m::Model*, l3m::OStream& fp)
         
         // Write the vertex layer name
         if ( !fp.writeStr ( name ) )
-            return SetError ( "Error writing the vertex layer name" );
+            return setError ( "Error writing the vertex layer name" );
         
         // Write the vertex layer level count
         if ( !fp.write32 ( &layer.numLevels, 1 ) )
-            return SetError ( "Error writing the vertex layer level count" );
+            return setError ( "Error writing the vertex layer level count" );
         
         // Write the vertex layer element size
         u32 size = layer.elementSize;
         if ( ! fp.write32 ( &size, 1 ) )
-            return SetError ( "Error writing the vertex layer element size" );
+            return setError ( "Error writing the vertex layer element size" );
         
         // Write the vertex layer data
         if ( ! fp.writeData ( reinterpret_cast<char*>(layer.data), size, layer.numLevels*m_geometry.numVertices() ) )
-            return SetError ( "Error writing the vertex layer data" );
+            return setError ( "Error writing the vertex layer data" );
     }
 
     // Write the meshes headers
     const Renderer::Geometry::meshList& meshes = m_geometry.meshes();
     u32 numMeshes = meshes.size ();
     if ( ! fp.write32 ( &numMeshes, 1 ) )
-        return SetError ( "Error writing the number of meshes" );
+        return setError ( "Error writing the number of meshes" );
 
     for ( Renderer::Geometry::meshList::const_iterator iter2 = meshes.begin(); iter2 != meshes.end(); ++iter2 )
     {
@@ -210,19 +210,19 @@ bool Geometry::Save(l3m::Model*, l3m::OStream& fp)
 
         // Write the mesh name
         if ( ! fp.writeStr ( mesh->name() ) )
-            return SetError ( "Error writing the mesh name" );
+            return setError ( "Error writing the mesh name" );
 
         // Write the polygon type
         u32 polyType = mesh->polyType();
         if ( ! fp.write32 ( &polyType, 1 ) )
-            return SetError ( "Error writing the mesh polygon type" );
+            return setError ( "Error writing the mesh polygon type" );
         
         // Write the material id
         if ( mesh->material() != 0 )
         {
             fp.writeBoolean ( true );
             if ( ! fp.writeStr ( mesh->material()->name() ) )
-                return SetError ( "Error writing the material name" );
+                return setError ( "Error writing the material name" );
         }
         else
             fp.writeBoolean ( false );
@@ -231,9 +231,9 @@ bool Geometry::Save(l3m::Model*, l3m::OStream& fp)
         // Write the index data
         num = mesh->numIndices();
         if ( ! fp.write32( &num, 1 ) )
-            return SetError ( "Error writing the index count" );
+            return setError ( "Error writing the index count" );
         if ( ! fp.write32(mesh->indices(), num ) )
-            return SetError ( "Error writing the index data" );
+            return setError ( "Error writing the index data" );
     }
     
     return true;

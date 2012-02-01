@@ -25,18 +25,27 @@ class Model;
 class IComponent
 {
 public:
-                        IComponent      ( const char* type, float version ): m_type ( type ), m_version ( version ) {}
-    virtual             ~IComponent     () {}
+    //--------------------------------------------------------------------------
+    // Constructor/Destructor
+                 IComponent      ( const char* type, float version ): m_type ( type ), m_version ( version ) {}
+    virtual      ~IComponent     () {}
     
-    virtual bool        Load            ( l3m::Model*, l3m::IStream& fp, float version ) = 0;
-    virtual bool        Save            ( l3m::Model*, l3m::OStream& fp ) = 0;
     
+    //--------------------------------------------------------------------------
+    // Component loading/saving
+    virtual bool        load            ( l3m::Model*, l3m::IStream& fp, float version ) = 0;
+    virtual bool        save            ( l3m::Model*, l3m::OStream& fp ) = 0;
+    
+    
+    //--------------------------------------------------------------------------
+    // Public accessors
     const std::string&  type            () const { return m_type; }
     float               version         () const { return m_version; }
     const char*         error           () const { return m_error; }
     
+    
 protected:
-    bool                SetError        ( const char* msg, ... )
+    bool                setError        ( const char* msg, ... )
     {
         va_list vl;
         va_start ( vl, msg );

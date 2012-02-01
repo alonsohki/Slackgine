@@ -44,8 +44,8 @@ public:
     
     //--------------------------------------------------------------------------
     // Inherited methods from IComponent
-    bool                Load            ( l3m::Model*, l3m::IStream& stream, float version );
-    bool                Save            ( l3m::Model*, l3m::OStream& stream );
+    bool                load            ( l3m::Model*, l3m::IStream& stream, float version );
+    bool                save            ( l3m::Model*, l3m::OStream& stream );
 };
 
 }

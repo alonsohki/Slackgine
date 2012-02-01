@@ -33,8 +33,8 @@ public:
                 Geometry        ();
                 ~Geometry       ();
     
-    bool        Load            ( l3m::Model*, l3m::IStream& fp, f32 version );
-    bool        Save            ( l3m::Model*, l3m::OStream& fp );
+    bool        load            ( l3m::Model*, l3m::IStream& fp, f32 version );
+    bool        save            ( l3m::Model*, l3m::OStream& fp );
     
     //--------------------------------------------------------------------------
     // Delta resolver for the mesh materials

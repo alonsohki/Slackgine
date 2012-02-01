@@ -24,22 +24,22 @@ Texture::~Texture ()
 {
 }
 
-bool Texture::Load ( l3m::Model*, IStream& stream, float version )
+bool Texture::load ( l3m::Model*, IStream& stream, float version )
 {
     // Load the texture string
     if ( stream.readStr ( m_id ) <= 0 )
-        return SetError ( "Error reading the texture ID" );
+        return setError ( "Error reading the texture ID" );
     
     // Read the image size
     u32 size;
     if ( stream.read32 ( &size, 1 ) != 1 )
-        return SetError ( "Error reading the texture image size" );
+        return setError ( "Error reading the texture image size" );
 
     // Create a buffer for this
     char* buffer = new char [ size ];
     // Fill it
     if ( stream.readData ( buffer, size, 1 ) != 1 )
-        return SetError ( "Error reading the texture pixel data" );
+        return setError ( "Error reading the texture pixel data" );
     
     std::istringstream is ( std::string(buffer, size) );
     m_image.Load ( is );
@@ -49,11 +49,11 @@ bool Texture::Load ( l3m::Model*, IStream& stream, float version )
     return true;
 }
 
-bool Texture::Save ( l3m::Model*, OStream& stream )
+bool Texture::save ( l3m::Model*, OStream& stream )
 {
     // Write the texture id
     if ( !stream.writeStr ( m_id ) )
-        return SetError ( "Error writing the texture ID" );
+        return setError ( "Error writing the texture ID" );
 
     // Compress the pixmap
     std::ostringstream os;
@@ -62,11 +62,11 @@ bool Texture::Save ( l3m::Model*, OStream& stream )
     // Write the result size
     u32 len = os.str().length ();
     if ( !stream.write32(&len, 1) )
-        return SetError ( "Error writing the texture image size" );
+        return setError ( "Error writing the texture image size" );
     
     // Write the image data
     if ( !stream.writeData(os.str().c_str(), len, 1) )
-        return SetError ( "Error writing the texture pixel data" );
+        return setError ( "Error writing the texture pixel data" );
 
     return true;
 }

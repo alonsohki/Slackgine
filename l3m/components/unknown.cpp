@@ -28,16 +28,16 @@ UnknownComponent::~UnknownComponent()
     m_data = 0;
 }
 
-bool UnknownComponent::Load ( l3m::Model*, l3m::IStream& stream, float version )
+bool UnknownComponent::load ( l3m::Model*, l3m::IStream& stream, float version )
 {
     if ( stream.readData ( m_data, m_len, 1 ) != 1 )
-        return SetError ( "Error loading an unknown(%s) component data", IComponent::type().c_str() );
+        return setError ( "Error loading an unknown(%s) component data", IComponent::type().c_str() );
     return true;
 }
 
-bool UnknownComponent::Save ( l3m::Model*, l3m::OStream& stream )
+bool UnknownComponent::save ( l3m::Model*, l3m::OStream& stream )
 {
     if ( !stream.writeData ( m_data, m_len, 1 ) )
-        return SetError ( "Error saving an unknown(%s) component data", IComponent::type().c_str() );
+        return setError ( "Error saving an unknown(%s) component data", IComponent::type().c_str() );
     return true;
 }

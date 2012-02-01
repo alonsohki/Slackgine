@@ -36,8 +36,8 @@ public:
                         Require         ();
                         ~Require        ();
 
-    bool                Load            ( l3m::Model*, l3m::IStream& stream, float version );
-    bool                Save            ( l3m::Model*, l3m::OStream& stream );
+    bool                load            ( l3m::Model*, l3m::IStream& stream, float version );
+    bool                save            ( l3m::Model*, l3m::OStream& stream );
     
     std::string&        path            () { return m_path; }
     RequireType&        reqType         () { return m_reqType;  }

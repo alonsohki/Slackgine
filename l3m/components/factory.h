@@ -26,24 +26,21 @@ private:
     typedef std::map<std::string, instantiatorFn> typesMap;
     
 public:
-    static void                 Register        ( const std::string& type, instantiatorFn fn )
-    {
-        ms_types [ type ] = fn;
-    }
+    //--------------------------------------------------------------------------
+    // registerType
+    // Registers a new component type, with a given function to create new
+    // instances of it.
+    static void                 registerType    ( const std::string& type, instantiatorFn fn );
     
-    static IComponent*          Create          ( const std::string& type )
-    {
-        if ( !ms_initialized )
-            Initialize ();
-        
-        typesMap::const_iterator iter = ms_types.find ( type );
-        if ( iter != ms_types.end() )
-            return iter->second ();
-        return 0;
-    }
+
+    //--------------------------------------------------------------------------
+    // create
+    // Creates a new componeot of that type, or returns null if it's an unknown
+    // type.
+    static IComponent*          create          ( const std::string& type );
     
 private:
-    static void                 Initialize      ();
+    static void                 initialize      ();
     
 private:
     static typesMap     ms_types;

@@ -16,13 +16,29 @@
 l3m::ComponentFactory::typesMap l3m::ComponentFactory::ms_types;
 bool l3m::ComponentFactory::ms_initialized = false;
 
-void l3m::ComponentFactory::Initialize()
+void l3m::ComponentFactory::initialize()
 {
     ms_initialized = true;
-    Register ( "geometry", Geometry::Create );
-    Register ( "scene", Scene::Create );
-    Register ( "texture", Texture::Create );
-    Register ( "require", Require::Create );
-    Register ( "camera", Camera::Create );
-    Register ( "material", Material::Create );
+    registerType ( "geometry", Geometry::Create );
+    registerType ( "scene", Scene::Create );
+    registerType ( "texture", Texture::Create );
+    registerType ( "require", Require::Create );
+    registerType ( "camera", Camera::Create );
+    registerType ( "material", Material::Create );
+}
+
+void l3m::ComponentFactory::registerType(const std::string& type, instantiatorFn fn)
+{
+    ms_types [ type ] = fn;
+}
+
+l3m::IComponent* l3m::ComponentFactory::create(const std::string& type)
+{
+    if ( !ms_initialized )
+        initialize ();
+
+    typesMap::const_iterator iter = ms_types.find ( type );
+    if ( iter != ms_types.end() )
+        return iter->second ();
+    return 0;
 }
