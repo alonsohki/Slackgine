@@ -196,7 +196,7 @@ bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, M
                     else
                     {
                         m_program->setUniform( "un_Material.textureLevels", 0 );
-                        geometry->unbindAttribute(m_program, "in_Tex2D");
+                        geometry->unbindAttribute(m_program, "in_TexCoord");
                     }
                 }
                 else
@@ -207,7 +207,7 @@ bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, M
                     m_program->setUniform( "un_Material.emission", Vector3(0.0f, 0.0f, 0.0f) );
                     m_program->setUniform( "un_Material.shininess", 0.0f );
                     m_program->setUniform( "un_Material.isShadeless", false );
-                    geometry->unbindAttribute(m_program, "in_Tex2D");
+                    geometry->unbindAttribute(m_program, "in_TexCoord");
                 }
 
                 glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, reinterpret_cast<const GLvoid *>((*iter).offset * sizeof(u32)) );
@@ -221,6 +221,7 @@ bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, M
 
 bool GLES20_Renderer::endScene()
 {
+    glUseProgram ( 0 );
     return true;
 }
 

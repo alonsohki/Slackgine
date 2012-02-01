@@ -251,5 +251,6 @@ bool OpenGL3_Renderer::endScene()
     glEnd ();
 #endif
 
+    glUseProgram ( 0 );
     return true;
 }

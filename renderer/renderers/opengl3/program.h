@@ -30,9 +30,9 @@ public:
     };
     
 private:
-    GLuint      m_handler;
-    bool        m_linked;
-    char        m_error [ 512 ];
+    GLuint          m_handler;
+    bool            m_linked;
+    char            m_error [ 512 ];
     
 public:
                         OpenGL3_Program         ();

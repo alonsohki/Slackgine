@@ -26,6 +26,21 @@ OpenGL3_Program::~OpenGL3_Program()
 {
     if ( m_handler > 0 )
     {
+        // Detach all the attached shaders
+        GLint numShaders;
+        glGetProgramiv ( m_handler, GL_ATTACHED_SHADERS, &numShaders);
+        eglGetError();
+        GLuint* shaders = new GLuint [ numShaders ];
+        glGetAttachedShaders ( m_handler, numShaders, 0, shaders );
+        eglGetError();
+        
+        for ( u32 i = 0; i < numShaders; ++i )
+        {
+            glDetachShader ( m_handler, shaders[i] );
+            eglGetError();
+        }
+        delete [] shaders;
+        
         glDeleteProgram ( m_handler );
         eglGetError();
     }

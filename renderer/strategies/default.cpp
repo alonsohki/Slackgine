@@ -35,6 +35,19 @@ bool Default::setup (Core::Slackgine* sg)
     return true;
 }
 
+struct ProgramAutoDeleter
+{
+    Renderer::IProgram* ptr;
+
+    ProgramAutoDeleter () : ptr ( 0 )
+    {}
+    ~ProgramAutoDeleter ()
+    {
+        if ( ptr != 0 )
+            delete ptr;
+    }
+};
+
 bool Default::execute (Core::Slackgine* sg)
 {
     std::deque < Entity* > entities;
@@ -43,11 +56,15 @@ bool Default::execute (Core::Slackgine* sg)
     Core::Shader* sh = sg->getShaderManager ().load ( "default" );
     if ( !sh )
         return false;
-    Renderer::IProgram* defaultProgram = Renderer::Factory::createProgram();
-    defaultProgram->attachShader ( sh->vert() );
-    defaultProgram->attachShader ( sh->frag() );
-    if ( !defaultProgram->link() )
+
+    ProgramAutoDeleter defaultProgram;
+    defaultProgram.ptr = Renderer::Factory::createProgram();
+    defaultProgram.ptr->attachShader ( sh->vert() );
+    defaultProgram.ptr->attachShader ( sh->frag() );
+    if ( !defaultProgram.ptr->link() )
+    {
         return false;
+    }
     
     // Begin the scene and push the world root to the deque
     entities.push_back( &sg->getWorld() );
@@ -75,14 +92,12 @@ bool Default::execute (Core::Slackgine* sg)
                       ++iter )
                 {
                     l3m::Scene::Node& node = *iter;
-                    renderer->setProgram( defaultProgram );
+                    renderer->setProgram( defaultProgram.ptr );
                     renderer->render( node.geometry, cur->transform() * node.transform, MakeDelegate(this, &Default::forEachMesh) );
                 }
             }
         }
     }
-    
-    delete defaultProgram;
 
     return true;
 }
