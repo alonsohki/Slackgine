@@ -43,6 +43,7 @@ public:
     const Color&        specular        () const { return m_specular; }
     const float&        shininess       () const { return m_shininess; }
     const Color&        emission        () const { return m_emission; }
+    const std::string&  texture         () const { return m_texture; }
     
     b8&                 isShadeless     () { return m_bIsShadeless; }
     std::string&        name            () { return m_name; }
@@ -51,6 +52,7 @@ public:
     Color&              specular        () { return m_specular; }
     float&              shininess       () { return m_shininess; }
     Color&              emission        () { return m_emission; }
+    std::string&        texture         () { return m_texture; }
 
 private:
     std::string         m_name;
@@ -60,6 +62,7 @@ private:
     float               m_shininess;
     Color               m_emission;
     b8                  m_bIsShadeless;
+    std::string         m_texture;
 };
 
 }

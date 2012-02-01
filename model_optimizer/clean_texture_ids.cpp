@@ -15,6 +15,27 @@
 #include "clean_texture_ids.h"
 #include "l3m/components/texture.h"
 #include "l3m/components/scene.h"
+#include "l3m/components/material.h"
+
+static std::string cleanTextureID ( const std::string texID )
+{
+    char* id_copy = strdup ( texID.c_str() );
+    std::string ret;
+    
+    char* p = strrchr ( id_copy, '_' );
+    if ( p != 0 )
+    {
+        *p = '\0';
+        while ( ( p = strchr ( id_copy, '-' ) ) != 0 )
+            strcpy ( p, p+1 );
+        ret = id_copy;
+    }
+    else
+        ret = texID;
+    
+    free ( id_copy );
+    return ret;
+}
 
 bool clean_texture_ids ( l3m::Model* model )
 {
@@ -22,6 +43,7 @@ bool clean_texture_ids ( l3m::Model* model )
     using l3m::Texture;
     using l3m::IComponent;
     using l3m::Scene;
+    using l3m::Material;
     
     Model::ComponentVector& components = model->components();
     for ( Model::ComponentVector::iterator iter = components.begin();
@@ -32,16 +54,12 @@ bool clean_texture_ids ( l3m::Model* model )
         if ( comp->type() == "texture" )
         {
             Texture* tex = static_cast < Texture* > ( comp );
-            char* id_copy = strdup ( tex->id().c_str() );
-            char* old_id = strdup ( id_copy );
+            std::string new_id = cleanTextureID ( tex->id() );
+            std::string old_id = tex->id();
             
-            char* p = strrchr ( id_copy, '_' );
-            if ( p )
+            if ( old_id != new_id )
             {
-                *p = '\0';
-                while ( ( p = strchr ( id_copy, '-' ) ) != 0 )
-                    strcpy ( p, p+1 );
-                tex->id() = id_copy;
+                tex->id() = new_id;
                 
                 // Update the scene uris
                 for ( Model::ComponentVector::iterator iter2 = components.begin();
@@ -65,14 +83,21 @@ bool clean_texture_ids ( l3m::Model* model )
                             {
                                 std::string& url = *iter4;
                                 if ( url == old_id )
-                                    url = id_copy;
+                                    url = new_id;
                             }
                         }
                     }
                 }
             }
-            free ( id_copy );
-            free ( old_id );
+        }
+        
+        else if ( comp->type() == "material" )
+        {
+            Material* mat = static_cast < Material* > ( comp );
+            if ( mat->material().texture() != "" )
+            {
+                mat->material().texture() = cleanTextureID(mat->material().texture());
+            }
         }
     }
     

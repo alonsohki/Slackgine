@@ -33,6 +33,7 @@ bool Material::load(l3m::Model*, l3m::IStream& stream, float version)
     Color components[4];
     float shininess;
     b8 shadeless;
+    std::string texture;
     
     if ( stream.readBoolean(&shadeless) == false )
         return setError ( "Error reading the material '%s' shadeless atributte", m_material.name().c_str() );
@@ -40,6 +41,8 @@ bool Material::load(l3m::Model*, l3m::IStream& stream, float version)
         return setError ( "Error reading the material '%s' color components", m_material.name().c_str() );
     if ( stream.readFloat(&shininess, 1) != 1 )
         return setError ( "Error reading the material '%s' shininess component", m_material.name().c_str() );
+    if ( stream.readStr(texture) < 0 )
+        return setError ( "Error reading the material '%s' texture", m_material.name().c_str() );
     
     m_material.isShadeless() = shadeless;
     m_material.ambient() = components[0];
@@ -47,6 +50,7 @@ bool Material::load(l3m::Model*, l3m::IStream& stream, float version)
     m_material.specular() = components[2];
     m_material.emission() = components[3];
     m_material.shininess() = shininess;
+    m_material.texture() = texture;
     
     return true;
 }
@@ -70,6 +74,8 @@ bool Material::save(l3m::Model*, l3m::OStream& stream)
         return setError ( "Error writing the material '%s' emission component", m_material.name().c_str() );
     if ( stream.writeFloat(&m_material.shininess(), 1) == false )
         return setError ( "Error writing the material '%s' shininess component", m_material.name().c_str() );
+    if ( stream.writeStr(m_material.texture()) == false )
+        return setError ( "Error writing the material '%s' texture", m_material.name().c_str() );
 
     return true;
 }

@@ -1,5 +1,5 @@
 all:
-	NDK_PROJECT_PATH="`pwd`" ndk-build -j4
+	NDK_PROJECT_PATH="`pwd`" ndk-build -j
 	mkdir -p dist/include
 	cp ../slackgine.h dist/include/
 	for i in `cd .. && find core -type f -name "*.h"` ; do \

@@ -603,6 +603,50 @@ static bool ImportScene ( l3m::Model* model, ::Scene* sce, l3m::Scene* modelScen
     return true;
 }
 
+static bool ImportImage ( ::Image* image, ::Scene* sce, const char* filename, l3m::Model* model )
+{
+    std::string name(id_name(image));
+    name = translate_id(name);
+                            
+    // The image is packed
+    if (image->packedfile)
+    {
+        int flag = IB_rect|IB_multilayer;
+        if(image->flag & IMA_DO_PREMUL) flag |= IB_premul;
+        ImBuf* ibuf = IMB_ibImageFromMemory((unsigned char*)image->packedfile->data, (size_t)image->packedfile->size, flag);
+        if (ibuf)
+        {
+            Pixmap pix;
+            pix.create( ibuf->x, ibuf->y, (Color *)ibuf->rect );
+            l3m::Texture* tex = (l3m::Texture *)model->createComponent("texture");
+            tex->id() = name;
+            tex->pixmap() = pix;
+        }
+    }
+    else
+    {
+        char rel[FILE_MAX];
+        char abs[FILE_MAX];
+        char dir[FILE_MAX];
+
+        BLI_split_dirfile(filename, dir, NULL);
+        BKE_rebase_path(abs, sizeof(abs), rel, sizeof(rel), G.main->name, image->name, dir);
+
+
+        Pixmap pix;
+        if ( !pix.load(abs) )
+        {
+            fprintf ( stderr, "Warning: Cannot open the image: %s\n", abs );
+            return true;
+        }
+        l3m::Texture* tex = (l3m::Texture *)model->createComponent("texture");
+        tex->id() = name;
+        tex->pixmap() = pix;
+    }
+    
+    return true;
+}
+
 static bool ImportImages ( ::Scene* sce, const char* filename, l3m::Model* model )
 {
     std::vector<std::string> mImages;
@@ -616,8 +660,29 @@ static bool ImportImages ( ::Scene* sce, const char* filename, l3m::Model* model
             {
                 case OB_MESH:
                 {
-                    // For each mesh uv...
                     Mesh* me = (Mesh *)ob->data;
+                    
+                    // Check for the material images
+                    for ( u32 a = 0; a < ob->totcol; ++a )
+                    {
+                        if ( me->mat[a] && me->mat[a]->mtex[0] && me->mat[a]->mtex[0]->tex )
+                        {
+                            Image* ima = me->mat[a]->mtex[0]->tex->ima;
+                            if ( ima )
+                            {
+                                std::string name(id_name(ima));
+                                name = translate_id(name);
+                                if (std::find(mImages.begin(), mImages.end(), name) == mImages.end())
+                                {
+                                    mImages.push_back(name);
+                                    if ( !ImportImage(ima, sce, filename, model) )
+                                        return false;
+                                }
+                            }
+                        }
+                    }
+
+                    // For each mesh uv...
                     bool has_uvs = (bool)CustomData_has_layer(&me->fdata, CD_MTFACE);
                     if ( has_uvs )
                     {
@@ -634,42 +699,8 @@ static bool ImportImages ( ::Scene* sce, const char* filename, l3m::Model* model
                             if (std::find(mImages.begin(), mImages.end(), name) == mImages.end())
                             {
                                 mImages.push_back(name);
-                                
-                                // The image is packed
-                                if (image->packedfile)
-                                {
-                                    int flag = IB_rect|IB_multilayer;
-                                    if(image->flag & IMA_DO_PREMUL) flag |= IB_premul;
-                                    ImBuf* ibuf = IMB_ibImageFromMemory((unsigned char*)image->packedfile->data, (size_t)image->packedfile->size, flag);
-                                    if (ibuf)
-                                    {
-                                        Pixmap pix;
-                                        pix.create( ibuf->x, ibuf->y, (Color *)ibuf->rect );
-                                        l3m::Texture* tex = (l3m::Texture *)model->createComponent("texture");
-                                        tex->id() = name;
-                                        tex->pixmap() = pix;
-                                    }
-                                }
-                                else
-                                {
-                                    char rel[FILE_MAX];
-                                    char abs[FILE_MAX];
-                                    char dir[FILE_MAX];
-
-                                    BLI_split_dirfile(filename, dir, NULL);
-                                    BKE_rebase_path(abs, sizeof(abs), rel, sizeof(rel), G.main->name, image->name, dir);
-
-
-                                    Pixmap pix;
-                                    if ( !pix.load(abs) )
-                                    {
-                                        fprintf ( stderr, "Warning: Cannot open the image: %s\n", abs );
-                                        continue;
-                                    }
-                                    l3m::Texture* tex = (l3m::Texture *)model->createComponent("texture");
-                                    tex->id() = name;
-                                    tex->pixmap() = pix;
-                                }
+                                if ( !ImportImage(image, sce, filename, model) )
+                                    return false;
                             }
                         }
                     }
@@ -723,6 +754,23 @@ static bool ImportMaterials ( ::Scene* sce, l3m::Model* model )
                         mat.emission() = emission;
                         mat.shininess() = shininess;
                         mat.isShadeless() = (ma->mode & MA_SHLESS) == MA_SHLESS;
+                        
+                        // Check for textures
+                        // TODO: Multi-texturing
+                        if ( ma->mtex[0] != 0 )
+                        {
+                            ::Tex* tex = ma->mtex[0]->tex;
+                            if ( tex != 0 )
+                            {
+                                ::Image* ima = tex->ima;
+                                if ( ima != 0 )
+                                {
+                                    std::string name(id_name(ima));
+                                    name = translate_id(name);
+                                    mat.texture() = name;
+                                }
+                            }
+                        }
                         
                         comp->material() = mat;
                         
