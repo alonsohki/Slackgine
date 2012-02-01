@@ -10,14 +10,15 @@ namespace Renderer
 class GLES20_Renderer : public IRenderer
 {
 private:
-    bool        m_initialized;
-    IShader*    m_vertexShader;
-    IShader*    m_fragmentShader;
-    IProgram*   m_program;
-    char        m_error [ 512 ];
-    Matrix      m_matProjection;
-    Matrix      m_matLookat;
-    Vector3     m_viewVector;
+    bool                m_initialized;
+    IShader*            m_vertexShader;
+    IShader*            m_fragmentShader;
+    IProgram*           m_program;
+    char                m_error [ 512 ];
+    Matrix              m_matProjection;
+    Matrix              m_matLookat;
+    Vector3             m_viewVector;
+    TextureLookupFn     m_texLookup;
 
 public:
                 GLES20_Renderer        ();
@@ -25,7 +26,7 @@ public:
     
     bool        initialize              ();
 
-    bool        beginScene              ( const Matrix& projection, const Matrix& lookAt );
+    bool        beginScene              ( const Matrix& projection, const Matrix& lookAt, TextureLookupFn fn );
     void        setProgram              ( IProgram* program );
     bool        render                  ( Geometry* geometry, const Transform& transform, MeshRenderFn fn = 0 );
     bool        endScene                ();

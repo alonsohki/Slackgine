@@ -534,7 +534,7 @@ void ModelManager::processRequest (ModelNode* node)
             {
                 Texture* tex = static_cast < Texture* > ( comp );
                 if ( tex != 0 )
-                    m_textureManager.Register ( *tex );
+                    m_textureManager.registerTexture ( *tex );
             }
         }
         
@@ -734,7 +734,7 @@ void ModelManager::unlink ( ModelNode* node, bool toTheGraveyard )
                 {
                     l3m::Texture* tex = static_cast < l3m::Texture* > ( comp );
                     if ( tex != 0 )
-                        m_textureManager.Release ( *tex );
+                        m_textureManager.releaseTexture ( *tex );
                 }
             }
             

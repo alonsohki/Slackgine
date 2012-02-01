@@ -18,6 +18,7 @@ using namespace Renderer;
 OpenGL3_Renderer::OpenGL3_Renderer()
 : m_initialized(false)
 , m_program(0)
+, m_texLookup ( 0 )
 {
     strcpy ( m_error, "Success" );
 }
@@ -53,7 +54,7 @@ void OpenGL3_Renderer::setProgram ( IProgram* program )
     }
 }
 
-bool OpenGL3_Renderer::beginScene ( const Matrix& matProjection, const Matrix& matLookat )
+bool OpenGL3_Renderer::beginScene ( const Matrix& matProjection, const Matrix& matLookat, TextureLookupFn texLookup )
 {
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     eglGetError();
@@ -86,6 +87,8 @@ bool OpenGL3_Renderer::beginScene ( const Matrix& matProjection, const Matrix& m
     
     m_viewVector = Vector3 ( 0.0f, 1.0f, 0.0 ) * m_matLookat;
     m_viewVector.Normalize();
+    
+    m_texLookup = texLookup;
     
     return true;
 }
@@ -141,13 +144,6 @@ bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, 
     // Bind the indices buffer
     glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, geometry->m_elementBuffer );
     
-    m_program->setUniform("un_ProjectionMatrix", m_matProjection );
-    m_program->setUniform("un_LookatMatrix", m_matLookat );
-    m_program->setUniform("un_ModelviewMatrix", mat);
-    m_program->setUniform("un_NormalMatrix", matNormals);
-    m_program->setUniform("un_Matrix", matGeometry );
-    m_program->setUniform("un_ViewVector", m_viewVector );
-    
     for ( Geometry::meshNodeVector::iterator iter = geometry->m_meshNodes.begin();
           iter != geometry->m_meshNodes.end();
           ++iter )
@@ -156,6 +152,14 @@ bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, 
         
         if ( !fn || fn(mesh) == true )
         {
+            // Set the uniforms
+            m_program->setUniform("un_ProjectionMatrix", m_matProjection );
+            m_program->setUniform("un_LookatMatrix", m_matLookat );
+            m_program->setUniform("un_ModelviewMatrix", mat);
+            m_program->setUniform("un_NormalMatrix", matNormals);
+            m_program->setUniform("un_Matrix", matGeometry );
+            m_program->setUniform("un_ViewVector", m_viewVector );
+    
             GLenum polyType = GL_INVALID_ENUM;
             switch ( mesh->polyType() )
             {
@@ -178,6 +182,29 @@ bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, 
                     m_program->setUniform( "un_Material.emission", mat->emission(), false );
                     m_program->setUniform( "un_Material.shininess", mat->shininess() );
                     m_program->setUniform( "un_Material.isShadeless", mat->isShadeless() );
+                    
+                    // Setup the texturing
+                    b8 doTexturing = false;
+                    if ( m_texLookup != 0 && mat->texture() != "" )
+                    {
+                        ITexture* tex = m_texLookup ( mat->texture() );
+                        if ( tex != 0 && tex->bind() &&
+                             geometry->bindVertexLayer(m_program, "in_TexCoord", "uv", 0, Geometry::FLOAT, false, 2, 0) )
+                        {
+                            doTexturing = true;
+                        }
+                    }
+                    
+                    if ( doTexturing )
+                    {
+                        m_program->setUniform( "un_Material.textureLevels", 1 );
+                        m_program->setUniform( "un_Samplers[0]", 0 );
+                    }
+                    else
+                    {
+                        m_program->setUniform( "un_Material.textureLevels", 0 );
+                        geometry->unbindAttribute(m_program, "in_TexCoord");
+                    }
                 }
                 else
                 {
@@ -187,6 +214,8 @@ bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, 
                     m_program->setUniform( "un_Material.emission", Vector3(0.0f, 0.0f, 0.0f) );
                     m_program->setUniform( "un_Material.shininess", 0.0f );
                     m_program->setUniform( "un_Material.isShadeless", false );
+                    m_program->setUniform( "un_Material.textureLevels", 0 );
+                    geometry->unbindAttribute(m_program, "in_TexCoord");
                 }
                 
                 glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, reinterpret_cast<const GLvoid *>((*iter).offset * sizeof(u32)) );

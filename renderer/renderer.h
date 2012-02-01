@@ -18,6 +18,7 @@
 #include "math/transform.h"
 #include "geometry.h"
 #include "program.h"
+#include "texture.h"
 
 namespace Renderer { class Geometry; }
 
@@ -28,11 +29,14 @@ class IRenderer
 {
 public:
     typedef FastDelegate1<Mesh*, bool> MeshRenderFn;
+    typedef FastDelegate1<const std::string&, ITexture*> TextureLookupFn;
     
 public:
     virtual bool        initialize      () = 0;
     
-    virtual bool        beginScene      ( const Matrix& matProjection = IdentityMatrix(), const Matrix& matLookat = IdentityMatrix() ) = 0;
+    virtual bool        beginScene      ( const Matrix& matProjection,
+                                          const Matrix& matLookat,
+                                          TextureLookupFn fn ) = 0;
     virtual void        setProgram      ( IProgram* program ) = 0;
     virtual void        pushState       () = 0;
     virtual bool        render          ( Geometry* geometry, const Transform& transform = IdentityTransform(), MeshRenderFn fn = 0 ) = 0;

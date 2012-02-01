@@ -38,6 +38,17 @@ public:
     bool                initialized     () const { return m_initialized; }
     bool                initialize      ();
     
+    bool                bindVertexLayer ( IProgram* program,
+                                          const std::string& attributeName,
+                                          const std::string& layerName,
+                                          u32 layerLevel,
+                                          DataType type,
+                                          bool normalize,
+                                          u32 count,
+                                          u32 offset
+                                          );
+    bool                unbindAttribute ( IProgram* program, const std::string& attributeName );
+    
     bool                m_initialized;
     GLuint              m_vertexBuffer;
     GLuint              m_elementBuffer;

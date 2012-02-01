@@ -59,7 +59,7 @@ bool Geometry::initialize ()
           ++iter )
     {
         m_offsets [ iter->first ] = size;
-        size += numVertices() * iter->second.elementSize;
+        size += numVertices() * iter->second.elementSize * iter->second.numLevels;
     }
 
     // Upload the vertex data
@@ -73,7 +73,7 @@ bool Geometry::initialize ()
           ++iter )
     {
         glBufferSubData ( GL_ARRAY_BUFFER, m_offsets [ iter->first ],
-                          numVertices()*iter->second.elementSize, iter->second.data );
+                          numVertices()*iter->second.elementSize*iter->second.numLevels, iter->second.data );
     }
     
     // Generate the mesh nodes based on the geometry meshes.
@@ -107,5 +107,67 @@ bool Geometry::initialize ()
     
 
     m_initialized = true;
+    return true;
+}
+
+bool Geometry::bindVertexLayer ( IProgram* program,
+                                 const std::string& attributeName,
+                                 const std::string& layerName,
+                                 u32 level,
+                                 DataType type,
+                                 bool normalize,
+                                 u32 count,
+                                 u32 offset )
+{
+    OpenGL3_Program* prog = static_cast < OpenGL3_Program* > ( program );
+    GLint id = glGetAttribLocation ( prog->handler(), attributeName.c_str () );
+    eglGetError ();
+    if ( id == -1 )
+        return false;
+    GLchar* ptr = getVertexLayer <GLchar> ( layerName, level );
+    if ( ptr == 0 )
+        return false;
+
+    GLenum glType = GL_NONE;
+    switch ( type )
+    {
+        case FLOAT:
+            glType = GL_FLOAT;
+            break;
+        case INT:
+            glType = GL_INT;
+            break;
+        case UNSIGNED_INT:
+            glType = GL_UNSIGNED_INT;
+            break;
+    }
+    
+    if ( glType == GL_NONE )
+        return false;
+    
+    u32 stride = getVertexLayerElementSize ( layerName );
+    offset += m_offsets [ layerName ] + level*numVertices()*stride;
+    
+    glBindBuffer ( GL_ARRAY_BUFFER, m_vertexBuffer );
+    eglGetError();
+    glVertexAttribPointer ( id, count, glType, normalize?GL_TRUE:GL_FALSE, stride, reinterpret_cast<GLchar *>(offset) );
+    eglGetError();
+    glEnableVertexAttribArray ( id );
+    eglGetError();
+
+    return true;
+}
+
+bool Geometry::unbindAttribute ( IProgram* program, const std::string& attrName )
+{
+    OpenGL3_Program* prog = static_cast < OpenGL3_Program* > ( program );
+    GLint id = glGetAttribLocation ( prog->handler(), attrName.c_str () );
+    eglGetError ();
+    if ( id == -1 )
+        return false;
+    
+    glDisableVertexAttribArray ( id );
+    eglGetError ();
+    
     return true;
 }

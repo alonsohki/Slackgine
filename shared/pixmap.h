@@ -39,8 +39,8 @@ public:
 
     bool                load            ( const char* filename );
     bool                load            ( std::istream& stream );
-    bool                savePNG         ( const char* filename );
-    bool                savePNG         ( std::ostream& stream );
+    bool                savePNG         ( const char* filename ) const;
+    bool                savePNG         ( std::ostream& stream ) const;
 
     const char*         error           () const { return m_error; }
     const u32&          width           () const { return m_width; }
@@ -52,8 +52,8 @@ private:
     bool                loadPNG         ( std::istream& stream );
 
 private:
-    u32         m_width;
-    u32         m_height;
-    Color*      m_pixels;
-    char        m_error [ 512 ];
+    u32          m_width;
+    u32          m_height;
+    Color*       m_pixels;
+    mutable char m_error [ 512 ];
 };

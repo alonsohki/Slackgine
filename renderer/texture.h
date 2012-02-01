@@ -35,7 +35,8 @@ public:
         RGB10_A2,
         RGBA12,
         RGB16,
-        RGBA16
+        RGBA16,
+        RGBA
     };
 
 public:

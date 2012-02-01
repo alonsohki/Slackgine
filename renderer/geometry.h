@@ -23,8 +23,18 @@
 namespace Renderer
 {
 
+class IProgram;
+    
 class GeometryBase
 {
+public:
+    enum DataType
+    {
+        FLOAT,
+        INT,
+        UNSIGNED_INT
+    };
+    
 public:
     typedef std::list<Mesh *> meshList;
     struct VertexLayer
@@ -107,6 +117,15 @@ public:
         return count;
     }
     
+    u32         getVertexLayerElementSize( const std::string& name ) const
+    {
+        layerMap::const_iterator iter = m_mapVertexLayers.find ( name );
+        u32 size = 0;
+        if ( iter != m_mapVertexLayers.end() )
+            size = iter->second.elementSize;
+        return size;
+    }
+    
     bool        deleteVertexLayer       ( const std::string& name )
     {
         layerMap::iterator iter = m_mapVertexLayers.find ( name );
@@ -118,6 +137,16 @@ public:
         }
         return false;
     }
+    
+    virtual bool    bindVertexLayer     ( IProgram* program,
+                                          const std::string& attrName,
+                                          const std::string& layerName,
+                                          u32 layerLevel,
+                                          DataType type,
+                                          bool normalize,
+                                          u32 count,
+                                          u32 offset ) = 0;
+    virtual bool    unbindAttribute     ( IProgram*, const std::string& attrName ) = 0;
     
     //--------------------------------------------------------------------------
     // Accessors

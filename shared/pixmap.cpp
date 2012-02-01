@@ -208,7 +208,7 @@ bool Pixmap::loadPNG ( std::istream& stream )
     return true;
 }
 
-bool Pixmap::savePNG ( const char* filename )
+bool Pixmap::savePNG ( const char* filename ) const
 {
     std::ofstream fp;
     fp.open ( filename, std::ios::out | std::ios::binary );
@@ -217,7 +217,7 @@ bool Pixmap::savePNG ( const char* filename )
     return savePNG ( fp );
 }
 
-bool Pixmap::savePNG ( std::ostream& stream )
+bool Pixmap::savePNG ( std::ostream& stream ) const
 {
     png_structp png_ptr = png_create_write_struct (PNG_LIBPNG_VER_STRING, 0, 0, 0);
     if ( !png_ptr )

@@ -37,11 +37,11 @@ private:
                                 TextureManager          ();
                                 ~TextureManager         ();
                                 
-    void                        Register                ( const l3m::Texture& texture );
-    void                        Release                 ( const l3m::Texture& texture );
+    void                        registerTexture         ( const l3m::Texture& texture );
+    void                        releaseTexture          ( const l3m::Texture& texture );
     
 public:
-    Renderer::ITexture*         Find                    ( const std::string& name ) const;
+    Renderer::ITexture*         find                    ( const std::string& name ) const;
     
 private:
     TextureNodeMap              m_textures;

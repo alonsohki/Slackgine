@@ -162,3 +162,4 @@ bool GLES20_Program::setUniform(const std::string& name, const Color& col, bool 
     eglGetError();
     return true;
 }
+

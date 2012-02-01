@@ -80,7 +80,7 @@ bool Slackgine::render (Camera* cam)
             lookAt = LookatMatrix ( cam->transform().orientation(), cam->transform().translation() );
         }
         
-        if ( getRenderer()->beginScene(projection, lookAt) == false )
+        if ( getRenderer()->beginScene(projection, lookAt, MakeDelegate(&getTextureManager(), &TextureManager::find)) == false )
         {
             getRenderer()->getError ( m_error );
             return false;

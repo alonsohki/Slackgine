@@ -59,9 +59,9 @@ bool Default::execute (Core::Slackgine* sg)
         Entity* cur = entities.front ();
         entities.pop_front ();
         
-        // Push its children to the back of the deque
+        // Push its children to the front of the deque
         for ( Entity::EntityVector::iterator iter = cur->getChildren().begin(); iter != cur->getChildren().end(); ++iter )
-            entities.push_back ( *iter );
+            entities.push_front ( *iter );
 
         // Render it!
         if ( cur->getModel() != 0 )

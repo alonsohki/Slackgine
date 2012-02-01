@@ -24,12 +24,13 @@ namespace Renderer
 class OpenGL3_Renderer : public IRenderer
 {
 private:
-    bool        m_initialized;
-    IProgram*   m_program;
-    char        m_error [ 512 ];
-    Matrix      m_matProjection;
-    Matrix      m_matLookat;
-    Vector3     m_viewVector;
+    bool                m_initialized;
+    IProgram*           m_program;
+    char                m_error [ 512 ];
+    Matrix              m_matProjection;
+    Matrix              m_matLookat;
+    Vector3             m_viewVector;
+    TextureLookupFn     m_texLookup;
 
 public:
                 OpenGL3_Renderer        ();
@@ -37,7 +38,7 @@ public:
     
     bool        initialize              ();
 
-    bool        beginScene              ( const Matrix& projection, const Matrix& lookAt);
+    bool        beginScene              ( const Matrix& projection, const Matrix& lookAt, TextureLookupFn fn );
     void        setProgram              ( IProgram* program );
     void        pushState               ();
     bool        render                  ( Geometry* geometry, const Transform& transform = IdentityTransform(), MeshRenderFn fn = 0 );

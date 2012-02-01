@@ -33,7 +33,7 @@ TextureManager::~TextureManager ()
     }
 }
 
-void TextureManager::Register (const l3m::Texture& texture)
+void TextureManager::registerTexture (const l3m::Texture& texture)
 {
     const std::string& name = texture.id ();
     TextureNodeMap::iterator iter = m_textures.find ( name );
@@ -48,14 +48,14 @@ void TextureManager::Register (const l3m::Texture& texture)
         const Pixmap& pixmap = texture.pixmap ();
         TextureNode node;
         node.refs = 1;
-        node.texture = Renderer::Factory::createTexture ( pixmap.width (), pixmap.height (), Renderer::ITexture::RGBA8 );
+        node.texture = Renderer::Factory::createTexture ( pixmap.width (), pixmap.height (), Renderer::ITexture::RGBA );
         if ( node.texture != 0 )
             node.texture->loadPixmap ( pixmap );
         m_textures.insert ( TextureNodeMap::value_type ( name, node ) );
     }
 }
 
-void TextureManager::Release (const l3m::Texture& texture)
+void TextureManager::releaseTexture (const l3m::Texture& texture)
 {
     const std::string& name = texture.id ();
     TextureNodeMap::iterator iter = m_textures.find ( name );
@@ -78,7 +78,7 @@ void TextureManager::Release (const l3m::Texture& texture)
     }
 }
 
-Renderer::ITexture* TextureManager::Find (const std::string& name) const
+Renderer::ITexture* TextureManager::find (const std::string& name) const
 {
     TextureNodeMap::const_iterator iter = m_textures.find ( name );
     Renderer::ITexture* tex = 0;

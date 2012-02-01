@@ -30,6 +30,7 @@ public:
         u32     offset;
     };
     typedef std::vector<MeshNode> meshNodeVector;
+    typedef std::vector<GLint> vecVertexArrayIDs;
 
 public:
                         Geometry        ();
@@ -38,11 +39,23 @@ public:
     bool                initialized     () const { return m_initialized; }
     bool                initialize      ();
     
+    bool                bindVertexLayer ( IProgram* program,
+                                          const std::string& attributeName,
+                                          const std::string& layerName,
+                                          u32 layerLevel,
+                                          DataType type,
+                                          bool normalize,
+                                          u32 count,
+                                          u32 offset
+                                          );
+    bool                unbindAttribute ( IProgram* program, const std::string& attributeName );
+    
     bool                m_initialized;
     GLuint              m_vertexBuffer;
     GLuint              m_elementBuffer;
     layerOffsetMap      m_offsets;
     meshNodeVector      m_meshNodes;
+    vecVertexArrayIDs   m_enabledVertexArrays;
 };
 
 }

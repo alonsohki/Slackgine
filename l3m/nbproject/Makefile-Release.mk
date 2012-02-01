@@ -36,9 +36,9 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/components/scene.o \
 	${OBJECTDIR}/components/unknown.o \
-	${OBJECTDIR}/components/material.o \
 	${OBJECTDIR}/stream.o \
 	${OBJECTDIR}/model.o \
+	${OBJECTDIR}/components/material.o \
 	${OBJECTDIR}/components/geometry.o \
 	${OBJECTDIR}/components/require.o \
 	${OBJECTDIR}/components/texture.o \
@@ -82,11 +82,6 @@ ${OBJECTDIR}/components/unknown.o: components/unknown.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/components/unknown.o components/unknown.cpp
 
-${OBJECTDIR}/components/material.o: components/material.cpp 
-	${MKDIR} -p ${OBJECTDIR}/components
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/components/material.o components/material.cpp
-
 ${OBJECTDIR}/stream.o: stream.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
@@ -96,6 +91,11 @@ ${OBJECTDIR}/model.o: model.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/model.o model.cpp
+
+${OBJECTDIR}/components/material.o: components/material.cpp 
+	${MKDIR} -p ${OBJECTDIR}/components
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/components/material.o components/material.cpp
 
 ${OBJECTDIR}/components/geometry.o: components/geometry.cpp 
 	${MKDIR} -p ${OBJECTDIR}/components
