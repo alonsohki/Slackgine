@@ -12,8 +12,8 @@
 
 #include <cstring>
 #include "l3m.h"
-#include "Components/factory.h"
-#include "Components/unknown.h"
+#include "components/factory.h"
+#include "components/unknown.h"
 
 using namespace l3m;
 
@@ -26,13 +26,53 @@ static const enum
     L3M_BIG_ENDIAN
 } L3M_SAVE_ENDIANNESS = L3M_LOW_ENDIAN;
 
-bool Model::Load(std::istream& fp)
+Model::Model ()
+: m_size ( 0 )
 {
+}
+
+Model::~Model ()
+{
+    for ( ComponentVector::const_iterator iter = m_vecComponents.begin();
+            iter != m_vecComponents.end();
+            ++iter )
+    {
+        delete *iter;
+    }
+    m_vecComponents.clear ();
+}
+
+
+//------------------------------------------------------------------------------
+// Model load/save
+bool Model::load ( const std::string& filepath )
+{
+    std::fstream fp;
+    fp.open(filepath.c_str(), std::ios::in | std::ios::binary);
+    if ( fp.fail() )
+        return setError ( "Unable to open '%s' for reading", filepath.c_str() );
+    return load ( fp );
+}
+
+bool Model::save(const std::string& filepath)
+{
+    std::fstream fp;
+    fp.open(filepath.c_str(), std::ios::out | std::ios::binary);
+    if ( fp.fail() )
+        return setError ( "Unable to open '%s' for writing", filepath.c_str() );
+    return save ( fp );
+}
+
+bool Model::load(std::istream& fp)
+{
+    // Make sure there aren't any unallowed delta resolvers.
+    m_deltas.clear();
+    
     // Check BOM
     char BOM [ 8 ];
     fp.read ( BOM, sizeof(char)*strlen(L3M_BOM) );
     if ( memcmp ( BOM, L3M_BOM, strlen(L3M_BOM) ) != 0 )
-        return SetError ( "Unable to read the BOM" );
+        return setError ( "Unable to read the BOM" );
 
     // Check for endianness swapping
     u8 targetIsBigEndian;
@@ -47,41 +87,41 @@ bool Model::Load(std::istream& fp)
     // Generate the input stream.
     IStream is ( &fp, flags );
     u32 readFlags = IOStream::NONE;
-    if ( is.Read32 ( &readFlags, 1 ) != 1 )
-        return SetError ( "Unable to read the flags" );
+    if ( is.read32 ( &readFlags, 1 ) != 1 )
+        return setError ( "Unable to read the flags" );
     readFlags &= ~IOStream::ENDIAN_SWAPPING;
     readFlags |= flags & IOStream::ENDIAN_SWAPPING;
-    is.SetFlags ( readFlags );
+    is.setFlags ( readFlags );
     
     // Read and check the version
     float version;
-    if ( is.ReadFloat ( &version, 1 ) != 1 )
-        return SetError ( "Unable to read the L3M version" );
+    if ( is.readFloat ( &version, 1 ) != 1 )
+        return setError ( "Unable to read the L3M version" );
     if ( version > L3M_VERSION )
-        return SetError ( "Unsupported L3M version" );
+        return setError ( "Unsupported L3M version" );
     
     // Read the number of components
     u32 numComponents;
-    if ( is.Read32(&numComponents, 1) != 1 )
-        return SetError ( "Unable to read the number of components" );
+    if ( is.read32(&numComponents, 1) != 1 )
+        return setError ( "Unable to read the number of components" );
 
     for ( u32 i = 0; i < numComponents; ++i )
     {
         // Read the component type
         std::string type;
-        if ( is.ReadStr ( type ) <= 0 )
-            return SetError ( "Unable to read the component type" );
+        if ( is.readStr ( type ) <= 0 )
+            return setError ( "Unable to read the component type" );
         if ( type == "unknown" )
-            return SetError ( "Invalid component type 'unknown'" );
+            return setError ( "Invalid component type 'unknown'" );
         
         // Read the component version
-        if ( is.ReadFloat ( &version, 1 ) != 1 )
-            return SetError ( "Unable to read the component version for a component of type '%s'", type.c_str() );
+        if ( is.readFloat ( &version, 1 ) != 1 )
+            return setError ( "Unable to read the component version for a component of type '%s'", type.c_str() );
         
         // Load the component data length
         u32 len;
-        if ( is.Read32 ( &len, 1 ) != 1 )
-            return SetError ( "Unable to read the component data length" );
+        if ( is.read32 ( &len, 1 ) != 1 )
+            return setError ( "Unable to read the component data length" );
         
         IComponent* component = ComponentFactory::Create( type );
         if ( component == 0 )
@@ -92,24 +132,25 @@ bool Model::Load(std::istream& fp)
         
         // Load the component data
         if ( component->Load ( this, is, version ) == false )
-            return SetError ( "Unable to load a component of type '%s': %s", type.c_str(), component->error() );
+            return setError ( "Unable to load a component of type '%s': %s", type.c_str(), component->error() );
         
         m_vecComponents.push_back ( component );
     }
     
     m_size = is.totalIn ();
     
-    ResolveDeltas ();
+    // Proceed with the delta resolution now.
+    resolveDeltas ();
     
     return true;
 }
 
-bool Model::Save(std::ostream& fp)
+bool Model::save(std::ostream& fp)
 {
     OStream os ( &fp, IOStream::NONE );
     
     // BOM
-    os.WriteData ( L3M_BOM, sizeof(char), strlen(L3M_BOM) );
+    os.writeData ( L3M_BOM, sizeof(char), strlen(L3M_BOM) );
     
     // Write the BOM endianness identifier, based on the machine endianness and desired configuration
     u8 thisMachineIsBigEndian = detectBigEndian ();
@@ -119,51 +160,51 @@ bool Model::Save(std::ostream& fp)
         targetIsBigEndian = thisMachineIsBigEndian;
     else
         targetIsBigEndian = ( L3M_SAVE_ENDIANNESS == L3M_BIG_ENDIAN );
-    os.WriteData ( reinterpret_cast<char*>(&targetIsBigEndian), sizeof(u8), 1 );
+    os.writeData ( reinterpret_cast<char*>(&targetIsBigEndian), sizeof(u8), 1 );
     
     // Flags
     u32 flags = os.flags() & ~IOStream::ENDIAN_SWAPPING;
-    if ( os.Write32 ( &flags, 1 ) != 1 )
-        return SetError ( "Unable to write the stream flags" );
+    if ( os.write32 ( &flags, 1 ) != 1 )
+        return setError ( "Unable to write the stream flags" );
     
     // Versión
     float fVersion = L3M_VERSION;
-    if ( os.WriteFloat ( &fVersion, 1 ) != 1 )
-        return SetError ( "Unable to write the L3M version" );
+    if ( os.writeFloat ( &fVersion, 1 ) != 1 )
+        return setError ( "Unable to write the L3M version" );
     
     // Number of components
     u32 numComponents = m_vecComponents.size ();
-    if ( os.Write32 ( &numComponents, 1 ) != 1 )
-        return SetError ( "Unable to write the number of components" );
+    if ( os.write32 ( &numComponents, 1 ) != 1 )
+        return setError ( "Unable to write the number of components" );
     
     // Write each component
     for ( u32 i = 0; i < numComponents; ++i )
     {
         // Write the component type
-        os.WriteStr ( m_vecComponents[i]->type() );
+        os.writeStr ( m_vecComponents[i]->type() );
         
         // Write the component version
         float version = m_vecComponents[i]->version();
-        if ( os.WriteFloat ( &version, 1 ) != 1 )
-            return SetError ( "Unable to write the component version" );
+        if ( os.writeFloat ( &version, 1 ) != 1 )
+            return setError ( "Unable to write the component version" );
         
         // Write the component to a temporary buffer
         std::ostringstream oss;
         OStream data ( &oss, IOStream::NONE );
         if ( !m_vecComponents[i]->Save ( this, data ) )
-            return SetError ( m_vecComponents[i]->error() );
+            return setError ( m_vecComponents[i]->error() );
         
         // Write this buffer length
         u32 len = oss.str().length();
-        if ( !os.Write32 ( &len, 1 ) )
-            return SetError ( "Error writing the component data length" );
-        os.WriteData ( oss.str().c_str(), len, 1 );
+        if ( !os.write32 ( &len, 1 ) )
+            return setError ( "Error writing the component data length" );
+        os.writeData ( oss.str().c_str(), len, 1 );
     }
     
     return true;
 }
 
-void Model::ResolveDeltas ()
+void Model::resolveDeltas ()
 {
     for ( DeltaResolverMap::iterator iter = m_deltas.begin();
           iter != m_deltas.end();
@@ -179,4 +220,14 @@ void Model::ResolveDeltas ()
     }
     
     m_deltas.clear ();
+}
+
+
+//------------------------------------------------------------------------------
+// Component stuff
+IComponent* Model::createComponent(const std::string& type)
+{
+    IComponent* component = ComponentFactory::Create( type );
+    m_vecComponents.push_back(component);
+    return component;
 }

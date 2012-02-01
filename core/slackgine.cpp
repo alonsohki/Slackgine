@@ -106,3 +106,10 @@ void Slackgine::getError ( char* dest ) const
 {
     strcpy ( dest, m_error );
 }
+
+void Slackgine::setRenderStrategy(Renderer::RenderStrategy* strategy)
+{
+    if ( m_renderStrategy != 0 )
+        delete m_renderStrategy;
+    m_renderStrategy = strategy;
+}

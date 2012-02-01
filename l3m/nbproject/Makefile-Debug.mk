@@ -34,16 +34,16 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/Components/require.o \
-	${OBJECTDIR}/Components/camera.o \
-	${OBJECTDIR}/Components/geometry.o \
-	${OBJECTDIR}/Components/scene.o \
+	${OBJECTDIR}/components/scene.o \
+	${OBJECTDIR}/components/unknown.o \
+	${OBJECTDIR}/components/material.o \
 	${OBJECTDIR}/stream.o \
 	${OBJECTDIR}/model.o \
-	${OBJECTDIR}/Components/unknown.o \
-	${OBJECTDIR}/Components/texture.o \
-	${OBJECTDIR}/Components/factory.o \
-	${OBJECTDIR}/Components/material.o
+	${OBJECTDIR}/components/geometry.o \
+	${OBJECTDIR}/components/require.o \
+	${OBJECTDIR}/components/texture.o \
+	${OBJECTDIR}/components/camera.o \
+	${OBJECTDIR}/components/factory.o
 
 
 # C Compiler Flags
@@ -72,25 +72,20 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a: ${OBJECTFILES}
 	${AR} -rv ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a ${OBJECTFILES} 
 	$(RANLIB) ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a
 
-${OBJECTDIR}/Components/require.o: Components/require.cpp 
-	${MKDIR} -p ${OBJECTDIR}/Components
+${OBJECTDIR}/components/scene.o: components/scene.cpp 
+	${MKDIR} -p ${OBJECTDIR}/components
 	${RM} $@.d
-	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/require.o Components/require.cpp
+	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/components/scene.o components/scene.cpp
 
-${OBJECTDIR}/Components/camera.o: Components/camera.cpp 
-	${MKDIR} -p ${OBJECTDIR}/Components
+${OBJECTDIR}/components/unknown.o: components/unknown.cpp 
+	${MKDIR} -p ${OBJECTDIR}/components
 	${RM} $@.d
-	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/camera.o Components/camera.cpp
+	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/components/unknown.o components/unknown.cpp
 
-${OBJECTDIR}/Components/geometry.o: Components/geometry.cpp 
-	${MKDIR} -p ${OBJECTDIR}/Components
+${OBJECTDIR}/components/material.o: components/material.cpp 
+	${MKDIR} -p ${OBJECTDIR}/components
 	${RM} $@.d
-	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/geometry.o Components/geometry.cpp
-
-${OBJECTDIR}/Components/scene.o: Components/scene.cpp 
-	${MKDIR} -p ${OBJECTDIR}/Components
-	${RM} $@.d
-	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/scene.o Components/scene.cpp
+	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/components/material.o components/material.cpp
 
 ${OBJECTDIR}/stream.o: stream.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -102,25 +97,30 @@ ${OBJECTDIR}/model.o: model.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/model.o model.cpp
 
-${OBJECTDIR}/Components/unknown.o: Components/unknown.cpp 
-	${MKDIR} -p ${OBJECTDIR}/Components
+${OBJECTDIR}/components/geometry.o: components/geometry.cpp 
+	${MKDIR} -p ${OBJECTDIR}/components
 	${RM} $@.d
-	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/unknown.o Components/unknown.cpp
+	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/components/geometry.o components/geometry.cpp
 
-${OBJECTDIR}/Components/texture.o: Components/texture.cpp 
-	${MKDIR} -p ${OBJECTDIR}/Components
+${OBJECTDIR}/components/require.o: components/require.cpp 
+	${MKDIR} -p ${OBJECTDIR}/components
 	${RM} $@.d
-	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/texture.o Components/texture.cpp
+	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/components/require.o components/require.cpp
 
-${OBJECTDIR}/Components/factory.o: Components/factory.cpp 
-	${MKDIR} -p ${OBJECTDIR}/Components
+${OBJECTDIR}/components/texture.o: components/texture.cpp 
+	${MKDIR} -p ${OBJECTDIR}/components
 	${RM} $@.d
-	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/factory.o Components/factory.cpp
+	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/components/texture.o components/texture.cpp
 
-${OBJECTDIR}/Components/material.o: Components/material.cpp 
-	${MKDIR} -p ${OBJECTDIR}/Components
+${OBJECTDIR}/components/camera.o: components/camera.cpp 
+	${MKDIR} -p ${OBJECTDIR}/components
 	${RM} $@.d
-	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/Components/material.o Components/material.cpp
+	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/components/camera.o components/camera.cpp
+
+${OBJECTDIR}/components/factory.o: components/factory.cpp 
+	${MKDIR} -p ${OBJECTDIR}/components
+	${RM} $@.d
+	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/components/factory.o components/factory.cpp
 
 # Subprojects
 .build-subprojects:

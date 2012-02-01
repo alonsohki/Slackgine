@@ -34,53 +34,57 @@ public:
     };
     
 public:
-    IOStream ( std::istream* istream, std::ostream* ostream, u32 flags = NONE )
-    : m_istream ( istream ), m_ostream ( ostream ), m_flags ( flags ), m_totalIn(0), m_totalOut(0)
-    {
-        SetupFlags ();
-    }
+    //--------------------------------------------------------------------------
+    // Constructor/Destructor
+                IOStream        ( std::istream* istream, std::ostream* ostream, u32 flags = NONE );
     virtual     ~IOStream       () {}
     
-    void        SetFlags        ( u32 flags )
-    {
-        m_flags = flags;
-        SetupFlags ();
-    }
     
-    bool        WriteBoolean    ( const b8* v, u32 nmemb );
-    bool        WriteBoolean    ( const b8& v );
-    bool        Write16         ( const u16* v, u32 nmemb );
-    bool        Write32         ( const u32* v, u32 nmemb );
-    bool        Write64         ( const u64* v, u32 nmemb );
-    bool        WriteFloat      ( const float* v, u32 nmemb );
-    bool        WriteStr        ( const std::string& str );
-    bool        WriteMatrix     ( const Matrix& mat );
-    bool        WriteVector     ( const Vector3& vec );
-    bool        WriteColor      ( const Color* col, u32 nmemb );
-    bool        WriteQuaternion ( const Quaternion* v, u32 nmemb );
-    bool        WriteTransform  ( const Transform* v, u32 nmemb );
-    bool        WriteData       ( const char* data, u32 size, u32 nmemb );
+    //--------------------------------------------------------------------------
+    // Function to set the flags mentioned in the enumeration above
+    void        setFlags        ( u32 flags );
+
     
-    bool        ReadBoolean     ( b8* v );
-    ssize_t     ReadBoolean     ( b8* v, u32 nmemb );
-    ssize_t     Read16          ( u16* v, u32 nmemb );
-    ssize_t     Read32          ( u32* v, u32 nmemb );
-    ssize_t     Read64          ( u64* v, u32 nmemb );
-    ssize_t     ReadFloat       ( float* v, u32 nmemb );
-    ssize_t     ReadStr         ( std::string& str );
-    ssize_t     ReadMatrix      ( Matrix& mat );
-    ssize_t     ReadVector      ( Vector3& vec );
-    ssize_t     ReadColor       ( Color* col, u32 nmemb );
-    ssize_t     ReadQuaternion  ( Quaternion* v, u32 nmemb );
-    ssize_t     ReadTransform   ( Transform* v, u32 nmemb );
-    ssize_t     ReadData        ( char* data, u32 size, u32 nmemb );
+    //--------------------------------------------------------------------------
+    // Functions to write data
+    bool        writeBoolean    ( const b8* v, u32 nmemb );
+    bool        writeBoolean    ( const b8& v );
+    bool        write16         ( const u16* v, u32 nmemb );
+    bool        write32         ( const u32* v, u32 nmemb );
+    bool        write64         ( const u64* v, u32 nmemb );
+    bool        writeFloat      ( const float* v, u32 nmemb );
+    bool        writeStr        ( const std::string& str );
+    bool        writeMatrix     ( const Matrix& mat );
+    bool        writeVector     ( const Vector3& vec );
+    bool        writeColor      ( const Color* col, u32 nmemb );
+    bool        writeQuaternion ( const Quaternion* v, u32 nmemb );
+    bool        writeTransform  ( const Transform* v, u32 nmemb );
+    bool        writeData       ( const char* data, u32 size, u32 nmemb );
     
+    //--------------------------------------------------------------------------
+    // Functions to read data
+    bool        readBoolean     ( b8* v );
+    ssize_t     readBoolean     ( b8* v, u32 nmemb );
+    ssize_t     read16          ( u16* v, u32 nmemb );
+    ssize_t     read32          ( u32* v, u32 nmemb );
+    ssize_t     read64          ( u64* v, u32 nmemb );
+    ssize_t     readFloat       ( float* v, u32 nmemb );
+    ssize_t     readStr         ( std::string& str );
+    ssize_t     readMatrix      ( Matrix& mat );
+    ssize_t     readVector      ( Vector3& vec );
+    ssize_t     readColor       ( Color* col, u32 nmemb );
+    ssize_t     readQuaternion  ( Quaternion* v, u32 nmemb );
+    ssize_t     readTransform   ( Transform* v, u32 nmemb );
+    ssize_t     readData        ( char* data, u32 size, u32 nmemb );
+    
+    //--------------------------------------------------------------------------
+    // Public accessors
     u32         flags           () const { return m_flags; }
     const u32&  totalIn         () const { return m_totalIn; }
     const u32&  totalOut        () const { return m_totalOut; }
     
 private:
-    void        SetupFlags    ();
+    void        setupFlags    ();
     ssize_t (*m_endian16writer)(const u16*, u32, std::ostream&);
     ssize_t (*m_endian32writer)(const u32*, u32, std::ostream&);
     ssize_t (*m_endian64writer)(const u64*, u32, std::ostream&);
@@ -97,16 +101,21 @@ private:
 };
 
 
+//------------------------------------------------------------------------------
+// Define two classes for input and output streams that use the above IOStream
+// class.
 class IStream : public IOStream
 {
 public:
-    IStream ( std::istream* istream, u32 flags = NONE ) : IOStream ( istream, 0, flags ) {}
+    IStream ( std::istream* istream, u32 flags = NONE )
+    : IOStream ( istream, 0, flags ) {}
 };
 
 class OStream : public IOStream
 {
 public:
-    OStream ( std::ostream* ostream, u32 flags = NONE ) : IOStream ( 0, ostream, flags ) {}
+    OStream ( std::ostream* ostream, u32 flags = NONE )
+    : IOStream ( 0, ostream, flags ) {}
 };
 
 }

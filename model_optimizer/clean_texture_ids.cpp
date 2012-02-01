@@ -13,8 +13,8 @@
 #include <cstdlib>
 #include <cstring>
 #include "clean_texture_ids.h"
-#include "l3m/Components/texture.h"
-#include "l3m/Components/scene.h"
+#include "l3m/components/texture.h"
+#include "l3m/components/scene.h"
 
 bool clean_texture_ids ( l3m::Model* model )
 {

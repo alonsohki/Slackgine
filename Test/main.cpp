@@ -60,7 +60,7 @@ void display ( void )
         sg->initialize ();
         sg->getModelManager().addLookupPath ( ".." );
         sg->getShaderManager().addLookupPath( "../shaders" );
-        sg->setRenderStrategy < Renderer::Strategy::Default > ();
+        sg->setRenderStrategy ( new Renderer::Strategy::Default () );
     }
 
     if ( model == 0 )

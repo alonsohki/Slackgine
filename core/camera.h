@@ -15,7 +15,7 @@
 #include "shared/platform.h"
 #include "math/matrix.h"
 #include "transformable.h"
-#include "l3m/Components/camera.h"
+#include "l3m/components/camera.h"
 
 namespace Core
 {

@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configurationDescriptor version="80">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
-    <logicalFolder name="f1" displayName="Components" projectFiles="true">
-      <itemPath>Components/camera.cpp</itemPath>
-      <itemPath>Components/camera.h</itemPath>
-      <itemPath>Components/components.h</itemPath>
-      <itemPath>Components/factory.cpp</itemPath>
-      <itemPath>Components/factory.h</itemPath>
-      <itemPath>Components/geometry.cpp</itemPath>
-      <itemPath>Components/geometry.h</itemPath>
-      <itemPath>Components/material.cpp</itemPath>
-      <itemPath>Components/material.h</itemPath>
-      <itemPath>Components/require.cpp</itemPath>
-      <itemPath>Components/require.h</itemPath>
-      <itemPath>Components/scene.cpp</itemPath>
-      <itemPath>Components/scene.h</itemPath>
-      <itemPath>Components/texture.cpp</itemPath>
-      <itemPath>Components/texture.h</itemPath>
-      <itemPath>Components/unknown.cpp</itemPath>
-      <itemPath>Components/unknown.h</itemPath>
+    <logicalFolder name="f1" displayName="components" projectFiles="true">
+      <itemPath>components/camera.cpp</itemPath>
+      <itemPath>components/camera.h</itemPath>
+      <itemPath>components/components.h</itemPath>
+      <itemPath>components/factory.cpp</itemPath>
+      <itemPath>components/factory.h</itemPath>
+      <itemPath>components/geometry.cpp</itemPath>
+      <itemPath>components/geometry.h</itemPath>
+      <itemPath>components/material.cpp</itemPath>
+      <itemPath>components/material.h</itemPath>
+      <itemPath>components/require.cpp</itemPath>
+      <itemPath>components/require.h</itemPath>
+      <itemPath>components/scene.cpp</itemPath>
+      <itemPath>components/scene.h</itemPath>
+      <itemPath>components/texture.cpp</itemPath>
+      <itemPath>components/texture.h</itemPath>
+      <itemPath>components/unknown.cpp</itemPath>
+      <itemPath>components/unknown.h</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"

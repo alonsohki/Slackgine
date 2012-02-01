@@ -13,8 +13,8 @@
 #include <cstdio>
 #include <cstdlib>
 #include "l3m/l3m.h"
-#include "l3m/Components/require.h"
-#include "l3m/Components/texture.h"
+#include "l3m/components/require.h"
+#include "l3m/components/texture.h"
 
 int main ( int argc, const char** argv )
 {
@@ -30,7 +30,7 @@ int main ( int argc, const char** argv )
     }
     
     Model model;
-    if ( model.Load(argv[1]) == false )
+    if ( model.load(argv[1]) == false )
     {
         fprintf ( stderr, "Error loading the model: %s\n", model.error() );
         return EXIT_FAILURE;
@@ -49,7 +49,7 @@ int main ( int argc, const char** argv )
             Texture* tex = static_cast < Texture* > ( *iter );
             texModel.components ().push_back ( tex );
             snprintf ( outname, sizeof(outname), "%s.ltm", tex->id().c_str() );
-            texModel.Save ( outname );
+            texModel.save ( outname );
             
             iter = components.erase ( iter );
             requirements.push_back ( tex->id() );
@@ -63,12 +63,12 @@ int main ( int argc, const char** argv )
           iter != requirements.end();
           ++iter )
     {
-        Require* req = model.CreateComponent<Require>("require");
+        Require* req = (Require *)model.createComponent("require");
         req->path() = *iter;
         req->reqType() = Require::REQUIRE_TEXTURE;
     }
     
-    if ( model.Save(argv[2]) == false )
+    if ( model.save(argv[2]) == false )
     {
         fprintf ( stderr, "Error saving the model: %s\n", model.error() );
         return EXIT_FAILURE;

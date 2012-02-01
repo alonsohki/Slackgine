@@ -116,7 +116,7 @@ int main ( int argc, char* const * argv )
 
     // Load the model.
     Model model;
-    if ( !model.Load(*fp) )
+    if ( !model.load(*fp) )
     {
         fprintf ( stderr, "Unable to load the model: %s\n", model.error() );
         return EXIT_FAILURE;
@@ -133,7 +133,7 @@ int main ( int argc, char* const * argv )
         return EXIT_FAILURE;
     
     // Write the result to the standard output.
-    if ( !model.Save(std::cout) )
+    if ( !model.save(std::cout) )
     {
         fprintf ( stderr, "\nUnable to save the model: %s\n", model.error() );
         return EXIT_FAILURE;

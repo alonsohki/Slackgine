@@ -15,8 +15,8 @@
 #include <vector>
 #include "math/transform.h"
 #include "l3m/component.h"
-#include "l3m/Components/geometry.h"
-#include "l3m/Components/camera.h"
+#include "l3m/components/geometry.h"
+#include "l3m/components/camera.h"
 
 namespace l3m
 {

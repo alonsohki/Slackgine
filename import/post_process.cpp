@@ -11,9 +11,9 @@
 //
 
 #include "post_process.h"
-#include "l3m/Components/geometry.h"
-#include "l3m/Components/scene.h"
-#include "l3m/Components/texture.h"
+#include "l3m/components/geometry.h"
+#include "l3m/components/scene.h"
+#include "l3m/components/texture.h"
 #include "math/matrix.h"
 #include "math/binary.h"
 #include "shared/util.h"

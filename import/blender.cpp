@@ -134,7 +134,7 @@ extern "C" {
 #include "math/transform.h"
 #include "math/util.h"
 #include "l3m/l3m.h"
-#include "l3m/Components/components.h"
+#include "l3m/components/components.h"
 #include "renderer/mesh.h"
 
 extern void startup_blender (int argc, const char** argv);
@@ -645,7 +645,7 @@ static bool ImportImages ( ::Scene* sce, const char* filename, l3m::Model* model
                                     {
                                         Pixmap pix;
                                         pix.Create( ibuf->x, ibuf->y, (Color *)ibuf->rect );
-                                        l3m::Texture* tex = model->CreateComponent<l3m::Texture>("texture");
+                                        l3m::Texture* tex = (l3m::Texture *)model->createComponent("texture");
                                         tex->id() = name;
                                         tex->pixmap() = pix;
                                     }
@@ -666,7 +666,7 @@ static bool ImportImages ( ::Scene* sce, const char* filename, l3m::Model* model
                                         fprintf ( stderr, "Warning: Cannot open the image: %s\n", abs );
                                         continue;
                                     }
-                                    l3m::Texture* tex = model->CreateComponent<l3m::Texture>("texture");
+                                    l3m::Texture* tex = (l3m::Texture *)model->createComponent("texture");
                                     tex->id() = name;
                                     tex->pixmap() = pix;
                                 }
@@ -707,7 +707,7 @@ static bool ImportMaterials ( ::Scene* sce, l3m::Model* model )
                     std::string translated_id = get_material_id(ma);
                     if (std::find(mMat.begin(), mMat.end(), translated_id) == mMat.end())
                     {
-                        l3m::Material* comp = model->CreateComponent<l3m::Material>("material");
+                        l3m::Material* comp = (l3m::Material *)model->createComponent("material");
                         
                         Renderer::Material mat;
                         Color ambient ( ma->ambr * 255.0f, ma->ambg * 255.0f, ma->ambb * 255.0f, 255.0f );
@@ -808,7 +808,7 @@ static bool import_blender ( ::Scene* sce, const char* filename, l3m::Model* mod
             if (exportedGeometry.find(geom_id) == exportedGeometry.end())
             {
                 exportedGeometry.insert(geom_id);
-                l3m::Geometry* g = model->CreateComponent<l3m::Geometry>("geometry");
+                l3m::Geometry* g = (l3m::Geometry *)model->createComponent("geometry");
                 g->geometry().name() = geom_id;
 
                 if ( ! ImportGeometry ( &(g->geometry()), ob, model ) )
@@ -831,7 +831,7 @@ static bool import_blender ( ::Scene* sce, const char* filename, l3m::Model* mod
             if (exportedCameras.find(cam_id) == exportedCameras.end())
             {
                 exportedCameras.insert(cam_id);
-                l3m::Camera* cam = model->CreateComponent<l3m::Camera>("camera");
+                l3m::Camera* cam = (l3m::Camera *)model->createComponent("camera");
                 cam->name() = cam_id;
 
                 if ( ! ImportCamera ( cam, ob, sce ) )
@@ -844,7 +844,7 @@ static bool import_blender ( ::Scene* sce, const char* filename, l3m::Model* mod
     }
     
     // Import the visual scene
-    l3m::Scene* modelScene = model->CreateComponent<l3m::Scene>("scene");
+    l3m::Scene* modelScene = (l3m::Scene *)model->createComponent("scene");
     if ( !ImportScene ( model, sce, modelScene ) )
     {
         fprintf ( stderr, "Error importing the visual scene\n" );

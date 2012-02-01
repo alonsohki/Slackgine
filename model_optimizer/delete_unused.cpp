@@ -10,7 +10,7 @@
 // AUTHORS:     Alberto Alonso <rydencillo@gmail.com>
 //
 
-#include <l3m/Components/components.h>
+#include <l3m/components/components.h>
 #include "delete_unused.h"
 #include <map>
 #include <vector>

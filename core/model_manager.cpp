@@ -16,8 +16,8 @@
 #include "model_manager.h"
 #include "shared/log.h"
 #include "l3m/l3m.h"
-#include "l3m/Components/require.h"
-#include "l3m/Components/texture.h"
+#include "l3m/components/require.h"
+#include "l3m/components/texture.h"
 
 using namespace Core;
 
@@ -485,7 +485,7 @@ void ModelManager::processRequest (ModelNode* node)
     {
         LOG_VV ( "ModelManager", "Processing request for '%s' at path '%s'", node->name.c_str(), accessPath.c_str() );
         Model* model = new Model ();
-        model->Load ( accessPath );
+        model->load ( accessPath );
         node->model = model;
         
         // Insert it into the model ptrs map

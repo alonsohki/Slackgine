@@ -44,7 +44,7 @@ int main(int argc, const char **argv)
         return EXIT_FAILURE;
     }
     
-    if ( !model.Save(std::cout) )
+    if ( !model.save(std::cout) )
     {
         fprintf ( stderr, "Unable to save the model: %s\n", model.error() );
         return EXIT_FAILURE;

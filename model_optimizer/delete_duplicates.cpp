@@ -11,7 +11,7 @@
 //
 
 #include "delete_duplicates.h"
-#include "l3m/Components/geometry.h"
+#include "l3m/components/geometry.h"
 #include "renderer/geometry.h"
 #include "renderer/vertex.h"
 #include "renderer/mesh.h"

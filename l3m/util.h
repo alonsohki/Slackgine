@@ -14,7 +14,7 @@
 
 #include "model.h"
 #include "component.h"
-#include "Components/components.h"
+#include "components/components.h"
 
 namespace l3m
 {

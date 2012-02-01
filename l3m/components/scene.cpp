@@ -18,17 +18,17 @@ using namespace l3m;
 bool Scene::Load(l3m::Model* model, l3m::IStream& fp, float version)
 {
     // Load the camera
-    if ( fp.ReadStr ( m_cameraUrl ) < 0 )
+    if ( fp.readStr ( m_cameraUrl ) < 0 )
         return SetError ( "Error reading the scene camera" );
-    model->RegisterDeltaResolver( this, resolveCamera, 0 );
+    model->registerDeltaResolver( this, resolveCamera, 0 );
     
     // Load the width and height
-    if ( fp.Read16(&m_width, 1) != 1 || fp.Read16(&m_height, 1) != 1 )
+    if ( fp.read16(&m_width, 1) != 1 || fp.read16(&m_height, 1) != 1 )
         return SetError ( "Error reading the scene width/height" );
 
     // Load the geometry nodes.
     u32 numGeometryNodes;
-    if ( fp.Read32 ( &numGeometryNodes, 1 ) != 1 )
+    if ( fp.read32 ( &numGeometryNodes, 1 ) != 1 )
         return SetError ( "Error reading the number of geometry nodes" );
     
     geometryNodes().reserve(numGeometryNodes);
@@ -36,22 +36,22 @@ bool Scene::Load(l3m::Model* model, l3m::IStream& fp, float version)
     {
         Scene::Node& node = CreateGeometryNode();
         
-        if ( fp.ReadStr(node.url) < 1 )
+        if ( fp.readStr(node.url) < 1 )
             return SetError ( "Error reading the geometry node url" );
         
         // Defer the geometry url resolution
-        model->RegisterDeltaResolver(this, resolveNodeData, &node);
+        model->registerDeltaResolver(this, resolveNodeData, &node);
         
-        if ( fp.ReadTransform ( &node.transform, 1 ) != 1 )
+        if ( fp.readTransform ( &node.transform, 1 ) != 1 )
             return SetError ( "Error reading the geometry node transform" );
         
         u32 numTextures;
-        if ( fp.Read32 ( &numTextures, 1 ) != 1 )
+        if ( fp.read32 ( &numTextures, 1 ) != 1 )
             return SetError ( "Error reading the geometry node texture count" );
         for ( u32 t = 0; t < numTextures; ++t )
         {
             std::string texUrl;
-            if ( fp.ReadStr(texUrl) < 1 )
+            if ( fp.readStr(texUrl) < 1 )
                 return SetError ( "Error reading the geometry node texture url" );
             node.textures.push_back ( texUrl );
         }
@@ -63,16 +63,16 @@ bool Scene::Load(l3m::Model* model, l3m::IStream& fp, float version)
 bool Scene::Save(l3m::Model*, l3m::OStream& fp)
 {
     // Save the camera
-    if ( !fp.WriteStr ( m_cameraUrl ) )
+    if ( !fp.writeStr ( m_cameraUrl ) )
         return SetError ( "Error writing the scene camera" );
     
     // Save the width and height
-    if ( !fp.Write16(&m_width, 1) || !fp.Write16(&m_height, 1) )
+    if ( !fp.write16(&m_width, 1) || !fp.write16(&m_height, 1) )
         return SetError ( "Error writing the scene width and height" );
 
     // Save all the geometry nodes.
     u32 numGeometryNodes = m_geometryNodes.size();
-    if ( !fp.Write32 ( &numGeometryNodes, 1 ) )
+    if ( !fp.write32 ( &numGeometryNodes, 1 ) )
         return SetError ( "Unable to write the number of geometry nodes" );
     
     for ( NodesVector::const_iterator i = m_geometryNodes.begin();
@@ -81,17 +81,17 @@ bool Scene::Save(l3m::Model*, l3m::OStream& fp)
     {
         const Scene::Node& node = *i;
         
-        if ( !fp.WriteStr ( node.url ) )
+        if ( !fp.writeStr ( node.url ) )
             return SetError ( "Unable to write the geometry node URL" );
-        if ( !fp.WriteTransform ( &node.transform, 1 ) )
+        if ( !fp.writeTransform ( &node.transform, 1 ) )
             return SetError ( "Unable to write the geometry node transform" );
 
         u32 numTextures = node.textures.size();
-        if ( !fp.Write32 (&numTextures, 1) )
+        if ( !fp.write32 (&numTextures, 1) )
             return SetError ( "Unable to write the geometry node texture count" );
         for ( u32 i = 0; i < numTextures; ++i )
         {
-            if ( !fp.WriteStr(node.textures[i]) )
+            if ( !fp.writeStr(node.textures[i]) )
                 return SetError ( "Unable to write the geometry node texture url" );
         }
     }

@@ -15,7 +15,7 @@
 #include <map>
 #include <string>
 #include "renderer/texture.h"
-#include "l3m/Components/texture.h"
+#include "l3m/components/texture.h"
 
 namespace Core
 {
