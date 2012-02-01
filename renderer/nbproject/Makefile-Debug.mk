@@ -76,57 +76,57 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/librenderer.a: ${OBJECTFILES}
 ${OBJECTDIR}/vertex.o: vertex.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -DUSE_THREADS -DDEBUG -DDEBUG_VERY_VERBOSE -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/vertex.o vertex.cpp
+	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/vertex.o vertex.cpp
 
 ${OBJECTDIR}/strategies/default.o: strategies/default.cpp 
 	${MKDIR} -p ${OBJECTDIR}/strategies
 	${RM} $@.d
-	$(COMPILE.cc) -g -DUSE_THREADS -DDEBUG -DDEBUG_VERY_VERBOSE -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/strategies/default.o strategies/default.cpp
+	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/strategies/default.o strategies/default.cpp
 
 ${OBJECTDIR}/strategies/render_strategy.o: strategies/render_strategy.cpp 
 	${MKDIR} -p ${OBJECTDIR}/strategies
 	${RM} $@.d
-	$(COMPILE.cc) -g -DUSE_THREADS -DDEBUG -DDEBUG_VERY_VERBOSE -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/strategies/render_strategy.o strategies/render_strategy.cpp
+	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/strategies/render_strategy.o strategies/render_strategy.cpp
 
 ${OBJECTDIR}/renderers/opengl3/opengl3.o: renderers/opengl3/opengl3.cpp 
 	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3
 	${RM} $@.d
-	$(COMPILE.cc) -g -DUSE_THREADS -DDEBUG -DDEBUG_VERY_VERBOSE -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/opengl3.o renderers/opengl3/opengl3.cpp
+	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/opengl3.o renderers/opengl3/opengl3.cpp
 
 ${OBJECTDIR}/geometry.o: geometry.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -DUSE_THREADS -DDEBUG -DDEBUG_VERY_VERBOSE -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/geometry.o geometry.cpp
+	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/geometry.o geometry.cpp
 
 ${OBJECTDIR}/renderers/opengl3/renderer.o: renderers/opengl3/renderer.cpp 
 	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3
 	${RM} $@.d
-	$(COMPILE.cc) -g -DUSE_THREADS -DDEBUG -DDEBUG_VERY_VERBOSE -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/renderer.o renderers/opengl3/renderer.cpp
+	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/renderer.o renderers/opengl3/renderer.cpp
 
 ${OBJECTDIR}/mesh.o: mesh.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -DUSE_THREADS -DDEBUG -DDEBUG_VERY_VERBOSE -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/mesh.o mesh.cpp
+	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/mesh.o mesh.cpp
 
 ${OBJECTDIR}/renderers/opengl3/program.o: renderers/opengl3/program.cpp 
 	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3
 	${RM} $@.d
-	$(COMPILE.cc) -g -DUSE_THREADS -DDEBUG -DDEBUG_VERY_VERBOSE -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/program.o renderers/opengl3/program.cpp
+	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/program.o renderers/opengl3/program.cpp
 
 ${OBJECTDIR}/renderers/opengl3/geometry.o: renderers/opengl3/geometry.cpp 
 	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3
 	${RM} $@.d
-	$(COMPILE.cc) -g -DUSE_THREADS -DDEBUG -DDEBUG_VERY_VERBOSE -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/geometry.o renderers/opengl3/geometry.cpp
+	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/geometry.o renderers/opengl3/geometry.cpp
 
 ${OBJECTDIR}/renderers/opengl3/shader.o: renderers/opengl3/shader.cpp 
 	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3
 	${RM} $@.d
-	$(COMPILE.cc) -g -DUSE_THREADS -DDEBUG -DDEBUG_VERY_VERBOSE -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/shader.o renderers/opengl3/shader.cpp
+	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/shader.o renderers/opengl3/shader.cpp
 
 ${OBJECTDIR}/renderers/opengl3/texture.o: renderers/opengl3/texture.cpp 
 	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3
 	${RM} $@.d
-	$(COMPILE.cc) -g -DUSE_THREADS -DDEBUG -DDEBUG_VERY_VERBOSE -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/texture.o renderers/opengl3/texture.cpp
+	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/texture.o renderers/opengl3/texture.cpp
 
 # Subprojects
 .build-subprojects:

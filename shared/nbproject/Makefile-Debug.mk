@@ -70,27 +70,27 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libshared.a: ${OBJECTFILES}
 ${OBJECTDIR}/pixmap.o: pixmap.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -DUSE_THREADS -DDEBUG -DDEBUG_VERY_VERBOSE -I. -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/pixmap.o pixmap.cpp
+	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I. -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/pixmap.o pixmap.cpp
 
 ${OBJECTDIR}/thread.o: thread.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -DUSE_THREADS -DDEBUG -DDEBUG_VERY_VERBOSE -I. -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/thread.o thread.cpp
+	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I. -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/thread.o thread.cpp
 
 ${OBJECTDIR}/thread_condition.o: thread_condition.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -DUSE_THREADS -DDEBUG -DDEBUG_VERY_VERBOSE -I. -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/thread_condition.o thread_condition.cpp
+	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I. -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/thread_condition.o thread_condition.cpp
 
 ${OBJECTDIR}/log.o: log.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -DUSE_THREADS -DDEBUG -DDEBUG_VERY_VERBOSE -I. -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/log.o log.cpp
+	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I. -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/log.o log.cpp
 
 ${OBJECTDIR}/mutex.o: mutex.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -DUSE_THREADS -DDEBUG -DDEBUG_VERY_VERBOSE -I. -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/mutex.o mutex.cpp
+	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DUSE_THREADS -I. -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/mutex.o mutex.cpp
 
 # Subprojects
 .build-subprojects:

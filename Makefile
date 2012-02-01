@@ -1,12 +1,12 @@
 all:
-	cd shared && make -f Makefile all CONF=Release
-	cd math && make -f Makefile all CONF=Release
-	cd l3m && make -f Makefile all CONF=Release
-	cd core && make -f Makefile all CONF=Release
-	cd renderer && make -f Makefile all CONF=Release
-	cd import && make -f Makefile all CONF=Release
-	cd model_optimizer && make -f Makefile all CONF=Release
-	cd model_splitter && make -f Makefile all CONF=Release
+	cd shared && make -f Makefile all CONF=Release DEFAULTCONF=Release
+	cd math && make -f Makefile all CONF=Release DEFAULTCONF=Release
+	cd l3m && make -f Makefile all CONF=Release DEFAULTCONF=Release
+	cd core && make -f Makefile all CONF=Release DEFAULTCONF=Release
+	cd renderer && make -f Makefile all CONF=Release DEFAULTCONF=Release
+	cd import && make -f Makefile all CONF=Release DEFAULTCONF=Release
+	cd model_optimizer && make -f Makefile all CONF=Release DEFAULTCONF=Release
+	cd model_splitter && make -f Makefile all CONF=Release DEFAULTCONF=Release
 	mkdir -p dist/include
 	mkdir -p dist/lib
 	mkdir -p dist/bin
@@ -41,14 +41,14 @@ all:
 	cp `find model_splitter/dist -name "model_splitter" | grep Release` dist/bin/
 
 clean:
-	cd shared && make -f Makefile clean CONF=Release
-	cd math && make -f Makefile clean CONF=Release
-	cd l3m && make -f Makefile clean CONF=Release
-	cd core && make -f Makefile clean CONF=Release
-	cd renderer && make -f Makefile clean CONF=Release
-	cd import && make -f Makefile clean CONF=Release
-	cd model_optimizer && make -f Makefile clean CONF=Release
-	cd model_splitter && make -f Makefile clean CONF=Release
+	cd shared && make -f Makefile clean CONF=Release DEFAULTCONF=Release
+	cd math && make -f Makefile clean CONF=Release DEFAULTCONF=Release
+	cd l3m && make -f Makefile clean CONF=Release DEFAULTCONF=Release
+	cd core && make -f Makefile clean CONF=Release DEFAULTCONF=Release
+	cd renderer && make -f Makefile clean CONF=Release DEFAULTCONF=Release
+	cd import && make -f Makefile clean CONF=Release DEFAULTCONF=Release
+	cd model_optimizer && make -f Makefile clean CONF=Release DEFAULTCONF=Release
+	cd model_splitter && make -f Makefile clean CONF=Release DEFAULTCONF=Release
 
 distclean: clean
 	rm -rf dist
