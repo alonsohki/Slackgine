@@ -26,7 +26,7 @@ private:
 public:
     //--------------------------------------------------------------------------
     // Static constructor of camera entities for the factory
-    static IComponent*  Create          ()
+    static IComponent*  create          ()
     {
         return new Material ();
     }

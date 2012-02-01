@@ -524,7 +524,7 @@ static bool ImportSceneObject ( l3m::Model* model, Object* ob, ::Scene* sce, l3m
         case OB_MESH:
         {
             Mesh* me = (Mesh*)ob->data;
-            l3m::Scene::Node& node = modelScene->CreateGeometryNode();
+            l3m::Scene::Node& node = modelScene->createGeometryNode();
             node.url = get_geometry_id(ob);
             
             // Get the transform

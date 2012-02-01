@@ -25,7 +25,7 @@ private:
     Renderer::Geometry  m_geometry;
 
 public:
-    static IComponent* Create ()
+    static IComponent* create ()
     {
         return new Geometry ();
     }
@@ -44,7 +44,7 @@ private:
         Renderer::Mesh* mesh;
         std::string     name;
     };
-    static bool     ResolveMaterialDelta    ( IComponent* comp, l3m::Model* model, void* data );
+    static bool     resolveMaterialDelta    ( IComponent* comp, l3m::Model* model, void* data );
     
     
     // Accessors

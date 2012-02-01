@@ -34,7 +34,7 @@ bool Scene::load(l3m::Model* model, l3m::IStream& fp, float version)
     geometryNodes().reserve(numGeometryNodes);
     for ( u32 i = 0; i < numGeometryNodes; ++i )
     {
-        Scene::Node& node = CreateGeometryNode();
+        Scene::Node& node = createGeometryNode();
         
         if ( fp.readStr(node.url) < 1 )
             return setError ( "Error reading the geometry node url" );
@@ -99,7 +99,7 @@ bool Scene::save(l3m::Model*, l3m::OStream& fp)
     return true;
 }
 
-Scene::Node& Scene::CreateGeometryNode ()
+Scene::Node& Scene::createGeometryNode ()
 {
     m_geometryNodes.push_back ( Node() );
     return m_geometryNodes.back ();

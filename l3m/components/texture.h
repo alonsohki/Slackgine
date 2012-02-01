@@ -21,7 +21,7 @@ namespace l3m
 class Texture : public IComponent
 {
 public:
-    static IComponent* Create ()
+    static IComponent* create ()
     {
         return new Texture ();
     }

@@ -47,7 +47,7 @@ private:
     static bool     resolveCamera       ( IComponent* comp, l3m::Model* model, void* data );
     
 public:
-    static IComponent* Create ()
+    static IComponent* create ()
     {
         return new Scene ();
     }
@@ -65,7 +65,7 @@ public:
     bool                load                    ( l3m::Model*, l3m::IStream& fp, float version );
     bool                save                    ( l3m::Model*, l3m::OStream& fp );
     
-    Node&               CreateGeometryNode      ();
+    Node&               createGeometryNode      ();
     
     
     //--------------------------------------------------------------------------

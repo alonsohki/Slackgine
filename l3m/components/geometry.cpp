@@ -134,7 +134,7 @@ bool Geometry::load(l3m::Model* model, l3m::IStream& fp, float version)
             MaterialDeltaData* matDelta = new MaterialDeltaData ();
             matDelta->name = materialName;
             matDelta->mesh = mesh;
-            model->registerDeltaResolver ( this, Geometry::ResolveMaterialDelta, matDelta );
+            model->registerDeltaResolver ( this, Geometry::resolveMaterialDelta, matDelta );
         }
     }
     
@@ -239,7 +239,7 @@ bool Geometry::save(l3m::Model*, l3m::OStream& fp)
     return true;
 }
 
-bool Geometry::ResolveMaterialDelta ( IComponent* comp, Model* model, void* data )
+bool Geometry::resolveMaterialDelta ( IComponent* comp, Model* model, void* data )
 {
     MaterialDeltaData* dd = (MaterialDeltaData *)data;
     

@@ -19,12 +19,12 @@ bool l3m::ComponentFactory::ms_initialized = false;
 void l3m::ComponentFactory::initialize()
 {
     ms_initialized = true;
-    registerType ( "geometry", Geometry::Create );
-    registerType ( "scene", Scene::Create );
-    registerType ( "texture", Texture::Create );
-    registerType ( "require", Require::Create );
-    registerType ( "camera", Camera::Create );
-    registerType ( "material", Material::Create );
+    registerType ( "geometry", Geometry::create );
+    registerType ( "scene", Scene::create );
+    registerType ( "texture", Texture::create );
+    registerType ( "require", Require::create );
+    registerType ( "camera", Camera::create );
+    registerType ( "material", Material::create );
 }
 
 void l3m::ComponentFactory::registerType(const std::string& type, instantiatorFn fn)
