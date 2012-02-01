@@ -191,7 +191,7 @@ bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, M
                     if ( doTexturing )
                     {
                         m_program->setUniform( "un_Material.textureLevels", 1 );
-                        m_program->setUniform( "un_Samplers[0]", 0 );
+                        m_program->setUniform( "un_Samplers0", 0 );
                     }
                     else
                     {

@@ -50,7 +50,7 @@ bool GLES20_Program::link()
     eglGetError();
     glBindAttribLocation ( m_handler, NORMAL, "in_Normal" );
     eglGetError();
-    glBindAttribLocation ( m_handler, TEX2D, "in_Tex2D" );
+    glBindAttribLocation ( m_handler, TEX2D, "in_TexCoord" );
     eglGetError();
 
     glLinkProgram ( m_handler );
