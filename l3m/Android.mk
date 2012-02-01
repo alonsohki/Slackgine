@@ -1,1 +1,1 @@
-LOCAL_SRC_FILES := model.cpp stream.cpp Components/scene.cpp Components/require.cpp Components/factory.cpp Components/texture.cpp Components/camera.cpp Components/geometry.cpp Components/unknown.cpp Components/material.cpp
+LOCAL_SRC_FILES := model.cpp stream.cpp components/scene.cpp components/require.cpp components/factory.cpp components/texture.cpp components/camera.cpp components/geometry.cpp components/unknown.cpp components/material.cpp
