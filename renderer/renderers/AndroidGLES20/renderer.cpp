@@ -133,10 +133,12 @@ bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, M
     eglGetError();
     glEnableVertexAttribArray ( GLES20_Program::POSITION );
     eglGetError();
+    glEnableVertexAttribArray ( GLES20_Program::NORMAL );
     eglGetError();
 
     // Bind the indices buffer
     glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, geometry->m_elementBuffer );
+    eglGetError();
     
     for ( Geometry::meshNodeVector::iterator iter = geometry->m_meshNodes.begin();
           iter != geometry->m_meshNodes.end();
@@ -166,6 +168,7 @@ bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, M
             if ( polyType != GL_INVALID_ENUM )
             {
                 // Set the material
+                i32 textureLevels = 0;
                 Material* mat = mesh->material();
                 if ( mat != 0 )
                 {
@@ -187,15 +190,15 @@ bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, M
                             doTexturing = true;
                         }
                     }
-                    
+
                     if ( doTexturing )
                     {
-                        m_program->setUniform( "un_Material.textureLevels", 1 );
-                        m_program->setUniform( "un_Samplers0", 0 );
+                        textureLevels = 1;
+                        m_program->setUniform( "un_Sampler0", 0 );
                     }
                     else
                     {
-                        m_program->setUniform( "un_Material.textureLevels", 0 );
+                        textureLevels = 0;
                         geometry->unbindAttribute(m_program, "in_TexCoord");
                     }
                 }
@@ -207,8 +210,11 @@ bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, M
                     m_program->setUniform( "un_Material.emission", Vector3(0.0f, 0.0f, 0.0f) );
                     m_program->setUniform( "un_Material.shininess", 0.0f );
                     m_program->setUniform( "un_Material.isShadeless", false );
+                    textureLevels = 0;
                     geometry->unbindAttribute(m_program, "in_TexCoord");
                 }
+
+                m_program->setUniform( "un_TextureLevels", (f32)textureLevels );
 
                 glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, reinterpret_cast<const GLvoid *>((*iter).offset * sizeof(u32)) );
                 eglGetError();

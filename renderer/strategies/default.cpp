@@ -59,8 +59,10 @@ bool Default::execute (Core::Slackgine* sg)
 
     ProgramAutoDeleter defaultProgram;
     defaultProgram.ptr = Renderer::Factory::createProgram();
-    defaultProgram.ptr->attachShader ( sh->vert() );
-    defaultProgram.ptr->attachShader ( sh->frag() );
+    if ( sh->vert() != 0 )
+        defaultProgram.ptr->attachShader ( sh->vert() );
+    if ( sh->frag() != 0 )
+        defaultProgram.ptr->attachShader ( sh->frag() );
     if ( !defaultProgram.ptr->link() )
     {
         return false;

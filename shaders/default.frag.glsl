@@ -11,9 +11,9 @@ struct Material
     vec3  emission;
     float shininess;
     bool  isShadeless;
-    int   textureLevels;
 };
 uniform Material un_Material;
+uniform float un_TextureLevels;
 
 struct Light
 {
@@ -42,10 +42,9 @@ void doLight(int light)
     gl_FragColor += cDiffuse + vec4 ( cAmbient + cEmission + cSpecular, 0.0 );
 }
 
-void mapTexture ( sampler2D sampler )
+void doTexturing ( sampler2D sampler )
 {
-    vec4 texel = texture2D ( sampler, ex_TexCoord );
-    gl_FragColor = vec4 ( gl_FragColor.rgb * texel.rgb, gl_FragColor.a * texel.a );
+    gl_FragColor *= texture2D ( sampler, ex_TexCoord );
 }
 
 void main(void)
@@ -60,6 +59,8 @@ void main(void)
         doLight(0);
     }
 
-    if ( un_Material.textureLevels > 0 )
-        mapTexture ( un_Sampler0 );
+    if ( un_TextureLevels > 0.0 )
+    {
+        doTexturing ( un_Sampler0 );
+    }
 }

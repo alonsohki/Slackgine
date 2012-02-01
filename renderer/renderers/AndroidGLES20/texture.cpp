@@ -25,6 +25,14 @@ GLES20_Texture::GLES20_Texture ( u32 width, u32 height, ITexture::Format format 
         {
             glBindTexture ( GL_TEXTURE_2D, m_handler );
             eglGetError ();
+            glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+            eglGetError ();
+            glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+            eglGetError ();
+            glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+            eglGetError ();
+            glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+            eglGetError ();
             glTexImage2D ( GL_TEXTURE_2D, 0, glFormat, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0 );
             eglGetError ();
         }
@@ -44,13 +52,13 @@ GLES20_Texture::~GLES20_Texture ()
 
 void GLES20_Texture::loadPixmap (const Pixmap& pix)
 {
-    Pixmap pixCopy = pix;
+    Pixmap pixCopy ( pix );
     pixCopy.resample ( m_width, m_height );
     if ( m_handler != 0 )
     {
         glBindTexture ( GL_TEXTURE_2D, m_handler );
         eglGetError ();
-        glTexSubImage2D ( GL_TEXTURE_2D, 0, 0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, pixCopy.pixels () );
+        glTexSubImage2D ( GL_TEXTURE_2D, 0, 0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, pixCopy.pixels() );
         eglGetError ();
     }
 }
@@ -80,6 +88,7 @@ GLenum GLES20_Texture::convertFormat (ITexture::Format format)
         case RGBA8: ret = GL_RGBA; break;
         case RGBA4: ret = GL_RGBA4; break;
         case RGB5_A1: ret = GL_RGB5_A1; break;
+        case RGBA: ret = GL_RGBA; break;
         default:
             ret = GL_INVALID_ENUM;
             break;

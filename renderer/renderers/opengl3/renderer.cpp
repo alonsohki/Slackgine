@@ -174,6 +174,8 @@ bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, 
             {
                 // Set the material
                 Material* mat = mesh->material();
+                i32 textureLevels = 0;
+                
                 if ( mat != 0 )
                 {
                     m_program->setUniform( "un_Material.diffuse", mat->diffuse(), true );
@@ -197,12 +199,12 @@ bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, 
                     
                     if ( doTexturing )
                     {
-                        m_program->setUniform( "un_Material.textureLevels", 1 );
-                        m_program->setUniform( "un_Samplers[0]", 0 );
+                        textureLevels = 1;
+                        m_program->setUniform( "un_Sampler0", 0 );
                     }
                     else
                     {
-                        m_program->setUniform( "un_Material.textureLevels", 0 );
+                        textureLevels = 0;
                         geometry->unbindAttribute(m_program, "in_TexCoord");
                     }
                 }
@@ -214,9 +216,11 @@ bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, 
                     m_program->setUniform( "un_Material.emission", Vector3(0.0f, 0.0f, 0.0f) );
                     m_program->setUniform( "un_Material.shininess", 0.0f );
                     m_program->setUniform( "un_Material.isShadeless", false );
-                    m_program->setUniform( "un_Material.textureLevels", 0 );
+                    textureLevels = 0;
                     geometry->unbindAttribute(m_program, "in_TexCoord");
                 }
+                
+                m_program->setUniform( "un_TextureLevels", (f32)textureLevels );
                 
                 glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, reinterpret_cast<const GLvoid *>((*iter).offset * sizeof(u32)) );
                 eglGetError();
