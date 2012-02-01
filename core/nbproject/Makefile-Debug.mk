@@ -75,52 +75,52 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libcore.a: ${OBJECTFILES}
 ${OBJECTDIR}/shader.o: shader.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/shader.o shader.cpp
+	$(COMPILE.cc) -g -DUSE_THREADS -DDEBUG -DDEBUG_VERY_VERBOSE -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/shader.o shader.cpp
 
 ${OBJECTDIR}/world.o: world.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/world.o world.cpp
+	$(COMPILE.cc) -g -DUSE_THREADS -DDEBUG -DDEBUG_VERY_VERBOSE -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/world.o world.cpp
 
 ${OBJECTDIR}/time.o: time.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/time.o time.cpp
+	$(COMPILE.cc) -g -DUSE_THREADS -DDEBUG -DDEBUG_VERY_VERBOSE -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/time.o time.cpp
 
 ${OBJECTDIR}/shader_manager.o: shader_manager.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/shader_manager.o shader_manager.cpp
+	$(COMPILE.cc) -g -DUSE_THREADS -DDEBUG -DDEBUG_VERY_VERBOSE -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/shader_manager.o shader_manager.cpp
 
 ${OBJECTDIR}/model_manager.o: model_manager.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/model_manager.o model_manager.cpp
+	$(COMPILE.cc) -g -DUSE_THREADS -DDEBUG -DDEBUG_VERY_VERBOSE -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/model_manager.o model_manager.cpp
 
 ${OBJECTDIR}/transformable.o: transformable.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/transformable.o transformable.cpp
+	$(COMPILE.cc) -g -DUSE_THREADS -DDEBUG -DDEBUG_VERY_VERBOSE -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/transformable.o transformable.cpp
 
 ${OBJECTDIR}/texture_manager.o: texture_manager.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/texture_manager.o texture_manager.cpp
+	$(COMPILE.cc) -g -DUSE_THREADS -DDEBUG -DDEBUG_VERY_VERBOSE -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/texture_manager.o texture_manager.cpp
 
 ${OBJECTDIR}/camera.o: camera.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/camera.o camera.cpp
+	$(COMPILE.cc) -g -DUSE_THREADS -DDEBUG -DDEBUG_VERY_VERBOSE -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/camera.o camera.cpp
 
 ${OBJECTDIR}/slackgine.o: slackgine.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/slackgine.o slackgine.cpp
+	$(COMPILE.cc) -g -DUSE_THREADS -DDEBUG -DDEBUG_VERY_VERBOSE -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/slackgine.o slackgine.cpp
 
 ${OBJECTDIR}/entity.o: entity.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/entity.o entity.cpp
+	$(COMPILE.cc) -g -DUSE_THREADS -DDEBUG -DDEBUG_VERY_VERBOSE -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/entity.o entity.cpp
 
 # Subprojects
 .build-subprojects:

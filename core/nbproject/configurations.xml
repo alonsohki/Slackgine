@@ -51,6 +51,8 @@
           </incDir>
           <commandLine>-pipe -ansi</commandLine>
           <preprocessorList>
+            <Elem>DEBUG</Elem>
+            <Elem>DEBUG_VERY_VERBOSE</Elem>
             <Elem>USE_THREADS</Elem>
           </preprocessorList>
         </ccTool>
