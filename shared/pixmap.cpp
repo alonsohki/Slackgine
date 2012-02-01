@@ -33,7 +33,7 @@ Pixmap::Pixmap ( u32 width, u32 height )
 , m_height ( 0 )
 , m_pixels ( 0 )
 {
-    Create ( width, height );
+    create ( width, height );
 }
 
 Pixmap::Pixmap ( const Pixmap& other )
@@ -46,10 +46,10 @@ Pixmap::Pixmap ( const Pixmap& other )
 
 Pixmap::~Pixmap ()
 {
-    CleanupData ();
+    cleanupData ();
 }
 
-void Pixmap::CleanupData ()
+void Pixmap::cleanupData ()
 {
     if ( m_pixels != 0 )
         delete [] m_pixels;
@@ -59,9 +59,9 @@ void Pixmap::CleanupData ()
     m_error[0] = '\0';
 }
 
-void Pixmap::Create ( u32 width, u32 height, const Color* data )
+void Pixmap::create ( u32 width, u32 height, const Color* data )
 {
-    CleanupData ();
+    cleanupData ();
     m_width = width;
     m_height = height;
     m_pixels = new Color [ m_width * m_height ] ();
@@ -71,7 +71,7 @@ void Pixmap::Create ( u32 width, u32 height, const Color* data )
 
 Pixmap& Pixmap::operator= ( const Pixmap& other )
 {
-    CleanupData ();
+    cleanupData ();
     m_width = other.m_width;
     m_height = other.m_height;
     memcpy ( m_error, other.m_error, sizeof(m_error) );
@@ -92,7 +92,7 @@ bool Pixmap::operator!= ( const Pixmap& other ) const
     return !operator== ( other );
 }
 
-bool Pixmap::Load ( const char* filename )
+bool Pixmap::load ( const char* filename )
 {
     std::ifstream fp;
     
@@ -101,12 +101,12 @@ bool Pixmap::Load ( const char* filename )
     {
         return SetError("Unable to open the file '%s'", filename);
     }
-    return Load ( fp );
+    return load ( fp );
 }
 
-bool Pixmap::Load ( std::istream& stream )
+bool Pixmap::load ( std::istream& stream )
 {
-    CleanupData ();
+    cleanupData ();
     
     // Check for the file type to load
     char header [ 8 ];
@@ -115,7 +115,7 @@ bool Pixmap::Load ( std::istream& stream )
         return SetError("Invalid file");
     
     if ( !png_sig_cmp ((png_byte*)header, 0, 8) )
-        return LoadPNG ( stream );
+        return loadPNG ( stream );
     else
         return SetError ( "Unsupported file type" );
 }
@@ -138,7 +138,7 @@ static void flush_png ( png_structp png_ptr )
     stream->flush();
 }
 
-bool Pixmap::LoadPNG ( std::istream& stream )
+bool Pixmap::loadPNG ( std::istream& stream )
 {
     png_structp png_ptr = png_create_read_struct (PNG_LIBPNG_VER_STRING,
                                                   0, 0, 0 );
@@ -208,16 +208,16 @@ bool Pixmap::LoadPNG ( std::istream& stream )
     return true;
 }
 
-bool Pixmap::SavePNG ( const char* filename )
+bool Pixmap::savePNG ( const char* filename )
 {
     std::ofstream fp;
     fp.open ( filename, std::ios::out | std::ios::binary );
     if ( !fp.is_open() )
         return SetError ( "Unable to open the file for writing" );
-    return SavePNG ( fp );
+    return savePNG ( fp );
 }
 
-bool Pixmap::SavePNG ( std::ostream& stream )
+bool Pixmap::savePNG ( std::ostream& stream )
 {
     png_structp png_ptr = png_create_write_struct (PNG_LIBPNG_VER_STRING, 0, 0, 0);
     if ( !png_ptr )
@@ -262,18 +262,18 @@ bool Pixmap::SavePNG ( std::ostream& stream )
     return true;
 }
 
-void Pixmap::Resample ( u32 newWidth, u32 newHeight )
+void Pixmap::resample ( u32 newWidth, u32 newHeight )
 {
     if ( m_pixels != 0 )
     {
         if ( newWidth != m_width )
-            Resample_X ( newWidth );
+            resample_X ( newWidth );
         if ( newHeight != m_height )
-            Resample_Y ( newHeight );
+            resample_Y ( newHeight );
     }
 }
 
-void Pixmap::Resample_X ( u32 newWidth )
+void Pixmap::resample_X ( u32 newWidth )
 {
     Color* newPixels = new Color [ newWidth * m_height ]();
     
@@ -382,7 +382,7 @@ void Pixmap::Resample_X ( u32 newWidth )
     m_width = newWidth;
 }
 
-void Pixmap::Resample_Y ( u32 newHeight )
+void Pixmap::resample_Y ( u32 newHeight )
 {
     Color* newPixels = new Color [ m_width * newHeight ]();
     

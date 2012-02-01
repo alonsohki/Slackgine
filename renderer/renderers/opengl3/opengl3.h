@@ -59,12 +59,12 @@ namespace Renderer
 class Factory
 {
 public:
-    static IRenderer*   CreateRenderer  ();
-    static IProgram*    CreateProgram   ();
-    static IShader*     CreateShader    ( IShader::Type type, const char* file );
-    static IShader*     CreateShader    ( IShader::Type type, std::istream& fp );
+    static IRenderer*   createRenderer  ();
+    static IProgram*    createProgram   ();
+    static IShader*     createShader    ( IShader::Type type, const char* file );
+    static IShader*     createShader    ( IShader::Type type, std::istream& fp );
     
-    static ITexture*    CreateTexture   ( u32 width, u32 height, ITexture::Format format = ITexture::RGBA8 );
+    static ITexture*    createTexture   ( u32 width, u32 height, ITexture::Format format = ITexture::RGBA8 );
 };
 
 }

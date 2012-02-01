@@ -27,12 +27,12 @@ public:
                         GLES20_Texture          ( u32 width, u32 height, ITexture::Format format );
                         ~GLES20_Texture         ();
     
-    void                LoadPixmap              ( const Pixmap& pix );
-    void                StorePixmap             ( Pixmap* output ) const;
-    bool                Bind                    ();
+    void                loadPixmap              ( const Pixmap& pix );
+    void                storePixmap             ( Pixmap* output ) const;
+    bool                bind                    ();
     
 private:
-    static GLenum       ConvertFormat           ( ITexture::Format format );
+    static GLenum       convertFormat           ( ITexture::Format format );
     
 private:
     GLuint      m_handler;

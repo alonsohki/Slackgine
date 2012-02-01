@@ -41,10 +41,10 @@ public:
 public:
     virtual             ~ITexture       () {}
     
-    virtual void        LoadPixmap      ( const Pixmap& pix ) = 0;
-    virtual void        StorePixmap     ( Pixmap* output ) const = 0;
+    virtual void        loadPixmap      ( const Pixmap& pix ) = 0;
+    virtual void        storePixmap     ( Pixmap* output ) const = 0;
     
-    virtual bool        Bind            () = 0;
+    virtual bool        bind            () = 0;
 };
 
 }

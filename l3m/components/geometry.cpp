@@ -55,7 +55,7 @@ bool Geometry::load(l3m::Model* model, l3m::IStream& fp, float version)
     Vertex* vertices = ( Vertex* )malloc ( sizeof(Vertex) * numVertices );
     if ( fp.readFloat(vertices->base(), numVertices*sizeof(Vertex)/sizeof(float)) != (ssize_t)(numVertices*sizeof(Vertex)/sizeof(float)) )
         return setError ( "Error reading the vertex data" );
-    m_geometry.Set ( vertices, numVertices );
+    m_geometry.set ( vertices, numVertices );
 
     // Vertex layers
     u32 numLayers;
@@ -79,7 +79,7 @@ bool Geometry::load(l3m::Model* model, l3m::IStream& fp, float version)
             return setError ( "Error reading the vertex layer element size" );
         
         // Vertex layer data
-        void* data = m_geometry.CreateVertexLayer ( name, numLevels, 0, elementSize );
+        void* data = m_geometry.createVertexLayer ( name, numLevels, 0, elementSize );
         if ( fp.readData ( reinterpret_cast < char * > ( data ), elementSize, numLevels*numVertices ) != (ssize_t)(numLevels*numVertices) )
             return setError ( "Error reading the vertex layer data" );
     }
@@ -125,8 +125,8 @@ bool Geometry::load(l3m::Model* model, l3m::IStream& fp, float version)
         // Create the mesh
         Mesh* mesh = new Mesh ();
         mesh->name () = name;
-        mesh->Set ( indices, numIndices, polyType );
-        m_geometry.LoadMesh( mesh );
+        mesh->set ( indices, numIndices, polyType );
+        m_geometry.loadMesh( mesh );
         
         // Defer the material reference
         if ( thereIsMaterial )

@@ -16,7 +16,7 @@ using namespace Renderer;
 
 OpenGL3_Texture::OpenGL3_Texture ( u32 width, u32 height, ITexture::Format format )
 {
-    GLenum glFormat = ConvertFormat (format);
+    GLenum glFormat = convertFormat (format);
     if ( glFormat != GL_INVALID_ENUM )
     {
         glGenTextures ( 1, &m_handler );
@@ -42,10 +42,10 @@ OpenGL3_Texture::~OpenGL3_Texture ()
         glDeleteTextures ( 1, &m_handler );
 }
 
-void OpenGL3_Texture::LoadPixmap (const Pixmap& pix)
+void OpenGL3_Texture::loadPixmap (const Pixmap& pix)
 {
     Pixmap pixCopy = pix;
-    pixCopy.Resample ( m_width, m_height );
+    pixCopy.resample ( m_width, m_height );
     if ( m_handler != 0 )
     {
         glBindTexture ( GL_TEXTURE_2D, m_handler );
@@ -55,12 +55,12 @@ void OpenGL3_Texture::LoadPixmap (const Pixmap& pix)
     }
 }
 
-void OpenGL3_Texture::StorePixmap (Pixmap* output) const
+void OpenGL3_Texture::storePixmap (Pixmap* output) const
 {
     // TODO
 }
 
-bool OpenGL3_Texture::Bind ()
+bool OpenGL3_Texture::bind ()
 {
     if ( m_handler != 0 )
     {

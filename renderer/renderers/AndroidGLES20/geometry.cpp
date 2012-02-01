@@ -41,7 +41,7 @@ Geometry::~Geometry ()
     }
 }
 
-bool Geometry::Initialize ()
+bool Geometry::initialize ()
 {
     GLuint buffers [ 2 ];
     glGenBuffers ( 2, buffers );

@@ -31,16 +31,16 @@ public:
 public:
     virtual             ~IShader        () {}
     
-    bool                Load            ( const char* file )
+    bool                load            ( const char* file )
     {
         std::ifstream fp ( file, std::ios::in | std::ios::binary );
         if ( fp.fail() )
             return false;
-        return Load ( fp );
+        return load ( fp );
     }
-    virtual bool        Load            ( std::istream& fp ) = 0;
-    virtual bool        Ok              () const = 0;
-    virtual void        GetError        ( char* dest ) const = 0;
+    virtual bool        load            ( std::istream& fp ) = 0;
+    virtual bool        ok              () const = 0;
+    virtual void        getError        ( char* dest ) const = 0;
 };
 
 }

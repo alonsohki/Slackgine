@@ -66,11 +66,11 @@ Shader* ShaderManager::load ( const std::string& shader )
     if ( getShaderAccessPath(filename, &path) == true )
     {
         LOG_VV ( "ShaderManager", "Loading vertex shader from '%s'", path.c_str() );
-        vert = Renderer::Factory::CreateShader( Renderer::IShader::VERTEX_SHADER, path.c_str() );
-        if ( vert && vert->Ok() == false )
+        vert = Renderer::Factory::createShader( Renderer::IShader::VERTEX_SHADER, path.c_str() );
+        if ( vert && vert->ok() == false )
         {
             char error [ 1024 ];
-            vert->GetError ( error );
+            vert->getError ( error );
             LOG_E ( "ShaderManager", "Error loading the vertex shader: %s", error );
             delete vert;
             vert = 0;
@@ -82,11 +82,11 @@ Shader* ShaderManager::load ( const std::string& shader )
     if ( getShaderAccessPath(filename, &path) == true )
     {
         LOG_VV ( "ShaderManager", "Loading fragment shader from '%s'", path.c_str() );
-        frag = Renderer::Factory::CreateShader( Renderer::IShader::FRAGMENT_SHADER, path.c_str() );
-        if ( frag && frag->Ok() == false )
+        frag = Renderer::Factory::createShader( Renderer::IShader::FRAGMENT_SHADER, path.c_str() );
+        if ( frag && frag->ok() == false )
         {
             char error [ 1024 ];
-            frag->GetError ( error );
+            frag->getError ( error );
             LOG_E ( "ShaderManager", "Error loading the fragment shader: %s", error );
             delete frag;
             frag = 0;

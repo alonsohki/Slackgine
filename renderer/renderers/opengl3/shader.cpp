@@ -54,7 +54,7 @@ OpenGL3_Shader::~OpenGL3_Shader()
     }
 }
 
-bool OpenGL3_Shader::Load ( std::istream& fp )
+bool OpenGL3_Shader::load ( std::istream& fp )
 {
     if ( m_handler == 0 )
         return false;

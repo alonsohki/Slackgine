@@ -101,7 +101,7 @@ static bool process_geometry ( Renderer::Geometry& g, u32* numDuplicates )
         }
     }
     
-    g.Set ( vertices, numVertices );
+    g.set ( vertices, numVertices );
 
     return true;
 }

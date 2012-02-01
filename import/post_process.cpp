@@ -93,7 +93,7 @@ static bool ProcessTexture ( l3m::Texture* tex, l3m::Model* model, const char** 
     Pixmap& pix = tex->pixmap();
     u32 power_of_2_width = power_of_two_above ( pix.width() );
     u32 power_of_2_height = power_of_two_above ( pix.height() );
-    pix.Resample(power_of_2_width, power_of_2_height);
+    pix.resample(power_of_2_width, power_of_2_height);
     
     return true;
 }

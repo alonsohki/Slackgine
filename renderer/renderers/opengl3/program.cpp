@@ -31,10 +31,10 @@ OpenGL3_Program::~OpenGL3_Program()
     }
 }
 
-bool OpenGL3_Program::AttachShader(const IShader* shader_)
+bool OpenGL3_Program::attachShader(const IShader* shader_)
 {
     const OpenGL3_Shader* shader = static_cast<const OpenGL3_Shader*>(shader_);
-    if ( m_handler == 0 || shader->Ok() == false )
+    if ( m_handler == 0 || shader->ok() == false )
         return false;
 
     glAttachShader ( m_handler, shader->handler() );
@@ -42,10 +42,10 @@ bool OpenGL3_Program::AttachShader(const IShader* shader_)
     return true;
 }
 
-bool OpenGL3_Program::DetachShader(const IShader* shader_)
+bool OpenGL3_Program::detachShader(const IShader* shader_)
 {
     const OpenGL3_Shader* shader = static_cast<const OpenGL3_Shader*>(shader_);
-    if ( m_handler == 0 || shader->Ok() == false )
+    if ( m_handler == 0 || shader->ok() == false )
         return false;
 
     glDetachShader ( m_handler, shader->handler() );
@@ -53,7 +53,7 @@ bool OpenGL3_Program::DetachShader(const IShader* shader_)
     return true;
 }
 
-bool OpenGL3_Program::Link()
+bool OpenGL3_Program::link()
 {
     if ( m_handler == 0 )
         return false;
@@ -79,17 +79,17 @@ bool OpenGL3_Program::Link()
     return m_linked;
 }
 
-bool OpenGL3_Program::Use ()
+bool OpenGL3_Program::use ()
 {
-    if ( Ok() )
+    if ( ok() )
     {
         glUseProgram ( m_handler );
         eglGetError();
     }
-    return Ok ();
+    return ok ();
 }
 
-bool OpenGL3_Program::SetUniform(const std::string& name, f32 value)
+bool OpenGL3_Program::setUniform(const std::string& name, f32 value)
 {
     GLint loc = glGetUniformLocation ( handler(), name.c_str() );
     eglGetError();
@@ -100,7 +100,7 @@ bool OpenGL3_Program::SetUniform(const std::string& name, f32 value)
     return true;
 }
 
-bool OpenGL3_Program::SetUniform(const std::string& name, i32 value)
+bool OpenGL3_Program::setUniform(const std::string& name, i32 value)
 {
     GLint loc = glGetUniformLocation ( handler(), name.c_str() );
     eglGetError();
@@ -111,7 +111,7 @@ bool OpenGL3_Program::SetUniform(const std::string& name, i32 value)
     return true;
 }
 
-bool OpenGL3_Program::SetUniform(const std::string& name, const Vector2& vec)
+bool OpenGL3_Program::setUniform(const std::string& name, const Vector2& vec)
 {
     GLint loc = glGetUniformLocation ( handler(), name.c_str() );
     eglGetError();
@@ -122,7 +122,7 @@ bool OpenGL3_Program::SetUniform(const std::string& name, const Vector2& vec)
     return true;
 }
 
-bool OpenGL3_Program::SetUniform(const std::string& name, const Vector3& vec)
+bool OpenGL3_Program::setUniform(const std::string& name, const Vector3& vec)
 {
     GLint loc = glGetUniformLocation ( handler(), name.c_str() );
     eglGetError();
@@ -133,7 +133,7 @@ bool OpenGL3_Program::SetUniform(const std::string& name, const Vector3& vec)
     return true;
 }
 
-bool OpenGL3_Program::SetUniform(const std::string& name, const Matrix& mat)
+bool OpenGL3_Program::setUniform(const std::string& name, const Matrix& mat)
 {
     GLint loc = glGetUniformLocation ( handler(), name.c_str() );
     eglGetError();
@@ -144,7 +144,7 @@ bool OpenGL3_Program::SetUniform(const std::string& name, const Matrix& mat)
     return true;
 }
 
-bool OpenGL3_Program::SetUniform(const std::string& name, const Color& col, bool includeAlpha)
+bool OpenGL3_Program::setUniform(const std::string& name, const Color& col, bool includeAlpha)
 {
     GLint loc = glGetUniformLocation ( handler(), name.c_str() );
     eglGetError();

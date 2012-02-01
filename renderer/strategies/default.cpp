@@ -43,10 +43,10 @@ bool Default::execute (Core::Slackgine* sg)
     Core::Shader* sh = sg->getShaderManager ().load ( "default" );
     if ( !sh )
         return false;
-    Renderer::IProgram* defaultProgram = Renderer::Factory::CreateProgram();
-    defaultProgram->AttachShader ( sh->vert() );
-    defaultProgram->AttachShader ( sh->frag() );
-    if ( !defaultProgram->Link() )
+    Renderer::IProgram* defaultProgram = Renderer::Factory::createProgram();
+    defaultProgram->attachShader ( sh->vert() );
+    defaultProgram->attachShader ( sh->frag() );
+    if ( !defaultProgram->link() )
         return false;
     
     // Begin the scene and push the world root to the deque

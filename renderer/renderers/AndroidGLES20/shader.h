@@ -18,9 +18,9 @@ public:
                         GLES20_Shader          ( IShader::Type type );
                         ~GLES20_Shader         ();
     
-    bool                Load                    ( std::istream& fp );
-    bool                Ok                      () const { return m_handler > 0 && m_loaded; }
-    void                GetError                ( char* dest ) const { strcpy(dest, m_error); }
+    bool                load                    ( std::istream& fp );
+    bool                ok                      () const { return m_handler > 0 && m_loaded; }
+    void                getError                ( char* dest ) const { strcpy(dest, m_error); }
     
     GLuint&             handler                 () { return m_handler; }
     const GLuint&       handler                 () const { return m_handler; }

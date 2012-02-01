@@ -85,31 +85,31 @@ bool GLES20_Renderer::beginScene ( const Matrix& matProjection, const Matrix& ma
 
 void GLES20_Renderer::setupLighting()
 {
-    m_program->SetUniform("un_Lights[0].diffuse", Color(255, 255, 255, 255), false );
-    m_program->SetUniform("un_Lights[0].ambient", Color(0, 0, 0, 255), false );
-    m_program->SetUniform("un_Lights[0].specular", Color(255, 255, 255, 255), false );
-    m_program->SetUniform("un_Lights[0].position", Vector3(0, -2, 0) );
-    m_program->SetUniform("un_Lights[0].direction", Vector3(0, 1, 0) );
+    m_program->setUniform("un_Lights[0].diffuse", Color(255, 255, 255, 255), false );
+    m_program->setUniform("un_Lights[0].ambient", Color(0, 0, 0, 255), false );
+    m_program->setUniform("un_Lights[0].specular", Color(255, 255, 255, 255), false );
+    m_program->setUniform("un_Lights[0].position", Vector3(0, -2, 0) );
+    m_program->setUniform("un_Lights[0].direction", Vector3(0, 1, 0) );
 }
 
 bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, MeshRenderFn fn )
 {
-    if ( m_program == 0 || m_program->Ok() == false )
+    if ( m_program == 0 || m_program->ok() == false )
     {
         if ( !m_program )
             strcpy ( m_error, "Invalid program" );
         else
-            m_program->GetError ( m_error );
+            m_program->getError ( m_error );
         return false;
     }
-    if ( !m_program->Use () )
+    if ( !m_program->use () )
     {
-        m_program->GetError ( m_error );
+        m_program->getError ( m_error );
         return false;
     }
     
     if ( !geometry->initialized() )
-        if ( !geometry->Initialize() )
+        if ( !geometry->initialize() )
             return false;
     
     setupLighting ();
@@ -152,11 +152,11 @@ bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, M
 
             if ( polyType != GL_INVALID_ENUM )
             {
-                m_program->SetUniform("un_ProjectionMatrix", m_matProjection );
-                m_program->SetUniform("un_LookatMatrix", m_matLookat );
-                m_program->SetUniform("un_ModelviewMatrix", mat);
-                m_program->SetUniform("un_NormalMatrix", matNormals);
-                m_program->SetUniform("un_Matrix", matGeometry );
+                m_program->setUniform("un_ProjectionMatrix", m_matProjection );
+                m_program->setUniform("un_LookatMatrix", m_matLookat );
+                m_program->setUniform("un_ModelviewMatrix", mat);
+                m_program->setUniform("un_NormalMatrix", matNormals);
+                m_program->setUniform("un_Matrix", matGeometry );
                 glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, reinterpret_cast<const GLvoid *>((*iter).offset * sizeof(u32)) );
                 eglGetError();
             }

@@ -14,31 +14,31 @@
 
 using namespace Renderer;
 
-IRenderer* Factory::CreateRenderer()
+IRenderer* Factory::createRenderer()
 {
     return new OpenGL3_Renderer ();
 }
 
-IProgram* Factory::CreateProgram()
+IProgram* Factory::createProgram()
 {
     return new OpenGL3_Program ();
 }
 
-IShader* Factory::CreateShader(IShader::Type type, const char* file)
+IShader* Factory::createShader(IShader::Type type, const char* file)
 {
     IShader* shader = new OpenGL3_Shader ( type );
-    shader->Load ( file );
+    shader->load ( file );
     return shader;
 }
 
-IShader* Factory::CreateShader(IShader::Type type, std::istream& fp)
+IShader* Factory::createShader(IShader::Type type, std::istream& fp)
 {
     IShader* shader = new OpenGL3_Shader ( type );
-    shader->Load ( fp );
+    shader->load ( fp );
     return shader;
 }
 
-ITexture* Factory::CreateTexture (u32 width, u32 height, ITexture::Format format)
+ITexture* Factory::createTexture (u32 width, u32 height, ITexture::Format format)
 {
     return new OpenGL3_Texture ( width, height, format );
 }

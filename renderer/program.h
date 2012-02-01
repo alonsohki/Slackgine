@@ -26,20 +26,20 @@ class IProgram
 public:
     virtual             ~IProgram       () {}
     
-    virtual bool        AttachShader    ( const IShader* shader ) = 0;
-    virtual bool        DetachShader    ( const IShader* shader ) = 0;
-    virtual bool        Link            ( ) = 0;
-    virtual bool        Use             ( ) = 0;
+    virtual bool        attachShader    ( const IShader* shader ) = 0;
+    virtual bool        detachShader    ( const IShader* shader ) = 0;
+    virtual bool        link            ( ) = 0;
+    virtual bool        use             ( ) = 0;
     
-    virtual bool        SetUniform      ( const std::string& name, f32 value ) = 0;
-    virtual bool        SetUniform      ( const std::string& name, i32 value ) = 0;
-    virtual bool        SetUniform      ( const std::string& name, const Vector2& vec ) = 0;
-    virtual bool        SetUniform      ( const std::string& name, const Vector3& vec ) = 0;
-    virtual bool        SetUniform      ( const std::string& name, const Color& col, bool includeAlpha = true ) = 0;
-    virtual bool        SetUniform      ( const std::string& name, const Matrix& mat ) = 0;
+    virtual bool        setUniform      ( const std::string& name, f32 value ) = 0;
+    virtual bool        setUniform      ( const std::string& name, i32 value ) = 0;
+    virtual bool        setUniform      ( const std::string& name, const Vector2& vec ) = 0;
+    virtual bool        setUniform      ( const std::string& name, const Vector3& vec ) = 0;
+    virtual bool        setUniform      ( const std::string& name, const Color& col, bool includeAlpha = true ) = 0;
+    virtual bool        setUniform      ( const std::string& name, const Matrix& mat ) = 0;
     
-    virtual bool        Ok              ( ) const = 0;
-    virtual void        GetError        ( char* dest ) const = 0;
+    virtual bool        ok              ( ) const = 0;
+    virtual void        getError        ( char* dest ) const = 0;
 };
 
 }

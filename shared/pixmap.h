@@ -23,24 +23,24 @@ public:
                         Pixmap          ( const Pixmap& other );
                         ~Pixmap         ();
 private:
-    void                CleanupData     ();
+    void                cleanupData     ();
     
 public:
     Pixmap&             operator=       ( const Pixmap& other );
     bool                operator==      ( const Pixmap& other ) const;
     bool                operator!=      ( const Pixmap& other ) const;
     
-    void                Create          ( u32 width, u32 height, const Color* data = 0 );
-    void                Resample        ( u32 newWidth, u32 newHeight );
+    void                create          ( u32 width, u32 height, const Color* data = 0 );
+    void                resample        ( u32 newWidth, u32 newHeight );
 private:
-    void                Resample_X      ( u32 newWidth );
-    void                Resample_Y      ( u32 newHeight );
+    void                resample_X      ( u32 newWidth );
+    void                resample_Y      ( u32 newHeight );
 public:
 
-    bool                Load            ( const char* filename );
-    bool                Load            ( std::istream& stream );
-    bool                SavePNG         ( const char* filename );
-    bool                SavePNG         ( std::ostream& stream );
+    bool                load            ( const char* filename );
+    bool                load            ( std::istream& stream );
+    bool                savePNG         ( const char* filename );
+    bool                savePNG         ( std::ostream& stream );
 
     const char*         error           () const { return m_error; }
     const u32&          width           () const { return m_width; }
@@ -49,7 +49,7 @@ public:
     Color*              pixels          () { return m_pixels; }
     
 private:
-    bool                LoadPNG         ( std::istream& stream );
+    bool                loadPNG         ( std::istream& stream );
 
 private:
     u32         m_width;

@@ -24,7 +24,7 @@ GeometryBase::~GeometryBase ()
 {
     for ( meshList::iterator iter = m_meshes.begin(); iter != m_meshes.end(); ++iter )
         delete *iter;
-    FreeVertices ();
+    freeVertices ();
     
     // Delete all the vertex layers
     for ( layerMap::iterator iter = m_mapVertexLayers.begin ();
@@ -35,7 +35,7 @@ GeometryBase::~GeometryBase ()
     }
 }
 
-void GeometryBase::FreeVertices()
+void GeometryBase::freeVertices()
 {
     if ( m_vertices != 0 )
         free ( m_vertices );
@@ -43,17 +43,17 @@ void GeometryBase::FreeVertices()
     m_numVertices = 0;
 }
 
-void GeometryBase::Set ( Vertex* pVertices, unsigned int vertexCount )
+void GeometryBase::set ( Vertex* pVertices, unsigned int vertexCount )
 {
     if ( pVertices != m_vertices )
     {
-        FreeVertices ();
+        freeVertices ();
         m_vertices = pVertices;
     }
     m_numVertices = vertexCount;
 }
 
-void GeometryBase::LoadMesh ( Renderer::Mesh* mesh )
+void GeometryBase::loadMesh ( Renderer::Mesh* mesh )
 {
     m_meshes.push_back(mesh);
 }

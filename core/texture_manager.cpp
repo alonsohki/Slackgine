@@ -48,9 +48,9 @@ void TextureManager::Register (const l3m::Texture& texture)
         const Pixmap& pixmap = texture.pixmap ();
         TextureNode node;
         node.refs = 1;
-        node.texture = Renderer::Factory::CreateTexture ( pixmap.width (), pixmap.height (), Renderer::ITexture::RGBA8 );
+        node.texture = Renderer::Factory::createTexture ( pixmap.width (), pixmap.height (), Renderer::ITexture::RGBA8 );
         if ( node.texture != 0 )
-            node.texture->LoadPixmap ( pixmap );
+            node.texture->loadPixmap ( pixmap );
         m_textures.insert ( TextureNodeMap::value_type ( name, node ) );
     }
 }

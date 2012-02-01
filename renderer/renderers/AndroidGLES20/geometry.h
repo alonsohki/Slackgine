@@ -36,7 +36,7 @@ public:
                         ~Geometry       ();
     
     bool                initialized     () const { return m_initialized; }
-    bool                Initialize      ();
+    bool                initialize      ();
     
     bool                m_initialized;
     GLuint              m_vertexBuffer;

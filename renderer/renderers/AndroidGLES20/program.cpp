@@ -19,10 +19,10 @@ GLES20_Program::~GLES20_Program()
     }
 }
 
-bool GLES20_Program::AttachShader(const IShader* shader_)
+bool GLES20_Program::attachShader(const IShader* shader_)
 {
     const GLES20_Shader* shader = static_cast<const GLES20_Shader*>(shader_);
-    if ( m_handler == 0 || shader->Ok() == false )
+    if ( m_handler == 0 || shader->ok() == false )
         return false;
 
     glAttachShader ( m_handler, shader->handler() );
@@ -30,10 +30,10 @@ bool GLES20_Program::AttachShader(const IShader* shader_)
     return true;
 }
 
-bool GLES20_Program::DetachShader(const IShader* shader_)
+bool GLES20_Program::detachShader(const IShader* shader_)
 {
     const GLES20_Shader* shader = static_cast<const GLES20_Shader*>(shader_);
-    if ( m_handler == 0 || shader->Ok() == false )
+    if ( m_handler == 0 || shader->ok() == false )
         return false;
 
     glDetachShader ( m_handler, shader->handler() );
@@ -41,7 +41,7 @@ bool GLES20_Program::DetachShader(const IShader* shader_)
     return true;
 }
 
-bool GLES20_Program::Link()
+bool GLES20_Program::link()
 {
     if ( m_handler == 0 )
         return false;
@@ -67,16 +67,16 @@ bool GLES20_Program::Link()
     return m_linked;
 }
 
-bool GLES20_Program::Use ()
+bool GLES20_Program::use ()
 {
     {
         glUseProgram ( m_handler );
         eglGetError();
     }
-    return Ok ();
+    return ok ();
 }
 
-bool GLES20_Program::SetUniform(const std::string& name, f32 value)
+bool GLES20_Program::setUniform(const std::string& name, f32 value)
 {
     GLint loc = glGetUniformLocation ( handler(), name.c_str() );
     eglGetError();
@@ -87,7 +87,7 @@ bool GLES20_Program::SetUniform(const std::string& name, f32 value)
     return true;
 }
 
-bool GLES20_Program::SetUniform(const std::string& name, i32 value)
+bool GLES20_Program::setUniform(const std::string& name, i32 value)
 {
     GLint loc = glGetUniformLocation ( handler(), name.c_str() );
     eglGetError();
@@ -98,7 +98,7 @@ bool GLES20_Program::SetUniform(const std::string& name, i32 value)
     return true;
 }
 
-bool GLES20_Program::SetUniform(const std::string& name, const Vector2& vec)
+bool GLES20_Program::setUniform(const std::string& name, const Vector2& vec)
 {
     GLint loc = glGetUniformLocation ( handler(), name.c_str() );
     eglGetError();
@@ -109,7 +109,7 @@ bool GLES20_Program::SetUniform(const std::string& name, const Vector2& vec)
     return true;
 }
 
-bool GLES20_Program::SetUniform(const std::string& name, const Vector3& vec)
+bool GLES20_Program::setUniform(const std::string& name, const Vector3& vec)
 {
     GLint loc = glGetUniformLocation ( handler(), name.c_str() );
     eglGetError();
@@ -120,7 +120,7 @@ bool GLES20_Program::SetUniform(const std::string& name, const Vector3& vec)
     return true;
 }
 
-bool GLES20_Program::SetUniform(const std::string& name, const Matrix& mat)
+bool GLES20_Program::setUniform(const std::string& name, const Matrix& mat)
 {
     GLint loc = glGetUniformLocation ( handler(), name.c_str() );
     eglGetError();
@@ -131,7 +131,7 @@ bool GLES20_Program::SetUniform(const std::string& name, const Matrix& mat)
     return true;
 }
 
-bool GLES20_Program::SetUniform(const std::string& name, const Color& col, bool includeAlpha)
+bool GLES20_Program::setUniform(const std::string& name, const Color& col, bool includeAlpha)
 {
     GLint loc = glGetUniformLocation ( handler(), name.c_str() );
     eglGetError();

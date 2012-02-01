@@ -45,7 +45,7 @@ GLES20_Shader::~GLES20_Shader()
     }
 }
 
-bool GLES20_Shader::Load ( std::istream& fp )
+bool GLES20_Shader::load ( std::istream& fp )
 {
     static const char* prefix = "precision mediump float;\n";
     if ( m_handler == 0 )

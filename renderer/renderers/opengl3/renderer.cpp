@@ -92,31 +92,31 @@ bool OpenGL3_Renderer::beginScene ( const Matrix& matProjection, const Matrix& m
 
 void OpenGL3_Renderer::setupLighting()
 {
-    m_program->SetUniform("un_Lights[0].diffuse", Color(255, 255, 255, 255), false );
-    m_program->SetUniform("un_Lights[0].ambient", Color(0, 0, 0, 255), false );
-    m_program->SetUniform("un_Lights[0].specular", Color(255, 255, 255, 255), false );
-    m_program->SetUniform("un_Lights[0].position", Vector3(0, -2, 0) );
-    m_program->SetUniform("un_Lights[0].direction", Vector3(0, 1, 0) );
+    m_program->setUniform("un_Lights[0].diffuse", Color(255, 255, 255, 255), false );
+    m_program->setUniform("un_Lights[0].ambient", Color(0, 0, 0, 255), false );
+    m_program->setUniform("un_Lights[0].specular", Color(255, 255, 255, 255), false );
+    m_program->setUniform("un_Lights[0].position", Vector3(0, -2, 0) );
+    m_program->setUniform("un_Lights[0].direction", Vector3(0, 1, 0) );
 }
 
 bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, MeshRenderFn fn )
 {
-    if ( m_program == 0 || m_program->Ok() == false )
+    if ( m_program == 0 || m_program->ok() == false )
     {
         if ( !m_program )
             strcpy ( m_error, "Invalid program" );
         else
-            m_program->GetError ( m_error );
+            m_program->getError ( m_error );
         return false;
     }
-    if ( !m_program->Use () )
+    if ( !m_program->use () )
     {
-        m_program->GetError ( m_error );
+        m_program->getError ( m_error );
         return false;
     }
         
     if ( !geometry->initialized() )
-        if ( !geometry->Initialize() )
+        if ( !geometry->initialize() )
             return false;
     
     setupLighting ();
@@ -141,12 +141,12 @@ bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, 
     // Bind the indices buffer
     glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, geometry->m_elementBuffer );
     
-    m_program->SetUniform("un_ProjectionMatrix", m_matProjection );
-    m_program->SetUniform("un_LookatMatrix", m_matLookat );
-    m_program->SetUniform("un_ModelviewMatrix", mat);
-    m_program->SetUniform("un_NormalMatrix", matNormals);
-    m_program->SetUniform("un_Matrix", matGeometry );
-    m_program->SetUniform("un_ViewVector", m_viewVector );
+    m_program->setUniform("un_ProjectionMatrix", m_matProjection );
+    m_program->setUniform("un_LookatMatrix", m_matLookat );
+    m_program->setUniform("un_ModelviewMatrix", mat);
+    m_program->setUniform("un_NormalMatrix", matNormals);
+    m_program->setUniform("un_Matrix", matGeometry );
+    m_program->setUniform("un_ViewVector", m_viewVector );
     
     for ( Geometry::meshNodeVector::iterator iter = geometry->m_meshNodes.begin();
           iter != geometry->m_meshNodes.end();
@@ -173,19 +173,19 @@ bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, 
                 Material* mat = mesh->material();
                 if ( mat != 0 )
                 {
-                    m_program->SetUniform( "un_Material.diffuse", mat->diffuse(), false );
-                    m_program->SetUniform( "un_Material.ambient", mat->ambient(), false );
-                    m_program->SetUniform( "un_Material.specular", mat->specular(), false );
-                    m_program->SetUniform( "un_Material.emission", mat->emission(), false );
-                    m_program->SetUniform( "un_Material.shininess", mat->shininess() );
+                    m_program->setUniform( "un_Material.diffuse", mat->diffuse(), false );
+                    m_program->setUniform( "un_Material.ambient", mat->ambient(), false );
+                    m_program->setUniform( "un_Material.specular", mat->specular(), false );
+                    m_program->setUniform( "un_Material.emission", mat->emission(), false );
+                    m_program->setUniform( "un_Material.shininess", mat->shininess() );
                 }
                 else
                 {
-                    m_program->SetUniform( "un_Material.diffuse", Vector3(0.7f, 0.7f, 0.7f) );
-                    m_program->SetUniform( "un_Material.ambient", Vector3(0.7f, 0.7f, 0.7f) );
-                    m_program->SetUniform( "un_Material.specular", Vector3(0.0f, 0.0f, 0.0f) );
-                    m_program->SetUniform( "un_Material.emission", Vector3(0.0f, 0.0f, 0.0f) );
-                    m_program->SetUniform( "un_Material.shininess", 0.0f );
+                    m_program->setUniform( "un_Material.diffuse", Vector3(0.7f, 0.7f, 0.7f) );
+                    m_program->setUniform( "un_Material.ambient", Vector3(0.7f, 0.7f, 0.7f) );
+                    m_program->setUniform( "un_Material.specular", Vector3(0.0f, 0.0f, 0.0f) );
+                    m_program->setUniform( "un_Material.emission", Vector3(0.0f, 0.0f, 0.0f) );
+                    m_program->setUniform( "un_Material.shininess", 0.0f );
                 }
                 
                 glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, reinterpret_cast<const GLvoid *>((*iter).offset * sizeof(u32)) );

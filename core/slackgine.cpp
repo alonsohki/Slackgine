@@ -31,7 +31,7 @@ Slackgine::Slackgine ()
 , m_modelManager ( m_textureManager, m_time )
 , m_renderStrategy ( 0 )
 {
-    m_renderer = Renderer::Factory::CreateRenderer ();
+    m_renderer = Renderer::Factory::createRenderer ();
 }
 
 Slackgine::~Slackgine ()

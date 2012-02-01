@@ -42,7 +42,7 @@ bool Texture::load ( l3m::Model*, IStream& stream, float version )
         return setError ( "Error reading the texture pixel data" );
     
     std::istringstream is ( std::string(buffer, size) );
-    m_image.Load ( is );
+    m_image.load ( is );
 
     delete [] buffer;
 
@@ -57,7 +57,7 @@ bool Texture::save ( l3m::Model*, OStream& stream )
 
     // Compress the pixmap
     std::ostringstream os;
-    m_image.SavePNG ( os );
+    m_image.savePNG ( os );
     
     // Write the result size
     u32 len = os.str().length ();

@@ -45,7 +45,7 @@ public:
     virtual                     ~Mesh ();
     
 private:
-    void FreeIndices ();
+    void freeIndices ();
     
     // Accessors
 public:
@@ -61,10 +61,10 @@ public:
     Material*&                  material        () { return m_material; }
 
     // Loads the face data, allocating space for it.
-    void Load ( const unsigned int* pIndices, unsigned int indexCount, PolygonType polyType = TRIANGLES );
+    void load ( const unsigned int* pIndices, unsigned int indexCount, PolygonType polyType = TRIANGLES );
     
     // Loads the face data, storing the pointer to the previously allocated data.
-    void Set ( unsigned int* pIndices, unsigned int indexCount,
+    void set ( unsigned int* pIndices, unsigned int indexCount,
                PolygonType polyType = TRIANGLES );
 };
 

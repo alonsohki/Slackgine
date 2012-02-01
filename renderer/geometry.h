@@ -46,27 +46,27 @@ private:
     Vector3             m_centroid;
     
 private:
-    void        FreeVertices    ();
+    void        freeVertices    ();
     
 public:
                 GeometryBase        ();
     virtual     ~GeometryBase       ();
 
 
-    void        LoadMesh        ( Mesh* mesh );
-    void        Set             ( Renderer::Vertex* pVertices, u32 vertexCount );
+    void        loadMesh        ( Mesh* mesh );
+    void        set             ( Renderer::Vertex* pVertices, u32 vertexCount );
     
     // Vertex layers
 public:
     template < typename T >
-    T*          CreateVertexLayer       ( const std::string& name, u32 numLevels, T* data = 0 )
+    T*          createVertexLayer       ( const std::string& name, u32 numLevels, T* data = 0 )
     {
-        return reinterpret_cast < T* > ( CreateVertexLayer ( name, data, sizeof(T) ) );
+        return reinterpret_cast < T* > ( createVertexLayer ( name, data, sizeof(T) ) );
     }
     
-    void*       CreateVertexLayer       ( const std::string& name, u32 numLevels, void* data, u32 elementSize )
+    void*       createVertexLayer       ( const std::string& name, u32 numLevels, void* data, u32 elementSize )
     {
-        void* destination = GetVertexLayer<void *> ( name );
+        void* destination = getVertexLayer<void *> ( name );
 
         if ( destination == 0 )
         {
@@ -86,7 +86,7 @@ public:
     }
 
     template < typename T >
-    T*          GetVertexLayer          ( const std::string& name, u32 level = 0 )
+    T*          getVertexLayer          ( const std::string& name, u32 level = 0 )
     {
         char* layerData = 0;
         layerMap::iterator iter = m_mapVertexLayers.find ( name );
@@ -98,7 +98,7 @@ public:
         return reinterpret_cast < T* > ( layerData );
     }
     
-    u32         GetVertexLayerLevelCount( const std::string& name ) const
+    u32         getVertexLayerLevelCount( const std::string& name ) const
     {
         layerMap::const_iterator iter = m_mapVertexLayers.find ( name );
         u32 count = 0;
@@ -107,7 +107,7 @@ public:
         return count;
     }
     
-    bool        DeleteVertexLayer       ( const std::string& name )
+    bool        deleteVertexLayer       ( const std::string& name )
     {
         layerMap::iterator iter = m_mapVertexLayers.find ( name );
         if ( iter != m_mapVertexLayers.end() )

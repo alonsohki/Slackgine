@@ -382,7 +382,7 @@ static bool ImportMesh ( Renderer::Geometry* g, const std::string& name, u32 mat
 
     
     Renderer::Mesh* mesh = new Renderer::Mesh ();
-    mesh->Set ( indices, actualFaceCount * 3, Renderer::Mesh::TRIANGLES );
+    mesh->set ( indices, actualFaceCount * 3, Renderer::Mesh::TRIANGLES );
     mesh->name() = name;
     // Import the material
     if ( me->mat != 0 && me->mat[mat_index] != 0 )
@@ -395,7 +395,7 @@ static bool ImportMesh ( Renderer::Geometry* g, const std::string& name, u32 mat
             mesh->material() = &iter->second->material();
         }
     }
-    g->LoadMesh( mesh );
+    g->loadMesh( mesh );
     
     return true;
 }
@@ -438,7 +438,7 @@ static bool ImportGeometry ( Renderer::Geometry* g, Object* ob, l3m::Model* mode
             ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v4 ] );
         }
     }
-    g->Set( vertexArray, actualVertexCount );
+    g->set( vertexArray, actualVertexCount );
     
     // Import the geometry UV texture coordinates
     bool has_uvs = (bool)CustomData_has_layer(&me->fdata, CD_MTFACE);
@@ -469,7 +469,7 @@ static bool ImportGeometry ( Renderer::Geometry* g, Object* ob, l3m::Model* mode
             }
         }
         
-        g->CreateVertexLayer( "uv", layerCount, uvData, sizeof(Vector2) );
+        g->createVertexLayer( "uv", layerCount, uvData, sizeof(Vector2) );
         free ( uvData );
     }
     
@@ -497,7 +497,7 @@ static bool ImportGeometry ( Renderer::Geometry* g, Object* ob, l3m::Model* mode
             }
         }
         
-        g->CreateVertexLayer("color", 1, colorData, sizeof(Color) );
+        g->createVertexLayer("color", 1, colorData, sizeof(Color) );
         free ( colorData );
     }
     
@@ -644,7 +644,7 @@ static bool ImportImages ( ::Scene* sce, const char* filename, l3m::Model* model
                                     if (ibuf)
                                     {
                                         Pixmap pix;
-                                        pix.Create( ibuf->x, ibuf->y, (Color *)ibuf->rect );
+                                        pix.create( ibuf->x, ibuf->y, (Color *)ibuf->rect );
                                         l3m::Texture* tex = (l3m::Texture *)model->createComponent("texture");
                                         tex->id() = name;
                                         tex->pixmap() = pix;
@@ -661,7 +661,7 @@ static bool ImportImages ( ::Scene* sce, const char* filename, l3m::Model* model
 
 
                                     Pixmap pix;
-                                    if ( !pix.Load(abs) )
+                                    if ( !pix.load(abs) )
                                     {
                                         fprintf ( stderr, "Warning: Cannot open the image: %s\n", abs );
                                         continue;

@@ -24,10 +24,10 @@ Mesh::Mesh()
 
 Mesh::~Mesh ()
 {
-    FreeIndices ();
+    freeIndices ();
 }
 
-void Mesh::FreeIndices()
+void Mesh::freeIndices()
 {
     if ( m_indices != 0 )
         free ( m_indices );
@@ -35,20 +35,20 @@ void Mesh::FreeIndices()
     m_numIndices = 0;
 }
 
-void Mesh::Load(const unsigned int* pIndices, unsigned int indexCount, PolygonType polyType)
+void Mesh::load(const unsigned int* pIndices, unsigned int indexCount, PolygonType polyType)
 {
-    FreeIndices ();
+    freeIndices ();
     m_indices = ( unsigned int * )malloc(sizeof(unsigned int) * indexCount);
     memcpy ( m_indices, pIndices, sizeof(unsigned int) * indexCount );
     m_numIndices = indexCount;
     m_polyType = polyType;
 }
 
-void Mesh::Set(unsigned int* pIndices, unsigned int indexCount, PolygonType polyType)
+void Mesh::set(unsigned int* pIndices, unsigned int indexCount, PolygonType polyType)
 {
     if ( pIndices != m_indices )
     {
-        FreeIndices ();
+        freeIndices ();
         m_indices = pIndices;
     }
     m_numIndices = indexCount;

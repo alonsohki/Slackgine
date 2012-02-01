@@ -16,7 +16,7 @@ using namespace Renderer;
 
 GLES20_Texture::GLES20_Texture ( u32 width, u32 height, ITexture::Format format )
 {
-    GLenum glFormat = ConvertFormat (format);
+    GLenum glFormat = convertFormat (format);
     if ( glFormat != GL_INVALID_ENUM )
     {
         glGenTextures ( 1, &m_handler );
@@ -42,10 +42,10 @@ GLES20_Texture::~GLES20_Texture ()
         glDeleteTextures ( 1, &m_handler );
 }
 
-void GLES20_Texture::LoadPixmap (const Pixmap& pix)
+void GLES20_Texture::loadPixmap (const Pixmap& pix)
 {
     Pixmap pixCopy = pix;
-    pixCopy.Resample ( m_width, m_height );
+    pixCopy.resample ( m_width, m_height );
     if ( m_handler != 0 )
     {
         glBindTexture ( GL_TEXTURE_2D, m_handler );
@@ -55,12 +55,12 @@ void GLES20_Texture::LoadPixmap (const Pixmap& pix)
     }
 }
 
-void GLES20_Texture::StorePixmap (Pixmap* output) const
+void GLES20_Texture::storePixmap (Pixmap* output) const
 {
     // TODO
 }
 
-bool GLES20_Texture::Bind ()
+bool GLES20_Texture::bind ()
 {
     if ( m_handler != 0 )
     {
@@ -70,7 +70,7 @@ bool GLES20_Texture::Bind ()
     return false;
 }
 
-GLenum GLES20_Texture::ConvertFormat (ITexture::Format format)
+GLenum GLES20_Texture::convertFormat (ITexture::Format format)
 {
     GLenum ret;
     
