@@ -53,33 +53,15 @@ static bool process_geometry ( Renderer::Geometry& g, u32* numDuplicates )
     *numDuplicates = 0;
     u32 numVertices = g.numVertices ();
     Renderer::Geometry::layerMap& layers = g.vertexLayers();
-    
-    // For each vertex...
     Vertex* vertices = g.vertices();
+    
+    // In a first step, detect the duplicate vertices and remove them.
     for ( u32 curVertex = 0; curVertex < numVertices; ++curVertex )
     {
         for ( u32 lookup = curVertex + 1; lookup < numVertices; ++lookup )
         {
             if ( vertices_match(g, curVertex, lookup) )
             {
-                *numDuplicates = *numDuplicates + 1;
-                --numVertices;
-                
-                // Move all the vertices onwards, including all layers
-                memcpy ( &vertices[lookup], &vertices[lookup+1], (numVertices - lookup) * sizeof(Vertex) );
-                for ( Renderer::Geometry::layerMap::iterator iter = layers.begin ();
-                      iter != layers.end();
-                      ++iter )
-                {
-                    Renderer::Geometry::VertexLayer& layer = iter->second;
-                    for ( u32 i = 0; i < layer.numLevels; ++i )
-                    {
-                        char* data = (char *)layer.data;
-                        data = &data [ i * layer.elementSize * g.numVertices() ];
-                        memcpy ( &data[lookup*layer.elementSize], &data[(lookup+1)*layer.elementSize], (numVertices - lookup) * layer.elementSize );
-                    }
-                }
-                
                 // Update all the indices that pointed to this vertex and the follwing
                 Renderer::Geometry::meshList& meshes = g.meshes();
                 for ( Renderer::Geometry::meshList::iterator it = meshes.begin ();
@@ -91,17 +73,91 @@ static bool process_geometry ( Renderer::Geometry& g, u32* numDuplicates )
                     {
                         if ( indices[i] == lookup )
                             indices[i] = curVertex;
-                        else if ( indices[i] > lookup )
-                            indices[i] = indices[i] - 1;
                     }
                 }
-                
-                --lookup;
             }
         }
     }
     
-    g.set ( vertices, numVertices );
+    // Make a lookup table and mark the indices that have been found
+    bool found [ numVertices ];
+    memset ( &found[0], false, sizeof(bool)*numVertices );
+    Renderer::Geometry::meshList& meshes = g.meshes();
+    for ( Renderer::Geometry::meshList::iterator it = meshes.begin ();
+            it != meshes.end ();
+            ++it )
+    {
+        u32* indices = (*it)->indices();
+        for ( u32 i = 0; i < (*it)->numIndices(); ++i )
+        {
+            found [ indices[i] ] = true;
+        }
+    }
+    
+    // Delete the indices that were not marked
+    Vertex* newVertices = (Vertex *)malloc(sizeof(Vertex)*numVertices);
+    u32 n = 0;
+    for ( u32 i = 0; i < numVertices; ++i )
+    {
+        if ( found[i] == false )
+        {
+            *numDuplicates = *numDuplicates + 1;
+            
+            // Update all the indices
+            for ( Renderer::Geometry::meshList::iterator it = meshes.begin ();
+                  it != meshes.end ();
+                  ++it )
+            {
+                u32* indices = (*it)->indices();
+                for ( u32 j = 0; j < (*it)->numIndices(); ++j )
+                {
+                    if ( indices[j] > i-*numDuplicates )
+                        indices[j] = indices[j]-1;
+                }
+            }
+        }
+        else
+        {
+            newVertices [ n ] = vertices[i];
+            ++n;
+        }
+    }
+    
+    u32 newVertexCount = n;
+    
+    // Update all the layers
+    Renderer::Geometry::layerMap newMap;
+    for ( Renderer::Geometry::layerMap::iterator iter = layers.begin();
+          iter != layers.end();
+          ++iter )
+    {
+        Renderer::Geometry::VertexLayer& oldLayer = iter->second;
+        Renderer::Geometry::VertexLayer newLayer;
+        newLayer.numLevels = oldLayer.numLevels;
+        newLayer.elementSize = oldLayer.elementSize;
+        newLayer.data = malloc ( newLayer.numLevels * newLayer.elementSize * newVertexCount );
+        
+        u32 n = 0;
+        for ( u32 l = 0; l < newLayer.numLevels; ++l )
+        {
+            u8* oldData = (u8*)oldLayer.data;
+            u8* data = (u8*)newLayer.data;
+            oldData = &oldData [ numVertices * oldLayer.elementSize * l ];
+            data = &data [ newVertexCount * newLayer.elementSize * l ];
+            
+            for ( u32 i = 0; i < numVertices; ++i )
+            {
+                if ( found[i] == true )
+                {
+                    memcpy ( &data[n * newLayer.elementSize], &oldData[i * oldLayer.elementSize], newLayer.elementSize );
+                    ++n;
+                }
+            }
+        }
+        newMap[iter->first] = newLayer;
+    }
+    g.vertexLayers() = newMap;
+    g.set ( newVertices, newVertexCount );
 
     return true;
 }
