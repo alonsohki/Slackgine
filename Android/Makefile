@@ -23,6 +23,7 @@ all:
         cp ../$$i dist/include/$$i ; \
     done
 	mkdir -p dist/lib && cp obj/local/armeabi/*.a dist/lib/
+	mkdir -p dist/shaders && cp ../shaders/*.glsl dist/shaders/
 
 clean:
 	NDK_PROJECT_PATH="`pwd`" ndk-build clean
