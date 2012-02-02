@@ -224,6 +224,11 @@ bool IOStream::write16 ( const u16* v, u32 nmemb )
         return false;
 }
 
+bool IOStream::write16(const u16& v)
+{
+    return write16 ( &v, 1 );
+}
+
 ssize_t IOStream::read16 ( u16* v, u32 nmemb )
 {
 #ifdef DEBUG
@@ -247,6 +252,11 @@ bool IOStream::write32 ( const u32* v, u32 nmemb )
     }
     else
         return false;
+}
+
+bool IOStream::write32(const u32& v)
+{
+    return write32 ( &v, 1 );
 }
 
 ssize_t IOStream::read32 ( u32* v, u32 nmemb )
@@ -274,6 +284,11 @@ bool IOStream::write64 ( const u64* v, u32 nmemb )
         return false;
 }
 
+bool IOStream::write64(const u64& v)
+{
+    return write64 ( &v, 1 );
+}
+
 ssize_t IOStream::read64 ( u64* v, u32 nmemb )
 {
 #ifdef DEBUG
@@ -297,6 +312,11 @@ bool IOStream::writeFloat ( const f32* v, u32 nmemb )
     }
     else
         return false;
+}
+
+bool IOStream::writeFloat(const float& v)
+{
+    return writeFloat ( &v, 1 );
 }
 
 ssize_t IOStream::readFloat ( f32* v, u32 nmemb )
@@ -345,20 +365,36 @@ ssize_t IOStream::readStr ( std::string& str )
         return 0;
 }
 
+bool IOStream::writeMatrix ( const Matrix* v, u32 nmemb )
+{
+#ifdef DEBUG
+    assert ( m_ostream != 0 );
+#endif
+    return writeFloat ( v->vector(), 16*nmemb );
+}
+
 bool IOStream::writeMatrix ( const Matrix& mat )
 {
 #ifdef DEBUG
     assert ( m_ostream != 0 );
 #endif
-    return writeFloat ( mat.vector(), 16 );
+    return writeMatrix ( &mat, 1 );
 }
 
-ssize_t IOStream::readMatrix ( Matrix& mat )
+ssize_t IOStream::readMatrix ( Matrix* v, u32 nmemb )
 {
 #ifdef DEBUG
     assert ( m_istream != 0 );
 #endif
-    return readFloat ( mat.vector(), 16 ) / 16;
+    return readFloat ( v->vector(), 16*nmemb ) / 16;
+}
+
+bool IOStream::readMatrix ( Matrix& mat )
+{
+#ifdef DEBUG
+    assert ( m_istream != 0 );
+#endif
+    return readMatrix ( &mat, 1 ) == 1;
 }
 
 bool IOStream::writeVector ( const Vector3& vec )

@@ -50,10 +50,15 @@ public:
     bool        writeBoolean    ( const b8* v, u32 nmemb );
     bool        writeBoolean    ( const b8& v );
     bool        write16         ( const u16* v, u32 nmemb );
+    bool        write16         ( const u16& v );
     bool        write32         ( const u32* v, u32 nmemb );
+    bool        write32         ( const u32& v );
     bool        write64         ( const u64* v, u32 nmemb );
+    bool        write64         ( const u64& v );
     bool        writeFloat      ( const float* v, u32 nmemb );
+    bool        writeFloat      ( const float& v );
     bool        writeStr        ( const std::string& str );
+    bool        writeMatrix     ( const Matrix* v, u32 nmemb );
     bool        writeMatrix     ( const Matrix& mat );
     bool        writeVector     ( const Vector3& vec );
     bool        writeColor      ( const Color* col, u32 nmemb );
@@ -70,7 +75,8 @@ public:
     ssize_t     read64          ( u64* v, u32 nmemb );
     ssize_t     readFloat       ( float* v, u32 nmemb );
     ssize_t     readStr         ( std::string& str );
-    ssize_t     readMatrix      ( Matrix& mat );
+    ssize_t     readMatrix      ( Matrix* v, u32 nmemb );
+    bool        readMatrix      ( Matrix& mat );
     ssize_t     readVector      ( Vector3& vec );
     ssize_t     readColor       ( Color* col, u32 nmemb );
     ssize_t     readQuaternion  ( Quaternion* v, u32 nmemb );

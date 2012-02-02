@@ -12,10 +12,12 @@
 
 #pragma once
 
+#include "camera.h"
 #include "geometry.h"
+#include "material.h"
+#include "pose.h"
+#include "require.h"
 #include "scene.h"
 #include "texture.h"
-#include "require.h"
-#include "camera.h"
-#include "material.h"
+
 #include "unknown.h"

@@ -25,6 +25,7 @@ void l3m::ComponentFactory::initialize()
     registerType ( "require", Require::create );
     registerType ( "camera", Camera::create );
     registerType ( "material", Material::create );
+    registerType ( "pose", Pose::create );
 }
 
 void l3m::ComponentFactory::registerType(const std::string& type, instantiatorFn fn)

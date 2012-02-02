@@ -43,7 +43,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/components/require.o \
 	${OBJECTDIR}/components/texture.o \
 	${OBJECTDIR}/components/camera.o \
-	${OBJECTDIR}/components/factory.o
+	${OBJECTDIR}/components/factory.o \
+	${OBJECTDIR}/components/pose.o
 
 
 # C Compiler Flags
@@ -121,6 +122,11 @@ ${OBJECTDIR}/components/factory.o: components/factory.cpp
 	${MKDIR} -p ${OBJECTDIR}/components
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/components/factory.o components/factory.cpp
+
+${OBJECTDIR}/components/pose.o: components/pose.cpp 
+	${MKDIR} -p ${OBJECTDIR}/components
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -DUSE_THREADS -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/components/pose.o components/pose.cpp
 
 # Subprojects
 .build-subprojects:

@@ -11,6 +11,8 @@
       <itemPath>components/geometry.h</itemPath>
       <itemPath>components/material.cpp</itemPath>
       <itemPath>components/material.h</itemPath>
+      <itemPath>components/pose.cpp</itemPath>
+      <itemPath>components/pose.h</itemPath>
       <itemPath>components/require.cpp</itemPath>
       <itemPath>components/require.h</itemPath>
       <itemPath>components/scene.cpp</itemPath>

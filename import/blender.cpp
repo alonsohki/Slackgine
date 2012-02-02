@@ -55,6 +55,7 @@
 
 #include "BLI_blenlib.h"
 
+#include "BKE_action.h"
 #include "BKE_utildefines.h"
 #include "BKE_blender.h"
 #include "BKE_context.h"
@@ -126,6 +127,7 @@ extern "C" {
 #include "DNA_meshdata_types.h"
 #include "DNA_scene_types.h"
 #include "DNA_packedFile_types.h"
+#include "DNA_modifier_types.h"
 #include "BKE_customdata.h"
 #include "BKE_object.h"
 #include "BLI_math.h"
@@ -323,6 +325,42 @@ static Transform get_node_transform_ob(Object *ob, Matrix3* scaling)
 
     return transform;
 }
+
+static Object* get_assigned_armature(Object *ob)
+{
+	Object *ob_arm = NULL;
+
+	if (ob->parent && ob->partype == PARSKEL && ob->parent->type == OB_ARMATURE) {
+		ob_arm = ob->parent;
+	}
+	else {
+		ModifierData *mod = (ModifierData*)ob->modifiers.first;
+		while (mod) {
+			if (mod->type == eModifierType_Armature) {
+				ob_arm = ((ArmatureModifierData*)mod)->object;
+			}
+
+			mod = mod->next;
+		}
+	}
+
+	return ob_arm;
+}
+
+Bone* get_bone_from_defgroup(Object *ob_arm, bDeformGroup* def)
+{
+	bPoseChannel *pchan = get_pose_channel(ob_arm->pose, def->name);
+	return pchan ? pchan->bone : NULL;
+}
+
+bool is_bone_defgroup(Object *ob_arm, bDeformGroup* def)
+{
+	return get_bone_from_defgroup(ob_arm, def) != NULL;
+}
+
+
+
+
 
 
 
@@ -836,12 +874,79 @@ static bool ImportCamera ( l3m::Camera* cam, ::Object* ob, ::Scene* sce )
     return true;
 }
 
+static bool ImportPose ( ::Scene* sce, l3m::Model* model, const std::string& pose_id, Object* ob, Object* ob_arm )
+{
+    l3m::Pose* modelPose = (l3m::Pose *)model->createComponent( "pose" );
+    modelPose->name() = pose_id;
+    
+    ListBase *defbase = &ob->defbase;
+    bPose *pose = ob_arm->pose;
+    bArmature *arm = (bArmature*)ob_arm->data;
+    u32 numJoints = 0;
+    
+    for (bDeformGroup *def = (bDeformGroup*)defbase->first; def; def = def->next) {
+		if (is_bone_defgroup(ob_arm, def))
+        {
+			bPoseChannel *pchan = get_pose_channel(pose, def->name);
+            modelPose->jointNames()[numJoints] = def->name;
+            modelPose->matrices()[numJoints] = Matrix ( &pchan->chan_mat[0][0] );
+            ++numJoints;
+		}
+	}
+    
+    modelPose->numJoints() = numJoints;
+    
+    return true;
+}
+
+static bool ImportPoses ( ::Scene* sce, l3m::Model* model )
+{
+    std::vector < std::string > mPoses;
+    
+    // For each mesh object...
+    Base *base= (Base*) sce->base.first;
+    while(base)
+    {
+        Object *ob = base->object;
+
+        switch(ob->type)
+        {
+            case OB_MESH:
+            {
+                Object *ob_arm = get_assigned_armature(ob);
+                if ( ob_arm != 0 )
+                {
+                    std::string id = translate_id(id_name(ob_arm));
+
+                    if (std::find(mPoses.begin(), mPoses.end(), id) == mPoses.end())
+                    {
+                        if ( ! ImportPose ( sce, model, id, ob, ob_arm ) )
+                            return false;
+                        mPoses.push_back ( id );
+                    }
+                }
+            }
+        }
+        
+        base = base->next;
+    }
+    
+    return true;
+}
+
 static bool import_blender ( ::Scene* sce, const char* filename, l3m::Model* model )
 {
     // Import the materials
     if ( !ImportMaterials ( sce, model ) )
     {
         fprintf ( stderr, "Error importing the model materials\n" );
+        return false;
+    }
+    
+    // Import the poses
+    if ( !ImportPoses ( sce, model ) )
+    {
+        fprintf ( stderr, "Error importing the model poses\n" );
         return false;
     }
     
