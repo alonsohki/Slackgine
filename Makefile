@@ -11,7 +11,7 @@ all:
 	mkdir -p dist/lib
 	mkdir -p dist/bin
 	mkdir -p dist/shaders
-	cp shaders/* dist/shaders/
+	cp shaders/*.glsl dist/shaders/
 	cp slackgine.h dist/include/
 	for i in `find core -type f -name "*.h"` ; do \
 	    mkdir -p dist/include/`dirname $$i` ; \
