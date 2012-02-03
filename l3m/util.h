@@ -99,5 +99,24 @@ namespace Util
         
         return 0;
     }
+    
+    //--------------------------------------------------------------------------
+    // Function to find a given pose in a model given its name.
+    static inline l3m::Pose* findPose ( Model* model, const std::string& name )
+    {
+        for ( Model::ComponentVector::iterator iter = model->components().begin();
+              iter != model->components().end();
+              ++iter )
+        {
+            if ( (*iter)->type() == "pose" )
+            {
+                l3m::Pose* pose = static_cast<l3m::Pose*>(*iter);
+                if ( pose->pose().name() == name )
+                    return pose;
+            }
+        }
+        
+        return 0;
+    }
 }
 }

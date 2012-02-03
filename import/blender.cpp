@@ -438,7 +438,7 @@ static bool ImportMesh ( Renderer::Geometry* g, const std::string& name, u32 mat
     return true;
 }
 
-static bool ImportGeometry ( Renderer::Geometry* g, Object* ob, l3m::Model* model )
+static bool ImportGeometry ( l3m::Geometry* g, Object* ob, l3m::Model* model )
 {
     Mesh* me = (Mesh *)ob->data;
     MFace *faces = me->mface;
@@ -476,7 +476,7 @@ static bool ImportGeometry ( Renderer::Geometry* g, Object* ob, l3m::Model* mode
             ImportVertex ( &vertexArray [ curVertex++ ], &verts[ face->v4 ] );
         }
     }
-    g->set( vertexArray, actualVertexCount );
+    g->geometry().set( vertexArray, actualVertexCount );
     
     // Import the geometry UV texture coordinates
     bool has_uvs = (bool)CustomData_has_layer(&me->fdata, CD_MTFACE);
@@ -507,7 +507,7 @@ static bool ImportGeometry ( Renderer::Geometry* g, Object* ob, l3m::Model* mode
             }
         }
         
-        g->createVertexLayer( "uv", layerCount, uvData, sizeof(Vector2) );
+        g->geometry().createVertexLayer( "uv", layerCount, uvData, sizeof(Vector2) );
         free ( uvData );
     }
     
@@ -535,20 +535,32 @@ static bool ImportGeometry ( Renderer::Geometry* g, Object* ob, l3m::Model* mode
             }
         }
         
-        g->createVertexLayer("color", 1, colorData, sizeof(Color) );
+        g->geometry().createVertexLayer("color", 1, colorData, sizeof(Color) );
         free ( colorData );
+    }
+    
+    // Load the skinning info
+    Object *ob_arm = get_assigned_armature(ob);
+    if ( ob_arm != 0 )
+    {
+        std::string id = translate_id(id_name(ob_arm));
+        l3m::Pose* pose = l3m::Util::findPose ( model, id );
+        if ( pose != 0 )
+        {
+            g->poseUrl() = pose->pose().name ();
+        }
     }
     
     // Load every mesh in this geometry
     if ( !totcol )
-        return ImportMesh ( g, g->name(), 0, ob, model );
+        return ImportMesh ( &g->geometry(), g->geometry().name(), 0, ob, model );
     else
     {
         for ( u32 i = 0; i < totcol; ++i )
         {
             char name [ 512 ];
-            snprintf ( name, sizeof(name), "%s-%u", g->name().c_str(), i );
-            if ( !ImportMesh ( g, name, i, ob, model ) )
+            snprintf ( name, sizeof(name), "%s-%u", g->geometry().name().c_str(), i );
+            if ( !ImportMesh ( &g->geometry(), name, i, ob, model ) )
                 return false;
         }
         return true;
@@ -877,7 +889,7 @@ static bool ImportCamera ( l3m::Camera* cam, ::Object* ob, ::Scene* sce )
 static bool ImportPose ( ::Scene* sce, l3m::Model* model, const std::string& pose_id, Object* ob, Object* ob_arm )
 {
     l3m::Pose* modelPose = (l3m::Pose *)model->createComponent( "pose" );
-    modelPose->name() = pose_id;
+    modelPose->pose().name() = pose_id;
     
     ListBase *defbase = &ob->defbase;
     bPose *pose = ob_arm->pose;
@@ -888,13 +900,13 @@ static bool ImportPose ( ::Scene* sce, l3m::Model* model, const std::string& pos
 		if (is_bone_defgroup(ob_arm, def))
         {
 			bPoseChannel *pchan = get_pose_channel(pose, def->name);
-            modelPose->jointNames()[numJoints] = def->name;
-            modelPose->matrices()[numJoints] = Matrix ( &pchan->chan_mat[0][0] );
+            modelPose->pose().jointNames()[numJoints] = def->name;
+            modelPose->pose().matrices()[numJoints] = Matrix ( &pchan->chan_mat[0][0] );
             ++numJoints;
 		}
 	}
     
-    modelPose->numJoints() = numJoints;
+    modelPose->pose().numJoints() = numJoints;
     
     return true;
 }
@@ -964,7 +976,7 @@ static bool import_blender ( ::Scene* sce, const char* filename, l3m::Model* mod
                 l3m::Geometry* g = (l3m::Geometry *)model->createComponent("geometry");
                 g->geometry().name() = geom_id;
 
-                if ( ! ImportGeometry ( &(g->geometry()), ob, model ) )
+                if ( ! ImportGeometry ( g, ob, model ) )
                 {
                     fprintf ( stderr, "Error exporting a geometry\n" );
                     return false;

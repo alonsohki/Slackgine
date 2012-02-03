@@ -48,6 +48,17 @@ bool Geometry::load(l3m::Model* model, l3m::IStream& fp, float version)
     if ( fp.readVector(m_geometry.centroid()) != 1 )
         return setError ( "Error reading the geometry centroid" );
     
+    // Geometry armature pose
+    b8 hasPose;
+    if ( !fp.readBoolean(&hasPose) )
+        return setError ( "Error reading the geometry pose" );
+    if ( hasPose )
+    {
+        if ( !fp.readStr(m_poseUrl) )
+            return setError ( "Error reading the geometry pose url" );
+        model->registerDeltaResolver( this, Geometry::resolvePoseDelta, 0 );
+    }
+    
     // Read the vertex data
     u32 numVertices;
     if ( fp.read32 ( &numVertices, 1 ) != 1 )
@@ -161,6 +172,16 @@ bool Geometry::save(l3m::Model*, l3m::OStream& fp)
     if ( ! fp.writeVector( m_geometry.centroid() ) )
         return setError ( "Error writing the geometry centroid" );
     
+    // Geometry pose
+    if ( m_poseUrl != "" )
+    {
+        fp.writeBoolean( true );
+        if ( ! fp.writeStr ( m_poseUrl ) )
+            return setError ( "Error writing the geometry pose url" );
+    }
+    else
+        fp.writeBoolean( false );
+    
     // Geometry vertices
     u32 num = m_geometry.numVertices();
     if ( ! fp.write32 ( &num, 1 ) )
@@ -245,8 +266,20 @@ bool Geometry::resolveMaterialDelta ( IComponent* comp, Model* model, void* data
     
     // Find the material with the given id
     l3m::Material* mat = l3m::Util::findMaterial ( model, dd->name );
-    if ( mat )
+    if ( mat != 0 )
         dd->mesh->material() = &mat->material();
     delete dd;
     return true; 
+}
+
+bool Geometry::resolvePoseDelta(IComponent* comp, l3m::Model* model, void*)
+{
+    Geometry* g = (Geometry *)comp;
+    
+    // Find the pose with the given url
+    l3m::Pose* pose = l3m::Util::findPose ( model, g->poseUrl() );
+    if ( pose != 0 )
+        g->geometry().pose() = &pose->pose();
+    
+    return true;
 }

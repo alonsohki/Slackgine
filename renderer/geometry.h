@@ -19,6 +19,7 @@
 #include "vertex.h"
 #include "math/boundingbox.h"
 #include "math/boundingsphere.h"
+#include "pose.h"
 
 namespace Renderer
 {
@@ -54,6 +55,7 @@ private:
     BoundingBox         m_bbox;
     BoundingSphere      m_bsphere;
     Vector3             m_centroid;
+    Renderer::Pose*     m_pose;
     
 private:
     void        freeVertices    ();
@@ -159,6 +161,7 @@ public:
     const BoundingBox&          boundingBox     () const { return m_bbox; }
     const BoundingSphere&       boundingSphere  () const { return m_bsphere; }
     const Vector3&              centroid        () const { return m_centroid; }
+    const Renderer::Pose*       pose            () const { return m_pose; }
     
     std::string&                name            () { return m_name; }
     Renderer::Vertex*&          vertices        () { return m_vertices; }
@@ -167,6 +170,7 @@ public:
     BoundingBox&                boundingBox     () { return m_bbox; }
     BoundingSphere&             boundingSphere  () { return m_bsphere; }
     Vector3&                    centroid        () { return m_centroid; }
+    Renderer::Pose*&            pose            () { return m_pose; }
 };
 
 }
