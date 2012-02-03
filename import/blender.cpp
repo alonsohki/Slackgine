@@ -138,6 +138,7 @@ extern "C" {
 #include "l3m/l3m.h"
 #include "l3m/components/components.h"
 #include "renderer/mesh.h"
+#include "renderer/vertex_weight.h"
 
 extern void startup_blender (int argc, const char** argv);
 
@@ -438,6 +439,46 @@ static bool ImportMesh ( Renderer::Geometry* g, const std::string& name, u32 mat
     return true;
 }
 
+static bool compareVertexWeights ( const Renderer::VertexWeight& a, const Renderer::VertexWeight& b )
+{
+    return a.weight > b.weight;
+}
+
+static bool ImportVertexWeight ( u32 vertexIdx, Renderer::VertexWeightSOA* vertexWeight, MDeformVert* dv, std::map<i32, i32>& defToJoint )
+{
+    std::vector<Renderer::VertexWeight> vecWeights;
+    
+    for ( u32 i = 0; i < dv->totweight; ++i )
+    {
+        Renderer::VertexWeight w;
+        w.joint = defToJoint[(i32)dv->dw[i].def_nr];
+        if ( w.joint == -1 )
+        {
+            fprintf ( stderr, "Error: Importing an invalid joint\n" );
+            return false;
+        }
+        w.weight = dv->dw[i].weight;
+        vecWeights.push_back ( w );
+    }
+    
+    // Fill all the unused weights
+    Renderer::VertexWeight nullWeight;
+    nullWeight.weight = 0.0f;
+    nullWeight.joint = 0;
+    std::sort ( vecWeights.begin(), vecWeights.end(), compareVertexWeights );
+    for ( u32 i = vecWeights.size(); i < Renderer::VertexWeight::MAX_ASSOCIATIONS; ++i )
+        vecWeights.push_back ( nullWeight );
+    
+    // Take the top "MAX_ASSOCIATIONS" weights
+    for ( u32 i = 0; i < Renderer::VertexWeight::MAX_ASSOCIATIONS; ++i )
+    {
+        vertexWeight->joint[i] = vecWeights[i].joint;
+        vertexWeight->weight[i] = vecWeights[i].weight;
+    }
+    
+    return true;
+}
+
 static bool ImportGeometry ( l3m::Geometry* g, Object* ob, l3m::Model* model )
 {
     Mesh* me = (Mesh *)ob->data;
@@ -548,6 +589,45 @@ static bool ImportGeometry ( l3m::Geometry* g, Object* ob, l3m::Model* model )
         if ( pose != 0 )
         {
             g->poseUrl() = pose->pose().name ();
+            
+            // Find the def index -> joint index associations
+            std::map<i32, i32> defToJoint;
+            {
+                bDeformGroup *def;
+                ListBase* defbase = &ob->defbase;
+                i32 i;
+                i32 j;
+                for (def = (bDeformGroup*)defbase->first, i = 0, j = 0; def; def = def->next, i++)
+                {
+                    if (is_bone_defgroup(ob_arm, def))
+                        defToJoint[i] = j++;
+                    else
+                        defToJoint[i] = -1;
+                }
+            }
+            
+            // Load the vertex weights
+            Renderer::VertexWeightSOA* weights = (Renderer::VertexWeightSOA*)g->geometry().createVertexLayer( "weights", 1, 0, sizeof(Renderer::VertexWeightSOA) );
+            curVertex = 0;
+            
+            for ( u32 i = 0; i < totface; ++i )
+            {
+                MFace* face = &faces[i];
+                if ( !ImportVertexWeight ( curVertex, &weights [ curVertex ], &me->dvert[ face->v1 ], defToJoint ) ||
+                     !ImportVertexWeight ( curVertex, &weights [ curVertex+1 ], &me->dvert[ face->v2 ], defToJoint ) ||
+                     !ImportVertexWeight ( curVertex, &weights [ curVertex+2 ], &me->dvert[ face->v3 ], defToJoint ) )
+                    return false;
+                curVertex += 3;
+
+                if ( face->v4 != 0 )
+                {
+                    if ( !ImportVertexWeight ( curVertex, &weights [ curVertex ], &me->dvert[ face->v1 ], defToJoint ) ||
+                         !ImportVertexWeight ( curVertex, &weights [ curVertex ], &me->dvert[ face->v3 ], defToJoint ) ||
+                         !ImportVertexWeight ( curVertex, &weights [ curVertex ], &me->dvert[ face->v4 ], defToJoint ) )
+                        return false;
+                    curVertex += 3;
+                }
+            }
         }
     }
     

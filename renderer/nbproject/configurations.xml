@@ -62,6 +62,7 @@
     <itemPath>texture.h</itemPath>
     <itemPath>vertex.cpp</itemPath>
     <itemPath>vertex.h</itemPath>
+    <itemPath>vertex_weight.h</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
