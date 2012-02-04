@@ -37,7 +37,7 @@ bool Pose::load(l3m::Model*, l3m::IStream& stream, float version)
             return setError ( "Error reading the pose '%s' joint names", m_pose.name().c_str() );
     }
     
-    if ( stream.readMatrix(&m_pose.matrices()[0], m_pose.numJoints()) != m_pose.numJoints() )
+    if ( stream.readMatrix(&m_pose.matrices()[0], (u32)m_pose.numJoints()) != (u32)m_pose.numJoints() )
         return setError ( "Error reading the pose '%s' matrices", m_pose.name().c_str() );
     
     return true;
