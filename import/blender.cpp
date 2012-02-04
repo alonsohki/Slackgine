@@ -56,6 +56,7 @@
 #include "BLI_blenlib.h"
 
 #include "BKE_action.h"
+#include "BKE_armature.h"
 #include "BKE_utildefines.h"
 #include "BKE_blender.h"
 #include "BKE_context.h"
@@ -614,16 +615,16 @@ static bool ImportGeometry ( l3m::Geometry* g, Object* ob, l3m::Model* model )
             {
                 MFace* face = &faces[i];
                 if ( !ImportVertexWeight ( curVertex, &weights [ curVertex ], &me->dvert[ face->v1 ], defToJoint ) ||
-                     !ImportVertexWeight ( curVertex, &weights [ curVertex+1 ], &me->dvert[ face->v2 ], defToJoint ) ||
-                     !ImportVertexWeight ( curVertex, &weights [ curVertex+2 ], &me->dvert[ face->v3 ], defToJoint ) )
+                     !ImportVertexWeight ( curVertex+1, &weights [ curVertex+1 ], &me->dvert[ face->v2 ], defToJoint ) ||
+                     !ImportVertexWeight ( curVertex+2, &weights [ curVertex+2 ], &me->dvert[ face->v3 ], defToJoint ) )
                     return false;
                 curVertex += 3;
 
                 if ( face->v4 != 0 )
                 {
                     if ( !ImportVertexWeight ( curVertex, &weights [ curVertex ], &me->dvert[ face->v1 ], defToJoint ) ||
-                         !ImportVertexWeight ( curVertex, &weights [ curVertex ], &me->dvert[ face->v3 ], defToJoint ) ||
-                         !ImportVertexWeight ( curVertex, &weights [ curVertex ], &me->dvert[ face->v4 ], defToJoint ) )
+                         !ImportVertexWeight ( curVertex+1, &weights [ curVertex + 1 ], &me->dvert[ face->v3 ], defToJoint ) ||
+                         !ImportVertexWeight ( curVertex+2, &weights [ curVertex + 2 ], &me->dvert[ face->v4 ], defToJoint ) )
                         return false;
                     curVertex += 3;
                 }
@@ -975,16 +976,84 @@ static bool ImportPose ( ::Scene* sce, l3m::Model* model, const std::string& pos
     bPose *pose = ob_arm->pose;
     bArmature *arm = (bArmature*)ob_arm->data;
     u32 numJoints = 0;
+    int flag = arm->flag;
+    
+    // put armature in rest position
+    if (!(arm->flag & ARM_RESTPOS)) {
+        arm->flag |= ARM_RESTPOS;
+        where_is_pose(sce, ob_arm);
+    }
     
     for (bDeformGroup *def = (bDeformGroup*)defbase->first; def; def = def->next) {
 		if (is_bone_defgroup(ob_arm, def))
         {
 			bPoseChannel *pchan = get_pose_channel(pose, def->name);
             modelPose->pose().jointNames()[numJoints] = def->name;
-            modelPose->pose().matrices()[numJoints] = Matrix ( &pchan->chan_mat[0][0] );
+            
+            float mat[4][4];
+            float world[4][4];
+
+            // make world-space matrix, arm_mat is armature-space
+            mul_m4_m4m4(world, pchan->bone->arm_mat, ob_arm->obmat);
+            invert_m4_m4(mat, pchan->bone->arm_mat);
+            
+            modelPose->pose().matrices()[numJoints] = Matrix ( &mat[0][0] );
+
             ++numJoints;
 		}
 	}
+    
+    // back from rest positon
+    if (!(flag & ARM_RESTPOS)) {
+        arm->flag = flag;
+        where_is_pose(sce, ob_arm);
+    }
+
+    
+    std::vector<Bone*> vecBones;
+    vecBones.reserve ( numJoints );
+    arm = (bArmature*)ob_arm->data;
+    for (Bone *bone = (Bone*)arm->bonebase.first; bone; bone = bone->next) {
+        // start from root bones
+        if (!bone->parent)
+            vecBones.push_back ( bone );
+    }
+
+    while ( vecBones.size() > 0 )
+    {
+        Bone* bone = vecBones.back ();
+        vecBones.pop_back ();
+        
+        // Push its children
+        for (Bone *child = (Bone*)bone->childbase.first; child; child = child->next)
+            vecBones.push_back ( child );
+        
+        // Find the bone associated id
+        bool found = false;
+        u32 idx = 0;
+        for ( u32 i = 0; i < numJoints; ++i )
+        {
+            if ( modelPose->pose().jointNames()[i] == bone->name )
+            {
+                found = true;
+                idx = i;
+                break;
+            }
+        }
+        if ( !found )
+        {
+            fprintf ( stderr, "Error trying to find the bone '%s' ID\n", bone->name );
+            return false;
+        }
+        
+        float mat[4][4];
+        bPoseChannel *pchan = get_pose_channel(ob_arm->pose, bone->name);
+        // get world-space from armature-space
+        mul_m4_m4m4(mat, pchan->pose_mat, ob_arm->obmat);
+
+        modelPose->pose().matrices()[idx] = Matrix(&mat[0][0]) * modelPose->pose().matrices()[idx];
+    }
+    
     
     modelPose->pose().numJoints() = numJoints;
     

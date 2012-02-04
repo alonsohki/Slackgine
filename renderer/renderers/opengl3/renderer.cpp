@@ -12,6 +12,7 @@
 
 #include <sstream>
 #include "opengl3.h"
+#include "renderer/vertex_weight.h"
 
 using namespace Renderer;
 
@@ -140,6 +141,23 @@ bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, 
     eglGetError();
     glEnableVertexAttribArray ( OpenGL3_Program::NORMAL );
     eglGetError();
+    
+                    
+    // Setup the skinning
+    b8 doSkinning = false;
+    VertexWeightSOA* weightsSOA = geometry->getVertexLayer<VertexWeightSOA>("weights", 0);
+    if ( geometry->pose() != 0 && weightsSOA != 0 )
+    {
+        u32 weights = 0;
+        u32 joints = sizeof(float) * VertexWeight::MAX_ASSOCIATIONS;
+        if ( geometry->bindVertexLayer(m_program, "in_VertexWeight", "weights", 0, Geometry::FLOAT, false, VertexWeight::MAX_ASSOCIATIONS, weights) )
+        {
+            if ( geometry->bindVertexLayer(m_program, "in_Joint", "weights", 0, Geometry::UNSIGNED_INT, false, VertexWeight::MAX_ASSOCIATIONS, joints ) )
+            {
+                doSkinning = true;
+            }
+        }
+    }
 
     // Bind the indices buffer
     glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, geometry->m_elementBuffer );
@@ -159,6 +177,18 @@ bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, 
             m_program->setUniform("un_NormalMatrix", matNormals);
             m_program->setUniform("un_Matrix", matGeometry );
             m_program->setUniform("un_ViewVector", m_viewVector );
+            
+            // Setup skinning
+            if ( doSkinning )
+            {
+                for ( u32 i = 0; i < geometry->pose()->numJoints(); ++i )
+                {
+                    char uniformName [ 64 ];
+                    snprintf ( uniformName, sizeof(uniformName), "un_JointMatrices[%u]", i );
+                    m_program->setUniform( uniformName, geometry->pose()->matrices()[i] );
+                }
+                m_program->setUniform("un_Skinning", true);
+            }
     
             GLenum polyType = GL_INVALID_ENUM;
             switch ( mesh->polyType() )
