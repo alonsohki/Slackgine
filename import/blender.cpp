@@ -1003,10 +1003,10 @@ static bool ImportPose ( ::Scene* sce, l3m::Model* model, const std::string& pos
     l3m::Pose* modelPose = (l3m::Pose *)model->createComponent( "pose" );
     modelPose->pose().name() = pose_id;
     Renderer::Pose& pose = modelPose->pose();
-    
-    // Iterate by all the bones
-    std::vector<Bone *> vecBones;
     bArmature* arm = (bArmature*)ob_arm->data;
+    
+    // Iterate by all the bones to gather the bone pose positions
+    std::vector<Bone *> vecBones;
     for (Bone *bone = (Bone*)arm->bonebase.first; bone; bone = bone->next)
     {
         // start from root bones
@@ -1030,10 +1030,13 @@ static bool ImportPose ( ::Scene* sce, l3m::Model* model, const std::string& pos
         bPoseChannel *pchan = get_pose_channel(ob_arm->pose, bone->name);
         if ( pchan != 0 )
         {
-            pose.matrices()[numJoints] = Matrix ( &pchan->chan_mat[0][0] );
-            for ( u32 i = 0; i < 16; ++i )
-                if ( fabs(pose.matrices()[numJoints].vector()[i]) < 0.001f )
-                    pose.matrices()[numJoints].vector()[i] = 0.0f;
+            float matBoneInv [ 4 ][ 4 ];
+            invert_m4_m4( matBoneInv, pchan->bone->arm_mat );
+            
+            Matrix boneMat ( &pchan->bone->arm_mat[0][0] );
+            Matrix boneInv ( &matBoneInv[0][0] );
+            Matrix poseMat ( &pchan->pose_mat[0][0] );
+            pose.matrices()[numJoints] = poseMat * boneInv;
         }
         else
         {
@@ -1042,9 +1045,8 @@ static bool ImportPose ( ::Scene* sce, l3m::Model* model, const std::string& pos
         
         ++numJoints;
     }
-    
     pose.numJoints() = numJoints;
-    
+
     return true;
 }
 
