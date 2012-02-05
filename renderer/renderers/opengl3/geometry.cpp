@@ -147,7 +147,7 @@ bool Geometry::bindVertexLayer ( IProgram* program,
     
     u32 stride = getVertexLayerElementSize ( layerName );
     offset += m_offsets [ layerName ] + level*numVertices()*stride;
-    
+
     glBindBuffer ( GL_ARRAY_BUFFER, m_vertexBuffer );
     eglGetError();
     glVertexAttribPointer ( id, count, glType, normalize?GL_TRUE:GL_FALSE, stride, reinterpret_cast<GLchar *>(offset) );

@@ -170,6 +170,17 @@ bool OpenGL3_Program::setUniform(const std::string& name, const Matrix& mat)
     return true;
 }
 
+bool OpenGL3_Program::setUniform(const std::string& name, const Matrix* mat, u32 count)
+{
+    GLint loc = glGetUniformLocation ( handler(), name.c_str() );
+    eglGetError();
+    if ( loc == -1 )
+        return false;
+    glUniformMatrix4fv ( loc, count, GL_FALSE, mat->vector() );
+    eglGetError();
+    return true;
+}
+
 bool OpenGL3_Program::setUniform(const std::string& name, const Color& col, bool includeAlpha)
 {
     GLint loc = glGetUniformLocation ( handler(), name.c_str() );

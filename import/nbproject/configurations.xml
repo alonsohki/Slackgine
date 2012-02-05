@@ -65,7 +65,6 @@
           <preprocessorList>
             <Elem>DEBUG</Elem>
             <Elem>DEBUG_VERY_VERBOSE</Elem>
-            <Elem>USE_THREADS</Elem>
           </preprocessorList>
         </ccTool>
         <linkerTool>
@@ -198,9 +197,6 @@
             <pElem>../libblender/blender/source/blender/editors/include</pElem>
             <pElem>../libblender/blender/source/blender/blenloader</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>USE_THREADS</Elem>
-          </preprocessorList>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>

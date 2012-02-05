@@ -362,7 +362,18 @@ bool is_bone_defgroup(Object *ob_arm, bDeformGroup* def)
 
 
 
-
+static bool findBoneIndex ( l3m::Pose* pose, const std::string& boneName, u32* ret )
+{
+    for ( u32 i = 0; i < pose->pose().numJoints(); ++i )
+    {
+        if ( pose->pose().jointNames()[i] == boneName )
+        {
+            *ret = i;
+            return true;
+        }
+    }
+    return false;
+}
 
 
 
@@ -448,12 +459,12 @@ static bool compareVertexWeights ( const Renderer::VertexWeight& a, const Render
 static bool ImportVertexWeight ( u32 vertexIdx, Renderer::VertexWeightSOA* vertexWeight, MDeformVert* dv, std::map<i32, i32>& defToJoint )
 {
     std::vector<Renderer::VertexWeight> vecWeights;
-    
+
     for ( u32 i = 0; i < dv->totweight; ++i )
     {
         Renderer::VertexWeight w;
         w.joint = defToJoint[(i32)dv->dw[i].def_nr];
-        if ( w.joint == -1 )
+        if ( defToJoint[(i32)dv->dw[i].def_nr] == -1 )
         {
             fprintf ( stderr, "Error: Importing an invalid joint\n" );
             return false;
@@ -471,10 +482,22 @@ static bool ImportVertexWeight ( u32 vertexIdx, Renderer::VertexWeightSOA* verte
         vecWeights.push_back ( nullWeight );
     
     // Take the top "MAX_ASSOCIATIONS" weights
+    float weightsum = 0.0f;
     for ( u32 i = 0; i < Renderer::VertexWeight::MAX_ASSOCIATIONS; ++i )
     {
         vertexWeight->joint[i] = vecWeights[i].joint;
         vertexWeight->weight[i] = vecWeights[i].weight;
+        weightsum += vecWeights[i].weight;
+    }
+
+    
+    // Normalize the weights
+    if ( weightsum != 0.0f )
+    {
+        for ( u32 i = 0; i < Renderer::VertexWeight::MAX_ASSOCIATIONS; ++i )
+        {
+            vertexWeight->weight[i] /= weightsum;
+        }
     }
     
     return true;
@@ -591,21 +614,29 @@ static bool ImportGeometry ( l3m::Geometry* g, Object* ob, l3m::Model* model )
         {
             g->poseUrl() = pose->pose().name ();
             
+            bArmature* arm = (bArmature*)ob_arm->data;
+            
             // Find the def index -> joint index associations
             std::map<i32, i32> defToJoint;
             {
                 bDeformGroup *def;
                 ListBase* defbase = &ob->defbase;
                 i32 i;
-                i32 j;
-                for (def = (bDeformGroup*)defbase->first, i = 0, j = 0; def; def = def->next, i++)
+                for (def = (bDeformGroup*)defbase->first, i = 0; def; def = def->next, i++)
                 {
-                    if (is_bone_defgroup(ob_arm, def))
-                        defToJoint[i] = j++;
-                    else
-                        defToJoint[i] = -1;
+                    if ( is_bone_defgroup(ob_arm, def))
+                    {
+                        u32 idx;
+                        if ( findBoneIndex(pose, def->name, &idx) )
+                        {
+                            defToJoint[i] = idx;
+                            continue;
+                        }
+                    }
+                    defToJoint[i] = -1;
                 }
             }
+            
             
             // Load the vertex weights
             Renderer::VertexWeightSOA* weights = (Renderer::VertexWeightSOA*)g->geometry().createVertexLayer( "weights", 1, 0, sizeof(Renderer::VertexWeightSOA) );
@@ -971,55 +1002,20 @@ static bool ImportPose ( ::Scene* sce, l3m::Model* model, const std::string& pos
 {
     l3m::Pose* modelPose = (l3m::Pose *)model->createComponent( "pose" );
     modelPose->pose().name() = pose_id;
+    Renderer::Pose& pose = modelPose->pose();
     
-    ListBase *defbase = &ob->defbase;
-    bPose *pose = ob_arm->pose;
-    bArmature *arm = (bArmature*)ob_arm->data;
-    u32 numJoints = 0;
-    int flag = arm->flag;
-    
-    // put armature in rest position
-    if (!(arm->flag & ARM_RESTPOS)) {
-        arm->flag |= ARM_RESTPOS;
-        where_is_pose(sce, ob_arm);
-    }
-    
-    for (bDeformGroup *def = (bDeformGroup*)defbase->first; def; def = def->next) {
-		if (is_bone_defgroup(ob_arm, def))
-        {
-			bPoseChannel *pchan = get_pose_channel(pose, def->name);
-            modelPose->pose().jointNames()[numJoints] = def->name;
-            
-            float mat[4][4];
-            float world[4][4];
-
-            // make world-space matrix, arm_mat is armature-space
-            mul_m4_m4m4(world, pchan->bone->arm_mat, ob_arm->obmat);
-            invert_m4_m4(mat, pchan->bone->arm_mat);
-            
-            modelPose->pose().matrices()[numJoints] = Matrix ( &mat[0][0] );
-
-            ++numJoints;
-		}
-	}
-    
-    // back from rest positon
-    if (!(flag & ARM_RESTPOS)) {
-        arm->flag = flag;
-        where_is_pose(sce, ob_arm);
-    }
-
-    
-    std::vector<Bone*> vecBones;
-    vecBones.reserve ( numJoints );
-    arm = (bArmature*)ob_arm->data;
-    for (Bone *bone = (Bone*)arm->bonebase.first; bone; bone = bone->next) {
+    // Iterate by all the bones
+    std::vector<Bone *> vecBones;
+    bArmature* arm = (bArmature*)ob_arm->data;
+    for (Bone *bone = (Bone*)arm->bonebase.first; bone; bone = bone->next)
+    {
         // start from root bones
         if (!bone->parent)
             vecBones.push_back ( bone );
     }
-
-    while ( vecBones.size() > 0 )
+    
+    u32 numJoints = 0;
+    while ( vecBones.size() >  0 )
     {
         Bone* bone = vecBones.back ();
         vecBones.pop_back ();
@@ -1028,34 +1024,26 @@ static bool ImportPose ( ::Scene* sce, l3m::Model* model, const std::string& pos
         for (Bone *child = (Bone*)bone->childbase.first; child; child = child->next)
             vecBones.push_back ( child );
         
-        // Find the bone associated id
-        bool found = false;
-        u32 idx = 0;
-        for ( u32 i = 0; i < numJoints; ++i )
+        pose.jointNames()[numJoints] = bone->name;
+        
+        // Get the bone transform
+        bPoseChannel *pchan = get_pose_channel(ob_arm->pose, bone->name);
+        if ( pchan != 0 )
         {
-            if ( modelPose->pose().jointNames()[i] == bone->name )
-            {
-                found = true;
-                idx = i;
-                break;
-            }
+            pose.matrices()[numJoints] = Matrix ( &pchan->chan_mat[0][0] );
+            for ( u32 i = 0; i < 16; ++i )
+                if ( fabs(pose.matrices()[numJoints].vector()[i]) < 0.001f )
+                    pose.matrices()[numJoints].vector()[i] = 0.0f;
         }
-        if ( !found )
+        else
         {
-            fprintf ( stderr, "Error trying to find the bone '%s' ID\n", bone->name );
-            return false;
+            pose.matrices()[numJoints] = IdentityMatrix ();
         }
         
-        float mat[4][4];
-        bPoseChannel *pchan = get_pose_channel(ob_arm->pose, bone->name);
-        // get world-space from armature-space
-        mul_m4_m4m4(mat, pchan->pose_mat, ob_arm->obmat);
-
-        modelPose->pose().matrices()[idx] = Matrix(&mat[0][0]) * modelPose->pose().matrices()[idx];
+        ++numJoints;
     }
     
-    
-    modelPose->pose().numJoints() = numJoints;
+    pose.numJoints() = numJoints;
     
     return true;
 }

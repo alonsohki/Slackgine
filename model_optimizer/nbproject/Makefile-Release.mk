@@ -74,27 +74,27 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/model_optimizer: ${OBJECTFILES}
 ${OBJECTDIR}/delete_unused.o: delete_unused.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -DUSE_THREADS -I. -I.. `pkg-config --cflags glew` `pkg-config --cflags libpng`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/delete_unused.o delete_unused.cpp
+	$(COMPILE.cc) -O2 -I. -I.. `pkg-config --cflags glew` `pkg-config --cflags libpng`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/delete_unused.o delete_unused.cpp
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -DUSE_THREADS -I. -I.. `pkg-config --cflags glew` `pkg-config --cflags libpng`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -O2 -I. -I.. `pkg-config --cflags glew` `pkg-config --cflags libpng`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
 
 ${OBJECTDIR}/delete_duplicates.o: delete_duplicates.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -DUSE_THREADS -I. -I.. `pkg-config --cflags glew` `pkg-config --cflags libpng`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/delete_duplicates.o delete_duplicates.cpp
+	$(COMPILE.cc) -O2 -I. -I.. `pkg-config --cflags glew` `pkg-config --cflags libpng`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/delete_duplicates.o delete_duplicates.cpp
 
 ${OBJECTDIR}/clean_texture_ids.o: clean_texture_ids.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -DUSE_THREADS -I. -I.. `pkg-config --cflags glew` `pkg-config --cflags libpng`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/clean_texture_ids.o clean_texture_ids.cpp
+	$(COMPILE.cc) -O2 -I. -I.. `pkg-config --cflags glew` `pkg-config --cflags libpng`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/clean_texture_ids.o clean_texture_ids.cpp
 
 ${OBJECTDIR}/filter.o: filter.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -DUSE_THREADS -I. -I.. `pkg-config --cflags glew` `pkg-config --cflags libpng`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/filter.o filter.cpp
+	$(COMPILE.cc) -O2 -I. -I.. `pkg-config --cflags glew` `pkg-config --cflags libpng`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/filter.o filter.cpp
 
 # Subprojects
 .build-subprojects:

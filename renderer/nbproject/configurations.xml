@@ -80,7 +80,6 @@
           <preprocessorList>
             <Elem>DEBUG</Elem>
             <Elem>DEBUG_VERY_VERBOSE</Elem>
-            <Elem>USE_THREADS</Elem>
           </preprocessorList>
         </ccTool>
         <archiverTool>
@@ -145,9 +144,6 @@
           <incDir>
             <pElem>..</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>USE_THREADS</Elem>
-          </preprocessorList>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>

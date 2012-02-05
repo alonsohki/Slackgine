@@ -38,6 +38,7 @@ public:
     virtual bool        setUniform      ( const std::string& name, const Vector3& vec ) = 0;
     virtual bool        setUniform      ( const std::string& name, const Color& col, bool includeAlpha = true ) = 0;
     virtual bool        setUniform      ( const std::string& name, const Matrix& mat ) = 0;
+    virtual bool        setUniform      ( const std::string& name, const Matrix* mat, u32 count ) = 0;
     
     virtual bool        ok              ( ) const = 0;
     virtual void        getError        ( char* dest ) const = 0;

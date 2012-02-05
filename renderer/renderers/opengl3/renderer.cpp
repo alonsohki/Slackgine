@@ -150,6 +150,7 @@ bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, 
     {
         u32 weights = 0;
         u32 joints = sizeof(float) * VertexWeight::MAX_ASSOCIATIONS;
+
         if ( geometry->bindVertexLayer(m_program, "in_VertexWeight", "weights", 0, Geometry::FLOAT, false, VertexWeight::MAX_ASSOCIATIONS, weights) )
         {
             if ( geometry->bindVertexLayer(m_program, "in_Joint", "weights", 0, Geometry::UNSIGNED_INT, false, VertexWeight::MAX_ASSOCIATIONS, joints ) )
@@ -158,9 +159,6 @@ bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, 
             }
         }
     }
-
-    // Bind the indices buffer
-    glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, geometry->m_elementBuffer );
     
     for ( Geometry::meshNodeVector::iterator iter = geometry->m_meshNodes.begin();
           iter != geometry->m_meshNodes.end();
@@ -252,6 +250,9 @@ bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, 
                 
                 m_program->setUniform( "un_TextureLevels", (f32)textureLevels );
                 
+                // Bind the indices buffer
+                glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, geometry->m_elementBuffer );
+                //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
                 glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, reinterpret_cast<const GLvoid *>((*iter).offset * sizeof(u32)) );
                 eglGetError();
             }
