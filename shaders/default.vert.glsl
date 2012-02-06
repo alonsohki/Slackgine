@@ -44,7 +44,7 @@ void main(void)
     }
     else
     {
-        gl_Position = un_Matrix * in_Position4 * 0.0;
+        gl_Position = un_Matrix * in_Position4;
         ex_Normal = (un_NormalMatrix * in_Normal4).xyz;
     }
 
