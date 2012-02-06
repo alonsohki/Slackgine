@@ -311,21 +311,9 @@ std::string get_material_id(Material *mat)
 	return translate_id(id_name(mat)) + "";
 }
 
-static Transform get_node_transform_ob(Object *ob, Matrix3* scaling)
+std::string get_armature_id(Object* ob_arm, Object* ob)
 {
-    Transform transform;
-
-    transform.translation() = Vector3 ( ob->obmat[3][0], ob->obmat[3][1], ob->obmat[3][2] );
-    Matrix3 basis;
-    for ( u8 i = 0; i < 3; ++i )
-         for ( u8 j = 0; j < 3; ++j )
-             basis.vector()[i*3+j] = ob->obmat[i][j];
-    Matrix3 Q, R;
-    Matrix3::QRDecompose ( basis, &Q, &R );
-    transform.orientation() = Q;
-    *scaling = R;
-
-    return transform;
+    return translate_id(id_name(ob_arm)) + "_" + translate_id(id_name(ob));
 }
 
 static Object* get_assigned_armature(Object *ob)
@@ -347,6 +335,35 @@ static Object* get_assigned_armature(Object *ob)
 	}
 
 	return ob_arm;
+}
+
+static bool is_skinned_mesh(Object *ob)
+{
+	return get_assigned_armature(ob) != NULL;
+}
+
+static Transform get_node_transform_ob(Object *ob, Matrix3* scaling)
+{
+    if ( !is_skinned_mesh(ob) )
+    {
+        Transform transform;
+
+        transform.translation() = Vector3 ( ob->obmat[3][0], ob->obmat[3][1], ob->obmat[3][2] );
+        Matrix3 basis;
+        for ( u8 i = 0; i < 3; ++i )
+            for ( u8 j = 0; j < 3; ++j )
+                basis.vector()[i*3+j] = ob->obmat[i][j];
+        Matrix3 Q, R;
+        Matrix3::QRDecompose ( basis, &Q, &R );
+        transform.orientation() = Q;
+        *scaling = R;
+        
+        return transform;
+    }
+    else
+    {
+        return get_node_transform_ob ( get_assigned_armature(ob), scaling );
+    }
 }
 
 Bone* get_bone_from_defgroup(Object *ob_arm, bDeformGroup* def)
@@ -608,7 +625,7 @@ static bool ImportGeometry ( l3m::Geometry* g, Object* ob, l3m::Model* model )
     Object *ob_arm = get_assigned_armature(ob);
     if ( ob_arm != 0 )
     {
-        std::string id = translate_id(id_name(ob_arm));
+        std::string id = get_armature_id(ob_arm, ob);
         l3m::Pose* pose = l3m::Util::findPose ( model, id );
         if ( pose != 0 )
         {
@@ -691,7 +708,7 @@ static bool ImportSceneObject ( l3m::Model* model, Object* ob, ::Scene* sce, l3m
             
             // Get the transform
             Matrix3 scale;
-            node.transform = get_node_transform_ob(ob, &scale );
+            node.transform = get_node_transform_ob(ob, &scale);
             
             // Apply the scale and mirroring
             // Find the geometry associated to this url.
@@ -1030,13 +1047,15 @@ static bool ImportPose ( ::Scene* sce, l3m::Model* model, const std::string& pos
         bPoseChannel *pchan = get_pose_channel(ob_arm->pose, bone->name);
         if ( pchan != 0 )
         {
-            float matBoneInv [ 4 ][ 4 ];
-            invert_m4_m4( matBoneInv, pchan->bone->arm_mat );
+            float matArmInv [ 4 ][ 4 ];
+            invert_m4_m4( matArmInv, ob_arm->obmat );
             
-            Matrix boneMat ( &pchan->bone->arm_mat[0][0] );
-            Matrix boneInv ( &matBoneInv[0][0] );
-            Matrix poseMat ( &pchan->pose_mat[0][0] );
-            pose.matrices()[numJoints] = poseMat * boneInv;
+            Matrix armInv ( &matArmInv[0][0] );
+            Matrix obMat ( &ob->obmat[0][0] );
+            Matrix chanMat ( &pchan->chan_mat[0][0] );
+            
+            pose.matrices()[numJoints] = chanMat * armInv * obMat;
+            Matrix& mat = pose.matrices()[numJoints];
         }
         else
         {
@@ -1067,7 +1086,7 @@ static bool ImportPoses ( ::Scene* sce, l3m::Model* model )
                 Object *ob_arm = get_assigned_armature(ob);
                 if ( ob_arm != 0 )
                 {
-                    std::string id = translate_id(id_name(ob_arm));
+                    std::string id = get_armature_id(ob_arm, ob);
 
                     if (std::find(mPoses.begin(), mPoses.end(), id) == mPoses.end())
                     {
