@@ -131,6 +131,8 @@ public:
     
     static void QRDecompose ( const Matrix3& thiz, Matrix3* Q, Matrix3* R )
     {
+        float m [ 16 ];
+
         Vector3 a1 = Vector3 ( &thiz.m[0][0] );
         Vector3 a2 = Vector3 ( &thiz.m[1][0] );
         Vector3 a3 = Vector3 ( &thiz.m[2][0] );
@@ -144,17 +146,22 @@ public:
         Vector3 u3 = a3 - e1*Dot(a3,e1) - e2*Dot(a3,e2);
         Vector3 e3 = Vector3::Normalize(u3);
         
-        float m [ 16 ];
-        m[0] = e1.x();  m[1] = e1.y();  m[2] = e1.z();
-        m[3] = e2.x();  m[4] = e2.y();  m[5] = e2.z();
-        m[6] = e3.x();  m[7] = e3.y();  m[8] = e3.z();
-        *Q = m;
-        
-        memset ( m, 0, sizeof(m) );
-        m[0] = e1.Dot(a1);
-        m[3] = e1.Dot(a2); m[4] = e2.Dot(a2);
-        m[6] = e1.Dot(a3); m[7] = e2.Dot(a3); m[8] = e3.Dot(a3);
-        *R = m;
+        if ( Q )
+        {
+            m[0] = e1.x();  m[1] = e1.y();  m[2] = e1.z();
+            m[3] = e2.x();  m[4] = e2.y();  m[5] = e2.z();
+            m[6] = e3.x();  m[7] = e3.y();  m[8] = e3.z();
+            *Q = m;
+        }
+
+        if ( R )
+        {
+            memset ( m, 0, sizeof(m) );
+            m[0] = e1.Dot(a1);
+            m[3] = e1.Dot(a2); m[4] = e2.Dot(a2);
+            m[6] = e1.Dot(a3); m[7] = e2.Dot(a3); m[8] = e3.Dot(a3);
+            *R = m;
+        }
     }
     
     
@@ -513,6 +520,8 @@ public:
     
     static void QRDecompose ( const Matrix& thiz, Matrix* Q, Matrix* R )
     {
+        float m [ 16 ];
+        
         Vector3 a1 = Vector3 ( &thiz.m[0][0] );
         Vector3 a2 = Vector3 ( &thiz.m[1][0] );
         Vector3 a3 = Vector3 ( &thiz.m[2][0] );
@@ -526,19 +535,24 @@ public:
         Vector3 u3 = a3 - e1*Dot(a3,e1) - e2*Dot(a3,e2);
         Vector3 e3 = Vector3::Normalize(u3);
         
-        float m [ 16 ];
-        m[0] = e1.x();  m[1] = e1.y();  m[2] = e1.z();  m[3] = 0.0f;
-        m[4] = e2.x();  m[5] = e2.y();  m[6] = e2.z();  m[7] = 0.0f;
-        m[8] = e3.x();  m[9] = e3.y();  m[10] = e3.z(); m[11] = 0.0f;
-        m[12] = 0.0f;   m[13] = 0.0f;   m[14] = 0.0f;   m[15] = 1.0f;
-        *Q = m;
+        if ( Q )
+        {
+            m[0] = e1.x();  m[1] = e1.y();  m[2] = e1.z();  m[3] = 0.0f;
+            m[4] = e2.x();  m[5] = e2.y();  m[6] = e2.z();  m[7] = 0.0f;
+            m[8] = e3.x();  m[9] = e3.y();  m[10] = e3.z(); m[11] = 0.0f;
+            m[12] = 0.0f;   m[13] = 0.0f;   m[14] = 0.0f;   m[15] = 1.0f;
+            *Q = m;
+        }
         
-        memset ( m, 0, sizeof(m) );
-        m[0] = e1.Dot(a1);
-        m[4] = e1.Dot(a2); m[5] = e2.Dot(a2);
-        m[8] = e1.Dot(a3); m[9] = e2.Dot(a3); m[10] = e3.Dot(a3);
-        m[15] = 1.0f;
-        *R = m;
+        if ( R )
+        {
+            memset ( m, 0, sizeof(m) );
+            m[0] = e1.Dot(a1);
+            m[4] = e1.Dot(a2); m[5] = e2.Dot(a2);
+            m[8] = e1.Dot(a3); m[9] = e2.Dot(a3); m[10] = e3.Dot(a3);
+            m[15] = 1.0f;
+            *R = m;
+        }
     }
     
     

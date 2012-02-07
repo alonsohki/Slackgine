@@ -342,28 +342,33 @@ static bool is_skinned_mesh(Object *ob)
 	return get_assigned_armature(ob) != NULL;
 }
 
+static Matrix get_node_matrix_ob(Object* ob)
+{
+    Transform transform;
+
+    transform.translation() = Vector3 ( ob->obmat[3][0], ob->obmat[3][1], ob->obmat[3][2] );
+    for ( u8 i = 0; i < 3; ++i )
+        for ( u8 j = 0; j < 3; ++j )
+            transform.orientation().vector()[i*3+j] = ob->obmat[i][j];
+
+    return Transform2Matrix(transform);
+}
+
 static Transform get_node_transform_ob(Object *ob, Matrix3* scaling)
 {
-    if ( !is_skinned_mesh(ob) )
-    {
-        Transform transform;
+    Transform transform;
 
-        transform.translation() = Vector3 ( ob->obmat[3][0], ob->obmat[3][1], ob->obmat[3][2] );
-        Matrix3 basis;
-        for ( u8 i = 0; i < 3; ++i )
-            for ( u8 j = 0; j < 3; ++j )
-                basis.vector()[i*3+j] = ob->obmat[i][j];
-        Matrix3 Q, R;
-        Matrix3::QRDecompose ( basis, &Q, &R );
-        transform.orientation() = Q;
-        *scaling = R;
-        
-        return transform;
-    }
-    else
-    {
-        return get_node_transform_ob ( get_assigned_armature(ob), scaling );
-    }
+    transform.translation() = Vector3 ( ob->obmat[3][0], ob->obmat[3][1], ob->obmat[3][2] );
+    Matrix3 basis;
+    for ( u8 i = 0; i < 3; ++i )
+        for ( u8 j = 0; j < 3; ++j )
+            basis.vector()[i*3+j] = ob->obmat[i][j];
+    Matrix3 Q, R;
+    Matrix3::QRDecompose ( basis, &Q, &R );
+    transform.orientation() = Q;
+    *scaling = R;
+
+    return transform;
 }
 
 Bone* get_bone_from_defgroup(Object *ob_arm, bDeformGroup* def)
@@ -706,15 +711,36 @@ static bool ImportSceneObject ( l3m::Model* model, Object* ob, ::Scene* sce, l3m
             l3m::Scene::Node& node = modelScene->createGeometryNode();
             node.url = get_geometry_id(ob);
             
-            // Get the transform
-            Matrix3 scale;
-            node.transform = get_node_transform_ob(ob, &scale);
+            Matrix preTransform;
             
-            // Apply the scale and mirroring
+            if ( is_skinned_mesh(ob) )
+            {
+                // Get the object transform, and the armature transform
+                Matrix obmat = get_node_matrix_ob(ob);
+                float _armInv[4][4];
+                invert_m4_m4(_armInv, get_assigned_armature(ob)->obmat);
+                Matrix armInv ( &_armInv[0][0] );
+                Matrix obScale;
+                Matrix3 armScale;
+                obmat = obmat * armInv;
+                Matrix::QRDecompose ( obmat, &obmat, &obScale );
+                node.transform = get_node_transform_ob(get_assigned_armature(ob), &armScale);
+
+                preTransform = obmat * obScale * armScale;
+            }
+            else
+            {
+                // Get the transform
+                Matrix3 scale;
+                node.transform = get_node_transform_ob(ob, &scale);
+                preTransform = scale;
+            }
+
+            // Apply the transform
             // Find the geometry associated to this url.
             for ( l3m::Model::ComponentVector::iterator miter = model->components().begin();
-                  miter != model->components().end();
-                  ++miter )
+                miter != model->components().end();
+                ++miter )
             {
                 if ( (*miter)->type() == "geometry" && static_cast < l3m::Geometry* > ( *miter )->geometry().name() == node.url )
                 {
@@ -724,7 +750,7 @@ static bool ImportSceneObject ( l3m::Model* model, Object* ob, ::Scene* sce, l3m
                     Renderer::Vertex* v = g.vertices();
                     for ( u32 i = 0; i < g.numVertices(); ++i )
                     {
-                        Vector3 pos = v[i].pos() * scale;
+                        Vector3 pos = v[i].pos() * preTransform;
                         v[i].pos() = pos;
                     }
                 }
@@ -1047,15 +1073,19 @@ static bool ImportPose ( ::Scene* sce, l3m::Model* model, const std::string& pos
         bPoseChannel *pchan = get_pose_channel(ob_arm->pose, bone->name);
         if ( pchan != 0 )
         {
-            float matArmInv [ 4 ][ 4 ];
-            invert_m4_m4( matArmInv, ob_arm->obmat );
-            
-            Matrix armInv ( &matArmInv[0][0] );
-            Matrix obMat ( &ob->obmat[0][0] );
             Matrix chanMat ( &pchan->chan_mat[0][0] );
+            pose.matrices()[numJoints] = chanMat;
             
-            pose.matrices()[numJoints] = chanMat * armInv * obMat;
+#ifdef DEBUG
             Matrix& mat = pose.matrices()[numJoints];
+            if ( numJoints <= 15 )
+            {
+            for ( u32 i = 0; i < 16; ++i )
+                if ( fabs(mat.vector()[i]) < 0.001f )
+                    mat.vector()[i] = 0.0f;
+            fprintf ( stderr, "%s #%u\n%s\n\n", bone->name, numJoints, mat.toString().c_str() );
+            }
+#endif
         }
         else
         {
