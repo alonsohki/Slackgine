@@ -16,14 +16,12 @@ uniform mat4 un_NormalMatrix;
 
 varying vec3 ex_Normal;
 varying vec2 ex_TexCoord;
-varying vec3 ex_Color;
 
 void main(void)
 {
     vec4 in_Position4 = vec4 ( in_Position, 1.0 );
     vec4 in_Normal4 = vec4 ( in_Normal, 0.0 );
 
-    ex_Color = vec3 ( in_VertexWeight + in_Joint, 0.0 );
     if ( un_Skinning == true )
     {
         float totalWeight = 0.0f;

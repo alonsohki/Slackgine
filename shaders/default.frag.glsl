@@ -27,8 +27,6 @@ uniform Light un_Lights [ 1 ];
 
 uniform sampler2D un_Sampler0;
 
-varying vec3 ex_Color;
-
 void main(void)
 {
     vec4 FragColor;
@@ -62,5 +60,4 @@ void main(void)
     }
 
     gl_FragColor = FragColor;
-    //gl_FragColor = vec4 ( ex_Color, 1.0 );
 }
