@@ -716,17 +716,10 @@ static bool ImportSceneObject ( l3m::Model* model, Object* ob, ::Scene* sce, l3m
             if ( is_skinned_mesh(ob) )
             {
                 // Get the object transform, and the armature transform
-                Matrix obmat = get_node_matrix_ob(ob);
-                float _armInv[4][4];
-                invert_m4_m4(_armInv, get_assigned_armature(ob)->obmat);
-                Matrix armInv ( &_armInv[0][0] );
-                Matrix obScale;
                 Matrix3 armScale;
-                obmat = obmat * armInv;
-                Matrix::QRDecompose ( obmat, &obmat, &obScale );
                 node.transform = get_node_transform_ob(get_assigned_armature(ob), &armScale);
 
-                preTransform = obmat * obScale * armScale;
+                preTransform = Matrix(&ob->obmat[0][0]);
             }
             else
             {
@@ -752,6 +745,9 @@ static bool ImportSceneObject ( l3m::Model* model, Object* ob, ::Scene* sce, l3m
                     {
                         Vector3 pos = v[i].pos() * preTransform;
                         v[i].pos() = pos;
+                        Vector3 norm = v[i].norm() * MatrixForNormals(preTransform);
+                        v[i].norm() = norm;
+                        v[i].norm().Normalize();
                     }
                 }
             }
@@ -1075,17 +1071,6 @@ static bool ImportPose ( ::Scene* sce, l3m::Model* model, const std::string& pos
         {
             Matrix chanMat ( &pchan->chan_mat[0][0] );
             pose.matrices()[numJoints] = chanMat;
-            
-#ifdef DEBUG
-            Matrix& mat = pose.matrices()[numJoints];
-            if ( numJoints <= 15 )
-            {
-            for ( u32 i = 0; i < 16; ++i )
-                if ( fabs(mat.vector()[i]) < 0.001f )
-                    mat.vector()[i] = 0.0f;
-            fprintf ( stderr, "%s #%u\n%s\n\n", bone->name, numJoints, mat.toString().c_str() );
-            }
-#endif
         }
         else
         {

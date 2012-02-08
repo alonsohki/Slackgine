@@ -47,6 +47,7 @@ void main(void)
         gl_Position = un_Matrix * in_Position4;
         ex_Normal = (un_NormalMatrix * in_Normal4).xyz;
     }
+    normalize(ex_Normal);
 
     ex_TexCoord = in_TexCoord;
 }
