@@ -179,12 +179,7 @@ bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, 
             // Setup skinning
             if ( doSkinning )
             {
-                for ( u32 i = 0; i < geometry->pose()->numJoints(); ++i )
-                {
-                    char uniformName [ 64 ];
-                    snprintf ( uniformName, sizeof(uniformName), "un_JointMatrices[%u]", i );
-                    m_program->setUniform( uniformName, geometry->pose()->matrices()[i] );
-                }
+                m_program->setUniform ( "un_JointMatrices", geometry->pose()->matrices(), geometry->pose()->numJoints() ); 
                 m_program->setUniform("un_Skinning", true);
             }
     
