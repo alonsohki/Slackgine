@@ -16,9 +16,10 @@
 #include <cmath>
 #include <cstring>
 #include "shared/platform.h"
+#include "shared/util.h"
 #include "vector.h"
 
-#define FAST_MATRIX_INVERSION
+#undef FAST_MATRIX_INVERSION
 
 
 //------------------------------------------------------------------------------
@@ -193,6 +194,73 @@ public:
         Matrix3 ret;
 #ifdef FAST_MATRIX_INVERSION
         ret = Transpose ( thiz );
+#else
+        // Use Gauss-Jordan
+        f32 (&inverse)[3][3] = ret.m;
+        f32 mat[3][3];
+        
+        // Load the identity in the inverse
+        for ( u32 i = 0; i < 3; ++i )
+            for ( u32 j = 0; j < 3; ++j )
+                inverse[i][j] = 0.0f;
+        for ( u32 i = 0; i < 3; ++i )
+            inverse[i][i] = 1.0f;
+        
+        // Copy the original matrix
+        for ( u32 i = 0; i < 3; ++i )
+            for ( u32 j = 0; j < 3; ++j )
+                mat[i][j] = thiz.m[i][j];
+        
+        // Do the elimination for each columns
+        for ( u32 i = 0; i < 3; ++i )
+        {
+            // Find a non-zero pivot below the current pivot
+            if ( mat[i][i] == 0.0f )
+            {
+                u32 pivotRow = i;
+                for ( u32 j = i + 1; j < 3; ++i )
+                {
+                    if ( mat[j][i] != 0.0f )
+                    {
+                        pivotRow = j;
+                        break;
+                    }
+                }
+                
+                // Check if non invertible
+                if ( pivotRow == i )
+                    return thiz;
+                
+                // Swap rows
+                for ( u32 j = 0; j < 3; ++i )
+                {
+                    Swap ( mat[i][j], mat[pivotRow][j] );
+                    Swap ( inverse[i][j], inverse[pivotRow][j] );
+                }
+            }
+            
+            // Divide the pivot row by the pivot
+            f32 pivot = mat[i][i];
+            for ( u32 j = 0; j < 3; ++j )
+            {
+                mat[i][j] /= pivot;
+                inverse[i][j] /= pivot;
+            }
+            
+            // Reduce all other rows
+            for ( u32 j = 0; j < 3; ++j )
+            {
+                if ( i != j )
+                {
+                    f32 factor = mat[j][i];
+                    for ( u32 k = 0; k < 3; ++k )
+                    {
+                        mat[j][k] = mat[j][k] - mat[i][k] * factor;
+                        inverse[j][k] = inverse[j][k] - inverse[i][k] * factor;
+                    }
+                }
+            }
+        }
 #endif
         return ret;
     }
@@ -593,6 +661,73 @@ public:
         ret.m[1][3] = 0.0f;
         ret.m[2][3] = 0.0f;
         ret.m[3][3] = 1.0f;
+#else
+        // Use Gauss-Jordan
+        f32 (&inverse)[4][4] = ret.m;
+        f32 mat[4][4];
+        
+        // Load the identity in the inverse
+        for ( u32 i = 0; i < 4; ++i )
+            for ( u32 j = 0; j < 4; ++j )
+                inverse[i][j] = 0.0f;
+        for ( u32 i = 0; i < 4; ++i )
+            inverse[i][i] = 1.0f;
+        
+        // Copy the original matrix
+        for ( u32 i = 0; i < 4; ++i )
+            for ( u32 j = 0; j < 4; ++j )
+                mat[i][j] = thiz.m[i][j];
+        
+        // Do the elimination for each columns
+        for ( u32 i = 0; i < 4; ++i )
+        {
+            // Find a non-zero pivot below the current pivot
+            if ( mat[i][i] == 0.0f )
+            {
+                u32 pivotRow = i;
+                for ( u32 j = i + 1; j < 4; ++i )
+                {
+                    if ( mat[j][i] != 0.0f )
+                    {
+                        pivotRow = j;
+                        break;
+                    }
+                }
+                
+                // Check if non invertible
+                if ( pivotRow == i )
+                    return thiz;
+                
+                // Swap rows
+                for ( u32 j = 0; j < 4; ++i )
+                {
+                    Swap ( mat[i][j], mat[pivotRow][j] );
+                    Swap ( inverse[i][j], inverse[pivotRow][j] );
+                }
+            }
+            
+            // Divide the pivot row by the pivot
+            f32 pivot = mat[i][i];
+            for ( u32 j = 0; j < 4; ++j )
+            {
+                mat[i][j] /= pivot;
+                inverse[i][j] /= pivot;
+            }
+            
+            // Reduce all other rows
+            for ( u32 j = 0; j < 4; ++j )
+            {
+                if ( i != j )
+                {
+                    f32 factor = mat[j][i];
+                    for ( u32 k = 0; k < 4; ++k )
+                    {
+                        mat[j][k] = mat[j][k] - mat[i][k] * factor;
+                        inverse[j][k] = inverse[j][k] - inverse[i][k] * factor;
+                    }
+                }
+            }
+        }
 #endif
         return ret;
     }
