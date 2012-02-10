@@ -12,6 +12,7 @@
 
 #include <sstream>
 #include "gles20.h"
+#include "renderer/vertex_weight.h"
 
 using namespace Renderer;
 
@@ -136,9 +137,25 @@ bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, M
     glEnableVertexAttribArray ( GLES20_Program::NORMAL );
     eglGetError();
 
-    // Bind the indices buffer
-    glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, geometry->m_elementBuffer );
-    eglGetError();
+    // Setup the skinning
+    b8 doSkinning = false;
+    Matrix poseMatrices [ Pose::MAX_JOINTS ];
+
+    VertexWeightSOA* weightsSOA = geometry->getVertexLayer<VertexWeightSOA>("weights", 0);
+    if ( geometry->pose() != 0 && weightsSOA != 0 )
+    {
+        u32 weights = 0;
+        u32 joints = sizeof(float) * VertexWeight::MAX_ASSOCIATIONS;
+
+        if ( geometry->bindVertexLayer(m_program, "in_VertexWeight", "weights", 0, Geometry::FLOAT, false, VertexWeight::MAX_ASSOCIATIONS, weights) )
+        {
+            if ( geometry->bindVertexLayer(m_program, "in_Joint", "weights", 0, Geometry::UNSIGNED_INT, false, VertexWeight::MAX_ASSOCIATIONS, joints ) )
+            {
+                doSkinning = true;
+                geometry->pose()->calculateTransforms( &poseMatrices[0] );
+            }
+        }
+    }
     
     for ( Geometry::meshNodeVector::iterator iter = geometry->m_meshNodes.begin();
           iter != geometry->m_meshNodes.end();
@@ -148,14 +165,20 @@ bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, M
 
         if ( !fn || fn(mesh) == true )
         {
-            
             m_program->setUniform("un_ProjectionMatrix", m_matProjection );
             m_program->setUniform("un_LookatMatrix", m_matLookat );
             m_program->setUniform("un_ModelviewMatrix", mat);
             m_program->setUniform("un_NormalMatrix", matNormals);
             m_program->setUniform("un_Matrix", matGeometry );
             m_program->setUniform("un_ViewVector", m_viewVector );
-    
+            
+            // Setup skinning
+            if ( doSkinning )
+            {
+                m_program->setUniform ( "un_JointMatrices", &poseMatrices[0], geometry->pose()->numJoints() ); 
+                m_program->setUniform("un_Skinning", true);
+            }
+
             GLenum polyType = GL_INVALID_ENUM;
             switch ( mesh->polyType() )
             {
@@ -216,6 +239,9 @@ bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, M
 
                 m_program->setUniform( "un_TextureLevels", (f32)textureLevels );
 
+                // Bind the indices buffer
+                glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, geometry->m_elementBuffer );
+                eglGetError();
                 glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, reinterpret_cast<const GLvoid *>((*iter).offset * sizeof(u32)) );
                 eglGetError();
             }

@@ -145,6 +145,8 @@ bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, 
                     
     // Setup the skinning
     b8 doSkinning = false;
+    Matrix poseMatrices [ Pose::MAX_JOINTS ];
+    
     VertexWeightSOA* weightsSOA = geometry->getVertexLayer<VertexWeightSOA>("weights", 0);
     if ( geometry->pose() != 0 && weightsSOA != 0 )
     {
@@ -156,6 +158,7 @@ bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, 
             if ( geometry->bindVertexLayer(m_program, "in_Joint", "weights", 0, Geometry::UNSIGNED_INT, false, VertexWeight::MAX_ASSOCIATIONS, joints ) )
             {
                 doSkinning = true;
+                geometry->pose()->calculateTransforms( &poseMatrices[0] );
             }
         }
     }
@@ -179,9 +182,7 @@ bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, 
             // Setup skinning
             if ( doSkinning )
             {
-                Matrix matrices [ geometry->pose()->numJoints() ];
-                geometry->pose()->calculateTransforms( &matrices[0] );
-                m_program->setUniform ( "un_JointMatrices", &matrices[0], geometry->pose()->numJoints() ); 
+                m_program->setUniform ( "un_JointMatrices", &poseMatrices[0], geometry->pose()->numJoints() ); 
                 m_program->setUniform("un_Skinning", true);
             }
     
@@ -249,6 +250,7 @@ bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, 
                 
                 // Bind the indices buffer
                 glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, geometry->m_elementBuffer );
+                eglGetError();
                 //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
                 glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, reinterpret_cast<const GLvoid *>((*iter).offset * sizeof(u32)) );
                 eglGetError();
