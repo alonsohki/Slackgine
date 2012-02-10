@@ -24,7 +24,7 @@ void main(void)
 
     if ( un_Skinning == true )
     {
-        float totalWeight = 0.0f;
+        float totalWeight = 0.0;
         vec4 pos = vec4 ( 0.0, 0.0, 0.0, 1.0 );
         vec4 norm = vec4 ( 0.0, 0.0, 0.0, 0.0 );
         for ( int i = 0; i < 2; i++ )
