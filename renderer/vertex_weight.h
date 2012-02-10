@@ -27,7 +27,7 @@ struct VertexWeight
     //--------------------------------------------------------------------------
     // Data
     f32     weight;
-    u32     joint;
+    f32     joint;
 };
 
 struct VertexWeightSOA
@@ -35,7 +35,7 @@ struct VertexWeightSOA
     //--------------------------------------------------------------------------
     // Data
     f32     weight  [ VertexWeight::MAX_ASSOCIATIONS ];
-    u32     joint   [ VertexWeight::MAX_ASSOCIATIONS ];
+    f32     joint   [ VertexWeight::MAX_ASSOCIATIONS ];
 };
 
 }

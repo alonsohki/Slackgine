@@ -155,7 +155,7 @@ bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, 
 
         if ( geometry->bindVertexLayer(m_program, "in_VertexWeight", "weights", 0, Geometry::FLOAT, false, VertexWeight::MAX_ASSOCIATIONS, weights) )
         {
-            if ( geometry->bindVertexLayer(m_program, "in_Joint", "weights", 0, Geometry::UNSIGNED_INT, false, VertexWeight::MAX_ASSOCIATIONS, joints ) )
+            if ( geometry->bindVertexLayer(m_program, "in_Joint", "weights", 0, Geometry::FLOAT, false, VertexWeight::MAX_ASSOCIATIONS, joints ) )
             {
                 doSkinning = true;
                 geometry->pose()->calculateTransforms( &poseMatrices[0] );
