@@ -12,7 +12,9 @@
 
 #pragma once
 
+#include <string>
 #include "math/matrix.h"
+#include "math/qtransform.h"
 
 namespace Renderer
 {
@@ -35,13 +37,17 @@ public:
     // Public accessors
     std::string&        name            () { return m_name; }
     std::string*        jointNames      () { return &m_jointNames[0]; }
-    Matrix*             matrices        () { return &m_matrices[0]; }
+    QTransform*         transforms      () { return &m_transforms[0]; }
     u32&                numJoints       () { return m_numJoints; }
     
     const std::string&  name            () const { return m_name; }
     const std::string*  jointNames      () const { return &m_jointNames[0]; }
-    const Matrix*       matrices        () const { return &m_matrices[0]; }
+    const QTransform*   transforms      () const { return &m_transforms[0]; }
     const u32&          numJoints       () const { return m_numJoints; }
+    
+    //--------------------------------------------------------------------------
+    // For use in the renderer
+    void                calculateTransforms     ( Matrix* matrices );
     
 private:
     //--------------------------------------------------------------------------
@@ -54,7 +60,7 @@ private:
 
     //--------------------------------------------------------------------------
     // Matrices defining the transform of each joint
-    Matrix          m_matrices [ MAX_JOINTS ];
+    QTransform      m_transforms [ MAX_JOINTS ];
     
     //--------------------------------------------------------------------------
     // Number of joints

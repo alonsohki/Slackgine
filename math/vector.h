@@ -504,8 +504,8 @@ static inline Vector3 operator* ( const Vector3& vec, const Quaternion& quat )
 {
     Quaternion p ( 0, vec );
     Quaternion q = quat;
-    q.Normalize ();
-    Quaternion qInverse = q.Conjugate();
+    q.normalize ();
+    Quaternion qInverse = q.conjugate();
     
     return ( q * p * qInverse ).xyz ();
 }

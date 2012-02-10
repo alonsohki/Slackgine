@@ -44,6 +44,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/renderers/opengl3/program.o \
 	${OBJECTDIR}/renderers/opengl3/geometry.o \
 	${OBJECTDIR}/renderers/opengl3/shader.o \
+	${OBJECTDIR}/pose.o \
 	${OBJECTDIR}/renderers/opengl3/texture.o
 
 
@@ -122,6 +123,11 @@ ${OBJECTDIR}/renderers/opengl3/shader.o: renderers/opengl3/shader.cpp
 	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3
 	${RM} $@.d
 	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/shader.o renderers/opengl3/shader.cpp
+
+${OBJECTDIR}/pose.o: pose.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/pose.o pose.cpp
 
 ${OBJECTDIR}/renderers/opengl3/texture.o: renderers/opengl3/texture.cpp 
 	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3

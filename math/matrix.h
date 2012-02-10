@@ -18,6 +18,8 @@
 #include "shared/platform.h"
 #include "shared/util.h"
 #include "vector.h"
+#include "quaternion.h"
+#include "qtransform.h"
 
 #undef FAST_MATRIX_INVERSION
 
@@ -1265,3 +1267,72 @@ static inline Matrix3 Matrix2Matrix3(const Matrix& mat )
             ret.m[i][j] = mat.m[i][j];
     return ret;
 }
+
+//------------------------------------------------------------------------------
+// Quaternion -> Matrix3
+class Quaternion2Matrix : public Matrix3
+{
+public:
+    Quaternion2Matrix ( const Quaternion& quat )
+    {
+        f32 qx = quat.x();
+        f32 qy = quat.y();
+        f32 qz = quat.z();
+        f32 qw = quat.w();
+        f32 qx2 = qx*qx;
+        f32 qy2 = qy*qy;
+        f32 qz2 = qz*qz;
+        
+        float m [ 16 ] = {
+            1 - 2*qy2 - 2*qz2,      2*qx*qy + 2*qz*qw,      2*qx*qz - 2*qy*qw,
+            2*qx*qy - 2*qz*qw,      1 - 2*qx2 - 2*qz2,      2*qy*qz + 2*qx*qw,
+            2*qx*qz + 2*qy*qw,      2*qy*qz - 2*qx*qw,      1 - 2*qx2 - 2*qy2
+        };
+        
+        Matrix3::operator= ( m );
+    }
+};
+
+//------------------------------------------------------------------------------
+// QTransform -> Matrix4
+class QTransform2Matrix : public Matrix
+{
+public:
+    QTransform2Matrix ( const QTransform& qt )
+    {
+        f32 qx = qt.quat.x();
+        f32 qy = qt.quat.y();
+        f32 qz = qt.quat.z();
+        f32 qw = qt.quat.w();
+        f32 qx2 = qx*qx;
+        f32 qy2 = qy*qy;
+        f32 qz2 = qz*qz;
+        
+        float m [ 16 ] = {
+            1 - 2*qy2 - 2*qz2,      2*qx*qy + 2*qz*qw,      2*qx*qz - 2*qy*qw,  0.0f,
+            2*qx*qy - 2*qz*qw,      1 - 2*qx2 - 2*qz2,      2*qy*qz + 2*qx*qw,  0.0f,
+            2*qx*qz + 2*qy*qw,      2*qy*qz - 2*qx*qw,      1 - 2*qx2 - 2*qy2,  0.0f,
+            qt.pos.x(),             qt.pos.y(),             qt.pos.z(),         1.0f
+        };
+        
+        Matrix::operator= ( m );
+    }
+};
+
+//------------------------------------------------------------------------------
+// Matrix -> QTransform
+class Matrix2QTransform : public QTransform
+{
+public:
+    Matrix2QTransform ( const Matrix& mat )
+    {
+        quat.w() = sqrtf ( 1.0f + mat.m[0][0] + mat.m[1][1] + mat.m[2][2] ) / 2.0f;
+        f32 w4 = 4.0f * quat.w();
+        quat.x() = ( mat.m[1][2] - mat.m[2][1] ) / w4;
+        quat.y() = ( mat.m[2][0] - mat.m[0][2] ) / w4;
+        quat.z() = ( mat.m[0][1] - mat.m[1][0] ) / w4;
+        pos.x() = mat.m[3][0];
+        pos.y() = mat.m[3][1];
+        pos.z() = mat.m[3][2];
+    }
+};

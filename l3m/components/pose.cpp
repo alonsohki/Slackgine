@@ -37,8 +37,8 @@ bool Pose::load(l3m::Model*, l3m::IStream& stream, float version)
             return setError ( "Error reading the pose '%s' joint names", m_pose.name().c_str() );
     }
     
-    if ( stream.readMatrix(&m_pose.matrices()[0], (u32)m_pose.numJoints()) != (u32)m_pose.numJoints() )
-        return setError ( "Error reading the pose '%s' matrices", m_pose.name().c_str() );
+    if ( stream.readQTransform(&m_pose.transforms()[0], (u32)m_pose.numJoints()) != (u32)m_pose.numJoints() )
+        return setError ( "Error reading the pose '%s' transforms", m_pose.name().c_str() );
     
     return true;
 }
@@ -57,8 +57,8 @@ bool Pose::save(l3m::Model*, l3m::OStream& stream)
             return setError ( "Error writing the pose '%s' joint names", m_pose.name().c_str() );
     }
     
-    if ( !stream.writeMatrix(&m_pose.matrices()[0], m_pose.numJoints()) )
-        return setError ( "Error writing the pose '%s' matrices", m_pose.name().c_str() );
+    if ( !stream.writeQTransform(&m_pose.transforms()[0], m_pose.numJoints()) )
+        return setError ( "Error writing the pose '%s' transforms", m_pose.name().c_str() );
 
     return true;
 }

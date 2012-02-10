@@ -1070,11 +1070,11 @@ static bool ImportPose ( ::Scene* sce, l3m::Model* model, const std::string& pos
         if ( pchan != 0 )
         {
             Matrix chanMat ( &pchan->chan_mat[0][0] );
-            pose.matrices()[numJoints] = chanMat;
+            pose.transforms()[numJoints] = Matrix2QTransform(chanMat);
         }
         else
         {
-            pose.matrices()[numJoints] = IdentityMatrix ();
+            pose.transforms()[numJoints] = Matrix2QTransform(IdentityMatrix ());
         }
         
         ++numJoints;

@@ -64,6 +64,8 @@ public:
     bool        writeColor      ( const Color* col, u32 nmemb );
     bool        writeQuaternion ( const Quaternion* v, u32 nmemb );
     bool        writeTransform  ( const Transform* v, u32 nmemb );
+    bool        writeQTransform ( const QTransform* v, u32 nmemb );
+    bool        writeQTransform ( const QTransform& trans );
     bool        writeData       ( const char* data, u32 size, u32 nmemb );
     
     //--------------------------------------------------------------------------
@@ -81,6 +83,8 @@ public:
     ssize_t     readColor       ( Color* col, u32 nmemb );
     ssize_t     readQuaternion  ( Quaternion* v, u32 nmemb );
     ssize_t     readTransform   ( Transform* v, u32 nmemb );
+    ssize_t     readQTransform  ( QTransform* v, u32 nmemb );
+    bool        readQTransform  ( QTransform& trans );
     ssize_t     readData        ( char* data, u32 size, u32 nmemb );
     
     //--------------------------------------------------------------------------

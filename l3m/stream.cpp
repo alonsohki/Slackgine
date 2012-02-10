@@ -314,7 +314,7 @@ bool IOStream::writeFloat ( const f32* v, u32 nmemb )
         return false;
 }
 
-bool IOStream::writeFloat(const float& v)
+bool IOStream::writeFloat(const f32& v)
 {
     return writeFloat ( &v, 1 );
 }
@@ -450,7 +450,7 @@ bool IOStream::writeTransform ( const Transform* v, u32 nmemb )
 #ifdef DEBUG
     assert ( m_ostream != 0 );
 #endif
-    return writeFloat ( (f32 *)v, nmemb * sizeof(Transform) / sizeof(float) );
+    return writeFloat ( (f32 *)v, nmemb * sizeof(Transform) / sizeof(f32) );
 }
 
 ssize_t IOStream::readTransform ( Transform* v, u32 nmemb )
@@ -458,7 +458,27 @@ ssize_t IOStream::readTransform ( Transform* v, u32 nmemb )
 #ifdef DEBUG
     assert ( m_istream != 0 );
 #endif
-    return readFloat ( (f32 *)v, nmemb * sizeof(Transform) / sizeof(float) ) / ( sizeof(Transform) / sizeof(float) );
+    return readFloat ( (f32 *)v, nmemb * sizeof(Transform) / sizeof(f32) ) / ( sizeof(Transform) / sizeof(f32) );
+}
+
+bool IOStream::writeQTransform ( const QTransform* v, u32 nmemb )
+{
+    return writeFloat ( (f32 *)v, nmemb * sizeof(QTransform) / sizeof(f32) );
+}
+
+bool IOStream::writeQTransform(const QTransform& transform)
+{
+    return writeQTransform ( &transform, 1 );
+}
+
+ssize_t IOStream::readQTransform(QTransform* v, u32 nmemb)
+{
+    return readFloat ( (f32 *)v, nmemb*sizeof(QTransform) / sizeof(f32) ) / ( sizeof(QTransform) / sizeof(f32) );
+}
+
+bool IOStream::readQTransform(QTransform& trans)
+{
+    return readQTransform(&trans, 1) == 1;
 }
 
 bool IOStream::writeData ( const char* data, u32 size, u32 nmemb )

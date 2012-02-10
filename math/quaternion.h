@@ -41,7 +41,7 @@ public:
     // Constructor taking euler angles
     Quaternion ( const EulerAngles& rot )
     {
-        SetToRotateInertialToObject( rot );
+        setToRotateInertialToObject( rot );
     }
     
     //--------------------------------------------------------------------------
@@ -85,7 +85,7 @@ public:
 
     //--------------------------------------------------------------------------
     // Interface to euler angles
-    void SetToRotateInertialToObject ( const EulerAngles& orientation )
+    void setToRotateInertialToObject ( const EulerAngles& orientation )
     {
         // Compute since and cosing of the half angles
         f32 sp, sb, sh;
@@ -103,7 +103,7 @@ public:
     
     //--------------------------------------------------------------------------
     // Normalize
-    void Normalize ()
+    void normalize ()
     {
         // Compute magnitude of the quaternion
         f32 mag = (f32)sqrt ( w()*w() + x()*x() + y()*y() + z()*z() );
@@ -127,7 +127,7 @@ public:
     
     //--------------------------------------------------------------------------
     // Conjugate
-    Quaternion Conjugate ()
+    Quaternion conjugate ()
     {
         Quaternion result;
         
@@ -137,6 +137,9 @@ public:
         
         return result;
     }
+    
+    //--------------------------------------------------------------------------
+    
     
     //--------------------------------------------------------------------------
     // Q * Q
@@ -169,18 +172,18 @@ public:
 
 //------------------------------------------------------------------------------
 // Conjugate
-static inline Quaternion Conjugate ( const Quaternion& quat )
+static inline Quaternion conjugate ( const Quaternion& quat )
 {
     Quaternion result ( quat );
-    result.Conjugate ();
+    result.conjugate ();
     return result;
 }
 
 //------------------------------------------------------------------------------
 // Normalize
-static inline Quaternion Normalize ( const Quaternion& quat )
+static inline Quaternion normalize ( const Quaternion& quat )
 {
     Quaternion result ( quat );
-    result.Normalize ();
+    result.normalize ();
     return result;
 }
