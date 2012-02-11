@@ -16,30 +16,8 @@ using namespace Renderer;
 
 OpenGL3_Texture::OpenGL3_Texture ( u32 width, u32 height, ITexture::Format format )
 {
-    GLenum glFormat = convertFormat (format);
-    if ( glFormat != GL_INVALID_ENUM )
-    {
-        glGenTextures ( 1, &m_handler );
-        eglGetError ();
-        if ( m_handler != 0 )
-        {
-            glBindTexture ( GL_TEXTURE_2D, m_handler );
-            eglGetError ();
-            glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-            eglGetError ();
-            glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
-            eglGetError ();
-            glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-            eglGetError ();
-            glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-            eglGetError ();
-            glTexImage2D ( GL_TEXTURE_2D, 0, glFormat, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0 );
-            eglGetError ();
-        }
-    }
-    else
-        m_handler = 0;
-    
+    m_format = convertFormat (format);
+    m_handler = 0;
     m_width = width;
     m_height = height;
 }
@@ -52,14 +30,14 @@ OpenGL3_Texture::~OpenGL3_Texture ()
 
 void OpenGL3_Texture::loadPixmap (const Pixmap& pix)
 {
-    Pixmap pixCopy ( pix );
-    pixCopy.resample ( m_width, m_height );
+    m_pixmap = pix;
+    m_pixmap.resample ( m_width, m_height );
     
     if ( m_handler != 0 )
     {
         glBindTexture ( GL_TEXTURE_2D, m_handler );
         eglGetError ();
-        glTexSubImage2D ( GL_TEXTURE_2D, 0, 0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, pixCopy.pixels() );
+        glTexSubImage2D ( GL_TEXTURE_2D, 0, 0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, m_pixmap.pixels() );
         eglGetError ();
     }
 }
@@ -71,6 +49,41 @@ void OpenGL3_Texture::storePixmap (Pixmap* output) const
 
 bool OpenGL3_Texture::bind ()
 {
+    if ( m_handler == 0 )
+    {
+        bool ok = false;
+        if ( m_format != GL_INVALID_ENUM )
+        {
+            glGenTextures ( 1, &m_handler );
+            eglGetError ();
+            if ( m_handler != 0 )
+            {
+                glBindTexture ( GL_TEXTURE_2D, m_handler );
+                eglGetError ();
+                glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+                eglGetError ();
+                glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+                eglGetError ();
+                glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+                eglGetError ();
+                glTexParameteri ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+                eglGetError ();
+                glTexImage2D ( GL_TEXTURE_2D, 0, m_format, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0 );
+                eglGetError ();
+                
+                glBindTexture ( GL_TEXTURE_2D, m_handler );
+                eglGetError ();
+                glTexSubImage2D ( GL_TEXTURE_2D, 0, 0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, m_pixmap.pixels() );
+                eglGetError ();
+                
+                ok = true;
+            }
+        }
+        
+        if ( ok == false )
+            return false;
+    }
+    
     if ( m_handler != 0 )
     {
         glBindTexture ( GL_TEXTURE_2D, m_handler );

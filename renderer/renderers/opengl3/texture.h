@@ -35,9 +35,11 @@ private:
     static GLenum       convertFormat           ( ITexture::Format format );
     
 private:
-    GLuint      m_handler;
-    u32         m_width;
-    u32         m_height;
+    GLuint          m_handler;
+    u32             m_width;
+    u32             m_height;
+    GLenum          m_format;
+    Pixmap          m_pixmap;
 };
 
 }
