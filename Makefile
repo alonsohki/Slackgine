@@ -4,7 +4,6 @@ all:
 	cd l3m && make -f Makefile all CONF=Release DEFAULTCONF=Release
 	cd core && make -f Makefile all CONF=Release DEFAULTCONF=Release
 	cd renderer && make -f Makefile all CONF=Release DEFAULTCONF=Release
-	#cd import && make -f Makefile all CONF=Release DEFAULTCONF=Release
 	cd model_optimizer && make -f Makefile all CONF=Release DEFAULTCONF=Release
 	cd model_splitter && make -f Makefile all CONF=Release DEFAULTCONF=Release
 	mkdir -p dist/include
@@ -38,7 +37,6 @@ all:
 	cp `find l3m/dist -name "libl3m.a" | grep Release` dist/lib/
 	cp `find core/dist -name "libcore.a" | grep Release` dist/lib/
 	cp `find renderer/dist -name "librenderer.a" | grep Release` dist/lib/
-	#cp `find import/dist -name "import" | grep Release` dist/bin/
 	cp `find model_optimizer/dist -name "model_optimizer" | grep Release` dist/bin/
 	cp `find model_splitter/dist -name "model_splitter" | grep Release` dist/bin/
 
@@ -48,10 +46,13 @@ clean:
 	cd l3m && make -f Makefile clean CONF=Release DEFAULTCONF=Release
 	cd core && make -f Makefile clean CONF=Release DEFAULTCONF=Release
 	cd renderer && make -f Makefile clean CONF=Release DEFAULTCONF=Release
-	#cd import && make -f Makefile clean CONF=Release DEFAULTCONF=Release
+	cd import && make -f Makefile clean CONF=Release DEFAULTCONF=Release
 	cd model_optimizer && make -f Makefile clean CONF=Release DEFAULTCONF=Release
 	cd model_splitter && make -f Makefile clean CONF=Release DEFAULTCONF=Release
 
 distclean: clean
 	rm -rf dist
 
+build-import:
+	cd import && make -f Makefile all CONF=Release DEFAULTCONF=Release
+	cp `find import/dist -name "import" | grep Release` dist/bin/
