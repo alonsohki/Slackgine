@@ -182,6 +182,18 @@ ModelManager::ModelNode* ModelManager::findModelNode ( const l3m::Model* model )
     return 0;
 }
 
+bool ModelManager::loadFromStream(std::istream& stream, l3m::Model* model)
+{
+    if ( !model )
+        return false;
+    
+    if ( !model->load(stream) )
+        return false;
+    
+    processLoadedModel ( model, 0 );
+    return true;
+}
+
 bool ModelManager::request (const std::string& model, RequestCallback callback, Priority priority)
 {
     if ( !canModelBeLoaded(model) )
@@ -494,50 +506,61 @@ void ModelManager::processRequest (ModelNode* node)
         // Account the memory used by this model
         m_currentMemory += model->size ();
         LOG_VV ( "ModelManager", "Model took %u bytes. GC status: %u/%u bytes (%.2f%%)", model->size(), m_currentMemory, getMaxMemory (), 100.0f*m_currentMemory/(float)getMaxMemory() );
+        
+        // Process the just loaded model
+        processLoadedModel ( model, node );
+    }
+}
 
-        // Check every component for special actions.
-        Model::ComponentVector& comps = model->components ();
-        for ( Model::ComponentVector::iterator iter = comps.begin ();
-              iter != comps.end();
-              ++iter )
+void ModelManager::processLoadedModel ( l3m::Model* model, ModelNode* node )
+{
+    using namespace l3m;
+    
+    // Check every component for special actions.
+    Model::ComponentVector& comps = model->components ();
+    for ( Model::ComponentVector::iterator iter = comps.begin ();
+            iter != comps.end();
+            ++iter )
+    {
+        IComponent* comp = *iter;
+
+        ////////////////////////////////////////////////////////////////////
+        // Track its dependencies
+        //
+        if ( comp->type() == "require" )
         {
-            IComponent* comp = *iter;
-            
-            ////////////////////////////////////////////////////////////////////
-            // Track its dependencies
-            //
-            if ( comp->type() == "require" )
+            Require* req = static_cast < Require* > ( comp );
+            std::string reqPath = req->makepath ();
+            if ( reqPath != "" )
             {
-                Require* req = static_cast < Require* > ( comp );
-                std::string reqPath = req->makepath ();
-                if ( reqPath != "" )
+                LOG_VV ( "ModelManager", "Processing request dependency '%s'", reqPath.c_str() );
+                if ( !node || node->requestPriority == PRIORITY_NOW )
                 {
-                    LOG_VV ( "ModelManager", "Processing request dependency '%s'", reqPath.c_str() );
-                    if ( node->requestPriority == PRIORITY_NOW )
-                    {
-                        // Load the requirements blocking
-                        l3m::Model* depModel = internalRequestBlocking ( reqPath );
-                        if ( depModel != 0 )
-                            node->loadedDeps.push_back ( depModel );
-                    }
-                    else
-                    {
-                        makeDependencyTracker ( node, reqPath );
-                    }
+                    // Load the requirements blocking
+                    l3m::Model* depModel = internalRequestBlocking ( reqPath );
+                    if ( node != 0 && depModel != 0 )
+                        node->loadedDeps.push_back ( depModel );
+                }
+                else
+                {
+                    makeDependencyTracker ( node, reqPath );
                 }
             }
-            
-            ////////////////////////////////////////////////////////////////////
-            // Register the textures into the texture manager
-            //
-            else if ( comp->type() == "texture" )
-            {
-                Texture* tex = static_cast < Texture* > ( comp );
-                if ( tex != 0 )
-                    m_textureManager.registerTexture ( *tex );
-            }
         }
-        
+
+        ////////////////////////////////////////////////////////////////////
+        // Register the textures into the texture manager
+        //
+        else if ( comp->type() == "texture" )
+        {
+            Texture* tex = static_cast < Texture* > ( comp );
+            if ( tex != 0 )
+                m_textureManager.registerTexture ( *tex );
+        }
+    }
+
+    if ( node != 0 )
+    {
         bool hasDeps = node->requestedDeps.size() > 0;
         node->loaded = !hasDeps;
         if ( hasDeps )
@@ -545,8 +568,8 @@ void ModelManager::processRequest (ModelNode* node)
             // Take it out of its priority queue and move it to the dependency waiters
             RequestQueue& queue = m_queues [ node->requestPriority ];
             for ( RequestQueue::iterator iter = queue.begin();
-                  iter != queue.end();
-                  ++iter )
+                    iter != queue.end();
+                    ++iter )
             {
                 if ( *iter == node )
                 {
@@ -555,12 +578,12 @@ void ModelManager::processRequest (ModelNode* node)
                 }
             }
             m_dependencyWaiters.push_back ( node );
-            
+
             // Request all the dependencies
             DependencyList& deps = node->requestedDeps;
             for ( DependencyList::iterator iter = deps.begin();
-                  iter != deps.end();
-                  ++iter )
+                    iter != deps.end();
+                    ++iter )
             {
                 DependencyTracker& dep = *iter;
                 internalRequest ( dep.name, MakeDelegate ( &dep, &DependencyTracker::OnLoad ), node->requestPriority );

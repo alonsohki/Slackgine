@@ -105,6 +105,7 @@ public:
     void                setMaxMemory                    ( u32 limit ) { m_maxMemory = limit; }
     u32                 getMaxMemory                    () const { return m_maxMemory; }
     
+    bool                loadFromStream                  ( std::istream& stream, l3m::Model* model );
     bool                request                         ( const std::string& model, RequestCallback callback, Priority priority = PRIORITY_NORMAL );
     l3m::Model*         requestBlocking                 ( const std::string& model );
     bool                cancelRequest                   ( const std::string& model, RequestCallback callback );
@@ -140,6 +141,7 @@ private:
     void                moveFromGraveyard               ( ModelNode* node );
     void                collectGarbage                  ();
     bool                makeDependencyTracker           ( ModelNode* node, const std::string& dep );
+    void                processLoadedModel              ( l3m::Model* model, ModelNode* node );
     
     
 private:
