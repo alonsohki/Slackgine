@@ -35,6 +35,26 @@ bool Default::setup (Core::Slackgine* sg)
     return true;
 }
 
+bool Default::forEachEntity(Core::Slackgine* sg, Core::Entity* entity)
+{
+    // Render it!
+    if ( entity->getModel() != 0 )
+    {
+        l3m::Scene* sce = l3m::Util::findScene ( entity->getModel() );
+        if ( sce != 0 )
+        {
+            // For each geometry...
+            for ( l3m::Scene::NodesVector::iterator iter = sce->geometryNodes().begin();
+                iter != sce->geometryNodes().end();
+                ++iter )
+            {
+                l3m::Scene::Node& node = *iter;
+                sg->getRenderer()->render( node.geometry, entity->transform() * node.transform, MakeDelegate(this, &Default::forEachMesh) );
+            }
+        }
+    }
+}
+
 struct ProgramAutoDeleter
 {
     Renderer::IProgram* ptr;
@@ -50,7 +70,7 @@ struct ProgramAutoDeleter
 
 bool Default::execute (Core::Slackgine* sg)
 {
-    std::deque < Entity* > entities;
+    
     IRenderer* renderer = sg->getRenderer ();
     
     Core::Shader* sh = sg->getShaderManager ().load ( "default" );
@@ -67,43 +87,9 @@ bool Default::execute (Core::Slackgine* sg)
     {
         return false;
     }
+    renderer->setProgram( defaultProgram.ptr );
     
-    // Begin the scene and push the world root to the deque
-    entities.push_back( &sg->getWorld() );
-    
-    // Repeat until no more entities
-    while ( entities.size() > 0 )
-    {
-        // Get the current entity to render
-        Entity* cur = entities.front ();
-        entities.pop_front ();
-        
-        if ( cur->isVisible() )
-        {
-            // Push its children to the front of the deque
-            for ( Entity::EntityVector::iterator iter = cur->getChildren().begin(); iter != cur->getChildren().end(); ++iter )
-                entities.push_front ( *iter );
-
-            // Render it!
-            if ( cur->getModel() != 0 )
-            {
-                l3m::Scene* sce = l3m::Util::findScene ( cur->getModel() );
-                if ( sce != 0 )
-                {
-                    // For each geometry...
-                    for ( l3m::Scene::NodesVector::iterator iter = sce->geometryNodes().begin();
-                        iter != sce->geometryNodes().end();
-                        ++iter )
-                    {
-                        l3m::Scene::Node& node = *iter;
-                        renderer->setProgram( defaultProgram.ptr );
-                        renderer->render( node.geometry, cur->transform() * node.transform, MakeDelegate(this, &Default::forEachMesh) );
-                    }
-                }
-            }
-        }
-    }
-
+    sg->forEachEntity ( MakeDelegate(this, &Default::forEachEntity) );
     return true;
 }
 

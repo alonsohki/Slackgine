@@ -107,6 +107,34 @@ void Slackgine::getError ( char* dest ) const
     strcpy ( dest, m_error );
 }
 
+void Slackgine::forEachEntity ( ForEachEntityDelegate delegate, bool includeInvisible, Entity* startAt )
+{
+    std::deque < Entity* > entities;
+    
+    // Start at the given entity
+    if ( startAt != 0 )
+        entities.push_back ( startAt );
+    else
+        entities.push_back ( &getWorld() );
+
+    // Repeat until no more entities
+    while ( entities.size() > 0 )
+    {
+        // Get the current entity to render
+        Entity* cur = entities.front ();
+        entities.pop_front ();
+        
+        if ( includeInvisible || cur->isVisible() )
+        {
+            // Push its children to the front of the deque
+            for ( Entity::EntityVector::iterator iter = cur->getChildren().begin(); iter != cur->getChildren().end(); ++iter )
+                entities.push_front ( *iter );
+            
+            delegate ( this, cur );
+        }
+    }
+}
+
 void Slackgine::setRenderStrategy(Renderer::RenderStrategy* strategy)
 {
     if ( m_renderStrategy != 0 )

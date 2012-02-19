@@ -60,6 +60,13 @@ public:
     Time&                       getTime                 () { return m_time; }
     World&                      getWorld                () { return m_world; }
     
+    //--------------------------------------------------------------------------
+    // Function to iterate the world entities.
+    typedef FastDelegate2<Slackgine*, Entity*, bool> ForEachEntityDelegate;
+    void                        forEachEntity           ( ForEachEntityDelegate delegate,
+                                                          bool includeInvisible = false,
+                                                          Entity* startAt = 0 );
+    
     void                        getError                ( char* dest ) const;
     
     //--------------------------------------------------------------------------
