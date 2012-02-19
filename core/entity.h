@@ -47,6 +47,11 @@ public:
     EntityVector&               getChildren     () { return m_children; }
     const EntityVector&         getChildren     () const { return m_children; }
     
+    //--------------------------------------------------------------------------
+    // Visibility
+    bool                        isVisible       () const { return m_isVisible; }
+    void                        setVisible      ( bool visible ) { m_isVisible = visible; }
+
 private:
     //--------------------------------------------------------------------------
     // Child entities linkage.
@@ -58,6 +63,7 @@ private:
     EntityVector                m_children;
     l3m::Model*                 m_model;
     bool                        m_beingDeleted;
+    bool                        m_isVisible;
     
     ComponentVector             m_tickableComponents;
     ComponentVector             m_renderableComponents;

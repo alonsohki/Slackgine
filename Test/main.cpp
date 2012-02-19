@@ -37,7 +37,7 @@ int main(int argc, char** argv)
 {
     glutInit (&argc, argv);
     glutInitWindowSize (1920/2, 1080/2);
-    glutInitDisplayMode ( GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH );
+    glutInitDisplayMode ( GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH | GLUT_ALPHA );
     glutCreateWindow ("Slackgine test");
     
     glutDisplayFunc ( display );
@@ -72,8 +72,7 @@ void display ( void )
     }
     if ( entity == 0 )
     {
-        entity = new Entity ( model );
-        entity->setParent( &sg->getWorld() );
+        entity = new Entity ( model, &sg->getWorld() );
         l3m::Scene* sce = l3m::Util::findScene ( model );
         if ( sce != 0 )
         {

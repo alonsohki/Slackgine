@@ -23,6 +23,7 @@ Entity::Entity ( l3m::Model* pModel, Entity* parent )
 {
     setParent ( parent );
     setModel ( pModel );
+    m_isVisible = true;
 }
 
 Entity::Entity ( Entity* parent )
@@ -32,6 +33,7 @@ Entity::Entity ( Entity* parent )
 {
     setParent ( parent );
     setModel ( 0 );
+    m_isVisible = true;
 }
 
 Entity::~Entity()

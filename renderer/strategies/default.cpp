@@ -78,24 +78,27 @@ bool Default::execute (Core::Slackgine* sg)
         Entity* cur = entities.front ();
         entities.pop_front ();
         
-        // Push its children to the front of the deque
-        for ( Entity::EntityVector::iterator iter = cur->getChildren().begin(); iter != cur->getChildren().end(); ++iter )
-            entities.push_front ( *iter );
-
-        // Render it!
-        if ( cur->getModel() != 0 )
+        if ( cur->isVisible() )
         {
-            l3m::Scene* sce = l3m::Util::findScene ( cur->getModel() );
-            if ( sce != 0 )
+            // Push its children to the front of the deque
+            for ( Entity::EntityVector::iterator iter = cur->getChildren().begin(); iter != cur->getChildren().end(); ++iter )
+                entities.push_front ( *iter );
+
+            // Render it!
+            if ( cur->getModel() != 0 )
             {
-                // For each geometry...
-                for ( l3m::Scene::NodesVector::iterator iter = sce->geometryNodes().begin();
-                      iter != sce->geometryNodes().end();
-                      ++iter )
+                l3m::Scene* sce = l3m::Util::findScene ( cur->getModel() );
+                if ( sce != 0 )
                 {
-                    l3m::Scene::Node& node = *iter;
-                    renderer->setProgram( defaultProgram.ptr );
-                    renderer->render( node.geometry, cur->transform() * node.transform, MakeDelegate(this, &Default::forEachMesh) );
+                    // For each geometry...
+                    for ( l3m::Scene::NodesVector::iterator iter = sce->geometryNodes().begin();
+                        iter != sce->geometryNodes().end();
+                        ++iter )
+                    {
+                        l3m::Scene::Node& node = *iter;
+                        renderer->setProgram( defaultProgram.ptr );
+                        renderer->render( node.geometry, cur->transform() * node.transform, MakeDelegate(this, &Default::forEachMesh) );
+                    }
                 }
             }
         }
