@@ -25,11 +25,6 @@ Default::~Default ()
 {
 }
 
-bool Default::forEachMesh ( Renderer::Mesh* mesh )
-{
-    return true;
-}
-
 bool Default::setup (Core::Slackgine* sg)
 {
     return true;
@@ -49,7 +44,7 @@ bool Default::forEachEntity(Core::Slackgine* sg, Core::Entity* entity)
                 ++iter )
             {
                 l3m::Scene::Node& node = *iter;
-                sg->getRenderer()->render( node.geometry, entity->transform() * node.transform, MakeDelegate(this, &Default::forEachMesh) );
+                sg->getRenderer()->render( node.geometry, entity->transform() * node.transform, getMeshHandler() );
             }
         }
     }

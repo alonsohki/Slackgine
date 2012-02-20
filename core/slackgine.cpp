@@ -143,3 +143,8 @@ void Slackgine::setRenderStrategy(Renderer::RenderStrategy* strategy)
         delete m_renderStrategy;
     m_renderStrategy = strategy;
 }
+
+Renderer::RenderStrategy* Slackgine::getRenderStrategy()
+{
+    return m_renderStrategy;
+}

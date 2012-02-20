@@ -17,6 +17,7 @@ using namespace Renderer;
 RenderStrategy::RenderStrategy ()
 {
     m_error[0] = '\0';
+    resetMeshHandler ();
 }
 
 RenderStrategy::~RenderStrategy ()
@@ -33,3 +34,12 @@ void RenderStrategy::getError(char* error) const
     strcpy ( error, m_error );
 }
 
+void RenderStrategy::setMeshHandler(MeshRenderFn handler)
+{
+    m_meshDelegate = handler;
+}
+
+void RenderStrategy::resetMeshHandler ()
+{
+    setMeshHandler ( &RenderStrategy::defaultMeshHandler );
+}

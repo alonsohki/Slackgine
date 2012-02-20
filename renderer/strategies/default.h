@@ -37,10 +37,6 @@ public:
     //--------------------------------------------------------------------------
     // For each entity
     bool        forEachEntity       ( Core::Slackgine* sg, Core::Entity* entity );
-    
-    //--------------------------------------------------------------------------
-    // For each geometry mesh
-    bool        forEachMesh         ( Renderer::Mesh* mesh );
 };
     
 } }

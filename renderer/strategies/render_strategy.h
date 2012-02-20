@@ -24,6 +24,7 @@ namespace Renderer
 
 class RenderStrategy
 {
+    typedef Renderer::IRenderer::MeshRenderFn MeshRenderFn;
 public:
     //--------------------------------------------------------------------------
     // Constructor / Destructor
@@ -46,8 +47,21 @@ public:
     
 private:
     //--------------------------------------------------------------------------
+    // Default handler for mesh render events
+    static bool     defaultMeshHandler      ( Mesh* ) { return true; }
+public:
+    //--------------------------------------------------------------------------
+    // Setter and getter for the mesh render events
+    void            setMeshHandler          ( MeshRenderFn handler );
+    void            resetMeshHandler        ();
+protected:
+    MeshRenderFn&   getMeshHandler          () { return m_meshDelegate; }
+    
+private:
+    //--------------------------------------------------------------------------
     // Private class attributes
-    char        m_error [ 256 ];
+    char            m_error [ 256 ];
+    MeshRenderFn    m_meshDelegate;
 };
 
 }

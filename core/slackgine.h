@@ -72,6 +72,7 @@ public:
     //--------------------------------------------------------------------------
     // Stuff related to the render strategy
     void                        setRenderStrategy       ( Renderer::RenderStrategy* strategy );
+    Renderer::RenderStrategy*   getRenderStrategy       ();
     
 private:
     Renderer::IRenderer*        m_renderer;
