@@ -51,7 +51,7 @@ public:
     bool                        initialize              ();
     
     void                        tick                    ();
-    bool                        render                  ( Camera* cam );
+    bool                        render                  ( Camera* cam, Entity* startAt = 0 );
                 
     Renderer::IRenderer*        getRenderer             () { return m_renderer; }
     ModelManager&               getModelManager         () { return m_modelManager; }

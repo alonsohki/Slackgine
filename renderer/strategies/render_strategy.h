@@ -14,6 +14,7 @@
 
 #include <vector>
 #include "core/slackgine.h"
+#include "core/entity.h"
 #include "renderer/shader.h"
 
 namespace Core { class Slackgine; }
@@ -37,7 +38,7 @@ public:
     
     //--------------------------------------------------------------------------
     // Method to execute this strategy
-    virtual bool    execute                 ( Core::Slackgine* sg );
+    virtual bool    execute                 ( Core::Slackgine* sg, Core::Entity* startAt );
     
     //--------------------------------------------------------------------------
     // Error management

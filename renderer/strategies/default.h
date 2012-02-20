@@ -32,7 +32,7 @@ public:
     
     //--------------------------------------------------------------------------
     // Execute
-    bool        execute             ( Core::Slackgine* sg );
+    bool        execute             ( Core::Slackgine* sg, Core::Entity* startAt );
     
     //--------------------------------------------------------------------------
     // For each entity

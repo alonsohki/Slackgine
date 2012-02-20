@@ -23,7 +23,7 @@ RenderStrategy::~RenderStrategy ()
 {
 }
 
-bool RenderStrategy::execute ( Core::Slackgine* sg )
+bool RenderStrategy::execute ( Core::Slackgine* sg, Core::Entity* startAt )
 {
    return true;
 }

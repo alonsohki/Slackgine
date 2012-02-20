@@ -64,7 +64,7 @@ void Slackgine::tick ()
     m_world.tick ();
 }
 
-bool Slackgine::render (Camera* cam)
+bool Slackgine::render (Camera* cam, Entity* startAt )
 {
     if ( m_renderStrategy != 0 )
     {
@@ -87,7 +87,9 @@ bool Slackgine::render (Camera* cam)
         }
         else
         {
-            m_renderStrategy->execute ( this );
+            if ( startAt == 0 )
+                startAt = &getWorld ();
+            m_renderStrategy->execute ( this, startAt );
             getRenderer()->endScene();
         }
         

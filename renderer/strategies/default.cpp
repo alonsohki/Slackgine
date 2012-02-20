@@ -70,7 +70,7 @@ struct ProgramAutoDeleter
     }
 };
 
-bool Default::execute (Core::Slackgine* sg)
+bool Default::execute (Core::Slackgine* sg, Core::Entity* startAt)
 {
     
     IRenderer* renderer = sg->getRenderer ();
@@ -91,7 +91,7 @@ bool Default::execute (Core::Slackgine* sg)
     }
     renderer->setProgram( defaultProgram.ptr );
     
-    sg->forEachEntity ( MakeDelegate(this, &Default::forEachEntity) );
+    sg->forEachEntity ( MakeDelegate(this, &Default::forEachEntity), false, startAt );
     return true;
 }
 
