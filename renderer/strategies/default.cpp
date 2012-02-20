@@ -53,6 +53,8 @@ bool Default::forEachEntity(Core::Slackgine* sg, Core::Entity* entity)
             }
         }
     }
+    
+    return true;
 }
 
 struct ProgramAutoDeleter
