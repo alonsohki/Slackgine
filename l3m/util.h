@@ -118,5 +118,43 @@ namespace Util
         
         return 0;
     }
+    
+    
+    //--------------------------------------------------------------------------
+    // Function to remove a geometry and clear all the references to it
+    static inline bool unlinkGeometry ( Model* model, const std::string& name )
+    {
+        for ( l3m::Model::ComponentVector::iterator iter = model->components().begin ();
+            iter != model->components().end();
+            ++iter )
+        {
+            if ( (*iter)->type() == "geometry" )
+            {
+                l3m::Geometry* g = static_cast < l3m::Geometry* > ( *iter );
+                if ( g->geometry().name() == name )
+                {
+                    model->components().erase ( iter );
+
+                    // Remove this geometry from all the scenes
+                    l3m::Scene* sce = 0;
+                    for ( u32 i = 0; ( sce = findScene(model, i)) != 0; ++i )
+                    {
+                        for ( l3m::Scene::NodesVector::iterator iter2 = sce->geometryNodes().begin();
+                            iter2 != sce->geometryNodes().end(); )
+                        {
+                            if ( (*iter2).url == name )
+                                iter2 = sce->geometryNodes().erase(iter2);
+                            else
+                                ++iter2;
+                        }
+                    }
+                    return true;
+                }
+            }
+        }
+        
+        // Not found.
+        return false;
+    }
 }
 }
