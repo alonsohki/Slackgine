@@ -27,7 +27,7 @@ Texture::~Texture ()
 bool Texture::load ( l3m::Model*, IStream& stream, float version )
 {
     // Load the texture string
-    if ( stream.readStr ( m_id ) <= 0 )
+    if ( stream.readStr ( &m_id ) <= 0 )
         return setError ( "Error reading the texture ID" );
     
     // Read the image size

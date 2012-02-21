@@ -25,7 +25,7 @@ Pose::~Pose ()
 
 bool Pose::load(l3m::Model*, l3m::IStream& stream, float version)
 {
-    if ( stream.readStr ( m_pose.name() ) < 1 )
+    if ( ! stream.readStr ( &m_pose.name() ) )
         return setError ( "Error reading the pose name" );
     
     if ( stream.read32(&m_pose.numJoints(), 1) != 1 )
@@ -33,7 +33,7 @@ bool Pose::load(l3m::Model*, l3m::IStream& stream, float version)
     
     for ( u32 i = 0; i < m_pose.numJoints(); ++i )
     {
-        if ( stream.readStr(m_pose.jointNames()[i]) < 0 )
+        if ( stream.readStr(&m_pose.jointNames()[i]) < 0 )
             return setError ( "Error reading the pose '%s' joint names", m_pose.name().c_str() );
     }
     

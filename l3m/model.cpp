@@ -109,7 +109,7 @@ bool Model::load(std::istream& fp)
     {
         // Read the component type
         std::string type;
-        if ( is.readStr ( type ) <= 0 )
+        if ( is.readStr ( &type ) <= 0 )
             return setError ( "Unable to read the component type" );
         if ( type == "unknown" )
             return setError ( "Invalid component type 'unknown'" );

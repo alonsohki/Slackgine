@@ -37,7 +37,7 @@ Camera::~Camera ()
 bool Camera::load(l3m::Model*, l3m::IStream& fp, float version)
 {
     // Read this camera name
-    if ( fp.readStr(m_name) < 0 )
+    if ( fp.readStr(&m_name) < 0 )
         return setError ( "Error reading the camera name" );
     
     // Read the transform

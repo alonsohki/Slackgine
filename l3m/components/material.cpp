@@ -26,7 +26,7 @@ Material::~Material ()
 bool Material::load(l3m::Model*, l3m::IStream& stream, float version)
 {
     // Load the material name
-    if ( stream.readStr(m_material.name()) == 0 )
+    if ( stream.readStr(&m_material.name()) == 0 )
         return setError ( "Error reading the material name" );
     
     // Load the material data
@@ -41,7 +41,7 @@ bool Material::load(l3m::Model*, l3m::IStream& stream, float version)
         return setError ( "Error reading the material '%s' color components", m_material.name().c_str() );
     if ( stream.readFloat(&shininess, 1) != 1 )
         return setError ( "Error reading the material '%s' shininess component", m_material.name().c_str() );
-    if ( stream.readStr(texture) < 0 )
+    if ( stream.readStr(&texture) < 0 )
         return setError ( "Error reading the material '%s' texture", m_material.name().c_str() );
     
     m_material.isShadeless() = shadeless;

@@ -60,31 +60,43 @@ public:
     bool        writeStr        ( const std::string& str );
     bool        writeMatrix     ( const Matrix* v, u32 nmemb );
     bool        writeMatrix     ( const Matrix& mat );
+    bool        writeVector     ( const Vector3* v, u32 nmemb );
     bool        writeVector     ( const Vector3& vec );
     bool        writeColor      ( const Color* col, u32 nmemb );
+    bool        writeColor      ( const Color& col );
     bool        writeQuaternion ( const Quaternion* v, u32 nmemb );
+    bool        writeQuaternion ( const Quaternion& quat );
     bool        writeTransform  ( const Transform* v, u32 nmemb );
+    bool        writeTransform  ( const Transform& trans );
     bool        writeQTransform ( const QTransform* v, u32 nmemb );
     bool        writeQTransform ( const QTransform& trans );
     bool        writeData       ( const char* data, u32 size, u32 nmemb );
     
     //--------------------------------------------------------------------------
     // Functions to read data
-    bool        readBoolean     ( b8* v );
     ssize_t     readBoolean     ( b8* v, u32 nmemb );
+    bool        readBoolean     ( b8* v );
     ssize_t     read16          ( u16* v, u32 nmemb );
+    bool        read16          ( u16* v );
     ssize_t     read32          ( u32* v, u32 nmemb );
+    bool        read32          ( u32* v );
     ssize_t     read64          ( u64* v, u32 nmemb );
+    bool        read64          ( u64* v );
     ssize_t     readFloat       ( float* v, u32 nmemb );
-    ssize_t     readStr         ( std::string& str );
+    bool        readFloat       ( float* v );
+    ssize_t     readStr         ( std::string* str );
     ssize_t     readMatrix      ( Matrix* v, u32 nmemb );
-    bool        readMatrix      ( Matrix& mat );
-    ssize_t     readVector      ( Vector3& vec );
-    ssize_t     readColor       ( Color* col, u32 nmemb );
+    bool        readMatrix      ( Matrix* mat );
+    ssize_t     readVector      ( Vector3* v, u32 nmemb );
+    bool        readVector      ( Vector3* vec );
+    ssize_t     readColor       ( Color* v, u32 nmemb );
+    bool        readColor       ( Color* col );
     ssize_t     readQuaternion  ( Quaternion* v, u32 nmemb );
+    bool        readQuaternion  ( Quaternion* quat );
     ssize_t     readTransform   ( Transform* v, u32 nmemb );
+    bool        readTransform   ( Transform* trans );
     ssize_t     readQTransform  ( QTransform* v, u32 nmemb );
-    bool        readQTransform  ( QTransform& trans );
+    bool        readQTransform  ( QTransform* trans );
     ssize_t     readData        ( char* data, u32 size, u32 nmemb );
     
     //--------------------------------------------------------------------------

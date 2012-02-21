@@ -209,6 +209,9 @@ ssize_t IOStream::readBoolean ( b8* v, u32 nmemb )
     return readData ( v, sizeof(b8), nmemb );
 }
 
+
+
+
 bool IOStream::write16 ( const u16* v, u32 nmemb )
 {
 #ifdef DEBUG
@@ -238,6 +241,13 @@ ssize_t IOStream::read16 ( u16* v, u32 nmemb )
     m_totalIn += size * sizeof(u16);
     return size;
 }
+
+bool IOStream::read16(u16* v)
+{
+    return read16(v, 1) == 1;
+}
+
+
 
 bool IOStream::write32 ( const u32* v, u32 nmemb )
 {
@@ -269,6 +279,13 @@ ssize_t IOStream::read32 ( u32* v, u32 nmemb )
     return size;
 }
 
+bool IOStream::read32 ( u32* v )
+{
+    return read32 ( v, 1 ) == 1;
+}
+
+
+
 bool IOStream::write64 ( const u64* v, u32 nmemb )
 {
 #ifdef DEBUG
@@ -298,6 +315,13 @@ ssize_t IOStream::read64 ( u64* v, u32 nmemb )
     m_totalIn += size * sizeof(u64);
     return size;
 }
+
+bool IOStream::read64 ( u64* v )
+{
+    return read64 ( v, 1 ) == 1;
+}
+
+
 
 bool IOStream::writeFloat ( const f32* v, u32 nmemb )
 {
@@ -329,22 +353,23 @@ ssize_t IOStream::readFloat ( f32* v, u32 nmemb )
     return size;
 }
 
+bool IOStream::readFloat(float* v)
+{
+    return readFloat ( v, 1 ) == 1;
+}
+
+
+
 bool IOStream::writeStr ( const std::string& str )
 {
-#ifdef DEBUG
-    assert ( m_ostream != 0 );
-#endif
     u32 length = str.length ();
     if ( !write32 ( &length, 1 ) )
         return false;
     return writeData ( str.c_str(), sizeof(char), length );
 }
 
-ssize_t IOStream::readStr ( std::string& str )
+ssize_t IOStream::readStr ( std::string* str )
 {
-#ifdef DEBUG
-    assert ( m_istream != 0 );
-#endif
     u32 length;
     if ( read32( &length, 1 ) != 1 )
         return -1;
@@ -357,7 +382,7 @@ ssize_t IOStream::readStr ( std::string& str )
             delete [] buffer;
             return -1;
         }
-        str.assign ( buffer, length );
+        str->assign ( buffer, length );
         delete [] buffer;
         return length;
     }
@@ -365,101 +390,121 @@ ssize_t IOStream::readStr ( std::string& str )
         return 0;
 }
 
+
+
+
 bool IOStream::writeMatrix ( const Matrix* v, u32 nmemb )
 {
-#ifdef DEBUG
-    assert ( m_ostream != 0 );
-#endif
     return writeFloat ( v->vector(), 16*nmemb );
 }
 
 bool IOStream::writeMatrix ( const Matrix& mat )
 {
-#ifdef DEBUG
-    assert ( m_ostream != 0 );
-#endif
     return writeMatrix ( &mat, 1 );
 }
 
 ssize_t IOStream::readMatrix ( Matrix* v, u32 nmemb )
 {
-#ifdef DEBUG
-    assert ( m_istream != 0 );
-#endif
     return readFloat ( v->vector(), 16*nmemb ) / 16;
 }
 
-bool IOStream::readMatrix ( Matrix& mat )
+bool IOStream::readMatrix ( Matrix* mat )
 {
-#ifdef DEBUG
-    assert ( m_istream != 0 );
-#endif
-    return readMatrix ( &mat, 1 ) == 1;
+    return readMatrix ( mat, 1 ) == 1;
+}
+
+
+
+bool IOStream::writeVector(const Vector3* v, u32 nmemb)
+{
+    return writeFloat ( v->vector(), 3*nmemb );
 }
 
 bool IOStream::writeVector ( const Vector3& vec )
 {
-#ifdef DEBUG
-    assert ( m_ostream != 0 );
-#endif
-    return writeFloat ( vec.vector(), 3 );
+    return writeVector ( &vec, 1 );
 }
 
-ssize_t IOStream::readVector ( Vector3& vec )
+ssize_t IOStream::readVector ( Vector3* vec, u32 nmemb )
 {
-#ifdef DEBUG
-    assert ( m_istream != 0 );
-#endif
-    return readFloat ( vec.vector(), 3 ) / 3;
+    return readFloat ( vec->vector(), 3*nmemb ) / 3;
 }
+
+bool IOStream::readVector(Vector3* vec)
+{
+    return readVector ( vec, 1 ) == 1;
+}
+
+
+
 
 bool IOStream::writeColor ( const Color* col, u32 nmemb )
 {
-#ifdef DEBUG
-    assert ( m_ostream != 0 );
-#endif
     return write32 ( &col->value (), nmemb );
+}
+
+bool IOStream::writeColor(const Color& col)
+{
+    return writeColor ( &col, 1 );
 }
 
 ssize_t IOStream::readColor ( Color* col, u32 nmemb )
 {
-#ifdef DEBUG
-    assert ( m_istream != 0 );
-#endif
     return read32 ( &col->value (), nmemb );
 }
 
+bool IOStream::readColor(Color* col)
+{
+    return readColor(col, 1) == 1;
+}
+
+
+
 bool IOStream::writeQuaternion ( const Quaternion* v, u32 nmemb )
 {
-#ifdef DEBUG
-    assert ( m_ostream != 0 );
-#endif
     return writeFloat ( (f32 *)v, nmemb*4 );
+}
+
+bool IOStream::writeQuaternion(const Quaternion& quat)
+{
+    return writeQuaternion(&quat, 1);
 }
 
 ssize_t IOStream::readQuaternion ( Quaternion* v, u32 nmemb )
 {
-#ifdef DEBUG
-    assert ( m_istream != 0 );
-#endif
     return readFloat ( (f32 *)v, nmemb*4 ) / 4;
 }
 
+bool IOStream::readQuaternion(Quaternion* quat)
+{
+    return readQuaternion(quat, 1) == 1;
+}
+
+
+
+
 bool IOStream::writeTransform ( const Transform* v, u32 nmemb )
 {
-#ifdef DEBUG
-    assert ( m_ostream != 0 );
-#endif
     return writeFloat ( (f32 *)v, nmemb * sizeof(Transform) / sizeof(f32) );
+}
+
+bool IOStream::writeTransform(const Transform& trans)
+{
+    return writeTransform ( &trans, 1 );
 }
 
 ssize_t IOStream::readTransform ( Transform* v, u32 nmemb )
 {
-#ifdef DEBUG
-    assert ( m_istream != 0 );
-#endif
     return readFloat ( (f32 *)v, nmemb * sizeof(Transform) / sizeof(f32) ) / ( sizeof(Transform) / sizeof(f32) );
 }
+
+bool IOStream::readTransform(Transform* trans)
+{
+    return readTransform ( trans, 1 ) == 1;
+}
+
+
+
 
 bool IOStream::writeQTransform ( const QTransform* v, u32 nmemb )
 {
@@ -476,10 +521,13 @@ ssize_t IOStream::readQTransform(QTransform* v, u32 nmemb)
     return readFloat ( (f32 *)v, nmemb*sizeof(QTransform) / sizeof(f32) ) / ( sizeof(QTransform) / sizeof(f32) );
 }
 
-bool IOStream::readQTransform(QTransform& trans)
+bool IOStream::readQTransform(QTransform* trans)
 {
-    return readQTransform(&trans, 1) == 1;
+    return readQTransform(trans, 1) == 1;
 }
+
+
+
 
 bool IOStream::writeData ( const char* data, u32 size, u32 nmemb )
 {

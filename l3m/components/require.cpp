@@ -30,7 +30,7 @@ bool Require::load ( l3m::Model*, l3m::IStream& fp, float version )
         return setError ( "Unable to load the requirement type" );
     m_reqType = static_cast < RequireType > ( reqType );
     
-    if ( fp.readStr ( m_path ) < 1 )
+    if ( fp.readStr ( &m_path ) < 1 )
         return setError ( "Unable to load the requirement path" );
     return true;
 }

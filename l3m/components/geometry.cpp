@@ -34,7 +34,7 @@ Geometry::~Geometry ()
 bool Geometry::load(l3m::Model* model, l3m::IStream& fp, float version)
 {
     // Geometry name
-    if ( fp.readStr( m_geometry.name() ) == -1 )
+    if ( fp.readStr( &m_geometry.name() ) == -1 )
         return setError ( "Error reading the geometry name" );
     
     // Geometry boundaries
@@ -45,7 +45,7 @@ bool Geometry::load(l3m::Model* model, l3m::IStream& fp, float version)
     m_geometry.boundingSphere() = BoundingSphere ( values[6] );
     
     // Geometry centroid
-    if ( fp.readVector(m_geometry.centroid()) != 1 )
+    if ( fp.readVector(&m_geometry.centroid()) != 1 )
         return setError ( "Error reading the geometry centroid" );
     
     // Geometry armature pose
@@ -54,7 +54,7 @@ bool Geometry::load(l3m::Model* model, l3m::IStream& fp, float version)
         return setError ( "Error reading the geometry pose" );
     if ( hasPose )
     {
-        if ( !fp.readStr(m_poseUrl) )
+        if ( !fp.readStr(&m_poseUrl) )
             return setError ( "Error reading the geometry pose url" );
         model->registerDeltaResolver( this, Geometry::resolvePoseDelta, 0 );
     }
@@ -76,7 +76,7 @@ bool Geometry::load(l3m::Model* model, l3m::IStream& fp, float version)
     {
         // Vertex layer name
         std::string name;
-        if ( fp.readStr ( name ) == -1 )
+        if ( fp.readStr ( &name ) == -1 )
             return setError ( "Error reading the vertex layer name" );
         
         // Vertex layer level count
@@ -105,7 +105,7 @@ bool Geometry::load(l3m::Model* model, l3m::IStream& fp, float version)
     {
         // Read the mesh name
         std::string name;
-        fp.readStr(name);
+        fp.readStr(&name);
         
         // Read the polygon type
         u32 polyType_;
@@ -121,7 +121,7 @@ bool Geometry::load(l3m::Model* model, l3m::IStream& fp, float version)
             return setError ( "Error reading the material" );
         if ( thereIsMaterial )
         {
-            if ( fp.readStr ( materialName ) == 0 )
+            if ( fp.readStr ( &materialName ) == 0 )
                 return setError ( "Error reading the material name" );
         }
         

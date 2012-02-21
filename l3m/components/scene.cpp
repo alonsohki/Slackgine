@@ -18,7 +18,7 @@ using namespace l3m;
 bool Scene::load(l3m::Model* model, l3m::IStream& fp, float version)
 {
     // Load the camera
-    if ( fp.readStr ( m_cameraUrl ) < 0 )
+    if ( fp.readStr ( &m_cameraUrl ) < 0 )
         return setError ( "Error reading the scene camera" );
     model->registerDeltaResolver( this, resolveCamera, 0 );
     
@@ -36,7 +36,7 @@ bool Scene::load(l3m::Model* model, l3m::IStream& fp, float version)
     {
         Scene::Node& node = createGeometryNode();
         
-        if ( fp.readStr(node.url) < 1 )
+        if ( fp.readStr(&node.url) < 1 )
             return setError ( "Error reading the geometry node url" );
         
         // Defer the geometry url resolution
@@ -51,7 +51,7 @@ bool Scene::load(l3m::Model* model, l3m::IStream& fp, float version)
         for ( u32 t = 0; t < numTextures; ++t )
         {
             std::string texUrl;
-            if ( fp.readStr(texUrl) < 1 )
+            if ( fp.readStr(&texUrl) < 1 )
                 return setError ( "Error reading the geometry node texture url" );
             node.textures.push_back ( texUrl );
         }
