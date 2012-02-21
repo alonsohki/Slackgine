@@ -34,6 +34,7 @@ static void print_help ( const char* path )
     puts ( "\t-f|--filter type\tFilters out components of that type" );
     puts ( "\t-T|--clean-texture-ids\tFilters the texture ids to make them a clean name" );
     puts ( "\t-U|--delete-unused\tFilters out the unused materials" );
+    puts ( "\t-t|--delete-unused-textures\tFilters out textures not being used by this model materials" );
 }
 
 int main ( int argc, char* const * argv )
@@ -44,22 +45,24 @@ int main ( int argc, char* const * argv )
     const char* filepath = 0;
     bool do_clean_texture_ids = false;
     bool do_delete_unused = false;
+    bool do_delete_unused_textures = false;
     
     while ( 1 )
     {
         static struct option long_options[] = {
-           { "help",                0, 0, 'h' },
-           { "delete-duplicates",   0, 0, 'd' },
-           { "filter",              1, 0, 'f' },
-           { "clean-texture-ids",   0, 0, 'T' },
-           { "delete-unused",       0, 0, 'U' },
-           { 0,                     0, 0, 0   }
+           { "help",                    0, 0, 'h' },
+           { "delete-duplicates",       0, 0, 'd' },
+           { "filter",                  1, 0, 'f' },
+           { "clean-texture-ids",       0, 0, 'T' },
+           { "delete-unused",           0, 0, 'U' },
+           { "delete-unused-textures",  0, 0, 't' },
+           { 0,                         0, 0, 0   }
         };
 
         int c;
         int option_index;
         
-        c = getopt_long(argc, argv, "hdf:TU", long_options, &option_index);
+        c = getopt_long(argc, argv, "hdf:TUt", long_options, &option_index);
         if ( c == -1 )
             break;
         
@@ -88,6 +91,10 @@ int main ( int argc, char* const * argv )
                 
             case 'U':
                 do_delete_unused = true;
+                break;
+
+            case 't':
+                do_delete_unused_textures = true;
                 break;
 
             default:
@@ -130,6 +137,8 @@ int main ( int argc, char* const * argv )
     if ( do_clean_texture_ids && clean_texture_ids( &model ) == false )
         return EXIT_FAILURE;
     if ( do_delete_unused && delete_unused ( &model ) == false )
+        return EXIT_FAILURE;
+    if ( do_delete_unused_textures && delete_unused_textures ( &model ) == false )
         return EXIT_FAILURE;
     
     // Write the result to the standard output.

@@ -5,23 +5,22 @@
 //
 // See the LICENSE file in the top-level directory.
 //
-// FILE:        delete_unused.cpp
-// PURPOSE:     Strategy to filter unused components.
+// FILE:        delete_unused_textures.cpp
+// PURPOSE:     Strategy to filter unused textures.
 // AUTHORS:     Alberto Alonso <rydencillo@gmail.com>
 //
 
 #include <l3m/components/components.h>
-#include "delete_unused.h"
+#include "delete_unused_textures.h"
 #include <map>
 #include <vector>
 
-bool delete_unused ( l3m::Model* model )
+bool delete_unused_textures ( l3m::Model* model )
 {
     typedef std::map < std::string, bool > CheckMap;
-    CheckMap materials;
-    CheckMap armatures;
+    CheckMap textures;
     
-    // Check for the used materials
+    // Check for the used textures
     l3m::Model::ComponentVector& components = model->components();
     for ( l3m::Model::ComponentVector::iterator iter = components.begin();
           iter != components.end();
@@ -36,41 +35,22 @@ bool delete_unused ( l3m::Model* model )
             {
                 Renderer::Mesh* m = *iter2;
                 if ( m->material() != 0 )
-                    materials[m->material()->name()] = true;
+                    textures[m->material()->texture()] = true;
             }
-            if ( g->geometry().pose() != 0 )
-                armatures[g->geometry().pose()->name()] = true;
         }
     }
     
+    // Find all the textures and delete those that didn't get marked
     for ( l3m::Model::ComponentVector::iterator iter = components.begin();
           iter != components.end();
         )
     {
-        if ( (*iter)->type() == "material" )
+        if ( (*iter)->type() == "texture" )
         {
-            l3m::Material* m = static_cast<l3m::Material*>(*iter);
-            if ( materials.find(m->material().name()) == materials.end() )
+            l3m::Texture* t = static_cast<l3m::Texture*>(*iter);
+            if ( textures.find(t->id()) == textures.end() )
             {
-                fprintf ( stderr, "Deleting unused material: %s\n", m->material().name().c_str() );
-                iter = components.erase(iter);
-                continue;
-            }
-        }
-        
-        ++iter;
-    }    
-    
-    for ( l3m::Model::ComponentVector::iterator iter = components.begin();
-          iter != components.end();
-        )
-    {
-        if ( (*iter)->type() == "pose" )
-        {
-            l3m::Pose* p = static_cast<l3m::Pose*>(*iter);
-            if ( armatures.find(p->pose().name()) == armatures.end() )
-            {
-                fprintf ( stderr, "Deleting unused armature: %s\n", p->pose().name().c_str() );
+                fprintf ( stderr, "Deleting unused texture: %s\n", t->id().c_str() );
                 iter = components.erase(iter);
                 continue;
             }

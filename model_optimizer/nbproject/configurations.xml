@@ -18,6 +18,8 @@
     <itemPath>delete_duplicates.h</itemPath>
     <itemPath>delete_unused.cpp</itemPath>
     <itemPath>delete_unused.h</itemPath>
+    <itemPath>delete_unused_textures.cpp</itemPath>
+    <itemPath>delete_unused_textures.h</itemPath>
     <itemPath>filter.cpp</itemPath>
     <itemPath>filter.h</itemPath>
     <itemPath>main.cpp</itemPath>
