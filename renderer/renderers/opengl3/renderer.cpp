@@ -57,9 +57,6 @@ void OpenGL3_Renderer::setProgram ( IProgram* program )
 
 bool OpenGL3_Renderer::beginScene ( const Matrix& matProjection, const Matrix& matLookat, TextureLookupFn texLookup )
 {
-    glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    eglGetError();
-    
     glEnable ( GL_DEPTH_TEST );
     glCullFace ( GL_BACK );
     
