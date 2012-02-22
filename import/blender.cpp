@@ -313,7 +313,7 @@ std::string get_material_id(Material *mat)
 
 std::string get_armature_id(Object* ob_arm, Object* ob)
 {
-    return translate_id(id_name(ob_arm)) + "_" + translate_id(id_name(ob));
+    return translate_id(id_name(ob_arm));
 }
 
 static Object* get_assigned_armature(Object *ob)
