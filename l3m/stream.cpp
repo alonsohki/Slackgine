@@ -373,6 +373,10 @@ ssize_t IOStream::readStr ( std::string* str )
     u32 length;
     if ( read32( &length, 1 ) != 1 )
         return -1;
+    
+    if ( length > 1000 )
+        LOG_W ( "IOStream", "Reading a very long string: %u", length );
+    
     if ( length > 0 )
     {
         char* buffer = new char [ length ];

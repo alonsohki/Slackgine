@@ -747,7 +747,7 @@ static bool ImportSceneObject ( l3m::Model* model, Object* ob, ::Scene* sce, l3m
                         v[i].pos() = pos;
                         Vector3 norm = v[i].norm() * MatrixForNormals(preTransform);
                         v[i].norm() = norm;
-                        v[i].norm().Normalize();
+                        v[i].norm().normalize();
                     }
                 }
             }
