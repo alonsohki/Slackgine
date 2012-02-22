@@ -64,43 +64,53 @@ void Slackgine::tick ()
     m_world.tick ();
 }
 
-bool Slackgine::render (Camera* cam, Entity* startAt)
+bool Slackgine::beginScene (Camera* cam)
 {
-    if ( m_renderStrategy != 0 )
+    if ( m_renderStrategy == 0 )
     {
-        Matrix lookAt = IdentityMatrix ();
-        Matrix projection = IdentityMatrix ();
-        
-        if ( !m_renderStrategy->setup( this ) )
-            return false;
-        
-        if ( cam != 0 )
-        {
-            projection = cam->getProjection ();
-            lookAt = LookatMatrix ( cam->transform().orientation(), cam->transform().translation() );
-        }
-        
-        if ( getRenderer()->beginScene(projection, lookAt, MakeDelegate(&getTextureManager(), &TextureManager::find)) == false )
-        {
-            getRenderer()->getError ( m_error );
-            return false;
-        }
-        else
-        {
-            if ( startAt == 0 )
-                startAt = &getWorld ();
-            m_renderStrategy->execute ( this, startAt );
-            getRenderer()->endScene();
-        }
-        
-        m_renderStrategy->cleanup ( this );
-    }
-    else
-    {
-        strcpy ( m_error, "Trying to render without having defined a render strategy" );
+        strcpy ( m_error, "No render strategy set" );
         return false;
     }
 
+    Matrix lookAt = IdentityMatrix ();
+    Matrix projection = IdentityMatrix ();
+
+    if ( m_renderStrategy->beginScene ( this, cam ) == false )
+        return false;
+
+    if ( cam != 0 )
+    {
+        projection = cam->getProjection ();
+        lookAt = LookatMatrix ( cam->transform().orientation(), cam->transform().translation() );
+    }
+
+    if ( getRenderer()->beginScene(projection, lookAt, MakeDelegate(&getTextureManager(), &TextureManager::find)) == false )
+    {
+        getRenderer()->getError ( m_error );
+        return false;
+    }
+    
+    return true;
+}
+
+bool Slackgine::render (Entity* startAt)
+{
+    if ( startAt == 0 )
+        startAt = &getWorld ();
+    return m_renderStrategy->execute ( this, startAt );
+}
+
+bool Slackgine::endScene()
+{
+    if ( m_renderStrategy->endScene ( this ) == false )
+        return false;
+
+    if ( getRenderer()->endScene() == false )
+    {
+        getRenderer()->getError(m_error);
+        return false;
+    }
+    
     return true;
 }
 

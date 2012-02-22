@@ -117,7 +117,7 @@ public:
     // | a b c |   
     // | d e f | = a*e*i + b*f*g + c*d*h - c*e*g - b*d*i - f*h*a
     // | g h i |   
-    f32 Determinant () const
+    f32 determinant () const
     {
         const f32 &a = m[0][0], &b = m[0][1], &c = m[0][2],
                   &d = m[1][0], &e = m[1][1], &f = m[1][2],
@@ -141,13 +141,13 @@ public:
         Vector3 a3 = Vector3 ( &thiz.m[2][0] );
         
         Vector3 u1 = a1;
-        Vector3 e1 = Vector3::Normalize(u1);
+        Vector3 e1 = Vector3::normalize(u1);
         
-        Vector3 u2 = a2 - e1*Dot(e1,a2);
-        Vector3 e2 = Vector3::Normalize(u2);
+        Vector3 u2 = a2 - e1*dot(e1,a2);
+        Vector3 e2 = Vector3::normalize(u2);
         
-        Vector3 u3 = a3 - e1*Dot(a3,e1) - e2*Dot(a3,e2);
-        Vector3 e3 = Vector3::Normalize(u3);
+        Vector3 u3 = a3 - e1*dot(a3,e1) - e2*dot(a3,e2);
+        Vector3 e3 = Vector3::normalize(u3);
         
         if ( Q )
         {
@@ -160,9 +160,9 @@ public:
         if ( R )
         {
             memset ( m, 0, sizeof(m) );
-            m[0] = e1.Dot(a1);
-            m[3] = e1.Dot(a2); m[4] = e2.Dot(a2);
-            m[6] = e1.Dot(a3); m[7] = e2.Dot(a3); m[8] = e3.Dot(a3);
+            m[0] = e1.dot(a1);
+            m[3] = e1.dot(a2); m[4] = e2.dot(a2);
+            m[6] = e1.dot(a3); m[7] = e2.dot(a3); m[8] = e3.dot(a3);
             *R = m;
         }
     }
@@ -170,12 +170,12 @@ public:
     
     //--------------------------------------------------------------------------
     // Transposition
-    Matrix3& Transpose ()
+    Matrix3& transpose ()
     {
-        *this = Matrix3::Transpose(*this);
+        *this = Matrix3::transpose(*this);
         return *this;
     }
-    static Matrix3 Transpose ( const Matrix3& thiz )
+    static Matrix3 transpose ( const Matrix3& thiz )
     {
         Matrix3 ret;
         for ( u8 i = 0; i < 3; ++i )
@@ -186,16 +186,16 @@ public:
     
     //--------------------------------------------------------------------------
     // Inversion
-    Matrix3& Invert ()
+    Matrix3& invert ()
     {
-        *this = Matrix3::Invert(*this);
+        *this = Matrix3::invert(*this);
         return *this;
     }
-    static Matrix3 Invert ( const Matrix3& thiz )
+    static Matrix3 invert ( const Matrix3& thiz )
     {
         Matrix3 ret;
 #ifdef FAST_MATRIX_INVERSION
-        ret = Transpose ( thiz );
+        ret = transpose ( thiz );
 #else
         // Use Gauss-Jordan
         f32 (&inverse)[3][3] = ret.m;
@@ -269,7 +269,7 @@ public:
     
     //--------------------------------------------------------------------------
     // Load identity
-    void LoadIdentity ()
+    void loadIdentity ()
     {
         for ( u8 i = 0; i < 3; ++i )
             for ( u8 j = 0; j < 3; ++j )
@@ -414,12 +414,12 @@ public:
         Matrix3 ret ( *this );
         
         if ( i == 0 )
-            ret.LoadIdentity ();
+            ret.loadIdentity ();
         else
         {
             if ( i < 0 )
             {
-                ret.Invert();
+                ret.invert();
                 i = -i;
             }
             while ( --i > 0 )
@@ -550,7 +550,7 @@ public:
     
     //--------------------------------------------------------------------------
     // Assign3x3
-    void Assign3x3 ( const Matrix& m )
+    void assign3x3 ( const Matrix& m )
     {
         for ( u8 i = 0; i < 3; ++i )
             for ( u8 j = 0; j < 3; ++j )
@@ -568,7 +568,7 @@ public:
     // | e f g h | = a * | j k l | - b * | i k l | + c * | i j l | - d * | i j k |
     // | i j k l |       | o p q |       | n p q |       | n o q |       | n o p |
     // | n o p q |
-    f32 Determinant () const
+    f32 determinant () const
     {
         const f32 &a = m[0][0], &b = m[0][1], &c = m[0][2], &d = m[0][3],
                   &e = m[1][0], &f = m[1][1], &g = m[1][2], &h = m[1][3],
@@ -597,13 +597,13 @@ public:
         Vector3 a3 = Vector3 ( &thiz.m[2][0] );
         
         Vector3 u1 = a1;
-        Vector3 e1 = Vector3::Normalize(u1);
+        Vector3 e1 = Vector3::normalize(u1);
         
-        Vector3 u2 = a2 - e1*Dot(e1,a2);
-        Vector3 e2 = Vector3::Normalize(u2);
+        Vector3 u2 = a2 - e1*dot(e1,a2);
+        Vector3 e2 = Vector3::normalize(u2);
         
-        Vector3 u3 = a3 - e1*Dot(a3,e1) - e2*Dot(a3,e2);
-        Vector3 e3 = Vector3::Normalize(u3);
+        Vector3 u3 = a3 - e1*dot(a3,e1) - e2*dot(a3,e2);
+        Vector3 e3 = Vector3::normalize(u3);
         
         if ( Q )
         {
@@ -617,9 +617,9 @@ public:
         if ( R )
         {
             memset ( m, 0, sizeof(m) );
-            m[0] = e1.Dot(a1);
-            m[4] = e1.Dot(a2); m[5] = e2.Dot(a2);
-            m[8] = e1.Dot(a3); m[9] = e2.Dot(a3); m[10] = e3.Dot(a3);
+            m[0] = e1.dot(a1);
+            m[4] = e1.dot(a2); m[5] = e2.dot(a2);
+            m[8] = e1.dot(a3); m[9] = e2.dot(a3); m[10] = e3.dot(a3);
             m[15] = 1.0f;
             *R = m;
         }
@@ -628,12 +628,12 @@ public:
     
     //--------------------------------------------------------------------------
     // Transposition
-    Matrix& Transpose ()
+    Matrix& transpose ()
     {
-        *this = Matrix::Transpose(*this);
+        *this = Matrix::transpose(*this);
         return *this;
     }
-    static Matrix Transpose ( const Matrix& thiz )
+    static Matrix transpose ( const Matrix& thiz )
     {
         Matrix ret;
         for ( u8 i = 0; i < 4; ++i )
@@ -644,12 +644,12 @@ public:
     
     //--------------------------------------------------------------------------
     // Inversion
-    Matrix& Invert ()
+    Matrix& invert ()
     {
-        *this = Matrix::Invert(*this);
+        *this = Matrix::invert(*this);
         return *this;
     }
-    static Matrix Invert ( const Matrix& thiz )
+    static Matrix invert ( const Matrix& thiz )
     {
         Matrix ret;
 #ifdef FAST_MATRIX_INVERSION
@@ -736,7 +736,7 @@ public:
     
     //--------------------------------------------------------------------------
     // Load identity
-    void LoadIdentity ()
+    void loadIdentity ()
     {
         for ( u8 i = 0; i < 4; ++i )
             for ( u8 j = 0; j < 4; ++j )
@@ -883,12 +883,12 @@ public:
         Matrix ret ( *this );
         
         if ( i == 0 )
-            ret.LoadIdentity ();
+            ret.loadIdentity ();
         else
         {
             if ( i < 0 )
             {
-                ret.Invert();
+                ret.invert();
                 i = -i;
             }
             while ( --i > 0 )
@@ -1070,9 +1070,9 @@ public:
     MatrixForNormals ( const Matrix& mat )
     {
         Matrix::operator= ( IdentityMatrix() );
-        Matrix::Assign3x3( mat );
-        Matrix::Invert();
-        Matrix::Transpose();
+        Matrix::assign3x3( mat );
+        Matrix::invert();
+        Matrix::transpose();
     }
 };
 
@@ -1087,25 +1087,25 @@ public:
         Vector3 side;
         
         Vector3 up = up_;
-        up.Normalize ();
+        up.normalize ();
         
 	forward = target - eye;
-	forward.Normalize ();
+	forward.normalize ();
         
-        f32 match = forward.Dot ( up );
+        f32 match = forward.dot ( up );
         if ( fabs(fabs(match) - 1.0f) < 0.001f )
         {
             // Up and forward vector are parallel
             up = Vector3 ( 0.0f, -match, 0.0f );
-            up.Normalize ();
+            up.normalize ();
         }
 
-        side = forward.Cross(up);
-        side.Normalize();
+        side = forward.cross(up);
+        side.normalize();
                 
-	up = side.Cross(forward);
+	up = side.cross(forward);
         
-        Vector3 t ( -eye.Dot(side), -eye.Dot(forward), -eye.Dot(up) );
+        Vector3 t ( -eye.dot(side), -eye.dot(forward), -eye.dot(up) );
 
         f32 m [ 16 ] = {
             side.x(),           forward.x(),            up.x(),         0.0f,
@@ -1123,7 +1123,7 @@ public:
         const f32* col1 = &orientation.m[1][0];
         const f32* col2 = &orientation.m[2][0];
         
-        Vector3 t ( -eye.Dot(col0), -eye.Dot(col1), -eye.Dot(col2) );
+        Vector3 t ( -eye.dot(col0), -eye.dot(col1), -eye.dot(col2) );
         
         f32 m [ 16 ] = {
             col0[0], col1[0], col2[0], 0.0f,
@@ -1141,7 +1141,7 @@ public:
 static inline Matrix operator* ( const Matrix3& Left, const Matrix& Right )
 {
     IdentityMatrix ret;
-    ret.Assign3x3( Left );
+    ret.assign3x3( Left );
     return ret * Right;
 }
 

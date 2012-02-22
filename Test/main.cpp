@@ -81,12 +81,24 @@ void display ( void )
     }
     
     sg->tick ();
+    glClearColor ( 0.0f, 0.0f, 0.0f, 1.0f );
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    if ( !sg->render(cam) )
+    
+    char error [ 1024 ];
+    if ( !sg->beginScene(cam) )
     {
-        char error [ 1024 ];
+        sg->getError(error);
+        fprintf ( stderr, "Error beginning the scene: %s\n", error );
+    }
+    else if ( !sg->render() )
+    {
         sg->getError ( error );
         fprintf ( stderr, "Error rendering the scene: %s\n", error );
+    }
+    else if ( !sg->endScene() )
+    {
+        sg->getError(error);
+        fprintf ( stderr, "Error ending the scene: %s\n", error );
     }
     
     glutSwapBuffers ();

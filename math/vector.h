@@ -217,7 +217,7 @@ public:
     
     //--------------------------------------------------------------------------
     // V * V (Cross product)
-    Vector3 Cross ( const Vector3& vec ) const
+    Vector3 cross ( const Vector3& vec ) const
     {
         float ret[3];
         ret[0] = y()*vec.z() - z()*vec.y();
@@ -228,36 +228,37 @@ public:
     
     //--------------------------------------------------------------------------
     // V * V (Dot product)
-    f32 Dot ( const Vector3& vec ) const
+    f32 dot ( const Vector3& vec ) const
     {
         return x()*vec.x() + y()*vec.y() + z()*vec.z();
     }
     
     //--------------------------------------------------------------------------
     // Normalization and length
-    f32 Length () const
+    f32 length () const
     {
         return sqrt(x()*x() + y()*y() + z()*z());
     }
-    static f32 Length ( const Vector3& thiz )
+    static f32 length ( const Vector3& thiz )
     {
-        return thiz.Length();
+        return thiz.length();
     }
     
-    void Normalize ()
+    void normalize ()
     {
-        f32 length = Length ();
-        if ( fabs(length) > 0.000001f )
+        f32 len = length ();
+        if ( fabs(len) > 0.000001f )
         {
-            x() = x() / length;
-            y() = y() / length;
-            z() = z() / length;
+            f32 f = 1.0f / len;
+            x() = x() * f;
+            y() = y() * f;
+            z() = z() * f;
         }
     }
-    static Vector3 Normalize ( const Vector3& vec )
+    static Vector3 normalize ( const Vector3& vec )
     {
         Vector3 v = vec;
-        v.Normalize ();
+        v.normalize ();
         return v;
     }
 };
@@ -426,31 +427,31 @@ public:
     
     //--------------------------------------------------------------------------
     // Normalization and length
-    f32 Length () const
+    f32 length () const
     {
         return sqrt(x()*x() + y()*y() + z()*z() + w()*w());
     }
-    static f32 Length ( const Vector4& thiz )
+    static f32 length ( const Vector4& thiz )
     {
-        return thiz.Length();
+        return thiz.length();
     }
     
-    void Normalize ()
+    void normalize ()
     {
-        f32 length = Length ();
-        if ( fabs(length) > 0.000001f )
+        f32 len = length ();
+        if ( fabs(len) > 0.000001f )
         {
-            f32 f = 1.0f / length;
+            f32 f = 1.0f / len;
             x() = x() * f;
             y() = y() * f;
             z() = z() * f;
             w() = w() * f;
         }
     }
-    static Vector4 Normalize ( const Vector4& vec )
+    static Vector4 normalize ( const Vector4& vec )
     {
         Vector4 v = vec;
-        v.Normalize ();
+        v.normalize ();
         return v;
     }
 };
@@ -484,16 +485,16 @@ public:
 
 //------------------------------------------------------------------------------
 // Dot product of vectors
-static inline f32 Dot ( const Vector3& vec1, const Vector3& vec2 )
+static inline f32 dot ( const Vector3& vec1, const Vector3& vec2 )
 {
-    return vec1.Dot ( vec2 );
+    return vec1.dot ( vec2 );
 }
 
 //------------------------------------------------------------------------------
 // Cross product of vectors
-static inline Vector3 Cross ( const Vector3& vec1, const Vector3& vec2 )
+static inline Vector3 cross ( const Vector3& vec1, const Vector3& vec2 )
 {
-    return vec1.Cross(vec2);
+    return vec1.cross(vec2);
 }
 
 //------------------------------------------------------------------------------

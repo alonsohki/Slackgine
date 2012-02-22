@@ -35,8 +35,8 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/delete_unused.o \
-	${OBJECTDIR}/delete_unused_textures.o \
 	${OBJECTDIR}/main.o \
+	${OBJECTDIR}/delete_unused_textures.o \
 	${OBJECTDIR}/delete_duplicates.o \
 	${OBJECTDIR}/clean_texture_ids.o \
 	${OBJECTDIR}/filter.o
@@ -77,15 +77,15 @@ ${OBJECTDIR}/delete_unused.o: delete_unused.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -g -I. -I.. `pkg-config --cflags glew` `pkg-config --cflags libpng`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/delete_unused.o delete_unused.cpp
 
-${OBJECTDIR}/delete_unused_textures.o: delete_unused_textures.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -g -I. -I.. `pkg-config --cflags glew` `pkg-config --cflags libpng`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/delete_unused_textures.o delete_unused_textures.cpp
-
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -I. -I.. `pkg-config --cflags glew` `pkg-config --cflags libpng`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+
+${OBJECTDIR}/delete_unused_textures.o: delete_unused_textures.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -I. -I.. `pkg-config --cflags glew` `pkg-config --cflags libpng`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/delete_unused_textures.o delete_unused_textures.cpp
 
 ${OBJECTDIR}/delete_duplicates.o: delete_duplicates.cpp 
 	${MKDIR} -p ${OBJECTDIR}

@@ -19,14 +19,43 @@ using Core::Entity;
 
 Default::Default ()
 {
+    m_program = 0;
 }
 
 Default::~Default ()
 {
+    if ( m_program != 0 )
+    {
+        delete m_program;
+        m_program = 0;
+    }
 }
 
-bool Default::setup (Core::Slackgine* sg)
+bool Default::beginScene (Core::Slackgine* sg, Core::Camera* cam)
 {
+    IRenderer* renderer = sg->getRenderer ();
+    
+    if ( m_program == 0 )
+    {
+        Core::Shader* sh = sg->getShaderManager ().load ( "default" );
+        if ( !sh )
+            return false;
+
+        m_program = Renderer::Factory::createProgram();
+        if ( sh->vert() != 0 )
+            m_program->attachShader ( sh->vert() );
+        if ( sh->frag() != 0 )
+            m_program->attachShader ( sh->frag() );
+        if ( !m_program->link() )
+        {
+            return false;
+        }
+    }
+    
+    renderer->setProgram( m_program );
+    
+    m_matLookAt = LookatMatrix ( cam->transform().orientation(), cam->transform().translation() );
+    
     return true;
 }
 
@@ -45,15 +74,24 @@ bool Default::forEachEntity(Core::Slackgine* sg, Core::Entity* entity)
             {
                 l3m::Scene::Node& node = *iter;
                 Transform transform = entity->transform() * node.transform;
-                sg->getRenderer()->render( node.geometry, transform, false, getMeshHandler() );
-                
-                // Enqueue transparent stuff for later
-                for ( Geometry::meshNodeVector::iterator iter = node.geometry->m_meshNodes.begin();
-                      iter != node.geometry->m_meshNodes.end();
-                      ++iter )
+                static bool b = false;
+                if ( !b )
                 {
-                    Mesh* mesh = (*iter).mesh;
-                    m_vecTransparencies.push_back(mesh);
+                    sg->getRenderer()->render( node.geometry, transform, false, getMeshHandler() );
+                    b = false;
+                }
+
+                // Enqueue transparent stuff for later
+                for ( Geometry::meshNodeVector::iterator iter2 = node.geometry->m_meshNodes.begin();
+                      iter2 != node.geometry->m_meshNodes.end();
+                      ++iter2 )
+                {
+                    Mesh* mesh = (*iter2).mesh;
+                    if ( mesh->material() != 0 && mesh->material()->isTransparent() == true )
+                    {
+                        Vector3 pos = m_matLookAt * transform.translation();
+                        m_listTransparencies.push_back(DeferredMesh(node.geometry, mesh, pos.length(), transform));
+                    }
                 }
             }
         }
@@ -62,46 +100,30 @@ bool Default::forEachEntity(Core::Slackgine* sg, Core::Entity* entity)
     return true;
 }
 
-struct ProgramAutoDeleter
-{
-    Renderer::IProgram* ptr;
-
-    ProgramAutoDeleter () : ptr ( 0 )
-    {}
-    ~ProgramAutoDeleter ()
-    {
-        if ( ptr != 0 )
-            delete ptr;
-    }
-};
-
 bool Default::execute (Core::Slackgine* sg, Core::Entity* startAt)
 {
-    
-    IRenderer* renderer = sg->getRenderer ();
-    
-    Core::Shader* sh = sg->getShaderManager ().load ( "default" );
-    if ( !sh )
-        return false;
-
-    ProgramAutoDeleter defaultProgram;
-    defaultProgram.ptr = Renderer::Factory::createProgram();
-    if ( sh->vert() != 0 )
-        defaultProgram.ptr->attachShader ( sh->vert() );
-    if ( sh->frag() != 0 )
-        defaultProgram.ptr->attachShader ( sh->frag() );
-    if ( !defaultProgram.ptr->link() )
-    {
-        return false;
-    }
-    renderer->setProgram( defaultProgram.ptr );
-    
     sg->forEachEntity ( MakeDelegate(this, &Default::forEachEntity), false, startAt );
     return true;
 }
 
-bool Default::cleanup ( Core::Slackgine* sg )
+bool Default::endScene ( Core::Slackgine* sg )
 {
-    m_vecTransparencies.clear ();
+    // Now, render the transparent stuff.
+    m_listTransparencies.sort();
+    for ( TransparentMeshList::iterator iter = m_listTransparencies.begin();
+          iter != m_listTransparencies.end();
+          ++iter )
+    {
+        DeferredMesh& node = *iter;
+        sg->getRenderer()->renderGeometryMesh ( node.geometry, node.mesh, node.transform, getMeshHandler() );
+    }
+    m_listTransparencies.clear ();
+    
+    sg->getRenderer()->setProgram(0);
+    if ( m_program != 0 )
+    {
+        delete m_program;
+        m_program = 0;
+    }
     return true;
 }

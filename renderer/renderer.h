@@ -32,18 +32,19 @@ public:
     typedef FastDelegate1<const std::string&, ITexture*> TextureLookupFn;
     
 public:
-    virtual bool        initialize      () = 0;
+    virtual bool        initialize          () = 0;
     
-    virtual bool        beginScene      ( const Matrix& matProjection,
-                                          const Matrix& matLookat,
-                                          TextureLookupFn fn ) = 0;
-    virtual void        setProgram      ( IProgram* program ) = 0;
-    virtual void        pushState       () = 0;
-    virtual bool        render          ( Geometry* geometry, const Transform& transform = IdentityTransform(), bool includeTransparent = false, MeshRenderFn fn = 0 ) = 0;
-    virtual void        popState        () = 0;
-    virtual bool        endScene        () = 0;
+    virtual bool        beginScene          ( const Matrix& matProjection,
+                                              const Matrix& matLookat,
+                                              TextureLookupFn fn ) = 0;
+    virtual void        setProgram          ( IProgram* program ) = 0;
+    virtual void        pushState           () = 0;
+    virtual bool        render              ( Geometry* geometry, const Transform& transform = IdentityTransform(), bool includeTransparent = false, MeshRenderFn fn = 0 ) = 0;
+    virtual bool        renderGeometryMesh  ( Geometry* geometry, Mesh* mesh, const Transform& transform = IdentityTransform(), MeshRenderFn fn = 0 ) = 0;
+    virtual void        popState            () = 0;
+    virtual bool        endScene            () = 0;
     
-    virtual void        getError        ( char* dest ) const = 0;
+    virtual void        getError            ( char* dest ) const = 0;
 };
 
 }

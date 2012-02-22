@@ -42,6 +42,7 @@ public:
     void        setProgram              ( IProgram* program );
     void        pushState               ();
     bool        render                  ( Geometry* geometry, const Transform& transform = IdentityTransform(), bool includeTransparent = false, MeshRenderFn fn = 0 );
+    bool        renderGeometryMesh      ( Geometry* geometry, Mesh* mesh, const Transform& transform = IdentityTransform(), MeshRenderFn fn = 0 );
     void        popState                ();
     bool        endScene                ();
     

@@ -27,8 +27,8 @@ public:
     
     //--------------------------------------------------------------------------
     // Abstract methods to handle initialization/finalization
-    bool        setup               ( Core::Slackgine* sg );
-    bool        cleanup             ( Core::Slackgine* sg );
+    bool        beginScene          ( Core::Slackgine* sg, Core::Camera* cam );
+    bool        endScene            ( Core::Slackgine* sg );
     
     //--------------------------------------------------------------------------
     // Execute
@@ -39,8 +39,38 @@ public:
     bool        forEachEntity       ( Core::Slackgine* sg, Core::Entity* entity );
     
 private:
-    typedef std::vector<Renderer::Mesh*> transparentMeshVector;
-    transparentMeshVector   m_vecTransparencies;
+    //--------------------------------------------------------------------------
+    // Stuff related to the deferred transparency rendering
+    struct DeferredMesh
+    {
+        Renderer::Geometry* geometry;
+        Renderer::Mesh*     mesh;
+        f32                 distance;
+        Transform           transform;
+        
+        DeferredMesh ( Renderer::Geometry* g, Renderer::Mesh* m, f32 distance, const Transform& transform )
+        {
+            this->geometry = g;
+            this->mesh = m;
+            this->distance = distance;
+            this->transform = transform;
+        }
+
+        bool operator< ( const DeferredMesh& other ) const
+        {
+            return this->distance > other.distance;
+        }
+    };
+    typedef std::list<DeferredMesh> TransparentMeshList;
+    TransparentMeshList             m_listTransparencies;
+    
+    //--------------------------------------------------------------------------
+    // Default program
+    Renderer::IProgram*     m_program;
+    
+    //--------------------------------------------------------------------------
+    // The lookAt matrix of the camera being used to render right now
+    Matrix                  m_matLookAt;
 };
     
 } }

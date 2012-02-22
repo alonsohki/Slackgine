@@ -15,6 +15,7 @@
 #include <vector>
 #include "core/slackgine.h"
 #include "core/entity.h"
+#include "core/camera.h"
 #include "renderer/shader.h"
 
 namespace Core { class Slackgine; }
@@ -34,8 +35,8 @@ public:
 public:
     //--------------------------------------------------------------------------
     // Abstract methods to handle initialization/finalization
-    virtual bool    setup                   ( Core::Slackgine* sg ) = 0;
-    virtual bool    cleanup                 ( Core::Slackgine* sg ) = 0;
+    virtual bool    beginScene              ( Core::Slackgine* sg, Core::Camera* cam ) = 0;
+    virtual bool    endScene                ( Core::Slackgine* sg ) = 0;
     
     //--------------------------------------------------------------------------
     // Method to execute this strategy
