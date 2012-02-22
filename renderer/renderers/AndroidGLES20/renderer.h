@@ -28,7 +28,8 @@ public:
 
     bool        beginScene              ( const Matrix& projection, const Matrix& lookAt, TextureLookupFn fn );
     void        setProgram              ( IProgram* program );
-    bool        render                  ( Geometry* geometry, const Transform& transform, MeshRenderFn fn = 0 );
+    bool        render                  ( Geometry* geometry, const Transform& transform, bool includeTransparent, MeshRenderFn fn = 0 );
+    bool        renderGeometryMesh      ( Geometry* geometry, Mesh* mesh, const Transform& transform, MeshRenderFn fn );
     bool        endScene                ();
 
     void        pushState               ();
