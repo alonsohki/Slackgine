@@ -74,12 +74,7 @@ bool Default::forEachEntity(Core::Slackgine* sg, Core::Entity* entity)
             {
                 l3m::Scene::Node& node = *iter;
                 Transform transform = entity->transform() * node.transform;
-                static bool b = false;
-                if ( !b )
-                {
-                    sg->getRenderer()->render( node.geometry, transform, false, getMeshHandler() );
-                    b = false;
-                }
+                sg->getRenderer()->render( node.geometry, transform, false, getMeshHandler() );
 
                 // Enqueue transparent stuff for later
                 for ( Geometry::meshNodeVector::iterator iter2 = node.geometry->m_meshNodes.begin();
