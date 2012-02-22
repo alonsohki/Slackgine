@@ -36,6 +36,7 @@ public:
     
     //--------------------------------------------------------------------------
     // Accessors
+    const b8&           isTransparent   () const { return m_bIsTransparent; }
     const b8&           isShadeless     () const { return m_bIsShadeless; }
     const std::string&  name            () const { return m_name; }
     const Color&        ambient         () const { return m_ambient; }
@@ -45,6 +46,7 @@ public:
     const Color&        emission        () const { return m_emission; }
     const std::string&  texture         () const { return m_texture; }
     
+    b8&                 isTransparent   () { return m_bIsTransparent; }
     b8&                 isShadeless     () { return m_bIsShadeless; }
     std::string&        name            () { return m_name; }
     Color&              ambient         () { return m_ambient; }
@@ -62,6 +64,7 @@ private:
     float               m_shininess;
     Color               m_emission;
     b8                  m_bIsShadeless;
+    b8                  m_bIsTransparent;
     std::string         m_texture;
 };
 

@@ -955,6 +955,7 @@ static bool ImportMaterials ( ::Scene* sce, l3m::Model* model )
                         mat.emission() = emission;
                         mat.shininess() = shininess;
                         mat.isShadeless() = (ma->mode & MA_SHLESS) == MA_SHLESS;
+                        mat.isTransparent() = (ma->mode & MA_TRANSP) && (ma->mode & MA_ZTRANSP);
                         
                         // Check for textures
                         // TODO: Multi-texturing
