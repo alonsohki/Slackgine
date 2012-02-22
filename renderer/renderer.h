@@ -39,7 +39,7 @@ public:
                                           TextureLookupFn fn ) = 0;
     virtual void        setProgram      ( IProgram* program ) = 0;
     virtual void        pushState       () = 0;
-    virtual bool        render          ( Geometry* geometry, const Transform& transform = IdentityTransform(), MeshRenderFn fn = 0 ) = 0;
+    virtual bool        render          ( Geometry* geometry, const Transform& transform = IdentityTransform(), bool includeTransparent = false, MeshRenderFn fn = 0 ) = 0;
     virtual void        popState        () = 0;
     virtual bool        endScene        () = 0;
     

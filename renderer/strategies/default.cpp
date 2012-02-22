@@ -44,7 +44,17 @@ bool Default::forEachEntity(Core::Slackgine* sg, Core::Entity* entity)
                 ++iter )
             {
                 l3m::Scene::Node& node = *iter;
-                sg->getRenderer()->render( node.geometry, entity->transform() * node.transform, getMeshHandler() );
+                Transform transform = entity->transform() * node.transform;
+                sg->getRenderer()->render( node.geometry, transform, false, getMeshHandler() );
+                
+                // Enqueue transparent stuff for later
+                for ( Geometry::meshNodeVector::iterator iter = node.geometry->m_meshNodes.begin();
+                      iter != node.geometry->m_meshNodes.end();
+                      ++iter )
+                {
+                    Mesh* mesh = (*iter).mesh;
+                    m_vecTransparencies.push_back(mesh);
+                }
             }
         }
     }
@@ -92,5 +102,6 @@ bool Default::execute (Core::Slackgine* sg, Core::Entity* startAt)
 
 bool Default::cleanup ( Core::Slackgine* sg )
 {
+    m_vecTransparencies.clear ();
     return true;
 }

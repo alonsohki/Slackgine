@@ -37,6 +37,10 @@ public:
     //--------------------------------------------------------------------------
     // For each entity
     bool        forEachEntity       ( Core::Slackgine* sg, Core::Entity* entity );
+    
+private:
+    typedef std::vector<Renderer::Mesh*> transparentMeshVector;
+    transparentMeshVector   m_vecTransparencies;
 };
     
 } }

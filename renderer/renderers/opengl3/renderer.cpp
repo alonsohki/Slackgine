@@ -100,7 +100,7 @@ void OpenGL3_Renderer::setupLighting()
     m_program->setUniform("un_Lights[0].direction", Vector3(0, 1, 0) );
 }
 
-bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, MeshRenderFn fn )
+bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, bool includeTransparent, MeshRenderFn fn )
 {
     if ( m_program == 0 || m_program->ok() == false )
     {
@@ -165,6 +165,10 @@ bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, 
           ++iter )
     {
         Mesh* mesh = (*iter).mesh;
+        Material* material = mesh->material();
+        
+        if ( !includeTransparent && material != 0 && material->isTransparent() == true )
+            continue;
         
         if ( !fn || fn(mesh) == true )
         {
@@ -196,23 +200,22 @@ bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, 
             if ( polyType != GL_INVALID_ENUM )
             {
                 // Set the material
-                Material* mat = mesh->material();
                 i32 textureLevels = 0;
                 
-                if ( mat != 0 )
+                if ( material != 0 )
                 {
-                    m_program->setUniform( "un_Material.diffuse", mat->diffuse(), true );
-                    m_program->setUniform( "un_Material.ambient", mat->ambient(), false );
-                    m_program->setUniform( "un_Material.specular", mat->specular(), false );
-                    m_program->setUniform( "un_Material.emission", mat->emission(), false );
-                    m_program->setUniform( "un_Material.shininess", mat->shininess() );
-                    m_program->setUniform( "un_Material.isShadeless", mat->isShadeless() );
+                    m_program->setUniform( "un_Material.diffuse", material->diffuse(), true );
+                    m_program->setUniform( "un_Material.ambient", material->ambient(), false );
+                    m_program->setUniform( "un_Material.specular", material->specular(), false );
+                    m_program->setUniform( "un_Material.emission", material->emission(), false );
+                    m_program->setUniform( "un_Material.shininess", material->shininess() );
+                    m_program->setUniform( "un_Material.isShadeless", material->isShadeless() );
                     
                     // Setup the texturing
                     b8 doTexturing = false;
-                    if ( m_texLookup != 0 && mat->texture() != "" )
+                    if ( m_texLookup != 0 && material->texture() != "" )
                     {
-                        ITexture* tex = m_texLookup ( mat->texture() );
+                        ITexture* tex = m_texLookup ( material->texture() );
                         if ( tex != 0 && tex->bind() &&
                              geometry->bindVertexLayer(m_program, "in_TexCoord", "uv", 0, Geometry::FLOAT, false, 2, 0) )
                         {
