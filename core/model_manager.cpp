@@ -403,7 +403,26 @@ bool ModelManager::release (const l3m::Model* model)
     lock ();
 #endif
     
-    ret = internalRelease ( findModelNode ( model ) );
+    bool moveToGraveyard = true;
+    ret = internalRelease ( findModelNode ( model ), moveToGraveyard );
+    
+#ifdef USE_THREADS
+    unlock ();
+#endif
+    
+    return ret;
+}
+
+bool ModelManager::releaseUnloading ( const l3m::Model* model )
+{
+    bool ret;
+    
+#ifdef USE_THREADS
+    lock ();
+#endif
+    
+    bool moveToGraveyard = false;
+    ret = internalRelease ( findModelNode ( model ), moveToGraveyard );
     
 #ifdef USE_THREADS
     unlock ();
@@ -420,11 +439,12 @@ bool ModelManager::releaseAllReferences (const l3m::Model* model)
     lock ();
 #endif
 
+    bool moveToGraveyard = true;
     ModelNode* node = findModelNode ( model );
     if ( node != 0 )
     {
         node->refCount = 1;
-        ret = internalRelease ( node );
+        ret = internalRelease ( node, moveToGraveyard );
     }
 
 #ifdef USE_THREADS
@@ -434,7 +454,30 @@ bool ModelManager::releaseAllReferences (const l3m::Model* model)
     return ret;
 }
 
-bool ModelManager::internalRelease (ModelNode* node)
+bool ModelManager::releaseAllReferencesUnloading ( const l3m::Model* model )
+{
+    bool ret = false;
+    
+#ifdef USE_THREADS
+    lock ();
+#endif
+    
+    bool moveToGraveyard = false;
+    ModelNode* node = findModelNode ( model );
+    if ( node != 0 )
+    {
+        node->refCount = 1;
+        ret = internalRelease ( node, moveToGraveyard );
+    }
+    
+#ifdef USE_THREADS
+    unlock ();
+#endif
+    
+    return ret;
+}
+
+bool ModelManager::internalRelease (ModelNode* node, bool moveToGraveyard)
 {
     bool ret = false;
     
@@ -448,7 +491,7 @@ bool ModelManager::internalRelease (ModelNode* node)
                 LOG_V ( "ModelManager", "Releasing model '%s' (%p)", node->name.c_str(), node->model );
                 
                 // Release it
-                unlink ( node, true );
+                unlink ( node, moveToGraveyard );
                 ret = true;
             }
         }
@@ -586,7 +629,7 @@ void ModelManager::processLoadedModel ( l3m::Model* model, ModelNode* node )
                     ++iter )
             {
                 DependencyTracker& dep = *iter;
-                internalRequest ( dep.name, MakeDelegate ( &dep, &DependencyTracker::OnLoad ), node->requestPriority );
+                internalRequest ( dep.name, MakeDelegate ( &dep, &DependencyTracker::onLoad ), node->requestPriority );
             }
         }
     }
@@ -767,7 +810,7 @@ void ModelManager::unlink ( ModelNode* node, bool toTheGraveyard )
                   ++iter )
             {
                 DependencyTracker& tracker = *iter;
-                internalCancelRequest ( tracker.name, MakeDelegate ( &tracker, &DependencyTracker::OnLoad ) );
+                internalCancelRequest ( tracker.name, MakeDelegate ( &tracker, &DependencyTracker::onLoad ) );
             }
 
             // Release the loaded dependencies
@@ -903,7 +946,7 @@ bool ModelManager::makeDependencyTracker (ModelNode* node, const std::string& de
     return true;
 }
 
-bool ModelManager::DependencyTracker::OnLoad (l3m::Model* model)
+bool ModelManager::DependencyTracker::onLoad (l3m::Model* model)
 {
     for ( DependencyList::iterator iter = parent->requestedDeps.begin();
           iter != parent->requestedDeps.end();

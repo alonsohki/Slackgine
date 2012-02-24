@@ -69,6 +69,8 @@ void display ( void )
         l3m::Scene* sce = l3m::Util::findScene(model);
         if ( sce != 0 )
             glutReshapeWindow( sce->width(), sce->height() );
+        if ( entity != 0 )
+            entity->setModel ( model );
     }
     if ( entity == 0 )
     {
@@ -101,6 +103,8 @@ void display ( void )
         fprintf ( stderr, "Error ending the scene: %s\n", error );
     }
     
+    sg->getModelManager().releaseUnloading ( model );
+    model = 0;
     glutSwapBuffers ();
     
     glutPostRedisplay ();

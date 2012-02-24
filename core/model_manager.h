@@ -63,7 +63,7 @@ private:
         ModelNode*      parent;
         std::string     name;
         
-        bool    OnLoad  ( l3m::Model* model );
+        bool    onLoad  ( l3m::Model* model );
     };
     typedef std::list < DependencyTracker > DependencyList;
     typedef std::vector < l3m::Model* > ModelVector;
@@ -112,6 +112,12 @@ public:
     bool                release                         ( const l3m::Model* model );
     bool                releaseAllReferences            ( const l3m::Model* model );
 
+    //-------------------------------------------------------------------------
+    // This method releases a model like he normal release, but prevents it
+    // from going to the graveyard and forces its deletion.
+    bool                releaseUnloading                ( const l3m::Model* model );
+    bool                releaseAllReferencesUnloading   ( const l3m::Model* model );
+
     void                loadAllRequestedModels          ();
     void                clearUnlinkedModels             ();
     
@@ -137,7 +143,7 @@ private:
     void                unlock                          ();
 #endif
     void                unlink                          ( ModelNode* node, bool toTheGraveyard = true );
-    bool                internalRelease                 ( ModelNode* node );
+    bool                internalRelease                 ( ModelNode* node, bool moveToGraveyard = true );
     void                moveFromGraveyard               ( ModelNode* node );
     void                collectGarbage                  ();
     bool                makeDependencyTracker           ( ModelNode* node, const std::string& dep );
