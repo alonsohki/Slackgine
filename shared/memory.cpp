@@ -32,6 +32,7 @@ void MemoryManager::free ( void* ptr )
     return ::free ( ptr );
 }
 
+#ifdef DEBUG
 void* operator new ( size_t size ) throw(std::bad_alloc)
 {
     return MemoryManager::alloc ( size, "<global new operator>", 0 );
@@ -61,3 +62,5 @@ void operator delete[] ( void* ptr ) throw()
 {
     return MemoryManager::free ( ptr );
 }
+#endif
+
