@@ -177,6 +177,7 @@ bool Pixmap::loadPNG ( std::istream& stream )
     png_get_IHDR(png_ptr, info_ptr, (png_uint_32*)&m_width, (png_uint_32*)&m_height, &bit_depth, &color_type, 0, 0, 0);
     
     m_pixels = (Color *)sgMalloc ( sizeof(Color) * m_width * m_height );
+    u32* pixels = (u32 *)m_pixels;
     png_bytep* row_pointers = png_get_rows( png_ptr, info_ptr );
     
     if ( color_type == PNG_COLOR_TYPE_RGB )
@@ -187,7 +188,7 @@ bool Pixmap::loadPNG ( std::istream& stream )
 
             for ( u32 w = 0; w < m_width; ++w )
             {
-                m_pixels [ w + h*m_width ] = Color ( row[0], row[1], row[2], 255 );
+                pixels [ w + h*m_width ] = *(u32 *)&row[0] | 0xFF000000;
                 row += 3;
             }
         }
@@ -253,7 +254,7 @@ bool Pixmap::savePNG ( std::ostream& stream ) const
     for ( u32 i = 0; i < m_height; ++i )
         row_pointers[i] = (png_byte *)&m_pixels[i*m_width];
     png_set_rows(png_ptr, info_ptr, row_pointers);
-    png_write_png(png_ptr, info_ptr, detectBigEndian() ? PNG_TRANSFORM_IDENTITY : PNG_TRANSFORM_BGR|PNG_TRANSFORM_SWAP_ALPHA, 0);     
+    png_write_png(png_ptr, info_ptr, detectBigEndian() ? PNG_TRANSFORM_BGR|PNG_TRANSFORM_SWAP_ALPHA : PNG_TRANSFORM_IDENTITY, 0);     
     png_destroy_write_struct(&png_ptr, &info_ptr);
 
     png_free ( png_ptr, row_pointers );
