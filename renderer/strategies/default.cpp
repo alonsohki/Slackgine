@@ -61,6 +61,11 @@ bool Default::beginScene (Core::Slackgine* sg, Core::Camera* cam)
 
 bool Default::forEachEntity(Core::Slackgine* sg, Core::Entity* entity)
 {
+    // Manage the entity stack
+    if ( mEntityStack.size() > 0 && mEntityStack.back() != entity->getParent() )
+        mEntityStack.pop_back();
+    mEntityStack.push_back(entity);
+    
     // Render it!
     if ( entity->getModel() != 0 )
     {
@@ -73,7 +78,7 @@ bool Default::forEachEntity(Core::Slackgine* sg, Core::Entity* entity)
                 ++iter )
             {
                 l3m::Scene::Node& node = *iter;
-                Transform transform = entity->transform() * node.transform;
+                Transform transform = mEntityStack.getTransform ();
                 sg->getRenderer()->render( node.geometry, transform, false, getMeshHandler() );
 
                 // Enqueue transparent stuff for later
@@ -97,6 +102,7 @@ bool Default::forEachEntity(Core::Slackgine* sg, Core::Entity* entity)
 
 bool Default::execute (Core::Slackgine* sg, Core::Entity* startAt)
 {
+    mEntityStack.clear ();
     sg->forEachEntity ( MakeDelegate(this, &Default::forEachEntity), false, startAt );
     return true;
 }

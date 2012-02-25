@@ -71,6 +71,23 @@ private:
     //--------------------------------------------------------------------------
     // The lookAt matrix of the camera being used to render right now
     Matrix                  m_matLookAt;
+    
+    //--------------------------------------------------------------------------
+    // Define an entity stack to control the hierarchical transforms
+    struct EntityStack : public std::vector<Core::Entity*>
+    {
+        Transform getTransform ()
+        {
+            if ( size() == 0 )
+                return IdentityTransform();
+            
+            Transform transform = operator[](0)->transform();
+            for ( int i = 1; i < size(); ++i )
+                transform = operator[](i)->transform() * transform;
+            return transform;
+        }
+    };
+    EntityStack     mEntityStack;
 };
     
 } }
