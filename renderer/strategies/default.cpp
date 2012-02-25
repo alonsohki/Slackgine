@@ -136,7 +136,7 @@ Transform Default::EntityStack::getTransform()
         return IdentityTransform();
 
     Transform transform = operator[](0)->transform();
-    for ( int i = 1; i < size(); ++i )
+    for ( u32 i = 1; i < size(); ++i )
         transform = operator[](i)->transform() * transform;
     return transform;
 }
