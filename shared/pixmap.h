@@ -39,8 +39,8 @@ public:
 
     bool                load            ( const char* filename );
     bool                load            ( std::istream& stream );
-    bool                savePNG         ( const char* filename ) const;
-    bool                savePNG         ( std::ostream& stream ) const;
+    bool                savePNG         ( const char* filename, u32 compressionLevel = 9 ) const;
+    bool                savePNG         ( std::ostream& stream, u32 compressionLevel = 9 ) const;
 
     const char*         error           () const { return m_error; }
     const u32&          width           () const { return m_width; }

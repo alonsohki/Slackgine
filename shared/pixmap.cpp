@@ -208,7 +208,7 @@ bool Pixmap::loadPNG ( std::istream& stream )
     return true;
 }
 
-bool Pixmap::savePNG ( const char* filename ) const
+bool Pixmap::savePNG ( const char* filename, u32 compressionLevel ) const
 {
     std::ofstream fp;
     fp.open ( filename, std::ios::out | std::ios::binary );
@@ -217,7 +217,7 @@ bool Pixmap::savePNG ( const char* filename ) const
     return savePNG ( fp );
 }
 
-bool Pixmap::savePNG ( std::ostream& stream ) const
+bool Pixmap::savePNG ( std::ostream& stream, u32 compressionLevel ) const
 {
     png_structp png_ptr = png_create_write_struct (PNG_LIBPNG_VER_STRING, 0, 0, 0);
     if ( !png_ptr )
@@ -250,6 +250,7 @@ bool Pixmap::savePNG ( std::ostream& stream ) const
                  PNG_FILTER_TYPE_DEFAULT);
     
     png_set_write_fn ( png_ptr, &stream, write_to_png, flush_png );
+    png_set_compression_level( png_ptr, compressionLevel );
     
     for ( u32 i = 0; i < m_height; ++i )
         row_pointers[i] = (png_byte *)&m_pixels[i*m_width];
