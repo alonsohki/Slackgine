@@ -14,6 +14,7 @@
                 <make-dep-project>../libsquish</make-dep-project>
                 <make-dep-project>../libblender</make-dep-project>
                 <make-dep-project>../l3m</make-dep-project>
+                <make-dep-project>../core</make-dep-project>
             </make-dep-projects>
             <sourceRootList/>
             <confList>
