@@ -92,3 +92,22 @@ public:
         Matrix::v[14] = transform.translation().z();
     }
 };
+
+//------------------------------------------------------------------------------
+// Matrix2Transform
+// Takes a matrix as parameter and yields a transform
+class Matrix2Transform : public Transform
+{
+public:
+    Matrix2Transform ( const Matrix& mat )
+    {
+        const f32* m = mat.vector();
+        float fOrientation[9] = {
+            m[0], m[1], m[2],
+            m[4], m[5], m[6],
+            m[8], m[9], m[10]
+        };
+        orientation() = Matrix3 ( fOrientation );
+        translation() = Vector3 ( m[12], m[13], m[14] );
+    }
+};
