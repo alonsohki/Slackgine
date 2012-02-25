@@ -65,6 +65,7 @@ bool Default::forEachEntity(Core::Slackgine* sg, Core::Entity* entity)
     if ( mEntityStack.size() > 0 && mEntityStack.back() != entity->getParent() )
         mEntityStack.pop_back();
     mEntityStack.push_back(entity);
+    Transform entityTransform = mEntityStack.getTransform ();
     
     // Render it!
     if ( entity->getModel() != 0 )
@@ -78,7 +79,7 @@ bool Default::forEachEntity(Core::Slackgine* sg, Core::Entity* entity)
                 ++iter )
             {
                 l3m::Scene::Node& node = *iter;
-                Transform transform = mEntityStack.getTransform ();
+                Transform transform = entityTransform * node.transform;
                 sg->getRenderer()->render( node.geometry, transform, false, getMeshHandler() );
 
                 // Enqueue transparent stuff for later
