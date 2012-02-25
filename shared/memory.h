@@ -24,6 +24,8 @@ public:
 };
 
 #ifdef DEBUG
+extern void* operator new ( size_t size ) throw(std::bad_alloc);
+extern void* operator new[] ( size_t size ) throw(std::bad_alloc);
 extern void* operator new ( size_t size, const char* file, u32 line ) throw(std::bad_alloc);
 extern void* operator new[] ( size_t size, const char* file, u32 line ) throw(std::bad_alloc);
 extern void operator delete ( void* ptr ) throw();

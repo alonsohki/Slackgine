@@ -32,6 +32,16 @@ void MemoryManager::free ( void* ptr )
     return ::free ( ptr );
 }
 
+void* operator new ( size_t size ) throw(std::bad_alloc)
+{
+    return MemoryManager::alloc ( size, "<global new operator>", 0 );
+}
+
+void* operator new[] ( size_t size ) throw(std::bad_alloc)
+{
+    return MemoryManager::alloc ( size, "<global new[] operator>", 0 );
+}
+
 void* operator new ( size_t size, const char* file, u32 line ) throw(std::bad_alloc)
 {
     return MemoryManager::alloc ( size, file, line );

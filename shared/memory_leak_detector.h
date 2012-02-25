@@ -25,8 +25,8 @@ public:
     // Configuration
     enum
     {
-        ALLOCATION_THRESHOLD    = 512 * 1024,      // Log only allocations of more than 512KB
-        MAX_TIME_ALLOCATED      = 60               // Maximum time in seconds that a logged block should remain allocated
+        ALLOCATION_THRESHOLD    = 1024 * 512,      // Log only allocations of more than 512KB
+        MAX_TIME_ALLOCATED      = 60000            // Maximum time in miliseconds that a logged block should remain allocated
     };
     
     //--------------------------------------------------------------------------
