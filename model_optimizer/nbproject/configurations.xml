@@ -82,6 +82,18 @@
               </makeArtifact>
             </linkerLibProjectItem>
             <linkerOptionItem>`pkg-config --libs libpng`</linkerOptionItem>
+            <linkerLibProjectItem>
+              <makeArtifact PL="../core"
+                            CT="3"
+                            CN="Debug"
+                            AC="true"
+                            BL="true"
+                            WD="../core"
+                            BC="${MAKE} -j -f Makefile CONF=Debug"
+                            CC="${MAKE} -j -f Makefile CONF=Debug clean"
+                            OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libcore.a">
+              </makeArtifact>
+            </linkerLibProjectItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>
@@ -148,6 +160,18 @@
               </makeArtifact>
             </linkerLibProjectItem>
             <linkerOptionItem>`pkg-config --libs libpng`</linkerOptionItem>
+            <linkerLibProjectItem>
+              <makeArtifact PL="../core"
+                            CT="3"
+                            CN="Release"
+                            AC="false"
+                            BL="true"
+                            WD="../core"
+                            BC="${MAKE} -j -f Makefile CONF=Release"
+                            CC="${MAKE} -j -f Makefile CONF=Release clean"
+                            OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libcore.a">
+              </makeArtifact>
+            </linkerLibProjectItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>
@@ -209,6 +233,18 @@
               </makeArtifact>
             </linkerLibProjectItem>
             <linkerOptionItem>`pkg-config --libs libpng`</linkerOptionItem>
+            <linkerLibProjectItem>
+              <makeArtifact PL="../core"
+                            CT="3"
+                            CN="Profiling"
+                            AC="false"
+                            BL="true"
+                            WD="../core"
+                            BC="${MAKE} -j -f Makefile CONF=Profiling"
+                            CC="${MAKE} -j -f Makefile CONF=Profiling clean"
+                            OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libcore.a">
+              </makeArtifact>
+            </linkerLibProjectItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>

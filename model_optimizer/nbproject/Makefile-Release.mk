@@ -56,7 +56,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=../l3m/dist/Release/GNU-Linux-x86/libl3m.a ../renderer/dist/Release/GNU-Linux-x86/librenderer.a `pkg-config --libs glew` ../shared/dist/Release/GNU-Linux-x86/libshared.a `pkg-config --libs libpng`  
+LDLIBSOPTIONS=../l3m/dist/Release/GNU-Linux-x86/libl3m.a ../renderer/dist/Release/GNU-Linux-x86/librenderer.a `pkg-config --libs glew` ../shared/dist/Release/GNU-Linux-x86/libshared.a `pkg-config --libs libpng` ../core/dist/Release/GNU-Linux-x86/libcore.a  
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -67,6 +67,8 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/model_optimizer: ../l3m/dist/Release/
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/model_optimizer: ../renderer/dist/Release/GNU-Linux-x86/librenderer.a
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/model_optimizer: ../shared/dist/Release/GNU-Linux-x86/libshared.a
+
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/model_optimizer: ../core/dist/Release/GNU-Linux-x86/libcore.a
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/model_optimizer: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
@@ -107,6 +109,7 @@ ${OBJECTDIR}/filter.o: filter.cpp
 	cd ../l3m && ${MAKE}  -f Makefile CONF=Release
 	cd ../renderer && ${MAKE}  -f Makefile CONF=Release
 	cd ../shared && ${MAKE}  -f Makefile CONF=Release
+	cd ../core && ${MAKE} -j -f Makefile CONF=Release
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
@@ -118,6 +121,7 @@ ${OBJECTDIR}/filter.o: filter.cpp
 	cd ../l3m && ${MAKE}  -f Makefile CONF=Release clean
 	cd ../renderer && ${MAKE}  -f Makefile CONF=Release clean
 	cd ../shared && ${MAKE}  -f Makefile CONF=Release clean
+	cd ../core && ${MAKE} -j -f Makefile CONF=Release clean
 
 # Enable dependency checking
 .dep.inc: .depcheck-impl

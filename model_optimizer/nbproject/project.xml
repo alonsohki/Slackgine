@@ -12,6 +12,7 @@
                 <make-dep-project>../shared</make-dep-project>
                 <make-dep-project>../renderer</make-dep-project>
                 <make-dep-project>../l3m</make-dep-project>
+                <make-dep-project>../core</make-dep-project>
             </make-dep-projects>
             <sourceRootList/>
             <confList>
