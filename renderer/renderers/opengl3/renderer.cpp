@@ -26,10 +26,6 @@ OpenGL3_Renderer::OpenGL3_Renderer()
 
 OpenGL3_Renderer::~OpenGL3_Renderer()
 {
-    if ( m_program != 0 )
-    {
-        delete m_program;
-    }
 }
 
 bool OpenGL3_Renderer::initialize()

@@ -37,7 +37,7 @@ Model::~Model ()
             iter != m_vecComponents.end();
             ++iter )
     {
-        delete *iter;
+        sgDelete *iter;
     }
     m_vecComponents.clear ();
 }
@@ -127,13 +127,12 @@ bool Model::load(std::istream& fp)
         if ( component == 0 )
         {
             // If we don't know how to handle this component type, create an unknown component.
-            component = new l3m::UnknownComponent ( type, version, len );
+            component = sgNew l3m::UnknownComponent ( type, version, len );
         }
         
         // Load the component data
         if ( component->load ( this, is, version ) == false )
             return setError ( "Unable to load a component of type '%s': %s", type.c_str(), component->error() );
-        
         m_vecComponents.push_back ( component );
     }
     

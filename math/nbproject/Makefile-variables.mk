@@ -22,6 +22,14 @@ CND_ARTIFACT_PATH_Release=dist/Release/GNU-Linux-x86/libmath.a
 CND_PACKAGE_DIR_Release=dist/Release/GNU-Linux-x86/package
 CND_PACKAGE_NAME_Release=math.tar
 CND_PACKAGE_PATH_Release=dist/Release/GNU-Linux-x86/package/math.tar
+# Profiling configuration
+CND_PLATFORM_Profiling=GNU-Linux-x86
+CND_ARTIFACT_DIR_Profiling=dist/Profiling/GNU-Linux-x86
+CND_ARTIFACT_NAME_Profiling=libmath.a
+CND_ARTIFACT_PATH_Profiling=dist/Profiling/GNU-Linux-x86/libmath.a
+CND_PACKAGE_DIR_Profiling=dist/Profiling/GNU-Linux-x86/package
+CND_PACKAGE_NAME_Profiling=math.tar
+CND_PACKAGE_PATH_Profiling=dist/Profiling/GNU-Linux-x86/package/math.tar
 #
 # include compiler specific variables
 #

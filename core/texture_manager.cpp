@@ -29,7 +29,7 @@ TextureManager::~TextureManager ()
           ++iter )
     {
         LOG_V ( "TextureManager", "Releasing the texture with id '%s'", iter->first.c_str() );
-        delete iter->second.texture;
+        sgDelete iter->second.texture;
     }
 }
 
@@ -68,7 +68,7 @@ void TextureManager::releaseTexture (const l3m::Texture& texture)
             LOG_V ( "TextureManager", "Releasing the texture with id '%s'", name.c_str() );
                     
             // Free it
-            delete node.texture;
+            sgDelete node.texture;
             m_textures.erase ( iter );
         }
         else

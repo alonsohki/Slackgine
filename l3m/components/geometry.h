@@ -25,7 +25,7 @@ class Geometry : public IComponent
 public:
     static IComponent* create ()
     {
-        return new Geometry ();
+        return sgNew Geometry ();
     }
     
 public:

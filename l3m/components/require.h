@@ -29,7 +29,7 @@ public:
 public:
     static IComponent*  create          ()
     {
-        return new Require ();
+        return sgNew Require ();
     }
     
 public:

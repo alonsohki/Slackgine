@@ -30,7 +30,7 @@ Mesh::~Mesh ()
 void Mesh::freeIndices()
 {
     if ( m_indices != 0 )
-        free ( m_indices );
+        sgFree ( m_indices );
     m_indices = 0;
     m_numIndices = 0;
 }
@@ -38,7 +38,7 @@ void Mesh::freeIndices()
 void Mesh::load(const unsigned int* pIndices, unsigned int indexCount, PolygonType polyType)
 {
     freeIndices ();
-    m_indices = ( unsigned int * )malloc(sizeof(unsigned int) * indexCount);
+    m_indices = ( unsigned int * )sgMalloc(sizeof(unsigned int) * indexCount);
     memcpy ( m_indices, pIndices, sizeof(unsigned int) * indexCount );
     m_numIndices = indexCount;
     m_polyType = polyType;

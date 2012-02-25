@@ -23,8 +23,8 @@ public:
                 Time                    ();
                 ~Time                   ();
 
-    u32         getSystemTime           () const;
-    u64         getSystemTimeMS         () const;
+    static u32  getSystemTime           ();
+    static u64  getSystemTimeMS         ();
     u64         getTimeMS               () const { return m_timeMS; }
     void        setTimeStep             ( f32 step ) { m_timestep = step; }
     float       getTimeStep             () const { return m_timestep; }

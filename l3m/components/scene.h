@@ -49,7 +49,7 @@ private:
 public:
     static IComponent* create ()
     {
-        return new Scene ();
+        return sgNew Scene ();
     }
     
     Scene ()

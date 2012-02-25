@@ -427,7 +427,7 @@ static bool ImportMesh ( Renderer::Geometry* g, const std::string& name, u32 mat
     }
     
     // Make all the indices
-    u32* indices = ( u32* )malloc ( sizeof(u32) * actualFaceCount * 3 );
+    u32* indices = ( u32* )sgMalloc ( sizeof(u32) * actualFaceCount * 3 );
     u32 indexIdx = 0;
     u32 curIndex = 0;
     for ( u32 i = 0; i < totface; ++i )
@@ -454,7 +454,7 @@ static bool ImportMesh ( Renderer::Geometry* g, const std::string& name, u32 mat
     }
 
     
-    Renderer::Mesh* mesh = new Renderer::Mesh ();
+    Renderer::Mesh* mesh = sgNew Renderer::Mesh ();
     mesh->set ( indices, actualFaceCount * 3, Renderer::Mesh::TRIANGLES );
     mesh->name() = name;
     // Import the material
@@ -545,7 +545,7 @@ static bool ImportGeometry ( l3m::Geometry* g, Object* ob, l3m::Model* model )
     }
     
     // Import the geometry vertices
-    Renderer::Vertex* vertexArray = (Renderer::Vertex *)malloc ( sizeof(Renderer::Vertex) * actualVertexCount );
+    Renderer::Vertex* vertexArray = (Renderer::Vertex *)sgMalloc ( sizeof(Renderer::Vertex) * actualVertexCount );
     memset ( vertexArray, 0, sizeof(Renderer::Vertex) * actualVertexCount );
     u32 curVertex = 0;
     
@@ -571,7 +571,7 @@ static bool ImportGeometry ( l3m::Geometry* g, Object* ob, l3m::Model* model )
     {
         curVertex = 0;
         int layerCount = CustomData_number_of_layers(&me->fdata, CD_MTFACE);
-        Vector2* uvData = (Vector2*)malloc ( sizeof(Vector2) * layerCount * actualVertexCount );
+        Vector2* uvData = (Vector2*)sgMalloc ( sizeof(Vector2) * layerCount * actualVertexCount );
         
         for ( u32 l = 0; l < layerCount; ++l )
         {
@@ -595,14 +595,14 @@ static bool ImportGeometry ( l3m::Geometry* g, Object* ob, l3m::Model* model )
         }
         
         g->geometry().createVertexLayer( "uv", layerCount, uvData, sizeof(Vector2) );
-        free ( uvData );
+        sgFree ( uvData );
     }
     
     // Import the vertex colors
     bool has_color = (bool)CustomData_has_layer(&me->fdata, CD_MCOL);
     if ( has_color )
     {
-        Color* colorData = (Color *)malloc( sizeof(Color) * actualVertexCount );
+        Color* colorData = (Color *)sgMalloc( sizeof(Color) * actualVertexCount );
         int index = CustomData_get_active_layer_index(&me->fdata, CD_MCOL);
         curVertex = 0;
 
@@ -623,7 +623,7 @@ static bool ImportGeometry ( l3m::Geometry* g, Object* ob, l3m::Model* model )
         }
         
         g->geometry().createVertexLayer("color", 1, colorData, sizeof(Color) );
-        free ( colorData );
+        sgFree ( colorData );
     }
     
     // Load the skinning info
@@ -1219,7 +1219,7 @@ bool import_blender ( int argc, const char** argv, std::istream& is, l3m::Model*
     startup_blender(argc, argv);
 
     u32 memSize = 4096;
-    char* mem = new char [ memSize ];
+    char* mem = sgNew char [ memSize ];
     
     char temp [ 512 ];
     u32 totalSize = 0;
@@ -1235,9 +1235,9 @@ bool import_blender ( int argc, const char** argv, std::istream& is, l3m::Model*
             if ( totalSize + currentSize > memSize )
             {
                 memSize *= 2;
-                char* newMem = new char [ memSize ];
+                char* newMem = sgNew char [ memSize ];
                 memcpy ( newMem, mem, totalSize );
-                delete [] mem;
+                sgDelete [] mem;
                 mem = newMem;
             }
             memcpy ( &mem[totalSize], temp, currentSize );
@@ -1248,12 +1248,12 @@ bool import_blender ( int argc, const char** argv, std::istream& is, l3m::Model*
     BlendFileData* data = BLO_read_from_memory(mem, totalSize, NULL);
     if ( data == 0 )
     {
-        delete [] mem;
+        sgDelete [] mem;
         return false;
     }
     
     bool ret = import_blender ( data->curscene, argv[1], model );
-    delete [] mem;
+    sgDelete [] mem;
     return ret;
 }
 #endif

@@ -29,9 +29,9 @@ GLES20_Renderer::~GLES20_Renderer()
 {
     if ( m_program != 0 )
     {
-        delete m_vertexShader;
-        delete m_fragmentShader;
-        delete m_program;
+        sgDelete m_vertexShader;
+        sgDelete m_fragmentShader;
+        sgDelete m_program;
     }
 }
 

@@ -61,12 +61,12 @@ bool GLES20_Shader::load ( std::istream& fp )
     }
 
     int prefixLen = strlen(prefix);
-    char* source = new char [ out.length() + prefixLen + 1 ];
+    char* source = sgNew char [ out.length() + prefixLen + 1 ];
     source [ out.length()+prefixLen ] = '\0';
     strncpy ( source, prefix, prefixLen );
     memcpy ( &source[prefixLen], out.c_str(), out.length() );
     glShaderSource ( m_handler, 1, (const GLchar **)&source, 0 );
-    delete [] source;
+    sgDelete [] source;
     eglGetError();
     glCompileShader ( m_handler );
     eglGetError();

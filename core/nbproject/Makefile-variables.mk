@@ -22,6 +22,14 @@ CND_ARTIFACT_PATH_Release=dist/Release/GNU-Linux-x86/libcore.a
 CND_PACKAGE_DIR_Release=dist/Release/GNU-Linux-x86/package
 CND_PACKAGE_NAME_Release=core.tar
 CND_PACKAGE_PATH_Release=dist/Release/GNU-Linux-x86/package/core.tar
+# Profiling configuration
+CND_PLATFORM_Profiling=GNU-Linux-x86
+CND_ARTIFACT_DIR_Profiling=dist/Profiling/GNU-Linux-x86
+CND_ARTIFACT_NAME_Profiling=libcore.a
+CND_ARTIFACT_PATH_Profiling=dist/Profiling/GNU-Linux-x86/libcore.a
+CND_PACKAGE_DIR_Profiling=dist/Profiling/GNU-Linux-x86/package
+CND_PACKAGE_NAME_Profiling=core.tar
+CND_PACKAGE_PATH_Profiling=dist/Profiling/GNU-Linux-x86/package/core.tar
 #
 # include compiler specific variables
 #

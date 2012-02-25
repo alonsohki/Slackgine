@@ -95,7 +95,7 @@ static bool process_geometry ( Renderer::Geometry& g, u32* numDuplicates )
     }
     
     // Delete the indices that were not marked
-    Vertex* newVertices = (Vertex *)malloc(sizeof(Vertex)*numVertices);
+    Vertex* newVertices = (Vertex *)sgMalloc(sizeof(Vertex)*numVertices);
     u32 n = 0;
     for ( u32 i = 0; i < numVertices; ++i )
     {
@@ -135,7 +135,7 @@ static bool process_geometry ( Renderer::Geometry& g, u32* numDuplicates )
         Renderer::Geometry::VertexLayer newLayer;
         newLayer.numLevels = oldLayer.numLevels;
         newLayer.elementSize = oldLayer.elementSize;
-        newLayer.data = malloc ( newLayer.numLevels * newLayer.elementSize * newVertexCount );
+        newLayer.data = sgMalloc ( newLayer.numLevels * newLayer.elementSize * newVertexCount );
         
         u32 n = 0;
         for ( u32 l = 0; l < newLayer.numLevels; ++l )

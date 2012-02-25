@@ -16,29 +16,29 @@ using namespace Renderer;
 
 IRenderer* Factory::createRenderer()
 {
-    return new OpenGL3_Renderer ();
+    return sgNew OpenGL3_Renderer ();
 }
 
 IProgram* Factory::createProgram()
 {
-    return new OpenGL3_Program ();
+    return sgNew OpenGL3_Program ();
 }
 
 IShader* Factory::createShader(IShader::Type type, const char* file)
 {
-    IShader* shader = new OpenGL3_Shader ( type );
+    IShader* shader = sgNew OpenGL3_Shader ( type );
     shader->load ( file );
     return shader;
 }
 
 IShader* Factory::createShader(IShader::Type type, std::istream& fp)
 {
-    IShader* shader = new OpenGL3_Shader ( type );
+    IShader* shader = sgNew OpenGL3_Shader ( type );
     shader->load ( fp );
     return shader;
 }
 
 ITexture* Factory::createTexture (u32 width, u32 height, ITexture::Format format)
 {
-    return new OpenGL3_Texture ( width, height, format );
+    return sgNew OpenGL3_Texture ( width, height, format );
 }

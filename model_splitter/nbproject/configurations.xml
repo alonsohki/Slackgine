@@ -27,6 +27,9 @@
             <pElem>.</pElem>
             <pElem>..</pElem>
           </incDir>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
         </ccTool>
         <linkerTool>
           <linkerLibItems>
@@ -197,6 +200,99 @@
                         WD="../shared"
                         BC="${MAKE}  -f Makefile CONF=Release"
                         CC="${MAKE}  -f Makefile CONF=Release clean"
+                        OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libshared.a">
+          </makeArtifact>
+        </requiredProjects>
+      </compileType>
+    </conf>
+    <conf name="Profiling" type="1">
+      <toolsSet>
+        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
+        <compilerSet>default</compilerSet>
+      </toolsSet>
+      <compileType>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>..</pElem>
+          </incDir>
+          <commandLine>-pipe -pg</commandLine>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+            <Elem>PROFILING</Elem>
+          </preprocessorList>
+        </ccTool>
+        <linkerTool>
+          <linkerLibItems>
+            <linkerLibProjectItem>
+              <makeArtifact PL="../l3m"
+                            CT="3"
+                            CN="Debug"
+                            AC="true"
+                            BL="true"
+                            WD="../l3m"
+                            BC="${MAKE}  -f Makefile CONF=Debug"
+                            CC="${MAKE}  -f Makefile CONF=Debug clean"
+                            OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a">
+              </makeArtifact>
+            </linkerLibProjectItem>
+            <linkerLibProjectItem>
+              <makeArtifact PL="../renderer"
+                            CT="3"
+                            CN="Debug"
+                            AC="true"
+                            BL="true"
+                            WD="../renderer"
+                            BC="${MAKE}  -f Makefile CONF=Debug"
+                            CC="${MAKE}  -f Makefile CONF=Debug clean"
+                            OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/librenderer.a">
+              </makeArtifact>
+            </linkerLibProjectItem>
+            <linkerLibProjectItem>
+              <makeArtifact PL="../shared"
+                            CT="3"
+                            CN="Debug"
+                            AC="true"
+                            BL="true"
+                            WD="../shared"
+                            BC="${MAKE}  -f Makefile CONF=Debug"
+                            CC="${MAKE}  -f Makefile CONF=Debug clean"
+                            OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libshared.a">
+              </makeArtifact>
+            </linkerLibProjectItem>
+            <linkerOptionItem>`pkg-config --libs glew`</linkerOptionItem>
+            <linkerOptionItem>`pkg-config --libs libpng`</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+        <requiredProjects>
+          <makeArtifact PL="../l3m"
+                        CT="3"
+                        CN="Profiling"
+                        AC="false"
+                        BL="true"
+                        WD="../l3m"
+                        BC="${MAKE} -j -f Makefile CONF=Profiling"
+                        CC="${MAKE} -j -f Makefile CONF=Profiling clean"
+                        OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libl3m.a">
+          </makeArtifact>
+          <makeArtifact PL="../renderer"
+                        CT="3"
+                        CN="Profiling"
+                        AC="false"
+                        BL="true"
+                        WD="../renderer"
+                        BC="${MAKE} -j -f Makefile CONF=Profiling"
+                        CC="${MAKE} -j -f Makefile CONF=Profiling clean"
+                        OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/librenderer.a">
+          </makeArtifact>
+          <makeArtifact PL="../shared"
+                        CT="3"
+                        CN="Profiling"
+                        AC="false"
+                        BL="true"
+                        WD="../shared"
+                        BC="${MAKE} -j -f Makefile CONF=Profiling"
+                        CC="${MAKE} -j -f Makefile CONF=Profiling clean"
                         OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libshared.a">
           </makeArtifact>
         </requiredProjects>

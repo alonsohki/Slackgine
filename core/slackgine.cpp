@@ -12,6 +12,7 @@
 
 #include "slackgine.h"
 #include "shared/log.h"
+#include "shared/memory_leak_detector.h"
 
 using namespace Core;
 
@@ -36,9 +37,44 @@ Slackgine::Slackgine ()
 
 Slackgine::~Slackgine ()
 {
-    delete m_renderer;
+    if ( m_renderer != 0 )
+    {
+        sgDelete m_renderer;
+        m_renderer = 0;
+    }
     if ( m_renderStrategy != 0 )
-        delete m_renderStrategy;
+    {
+        sgDelete m_renderStrategy;
+        m_renderStrategy = 0;
+    }
+
+#ifdef PROFILING
+    //--------------------------------------------------------------------------
+    // Log memory leaks
+    const MemoryLeakDetector::NodeList& allocations = MemoryLeakDetector::getInstance()->getAllocations();
+    if ( allocations.size() > 0 )
+    {
+        fprintf ( stderr, "\n**** WARNING **** Not freed chunks found by the memory leak detector:\n" );
+        for ( MemoryLeakDetector::NodeList::const_iterator iter = allocations.begin();
+              iter != allocations.end();
+              ++iter )
+        {
+            const MemoryLeakDetector::Node& node = *iter;
+            u32 ms = node.dateMs % 1000;
+            time_t secs = node.dateMs;
+            struct tm* lt = localtime ( &secs );
+            
+            char dateBuffer [ 256 ];
+            strftime ( &dateBuffer[0], sizeof(dateBuffer), "%D %T", lt );
+            char sizeBuffer [ 64 ];
+            fprintf ( stderr, "\t** [%s.%03u]\tptr=%p\tsize=%s\t%s:%u \n",
+                      dateBuffer, ms, node.ptr,
+                      niceDataSize(node.size, sizeBuffer, sizeof(sizeBuffer)),
+                      node.file, node.line );
+        }
+        fprintf ( stderr, "\n" );
+    }
+#endif
 }
 
 bool Slackgine::initialize ()
@@ -150,7 +186,7 @@ void Slackgine::forEachEntity ( ForEachEntityDelegate delegate, bool includeInvi
 void Slackgine::setRenderStrategy(Renderer::RenderStrategy* strategy)
 {
     if ( m_renderStrategy != 0 )
-        delete m_renderStrategy;
+        sgDelete m_renderStrategy;
     m_renderStrategy = strategy;
 }
 

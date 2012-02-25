@@ -25,7 +25,7 @@ Shader::Shader ( const std::string& name )
 Shader::~Shader ()
 {
     if ( m_vert != 0 )
-        delete m_vert;
+        sgDelete m_vert;
     if ( m_frag != 0 )
-        delete m_frag;
+        sgDelete m_frag;
 }

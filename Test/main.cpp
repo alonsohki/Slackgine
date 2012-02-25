@@ -10,6 +10,7 @@
 // AUTHORS:     Alberto Alonso <rydencillo@gmail.com>
 //
 
+#include <csignal>
 #include <cstdio>
 #include <cstdlib>
 #include <cerrno>
@@ -30,11 +31,29 @@ static Camera* cam = 0;
 static void cleanup ()
 {
     if ( sg != 0 )
-        delete sg;
+    {
+        sgDelete sg;
+        sg = 0;
+    }
+}
+
+static void sighandler ( int signum )
+{
+    switch ( signum )
+    {
+        case SIGINT:
+        {
+            cleanup ();
+            exit(0);
+            break;
+        }
+    }
 }
 
 int main(int argc, char** argv)
 {
+    signal ( SIGINT, sighandler );
+
     glutInit (&argc, argv);
     glutInitWindowSize (1920/2, 1080/2);
     glutInitDisplayMode ( GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH | GLUT_ALPHA );
@@ -46,7 +65,7 @@ int main(int argc, char** argv)
 
     glutMainLoop ();
     
-    delete entity;
+    sgDelete entity;
     
     return EXIT_SUCCESS;
 }
@@ -56,16 +75,20 @@ void display ( void )
 {
     if ( sg == 0 )
     {
-        sg = new Slackgine ();
+        sg = sgNew Slackgine ();
         sg->initialize ();
         sg->getModelManager().addLookupPath ( ".." );
         sg->getShaderManager().addLookupPath( "../shaders" );
-        sg->setRenderStrategy ( new Renderer::Strategy::Default () );
+        sg->setRenderStrategy ( sgNew Renderer::Strategy::Default () );
     }
 
     if ( model == 0 )
     {
-        model = sg->getModelManager().requestBlocking ("spherecube.l3m");
+        while ( 1 )
+        {
+            model = sg->getModelManager().requestBlocking ("spherecube.l3m");
+            sg->getModelManager().releaseUnloading ( model );
+        }
         l3m::Scene* sce = l3m::Util::findScene(model);
         if ( sce != 0 )
             glutReshapeWindow( sce->width(), sce->height() );
@@ -74,11 +97,11 @@ void display ( void )
     }
     if ( entity == 0 )
     {
-        entity = new Entity ( model, &sg->getWorld() );
+        entity = sgNew Entity ( model, &sg->getWorld() );
         l3m::Scene* sce = l3m::Util::findScene ( model );
         if ( sce != 0 )
         {
-            cam = new Camera ( sce->camera() );
+            cam = sgNew Camera ( sce->camera() );
         }
     }
     

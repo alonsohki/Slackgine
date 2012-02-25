@@ -32,6 +32,11 @@
         <compilerSet>default</compilerSet>
       </toolsSet>
       <compileType>
+        <ccTool>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
         <archiverTool>
         </archiverTool>
       </compileType>
@@ -54,6 +59,23 @@
         <asmTool>
           <developmentMode>5</developmentMode>
         </asmTool>
+        <archiverTool>
+        </archiverTool>
+      </compileType>
+    </conf>
+    <conf name="Profiling" type="3">
+      <toolsSet>
+        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
+        <compilerSet>default</compilerSet>
+      </toolsSet>
+      <compileType>
+        <ccTool>
+          <commandLine>-pipe -pg</commandLine>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+            <Elem>PROFILING</Elem>
+          </preprocessorList>
+        </ccTool>
         <archiverTool>
         </archiverTool>
       </compileType>

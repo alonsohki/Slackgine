@@ -27,6 +27,10 @@
     <itemPath>directory.h</itemPath>
     <itemPath>log.cpp</itemPath>
     <itemPath>log.h</itemPath>
+    <itemPath>memory.cpp</itemPath>
+    <itemPath>memory.h</itemPath>
+    <itemPath>memory_leak_detector.cpp</itemPath>
+    <itemPath>memory_leak_detector.h</itemPath>
     <itemPath>pixmap.cpp</itemPath>
     <itemPath>pixmap.h</itemPath>
     <itemPath>platform.h</itemPath>
@@ -78,6 +82,29 @@
         <asmTool>
           <developmentMode>5</developmentMode>
         </asmTool>
+        <archiverTool>
+        </archiverTool>
+      </compileType>
+    </conf>
+    <conf name="Profiling" type="3">
+      <toolsSet>
+        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
+        <compilerSet>default</compilerSet>
+      </toolsSet>
+      <compileType>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>..</pElem>
+          </incDir>
+          <commandLine>-ansi -pipe -pg</commandLine>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+            <Elem>DEBUG_VERY_VERBOSE</Elem>
+            <Elem>DETECT_MEMORY_LEAKS</Elem>
+            <Elem>PROFILING</Elem>
+          </preprocessorList>
+        </ccTool>
         <archiverTool>
         </archiverTool>
       </compileType>

@@ -85,7 +85,7 @@ public:
             VertexLayer layer;
             layer.elementSize = elementSize;
             layer.numLevels = numLevels;
-            layer.data = malloc ( numLevels * elementSize * numVertices() );
+            layer.data = sgMalloc ( numLevels * elementSize * numVertices() );
             m_mapVertexLayers.insert ( layerMap::value_type ( name, layer ) );
             
             destination = layer.data;
@@ -133,7 +133,7 @@ public:
         layerMap::iterator iter = m_mapVertexLayers.find ( name );
         if ( iter != m_mapVertexLayers.end() )
         {
-            free ( iter->second.data );
+            sgFree ( iter->second.data );
             m_mapVertexLayers.erase ( iter );
             return true;
         }

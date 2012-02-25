@@ -33,7 +33,7 @@ static std::string cleanTextureID ( const std::string texID )
     else
         ret = texID;
     
-    free ( id_copy );
+    sgFree ( id_copy );
     return ret;
 }
 

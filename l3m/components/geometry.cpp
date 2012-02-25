@@ -63,7 +63,7 @@ bool Geometry::load(l3m::Model* model, l3m::IStream& fp, float version)
     u32 numVertices;
     if ( fp.read32 ( &numVertices, 1 ) != 1 )
         return setError ( "Error reading the vertex count" );
-    Vertex* vertices = ( Vertex* )malloc ( sizeof(Vertex) * numVertices );
+    Vertex* vertices = ( Vertex* )sgMalloc ( sizeof(Vertex) * numVertices );
     if ( fp.readFloat(vertices->base(), numVertices*sizeof(Vertex)/sizeof(float)) != (ssize_t)(numVertices*sizeof(Vertex)/sizeof(float)) )
         return setError ( "Error reading the vertex data" );
     m_geometry.set ( vertices, numVertices );
@@ -129,12 +129,12 @@ bool Geometry::load(l3m::Model* model, l3m::IStream& fp, float version)
         u32 numIndices;
         if ( fp.read32 ( &numIndices, 1 ) != 1 )
             return setError ( "Error reading the index count" );
-        u32* indices = ( u32* )malloc ( sizeof(u32) * numIndices );
+        u32* indices = ( u32* )sgMalloc ( sizeof(u32) * numIndices );
         if ( fp.read32 ( indices, numIndices ) != (ssize_t)numIndices )
             return setError ( "Error reading the index data" );
         
         // Create the mesh
-        Mesh* mesh = new Mesh ();
+        Mesh* mesh = sgNew Mesh ();
         mesh->name () = name;
         mesh->set ( indices, numIndices, polyType );
         m_geometry.loadMesh( mesh );
@@ -142,7 +142,7 @@ bool Geometry::load(l3m::Model* model, l3m::IStream& fp, float version)
         // Defer the material reference
         if ( thereIsMaterial )
         {
-            MaterialDeltaData* matDelta = new MaterialDeltaData ();
+            MaterialDeltaData* matDelta = sgNew MaterialDeltaData ();
             matDelta->name = materialName;
             matDelta->mesh = mesh;
             model->registerDeltaResolver ( this, Geometry::resolveMaterialDelta, matDelta );
@@ -268,7 +268,7 @@ bool Geometry::resolveMaterialDelta ( IComponent* comp, Model* model, void* data
     l3m::Material* mat = l3m::Util::findMaterial ( model, dd->name );
     if ( mat != 0 )
         dd->mesh->material() = &mat->material();
-    delete dd;
+    sgDelete dd;
     return true; 
 }
 

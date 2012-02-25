@@ -23,7 +23,7 @@ class Texture : public IComponent
 public:
     static IComponent* create ()
     {
-        return new Texture ();
+        return sgNew Texture ();
     }
     
 public:

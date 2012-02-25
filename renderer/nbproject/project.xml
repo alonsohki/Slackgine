@@ -23,6 +23,10 @@
                     <name>Release</name>
                     <type>3</type>
                 </confElem>
+                <confElem>
+                    <name>Profiling</name>
+                    <type>3</type>
+                </confElem>
             </confList>
         </data>
     </configuration>

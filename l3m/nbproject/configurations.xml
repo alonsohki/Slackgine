@@ -132,5 +132,48 @@
         </requiredProjects>
       </compileType>
     </conf>
+    <conf name="Profiling" type="3">
+      <toolsSet>
+        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
+        <compilerSet>GNU|GNU</compilerSet>
+      </toolsSet>
+      <compileType>
+        <ccTool>
+          <incDir>
+            <pElem>..</pElem>
+          </incDir>
+          <commandLine>-pipe -pg</commandLine>
+          <preprocessorList>
+            <Elem>DEBUG</Elem>
+            <Elem>DEBUG_VERY_VERBOSE</Elem>
+            <Elem>PROFILING</Elem>
+          </preprocessorList>
+        </ccTool>
+        <archiverTool>
+        </archiverTool>
+        <requiredProjects>
+          <makeArtifact PL="../shared"
+                        CT="3"
+                        CN="Profiling"
+                        AC="false"
+                        BL="false"
+                        WD="../shared"
+                        BC="${MAKE} -j -f Makefile CONF=Profiling"
+                        CC="${MAKE} -j -f Makefile CONF=Profiling clean"
+                        OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libshared.a">
+          </makeArtifact>
+          <makeArtifact PL="../math"
+                        CT="3"
+                        CN="Profiling"
+                        AC="false"
+                        BL="false"
+                        WD="../math"
+                        BC="${MAKE} -j -f Makefile CONF=Profiling"
+                        CC="${MAKE} -j -f Makefile CONF=Profiling clean"
+                        OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libmath.a">
+          </makeArtifact>
+        </requiredProjects>
+      </compileType>
+    </conf>
   </confs>
 </configurationDescriptor>

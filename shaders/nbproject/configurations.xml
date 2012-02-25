@@ -49,5 +49,18 @@
         </archiverTool>
       </compileType>
     </conf>
+    <conf name="Profiling" type="3">
+      <toolsSet>
+        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
+        <compilerSet>default</compilerSet>
+      </toolsSet>
+      <compileType>
+        <ccTool>
+          <commandLine>-pipe -pg</commandLine>
+        </ccTool>
+        <archiverTool>
+        </archiverTool>
+      </compileType>
+    </conf>
   </confs>
 </configurationDescriptor>

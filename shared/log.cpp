@@ -23,7 +23,7 @@ void vLog ( const char* level, const char* tag, const char* msg, va_list vl )
     static Mutex* logMutex = 0;
 
     if ( logMutex == 0 )
-        logMutex = new Mutex();
+        logMutex = sgNew Mutex();
 #endif
 
     char buffer [ 1024 ];

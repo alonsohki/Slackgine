@@ -805,11 +805,11 @@ static int set_addons(int argc, const char **argv, void *data)
 	if (argc > 1) {
 #ifdef WITH_PYTHON
 		const int slen= strlen(argv[1]) + 128;
-		char *str= malloc(slen);
+		char *str= sgMalloc(slen);
 		bContext *C= data;
 		BLI_snprintf(str, slen, "[__import__('addon_utils').enable(i, default_set=False) for i in '%s'.split(',')]", argv[1]);
 		BPY_CTX_SETUP(BPY_string_exec(C, str));
-		free(str);
+		sgFree(str);
 #else
 		(void)argv; (void)data; /* unused */
 #endif /* WITH_PYTHON */

@@ -59,3 +59,4 @@ static inline bool detectBigEndian ()
     return ( u.v[0] == 0 );
 }
 
+#include "memory.h"

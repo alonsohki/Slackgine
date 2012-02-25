@@ -23,7 +23,7 @@ class Pose : public IComponent
 public:
     static IComponent*  create          ()
     {
-        return new Pose ();
+        return sgNew Pose ();
     }
     
 public:

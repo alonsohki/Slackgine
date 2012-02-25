@@ -52,7 +52,7 @@ public:
     // Static constructor of camera entities for the factory
     static IComponent*  create          ()
     {
-        return new Camera ();
+        return sgNew Camera ();
     }
     
 public:

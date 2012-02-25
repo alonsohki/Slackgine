@@ -25,7 +25,9 @@ private:
     
     
 public:
-    Color ( u8 R = 255, u8 G = 255, u8 B = 255, u8 A = 255 )
+    Color () {}
+
+    Color ( u8 R, u8 G, u8 B, u8 A )
     {
         Set ( R, G, B, A );
     }

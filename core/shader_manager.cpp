@@ -29,7 +29,7 @@ ShaderManager::~ShaderManager ()
           iter != m_shaders.end();
           ++iter )
     {
-        delete iter->second;
+        sgDelete iter->second;
     }
 }
 
@@ -72,7 +72,7 @@ Shader* ShaderManager::load ( const std::string& shader )
             char error [ 1024 ];
             vert->getError ( error );
             LOG_E ( "ShaderManager", "Error loading the vertex shader: %s", error );
-            delete vert;
+            sgDelete vert;
             vert = 0;
         }
     }
@@ -88,7 +88,7 @@ Shader* ShaderManager::load ( const std::string& shader )
             char error [ 1024 ];
             frag->getError ( error );
             LOG_E ( "ShaderManager", "Error loading the fragment shader: %s", error );
-            delete frag;
+            sgDelete frag;
             frag = 0;
         }
     }
@@ -97,7 +97,7 @@ Shader* ShaderManager::load ( const std::string& shader )
     Shader* sh = 0;
     if ( vert != 0 || frag != 0 )
     {
-        sh = new Shader ( shader );
+        sh = sgNew Shader ( shader );
         sh->vert() = vert;
         sh->frag() = frag;
         

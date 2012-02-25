@@ -12,6 +12,7 @@
 
 #pragma once
 
+#include <cstdio>
 #include "platform.h"
 
 // Variable swap: Typical A = B and B = A
@@ -43,3 +44,19 @@ static inline T clamp ( T min, T value, T max )
     return ( value < min ) ? min : ((value > max) ? max : value);
 }
 
+// Date size
+static inline char* niceDataSize ( u64 size, char* buffer, size_t buffLen )
+{
+    if ( size < 1024 )
+        snprintf ( buffer, buffLen, "%lluB", size );
+    else if ( size < 1024*1024 )
+        snprintf ( buffer, buffLen, "%llu.%02lluKB", size/1024, (size % 1024) / 10 );
+    else if ( size < 1024*1024*1024 )
+        snprintf ( buffer, buffLen, "%llu.%02lluMB", size/1024/1024, ( size % (1024*1024) ) / 1024 / 10 );
+    else if ( size < 1024ULL*1024*1024*1024 )
+        snprintf ( buffer, buffLen, "%llu.%02lluGB", size/1024/1024/1024, ( size % (1024ULL*1024*1024) ) / 1024 / 1024 / 10 );
+    else
+        snprintf ( buffer, buffLen, "%llu.%02lluTB", size/1024/1024/1024/1024, ( size % (1024ULL*1024*1024*1024) ) / 1024 / 1024 / 1024 / 10 );
+    
+    return buffer;
+}

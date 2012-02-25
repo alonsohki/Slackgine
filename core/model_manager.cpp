@@ -423,6 +423,7 @@ bool ModelManager::releaseUnloading ( const l3m::Model* model )
     
     bool moveToGraveyard = false;
     ret = internalRelease ( findModelNode ( model ), moveToGraveyard );
+    clearUnlinkedModels();
     
 #ifdef USE_THREADS
     unlock ();
@@ -469,6 +470,7 @@ bool ModelManager::releaseAllReferencesUnloading ( const l3m::Model* model )
         node->refCount = 1;
         ret = internalRelease ( node, moveToGraveyard );
     }
+    clearUnlinkedModels();
     
 #ifdef USE_THREADS
     unlock ();
@@ -539,7 +541,7 @@ void ModelManager::processRequest (ModelNode* node)
     if ( getModelAccessPath(node->name, &accessPath) )
     {
         LOG_VV ( "ModelManager", "Processing request for '%s' at path '%s'", node->name.c_str(), accessPath.c_str() );
-        Model* model = new Model ();
+        Model* model = sgNew Model ();
         model->load ( accessPath );
         node->model = model;
         
@@ -911,7 +913,7 @@ void ModelManager::collectGarbage ()
           ++iter )
     {
         LOG_VV ( "ModelManager", "Freeing model (%p) from memory", *iter );
-        delete *iter;
+        sgDelete *iter;
     }
     m_garbage.clear ();
     

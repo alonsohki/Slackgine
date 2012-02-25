@@ -18,13 +18,13 @@ UnknownComponent::UnknownComponent(const std::string& type, float version, u32 l
 : IComponent ( type.c_str(), version )
 {
     m_len = len;
-    m_data = new char [ len ];
+    m_data = sgNew char [ len ];
 }
 
 UnknownComponent::~UnknownComponent()
 {
     if ( m_data != 0 )
-        delete [] m_data;
+        sgDelete [] m_data;
     m_data = 0;
 }
 

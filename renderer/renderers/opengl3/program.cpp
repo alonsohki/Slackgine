@@ -30,7 +30,7 @@ OpenGL3_Program::~OpenGL3_Program()
         GLint numShaders;
         glGetProgramiv ( m_handler, GL_ATTACHED_SHADERS, &numShaders);
         eglGetError();
-        GLuint* shaders = new GLuint [ numShaders ];
+        GLuint* shaders = sgNew GLuint [ numShaders ];
         glGetAttachedShaders ( m_handler, numShaders, 0, shaders );
         eglGetError();
         
@@ -39,7 +39,7 @@ OpenGL3_Program::~OpenGL3_Program()
             glDetachShader ( m_handler, shaders[i] );
             eglGetError();
         }
-        delete [] shaders;
+        sgDelete [] shaders;
         
         glDeleteProgram ( m_handler );
         eglGetError();

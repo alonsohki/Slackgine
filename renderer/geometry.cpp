@@ -24,7 +24,7 @@ GeometryBase::GeometryBase ()
 GeometryBase::~GeometryBase ()
 {
     for ( meshList::iterator iter = m_meshes.begin(); iter != m_meshes.end(); ++iter )
-        delete *iter;
+        sgDelete *iter;
     freeVertices ();
     
     // Delete all the vertex layers
@@ -32,14 +32,14 @@ GeometryBase::~GeometryBase ()
           iter != m_mapVertexLayers.end ();
           ++iter )
     {
-        free ( iter->second.data );
+        sgFree ( iter->second.data );
     }
 }
 
 void GeometryBase::freeVertices()
 {
     if ( m_vertices != 0 )
-        free ( m_vertices );
+        sgFree ( m_vertices );
     m_vertices = 0;
     m_numVertices = 0;
 }

@@ -16,29 +16,29 @@ using namespace Renderer;
 
 IRenderer* Factory::createRenderer()
 {
-    return new GLES20_Renderer ();
+    return sgNew GLES20_Renderer ();
 }
 
 IProgram* Factory::createProgram()
 {
-    return new GLES20_Program ();
+    return sgNew GLES20_Program ();
 }
 
 IShader* Factory::createShader(IShader::Type type, const char* file)
 {
-    IShader* shader = new GLES20_Shader ( type );
+    IShader* shader = sgNew GLES20_Shader ( type );
     shader->load ( file );
     return shader;
 }
 
 IShader* Factory::createShader(IShader::Type type, std::istream& fp)
 {
-    IShader* shader = new GLES20_Shader ( type );
+    IShader* shader = sgNew GLES20_Shader ( type );
     shader->load ( fp );
     return shader;
 }
 
 ITexture* Factory::createTexture (u32 width, u32 height, ITexture::Format format)
 {
-    return new GLES20_Texture ( width, height, format );
+    return sgNew GLES20_Texture ( width, height, format );
 }

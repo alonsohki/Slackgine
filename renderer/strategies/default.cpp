@@ -26,7 +26,7 @@ Default::~Default ()
 {
     if ( m_program != 0 )
     {
-        delete m_program;
+        sgDelete m_program;
         m_program = 0;
     }
 }
@@ -117,7 +117,7 @@ bool Default::endScene ( Core::Slackgine* sg )
     sg->getRenderer()->setProgram(0);
     if ( m_program != 0 )
     {
-        delete m_program;
+        sgDelete m_program;
         m_program = 0;
     }
     return true;

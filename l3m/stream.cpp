@@ -379,15 +379,15 @@ ssize_t IOStream::readStr ( std::string* str )
     
     if ( length > 0 )
     {
-        char* buffer = new char [ length ];
+        char* buffer = sgNew char [ length ];
         ssize_t readLength = readData ( buffer, sizeof(char), length );
         if ( readLength <= 0 || (u32)readLength != length )
         {
-            delete [] buffer;
+            sgDelete [] buffer;
             return -1;
         }
         str->assign ( buffer, length );
-        delete [] buffer;
+        sgDelete [] buffer;
         return length;
     }
     else

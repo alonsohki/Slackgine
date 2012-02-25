@@ -12,6 +12,7 @@
 
 #include <cassert>
 #include <cmath>
+#include <cstdlib>
 #include <fstream>
 #include <png.h>
 #include "pixmap.h"
@@ -52,7 +53,7 @@ Pixmap::~Pixmap ()
 void Pixmap::cleanupData ()
 {
     if ( m_pixels != 0 )
-        delete [] m_pixels;
+        sgFree ( m_pixels );
     m_pixels = 0;
     m_width = 0;
     m_height = 0;
@@ -64,7 +65,7 @@ void Pixmap::create ( u32 width, u32 height, const Color* data )
     cleanupData ();
     m_width = width;
     m_height = height;
-    m_pixels = new Color [ m_width * m_height ] ();
+    m_pixels = (Color *)sgMalloc ( sizeof(Color) * m_width * m_height );
     if ( data != 0 )
         memcpy ( m_pixels, data, sizeof(Color)*m_width*m_height );
 }
@@ -75,7 +76,7 @@ Pixmap& Pixmap::operator= ( const Pixmap& other )
     m_width = other.m_width;
     m_height = other.m_height;
     memcpy ( m_error, other.m_error, sizeof(m_error) );
-    m_pixels = new Color [ m_width * m_height ] ();
+    m_pixels = (Color *)sgMalloc ( sizeof(Color) * m_width * m_height );
     memcpy ( m_pixels, other.m_pixels, sizeof(Color)*m_width*m_height );
     return *this;
 }
@@ -175,7 +176,7 @@ bool Pixmap::loadPNG ( std::istream& stream )
     int color_type;
     png_get_IHDR(png_ptr, info_ptr, (png_uint_32*)&m_width, (png_uint_32*)&m_height, &bit_depth, &color_type, 0, 0, 0);
 
-    m_pixels = new Color [ m_width * m_height ] ();
+    m_pixels = (Color *)sgMalloc ( sizeof(Color) * m_width * m_height );
     png_bytep* row_pointers = png_get_rows( png_ptr, info_ptr );
     
     if ( color_type == PNG_COLOR_TYPE_RGB )
@@ -193,15 +194,11 @@ bool Pixmap::loadPNG ( std::istream& stream )
     }
     else if ( color_type == PNG_COLOR_TYPE_RGB_ALPHA )
     {
+        u32* pixels = (u32 *)&m_pixels[0];
         for ( u32 h = 0; h < m_height; ++h )
         {
             png_bytep row = row_pointers[h];
-
-            for ( u32 w = 0; w < m_width; ++w )
-            {
-                m_pixels [ w + h*m_width ] = Color ( row[0], row[1], row[2], row[3] );
-                row += 4;
-            }
+            memcpy ( &pixels[h*m_width], &row[0], 4*m_width );
         }
     }
     
@@ -275,7 +272,7 @@ void Pixmap::resample ( u32 newWidth, u32 newHeight )
 
 void Pixmap::resample_X ( u32 newWidth )
 {
-    Color* newPixels = new Color [ newWidth * m_height ]();
+    Color* newPixels = (Color *)sgMalloc ( sizeof(Color) * newWidth * m_height );
     
     if ( newWidth < m_width )
     {
@@ -377,14 +374,14 @@ void Pixmap::resample_X ( u32 newWidth )
         }
     }
     
-    delete [] m_pixels;
+    sgFree ( m_pixels );
     m_pixels = newPixels;
     m_width = newWidth;
 }
 
 void Pixmap::resample_Y ( u32 newHeight )
 {
-    Color* newPixels = new Color [ m_width * newHeight ]();
+    Color* newPixels = (Color *)sgMalloc ( sizeof(Color) * m_width * newHeight );
     
     if ( newHeight < m_height )
     {
@@ -486,7 +483,7 @@ void Pixmap::resample_Y ( u32 newHeight )
         }
     }
     
-    delete [] m_pixels;
+    sgFree ( m_pixels );
     m_pixels = newPixels;
     m_height = newHeight;
 }

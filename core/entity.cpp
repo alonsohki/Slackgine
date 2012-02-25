@@ -43,7 +43,7 @@ Entity::~Entity()
     // Recursively delete all the child entities
     for ( EntityVector::iterator iter = m_children.begin(); iter != m_children.end(); ++iter )
     {
-        delete *iter;
+        sgDelete *iter;
     }
     
     // Unlink us from our parent
@@ -70,7 +70,7 @@ Entity::~Entity()
           iter != knownComponents.end();
           ++iter )
     {
-        delete *iter;
+        sgDelete *iter;
     }
 }
 

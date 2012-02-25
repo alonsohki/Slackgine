@@ -36,7 +36,7 @@ bool Texture::load ( l3m::Model*, IStream& stream, float version )
         return setError ( "Error reading the texture image size" );
 
     // Create a buffer for this
-    char* buffer = new char [ size ];
+    char* buffer = sgNew char [ size ];
     // Fill it
     if ( stream.readData ( buffer, size, 1 ) != 1 )
         return setError ( "Error reading the texture pixel data" );
@@ -44,7 +44,7 @@ bool Texture::load ( l3m::Model*, IStream& stream, float version )
     std::istringstream is ( std::string(buffer, size) );
     m_image.load ( is );
 
-    delete [] buffer;
+    sgDelete [] buffer;
 
     return true;
 }

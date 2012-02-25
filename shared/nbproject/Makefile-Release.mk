@@ -34,6 +34,8 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/memory_leak_detector.o \
+	${OBJECTDIR}/memory.o \
 	${OBJECTDIR}/pixmap.o \
 	${OBJECTDIR}/thread.o \
 	${OBJECTDIR}/thread_condition.o \
@@ -66,6 +68,16 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libshared.a: ${OBJECTFILES}
 	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libshared.a
 	${AR} -rv ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libshared.a ${OBJECTFILES} 
 	$(RANLIB) ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libshared.a
+
+${OBJECTDIR}/memory_leak_detector.o: memory_leak_detector.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -I. -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/memory_leak_detector.o memory_leak_detector.cpp
+
+${OBJECTDIR}/memory.o: memory.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -I. -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/memory.o memory.cpp
 
 ${OBJECTDIR}/pixmap.o: pixmap.cpp 
 	${MKDIR} -p ${OBJECTDIR}

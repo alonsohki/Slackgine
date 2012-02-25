@@ -30,12 +30,12 @@ Time::~Time ()
 {
 }
 
-u32 Time::getSystemTime () const
+u32 Time::getSystemTime ()
 {
     return getSystemTimeMS() / 1000;
 }
 
-u64 Time::getSystemTimeMS () const
+u64 Time::getSystemTimeMS ()
 {
     timespec ts;
     clock_gettime ( CLOCK_MONOTONIC, &ts );
