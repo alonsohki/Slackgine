@@ -84,11 +84,7 @@ void display ( void )
 
     if ( model == 0 )
     {
-        while ( 1 )
-        {
-            model = sg->getModelManager().requestBlocking ("spherecube.l3m");
-            sg->getModelManager().releaseUnloading ( model );
-        }
+        model = sg->getModelManager().requestBlocking ("spherecube.l3m");
         l3m::Scene* sce = l3m::Util::findScene(model);
         if ( sce != 0 )
             glutReshapeWindow( sce->width(), sce->height() );
@@ -126,9 +122,6 @@ void display ( void )
         fprintf ( stderr, "Error ending the scene: %s\n", error );
     }
     
-    sg->getModelManager().releaseUnloading ( model );
-    model = 0;
     glutSwapBuffers ();
-    
     glutPostRedisplay ();
 }

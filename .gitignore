@@ -42,6 +42,7 @@ renderer/build/
 renderer/dist/
 renderer/nbproject/private/
 shaders/nbproject/private/
+shaders/.dep.inc
 shared/.dep.inc
 shared/build/
 shared/dist/
