@@ -175,7 +175,7 @@ bool Pixmap::loadPNG ( std::istream& stream )
     int bit_depth;
     int color_type;
     png_get_IHDR(png_ptr, info_ptr, (png_uint_32*)&m_width, (png_uint_32*)&m_height, &bit_depth, &color_type, 0, 0, 0);
-
+    
     m_pixels = (Color *)sgMalloc ( sizeof(Color) * m_width * m_height );
     png_bytep* row_pointers = png_get_rows( png_ptr, info_ptr );
     
@@ -201,6 +201,8 @@ bool Pixmap::loadPNG ( std::istream& stream )
             memcpy ( &pixels[h*m_width], &row[0], 4*m_width );
         }
     }
+    
+    png_destroy_read_struct(&png_ptr, &info_ptr, &end_info );
     
     return true;
 }
