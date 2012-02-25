@@ -17,6 +17,7 @@ using namespace Core;
 World::World ()
 : Entity ( this )
 {
+    transform() = IdentityTransform ();
 }
 
 World::~World ()
