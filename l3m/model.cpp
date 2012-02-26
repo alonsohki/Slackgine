@@ -31,7 +31,7 @@ static const enum
 Model::Model ()
 {
     m_size = 0;
-    mCompressionLevel = 9;
+    mCompressionLevel = 0;
 }
 
 Model::~Model ()
