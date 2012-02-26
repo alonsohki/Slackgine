@@ -21,6 +21,7 @@
       <itemPath>Android.mk</itemPath>
       <itemPath>Makefile</itemPath>
     </logicalFolder>
+    <itemPath>BufferWrapStream.h</itemPath>
     <itemPath>FastDelegate.h</itemPath>
     <itemPath>FastDelegateBind.h</itemPath>
     <itemPath>color.h</itemPath>

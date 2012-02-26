@@ -17,6 +17,7 @@
 #include "l3m.h"
 #include "components/factory.h"
 #include "components/unknown.h"
+#include "shared/BufferWrapStream.h"
 
 using namespace l3m;
 
@@ -163,7 +164,7 @@ bool Model::load(std::istream& fp)
         }
         
         // Wrap the buffer into a stream
-        boost::iostreams::stream<boost::iostreams::array_source> iss ( data, len );
+        BufferWrapIStream<char> iss ( data, len );
         IStream dataStream ( &iss, is.flags() );
         
         IComponent* component = ComponentFactory::create( type );
