@@ -29,12 +29,13 @@ static void print_help ( const char* path )
     puts ( "If the 'model' parameter is not specified, it will be read from the standard input." );
     puts ( "" );
     puts ( "Available options are:" );
-    puts ( "\t-h|--help\t\tShows this help" );
-    puts ( "\t-d|--delete-duplicates\tDeletes duplicate vertices for each geometry" );
-    puts ( "\t-f|--filter type\tFilters out components of that type" );
-    puts ( "\t-T|--clean-texture-ids\tFilters the texture ids to make them a clean name" );
-    puts ( "\t-U|--delete-unused\tFilters out the unused materials" );
+    puts ( "\t-h|--help\t\t\tShows this help" );
+    puts ( "\t-d|--delete-duplicates\t\tDeletes duplicate vertices for each geometry" );
+    puts ( "\t-f|--filter type\t\tFilters out components of that type" );
+    puts ( "\t-T|--clean-texture-ids\t\tFilters the texture ids to make them a clean name" );
+    puts ( "\t-U|--delete-unused\t\tFilters out the unused materials" );
     puts ( "\t-t|--delete-unused-textures\tFilters out textures not being used by this model materials" );
+    puts ( "\t-z|--compression-level\t\tSets the compression level of the output model (0-9)" );
 }
 
 int main ( int argc, char* const * argv )
@@ -46,6 +47,8 @@ int main ( int argc, char* const * argv )
     bool do_clean_texture_ids = false;
     bool do_delete_unused = false;
     bool do_delete_unused_textures = false;
+    u32 compressionLevel = 0;
+    bool compressionLevelSet = false;
     
     while ( 1 )
     {
@@ -56,13 +59,14 @@ int main ( int argc, char* const * argv )
            { "clean-texture-ids",       0, 0, 'T' },
            { "delete-unused",           0, 0, 'U' },
            { "delete-unused-textures",  0, 0, 't' },
+           { "compression-level",       0, 0, 'z' },
            { 0,                         0, 0, 0   }
         };
 
         int c;
         int option_index;
         
-        c = getopt_long(argc, argv, "hdf:TUt", long_options, &option_index);
+        c = getopt_long(argc, argv, "hdf:TUtz:", long_options, &option_index);
         if ( c == -1 )
             break;
         
@@ -95,6 +99,11 @@ int main ( int argc, char* const * argv )
 
             case 't':
                 do_delete_unused_textures = true;
+                break;
+                
+            case 'z':
+                compressionLevel = atoi(optarg);
+                compressionLevelSet = true;
                 break;
 
             default:
@@ -140,6 +149,9 @@ int main ( int argc, char* const * argv )
         return EXIT_FAILURE;
     if ( do_delete_unused_textures && delete_unused_textures ( &model ) == false )
         return EXIT_FAILURE;
+    
+    if ( compressionLevelSet )
+        model.setCompressionLevel( compressionLevel );
     
     // Write the result to the standard output.
     if ( !model.save(std::cout) )
