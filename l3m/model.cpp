@@ -10,8 +10,6 @@
 // AUTHORS:     Alberto Alonso <rydencillo@gmail.com>
 //
 
-#include <boost/iostreams/device/array.hpp>
-#include <boost/iostreams/stream.hpp>
 #include <cstring>
 #include <zlib.h>
 #include "l3m.h"
