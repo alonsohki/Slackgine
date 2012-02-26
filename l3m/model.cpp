@@ -10,7 +10,10 @@
 // AUTHORS:     Alberto Alonso <rydencillo@gmail.com>
 //
 
+#include <boost/iostreams/device/array.hpp>
+#include <boost/iostreams/stream.hpp>
 #include <cstring>
+#include <zlib.h>
 #include "l3m.h"
 #include "components/factory.h"
 #include "components/unknown.h"
@@ -27,8 +30,9 @@ static const enum
 } L3M_SAVE_ENDIANNESS = L3M_LOW_ENDIAN;
 
 Model::Model ()
-: m_size ( 0 )
 {
+    m_size = 0;
+    mCompressionLevel = 9;
 }
 
 Model::~Model ()
@@ -123,16 +127,59 @@ bool Model::load(std::istream& fp)
         if ( is.read32 ( &len, 1 ) != 1 )
             return setError ( "Unable to read the component data length" );
         
+        // Check if the chunk is compressed
+        b8 isCompressed;
+        if ( is.readBoolean(&isCompressed) == false )
+            return setError ( "Error reading the compression marker" );
+        
+        // Reserve memory for the component data
+        u32 compressedLength = 0;
+        char* data;
+        if ( isCompressed == true )
+        {
+            if ( is.read32 ( &compressedLength ) == false )
+                return setError ( "Error reading the compressed component original length" );
+            data = new char [ len + compressedLength ];
+            if ( is.readData( &data[len], compressedLength, 1 ) != 1 )
+            {
+                delete [] data;
+                return setError ( "Error reading the compressed chunk" );
+            }
+            uLongf destLen = len;
+            if ( uncompress((Bytef*)&data[0], &destLen, (Bytef*)&data[len], compressedLength) != Z_OK )
+            {
+                delete [] data;
+                return setError ( "Error uncompressing the component data" );
+            }
+        }
+        else
+        {
+            data = new char [ len ];
+            if ( is.readData ( &data[0], len, 1 ) != 1 )
+            {
+                delete [] data;
+                return setError ( "Error reading the component data" );
+            }
+        }
+        
+        // Wrap the buffer into a stream
+        boost::iostreams::stream<boost::iostreams::array_source> iss ( data, len );
+        IStream dataStream ( &iss, is.flags() );
+        
         IComponent* component = ComponentFactory::create( type );
         if ( component == 0 )
         {
             // If we don't know how to handle this component type, create an unknown component.
-            component = sgNew l3m::UnknownComponent ( type, version, len );
+            component = sgNew l3m::UnknownComponent ( type, version, len, isCompressed, compressedLength );
         }
         
         // Load the component data
-        if ( component->load ( this, is, version ) == false )
+        if ( component->load ( this, dataStream, version ) == false )
+        {
+            delete [] data;
             return setError ( "Unable to load a component of type '%s': %s", type.c_str(), component->error() );
+        }
+        delete [] data;
         m_vecComponents.push_back ( component );
     }
     
@@ -162,7 +209,9 @@ bool Model::save(std::ostream& fp)
     os.writeData ( reinterpret_cast<char*>(&targetIsBigEndian), sizeof(u8), 1 );
     
     // Flags
-    u32 flags = os.flags() & ~IOStream::ENDIAN_SWAPPING;
+    u32 flags = os.flags() & ~( IOStream::ENDIAN_SWAPPING | IOStream::COMPRESSION );
+    if ( mCompressionLevel > 0 )
+        flags |= IOStream::COMPRESSION;
     if ( os.write32 ( &flags, 1 ) != 1 )
         return setError ( "Unable to write the stream flags" );
     
@@ -189,15 +238,62 @@ bool Model::save(std::ostream& fp)
         
         // Write the component to a temporary buffer
         std::ostringstream oss;
-        OStream data ( &oss, IOStream::NONE );
+        OStream data ( &oss, os.flags() );
         if ( !m_vecComponents[i]->save ( this, data ) )
             return setError ( m_vecComponents[i]->error() );
         
         // Write this buffer length
         u32 len = oss.str().length();
-        if ( !os.write32 ( &len, 1 ) )
+        if ( !os.write32 ( len ) )
             return setError ( "Error writing the component data length" );
-        os.writeData ( oss.str().c_str(), len, 1 );
+        
+        if ( m_vecComponents[i]->type() == "unknown" )
+        {
+            UnknownComponent* unk = static_cast < UnknownComponent* > ( m_vecComponents[i] );
+            if ( !os.writeBoolean(unk->shouldCompress()) )
+                return setError ( "Error writing the compression marker" );
+            if ( !os.write32 (unk->compressedLength()) )
+                return setError ( "Error writing the unknown component compressed length" );
+            if ( !os.writeData ( oss.str().c_str(), len, 1 ) )
+                return setError ( "Error writing the data chunk" );
+        }
+        if ( mCompressionLevel > 0 && m_vecComponents[i]->shouldCompress() == true )
+        {
+            if ( !os.writeBoolean(true) )
+                return setError ( "Error writing the compression marker" );
+            
+            // Compress the buffer
+            uLongf bufferLength = compressBound ( len );
+            Bytef* buffer = new Bytef [ bufferLength ];
+            if ( compress2 ( buffer, &bufferLength, (Bytef*)oss.str().c_str(), len, mCompressionLevel) != Z_OK )
+            {
+                delete [] buffer;
+                return setError ( "Error compressing the component data chunk" );
+            }
+            
+            // Write the compressed length
+            u32 compressedLength = static_cast < u32 > ( bufferLength );
+            if ( !os.write32 ( compressedLength ) )
+            {
+                delete [] buffer;
+                return setError ( "Error writing the component compressed data chunk size" );
+            }
+            
+            // Write the data chunk
+            if ( !os.writeData ( (const char *)buffer, compressedLength, 1 ) )
+            {
+                delete [] buffer;
+                return setError ( "Error writing the compressed data chunk" );
+            }
+            delete [] buffer;
+        }
+        else
+        {
+            if ( !os.writeBoolean(false) )
+                return setError ( "Error writing the compression marker" );
+            if ( !os.writeData ( oss.str().c_str(), len, 1 ) )
+                return setError ( "Error writing the data chunk" );
+        }
     }
     
     return true;
@@ -229,4 +325,12 @@ IComponent* Model::createComponent(const std::string& type)
     IComponent* component = ComponentFactory::create( type );
     m_vecComponents.push_back(component);
     return component;
+}
+
+
+//------------------------------------------------------------------------------
+// Compression
+void Model::setCompressionLevel(u32 level)
+{
+    mCompressionLevel = min ( level, (u32)9 );
 }

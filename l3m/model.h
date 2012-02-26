@@ -73,6 +73,12 @@ public:
     
     
     //--------------------------------------------------------------------------
+    // Compression support.
+    void            setCompressionLevel     ( u32 level );
+    u32             getCompressionLevel     () const { return mCompressionLevel; }
+    
+    
+    //--------------------------------------------------------------------------
     // Function to register a delta resolver function, which will be called
     // at the end of the model loading to make it resolve all unresolved deltas.
     // A delta is a reference from a component to another component that must be
@@ -100,12 +106,14 @@ private:
     }
 public:
     const char* error           () const { return m_error; }
+    bool        isOk            () const { return m_error[0] == '\0'; }
     
 private:
     DeltaResolverMap            m_deltas;
     ComponentVector             m_vecComponents;
     char                        m_error [ 1024 ];
     u32                         m_size;
+    u32                         mCompressionLevel;
 };
 
 

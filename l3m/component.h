@@ -44,6 +44,11 @@ public:
     const char*         error           () const { return m_error; }
     
     
+    //--------------------------------------------------------------------------
+    // Method to let child components disallow compression (such as components
+    // writing already compressed data).
+    virtual bool        shouldCompress  () const { return true; }
+    
 protected:
     bool                setError        ( const char* msg, ... )
     {

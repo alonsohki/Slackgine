@@ -34,6 +34,12 @@ public:
     bool        save            ( l3m::Model*, l3m::OStream& stream );
     
     
+    //--------------------------------------------------------------------------
+    // Do not compress components of this type, as they are already compressed
+    // in PNG.
+    bool        shouldCompress  () const { return false; }
+    
+    
     // Accessors
     std::string&        id      () { return m_id; }
     Pixmap&             pixmap  () { return m_image; }
