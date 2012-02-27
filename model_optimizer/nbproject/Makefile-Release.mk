@@ -56,7 +56,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=../l3m/dist/Release/GNU-Linux-x86/libl3m.a ../renderer/dist/Release/GNU-Linux-x86/librenderer.a `pkg-config --libs glew` ../shared/dist/Release/GNU-Linux-x86/libshared.a `pkg-config --libs libpng` ../core/dist/Release/GNU-Linux-x86/libcore.a  
+LDLIBSOPTIONS=../l3m/dist/Release/GNU-Linux-x86/libl3m.a ../renderer/dist/Release/GNU-Linux-x86/librenderer.a `pkg-config --libs glew` ../shared/dist/Release/GNU-Linux-x86/libshared.a `pkg-config --libs libpng` ../core/dist/Release/GNU-Linux-x86/libcore.a -lrt  
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}

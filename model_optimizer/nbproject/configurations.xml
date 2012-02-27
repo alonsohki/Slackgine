@@ -94,6 +94,7 @@
                             OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libcore.a">
               </makeArtifact>
             </linkerLibProjectItem>
+            <linkerOptionItem>-lrt</linkerOptionItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>
@@ -172,6 +173,7 @@
                             OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libcore.a">
               </makeArtifact>
             </linkerLibProjectItem>
+            <linkerOptionItem>-lrt</linkerOptionItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>
@@ -245,6 +247,7 @@
                             OP="${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libcore.a">
               </makeArtifact>
             </linkerLibProjectItem>
+            <linkerOptionItem>-lrt</linkerOptionItem>
           </linkerLibItems>
         </linkerTool>
       </compileType>
