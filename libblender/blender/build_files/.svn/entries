@@ -1,40 +1,0 @@
-10
-
-dir
-40188
-https://svn.blender.org/svnroot/bf-blender/trunk/blender/build_files
-https://svn.blender.org/svnroot/bf-blender
-
-
-
-2011-09-13T16:52:42.731534Z
-40187
-nazgul
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-954f8c5b-7b00-dc11-b283-0030488c597c
-
-cmake
-dir
-
-buildbot
-dir
-
-package_spec
-dir
-
-scons
-dir
-

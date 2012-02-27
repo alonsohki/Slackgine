@@ -1,52 +1,0 @@
-10
-
-dir
-40188
-https://svn.blender.org/svnroot/bf-blender/trunk/blender/release/scripts/presets
-https://svn.blender.org/svnroot/bf-blender
-
-
-
-2011-09-07T06:33:29.061260Z
-39991
-mont29
-has-props
-
-
-
-
-
-
-
-
-
-
-
-
-
-954f8c5b-7b00-dc11-b283-0030488c597c
-
-interaction
-dir
-
-render
-dir
-
-ffmpeg
-dir
-
-framerate
-dir
-
-sss
-dir
-
-cloth
-dir
-
-sunsky
-dir
-
-keyconfig
-dir
-

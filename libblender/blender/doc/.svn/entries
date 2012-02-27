@@ -1,49 +1,0 @@
-10
-
-dir
-40188
-https://svn.blender.org/svnroot/bf-blender/trunk/blender/doc
-https://svn.blender.org/svnroot/bf-blender
-
-
-
-2011-09-10T23:06:44.330580Z
-40105
-campbellbarton
-has-props
-
-
-
-
-
-
-
-
-
-
-
-
-
-954f8c5b-7b00-dc11-b283-0030488c597c
-
-guides
-dir
-
-blender_file_format
-dir
-
-license
-dir
-
-build_systems
-dir
-
-manpage
-dir
-
-python_api
-dir
-
-doxygen
-dir
-

@@ -1,40 +1,0 @@
-10
-
-dir
-40188
-https://svn.blender.org/svnroot/bf-blender/trunk/blender/release/scripts
-https://svn.blender.org/svnroot/bf-blender
-
-
-
-2011-09-11T15:36:11.113794Z
-40132
-campbellbarton
-has-props
-
-
-svn:externals
-
-
-
-
-
-
-
-
-
-
-954f8c5b-7b00-dc11-b283-0030488c597c
-
-startup
-dir
-
-presets
-dir
-
-modules
-dir
-
-templates
-dir
-
