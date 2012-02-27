@@ -16,6 +16,7 @@
 MY_LOCAL_CFLAGS := -Wall -pipe -fno-exceptions -fno-rtti -DANDROID -I. -I.. -I../Android/platform_external_libpng
 MY_LOCAL_CXXFLAGS := $(MY_LOCAL_CFLAGS)
 
+BUILD_HOST_STATIC_LIBRARY :=
 include platform_external_libpng/Android.mk
 
 LOCAL_PATH := ../core
