@@ -1,3 +1,9 @@
 [submodule "libblender/blender"]
 	path = libblender/blender
 	url = https://github.com/ldo/blender-main.git
+[submodule "Android/platform_external_libpng"]
+	path = Android/platform_external_libpng
+	url = https://github.com/android/platform_external_libpng
+[submodule "libsquish"]
+	path = libsquish
+	url = https://github.com/ryden/libsquish-mirror.git
