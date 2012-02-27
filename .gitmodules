@@ -1,0 +1,3 @@
+[submodule "libblender/blender"]
+	path = libblender/blender
+	url = https://github.com/ldo/blender-main.git
