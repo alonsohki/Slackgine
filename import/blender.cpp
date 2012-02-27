@@ -9,9 +9,6 @@
 // PURPOSE:     Import models from .blend files.
 // AUTHORS:     Alberto Alonso <rydencillo@gmail.com>
 //
-/* copied from BLI_utildefines.h */
-#define STRINGIFY_ARG(x) #x
-#define STRINGIFY(x) STRINGIFY_ARG(x)
 
 
 #if defined(__linux__) && defined(__GNUC__)
@@ -48,13 +45,13 @@
 #include "BLI_threads.h"
 #include "BLI_scanfill.h" // for BLI_setErrorCallBack, TODO, move elsewhere
 #include "BLI_utildefines.h"
-#include "BLI_callbacks.h"
 
 #include "DNA_ID.h"
 #include "DNA_scene_types.h"
 
 #include "BLI_blenlib.h"
 
+#define __LITTLE_ENDIAN__
 #include "BKE_action.h"
 #include "BKE_armature.h"
 #include "BKE_utildefines.h"
@@ -814,7 +811,7 @@ static bool ImportImage ( ::Image* image, ::Scene* sce, const char* filename, l3
     {
         int flag = IB_rect|IB_multilayer;
         if(image->flag & IMA_DO_PREMUL) flag |= IB_premul;
-        ImBuf* ibuf = IMB_ibImageFromMemory((unsigned char*)image->packedfile->data, (size_t)image->packedfile->size, flag);
+        ImBuf* ibuf = IMB_ibImageFromMemory((unsigned char*)image->packedfile->data, (size_t)image->packedfile->size, flag, "");
         if (ibuf)
         {
             Pixmap pix;
@@ -830,7 +827,7 @@ static bool ImportImage ( ::Image* image, ::Scene* sce, const char* filename, l3
         char abs[FILE_MAX];
         char dir[FILE_MAX];
 
-        BLI_split_dirfile(filename, dir, NULL);
+        BLI_split_dirfile(filename, abs, dir, FILE_MAX, FILE_MAX);
         BKE_rebase_path(abs, sizeof(abs), rel, sizeof(rel), G.main->name, image->name, dir);
 
 
@@ -1016,7 +1013,7 @@ static bool ImportCamera ( l3m::Camera* cam, ::Object* ob, ::Scene* sce )
         case CAM_PERSP:
             cam->type() = l3m::Camera::CAMERA_PERSPECTIVE;
             cam->perspectiveData().aspect = (float)(sce->r.xsch)/(float)(sce->r.ysch);
-            cam->perspectiveData().fov = lens_to_angle(c->lens);
+            cam->perspectiveData().fov = focallength_to_fov(c->lens, c->sensor_y);
             cam->perspectiveData().near = c->clipsta;
             cam->perspectiveData().far = c->clipend;
             break;
