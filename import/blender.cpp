@@ -1013,7 +1013,7 @@ static bool ImportCamera ( l3m::Camera* cam, ::Object* ob, ::Scene* sce )
         case CAM_PERSP:
             cam->type() = l3m::Camera::CAMERA_PERSPECTIVE;
             cam->perspectiveData().aspect = (float)(sce->r.xsch)/(float)(sce->r.ysch);
-            cam->perspectiveData().fov = focallength_to_fov(c->lens, c->sensor_y);
+            cam->perspectiveData().fov = focallength_to_fov(c->lens, c->sensor_x);
             cam->perspectiveData().near = c->clipsta;
             cam->perspectiveData().far = c->clipend;
             break;
