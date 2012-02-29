@@ -251,58 +251,60 @@ bool Model::save(std::ostream& fp)
             UnknownComponent* unk = static_cast < UnknownComponent* > ( m_vecComponents[i] );
             if ( !os.writeBoolean(unk->shouldCompress()) )
                 return setError ( "Error writing the compression marker" );
-            if ( !os.write32 (unk->compressedLength()) )
+            if ( unk->shouldCompress() && !os.write32 (unk->compressedLength()) )
                 return setError ( "Error writing the unknown component compressed length" );
             if ( !os.writeData ( oss.str().c_str(), len, 1 ) )
                 return setError ( "Error writing the data chunk" );
         }
-        
-        // Check if the compression has been forced
-        u32 compressionLevel;
-        bool shouldCompress = m_vecComponents[i]->mustCompress( &compressionLevel );
-        if ( shouldCompress == false )
-        {
-            shouldCompress = mCompressionLevel > 0 && m_vecComponents[i]->shouldCompress() == true;
-            if ( shouldCompress == true )
-                compressionLevel = mCompressionLevel;
-        }
-        
-        if ( shouldCompress == true )
-        {
-            if ( !os.writeBoolean(true) )
-                return setError ( "Error writing the compression marker" );
-            
-            // Compress the buffer
-            uLongf bufferLength = compressBound ( len );
-            Bytef* buffer = new Bytef [ bufferLength ];
-            if ( compress2 ( buffer, &bufferLength, (Bytef*)oss.str().c_str(), len, compressionLevel) != Z_OK )
-            {
-                delete [] buffer;
-                return setError ( "Error compressing the component data chunk" );
-            }
-            
-            // Write the compressed length
-            u32 compressedLength = static_cast < u32 > ( bufferLength );
-            if ( !os.write32 ( compressedLength ) )
-            {
-                delete [] buffer;
-                return setError ( "Error writing the component compressed data chunk size" );
-            }
-            
-            // Write the data chunk
-            if ( !os.writeData ( (const char *)buffer, compressedLength, 1 ) )
-            {
-                delete [] buffer;
-                return setError ( "Error writing the compressed data chunk" );
-            }
-            delete [] buffer;
-        }
         else
         {
-            if ( !os.writeBoolean(false) )
-                return setError ( "Error writing the compression marker" );
-            if ( !os.writeData ( oss.str().c_str(), len, 1 ) )
-                return setError ( "Error writing the data chunk" );
+            // Check if the compression has been forced
+            u32 compressionLevel;
+            bool shouldCompress = m_vecComponents[i]->mustCompress( &compressionLevel );
+            if ( shouldCompress == false )
+            {
+                shouldCompress = mCompressionLevel > 0 && m_vecComponents[i]->shouldCompress() == true;
+                if ( shouldCompress == true )
+                    compressionLevel = mCompressionLevel;
+            }
+
+            if ( shouldCompress == true )
+            {
+                if ( !os.writeBoolean(true) )
+                    return setError ( "Error writing the compression marker" );
+
+                // Compress the buffer
+                uLongf bufferLength = compressBound ( len );
+                Bytef* buffer = new Bytef [ bufferLength ];
+                if ( compress2 ( buffer, &bufferLength, (Bytef*)oss.str().c_str(), len, compressionLevel) != Z_OK )
+                {
+                    delete [] buffer;
+                    return setError ( "Error compressing the component data chunk" );
+                }
+
+                // Write the compressed length
+                u32 compressedLength = static_cast < u32 > ( bufferLength );
+                if ( !os.write32 ( compressedLength ) )
+                {
+                    delete [] buffer;
+                    return setError ( "Error writing the component compressed data chunk size" );
+                }
+
+                // Write the data chunk
+                if ( !os.writeData ( (const char *)buffer, compressedLength, 1 ) )
+                {
+                    delete [] buffer;
+                    return setError ( "Error writing the compressed data chunk" );
+                }
+                delete [] buffer;
+            }
+            else
+            {
+                if ( !os.writeBoolean(false) )
+                    return setError ( "Error writing the compression marker" );
+                if ( !os.writeData ( oss.str().c_str(), len, 1 ) )
+                    return setError ( "Error writing the data chunk" );
+            }
         }
     }
     
