@@ -122,8 +122,8 @@ bool Model::load(std::istream& fp)
             return setError ( "Unable to read the component version for a component of type '%s'", type.c_str() );
         
         // Load the component data length
-        u32 len;
-        if ( is.read32 ( &len, 1 ) != 1 )
+        u32 componentLength;
+        if ( is.read32 ( &componentLength, 1 ) != 1 )
             return setError ( "Unable to read the component data length" );
         
         // Check if the chunk is compressed
@@ -131,21 +131,41 @@ bool Model::load(std::istream& fp)
         if ( is.readBoolean(&isCompressed) == false )
             return setError ( "Error reading the compression marker" );
         
-        // Reserve memory for the component data
-        u32 compressedLength = 0;
-        char* data;
+        // Read the original length before compressing
+        u32 originalLength = 0;
         if ( isCompressed == true )
         {
-            if ( is.read32 ( &compressedLength ) == false )
+            if ( is.read32 ( &originalLength ) == false )
                 return setError ( "Error reading the compressed component original length" );
-            data = new char [ len + compressedLength ];
-            if ( is.readData( &data[len], compressedLength, 1 ) != 1 )
+        }
+        
+        // Create the component
+        IComponent* component = ComponentFactory::create( type );
+        if ( component != 0 )
+            m_vecComponents.push_back ( component );
+
+        // Reserve memory for the component data
+        char* data;
+        if ( component == 0 )
+        {
+            // Unknown component
+            data = new char [ componentLength ];
+            if ( is.readData ( &data[0], componentLength, 1 ) != 1 )
+            {
+                delete [] data;
+                return setError ( "Error reading the unknown component data" );
+            }
+        }
+        else if ( isCompressed == true )
+        {
+            data = new char [ componentLength + originalLength ];
+            if ( is.readData( &data[originalLength], componentLength, 1 ) != 1 )
             {
                 delete [] data;
                 return setError ( "Error reading the compressed chunk" );
             }
-            uLongf destLen = len;
-            if ( uncompress((Bytef*)&data[0], &destLen, (Bytef*)&data[len], compressedLength) != Z_OK )
+            uLongf destLen = originalLength;
+            if ( uncompress((Bytef*)&data[0], &destLen, (Bytef*)&data[originalLength], componentLength) != Z_OK )
             {
                 delete [] data;
                 return setError ( "Error uncompressing the component data" );
@@ -153,8 +173,8 @@ bool Model::load(std::istream& fp)
         }
         else
         {
-            data = new char [ len ];
-            if ( is.readData ( &data[0], len, 1 ) != 1 )
+            data = new char [ componentLength ];
+            if ( is.readData ( &data[0], componentLength, 1 ) != 1 )
             {
                 delete [] data;
                 return setError ( "Error reading the component data" );
@@ -162,14 +182,14 @@ bool Model::load(std::istream& fp)
         }
         
         // Wrap the buffer into a stream
-        BufferWrapIStream<char> iss ( data, len );
+        BufferWrapIStream<char> iss ( data, componentLength );
         IStream dataStream ( &iss, is.flags() );
         
-        IComponent* component = ComponentFactory::create( type );
         if ( component == 0 )
         {
             // If we don't know how to handle this component type, create an unknown component.
-            component = sgNew l3m::UnknownComponent ( type, version, len, isCompressed, compressedLength );
+            component = sgNew l3m::UnknownComponent ( type, version, componentLength, isCompressed, originalLength );
+            m_vecComponents.push_back ( component );
         }
         
         // Load the component data
@@ -179,7 +199,6 @@ bool Model::load(std::istream& fp)
             return setError ( "Unable to load a component of type '%s': %s", type.c_str(), component->error() );
         }
         delete [] data;
-        m_vecComponents.push_back ( component );
     }
     
     m_size = is.totalIn ();
@@ -240,20 +259,19 @@ bool Model::save(std::ostream& fp)
         OStream data ( &oss, os.flags() );
         if ( !m_vecComponents[i]->save ( this, data ) )
             return setError ( m_vecComponents[i]->error() );
+        u32 componentLength = oss.str().length ();
         
-        // Write this buffer length
-        u32 len = oss.str().length();
-        if ( !os.write32 ( len ) )
-            return setError ( "Error writing the component data length" );
-        
-        if ( m_vecComponents[i]->type() == "unknown" )
+        if ( dynamic_cast<UnknownComponent*>(m_vecComponents[i]) != 0 )
         {
+            if ( !os.write32 ( componentLength ) )
+                return setError ( "Error writing the component data length" );
+            
             UnknownComponent* unk = static_cast < UnknownComponent* > ( m_vecComponents[i] );
             if ( !os.writeBoolean(unk->shouldCompress()) )
                 return setError ( "Error writing the compression marker" );
-            if ( unk->shouldCompress() && !os.write32 (unk->compressedLength()) )
+            if ( unk->shouldCompress() && !os.write32 (unk->originalLength()) )
                 return setError ( "Error writing the unknown component compressed length" );
-            if ( !os.writeData ( oss.str().c_str(), len, 1 ) )
+            if ( !os.writeData ( oss.str().c_str(), oss.str().length(), 1 ) )
                 return setError ( "Error writing the data chunk" );
         }
         else
@@ -267,16 +285,13 @@ bool Model::save(std::ostream& fp)
                 if ( shouldCompress == true )
                     compressionLevel = mCompressionLevel;
             }
-
+            
             if ( shouldCompress == true )
             {
-                if ( !os.writeBoolean(true) )
-                    return setError ( "Error writing the compression marker" );
-
                 // Compress the buffer
-                uLongf bufferLength = compressBound ( len );
+                uLongf bufferLength = compressBound ( oss.str().length() );
                 Bytef* buffer = new Bytef [ bufferLength ];
-                if ( compress2 ( buffer, &bufferLength, (Bytef*)oss.str().c_str(), len, compressionLevel) != Z_OK )
+                if ( compress2 ( buffer, &bufferLength, (Bytef*)oss.str().c_str(), oss.str().length(), compressionLevel) != Z_OK )
                 {
                     delete [] buffer;
                     return setError ( "Error compressing the component data chunk" );
@@ -289,6 +304,16 @@ bool Model::save(std::ostream& fp)
                     delete [] buffer;
                     return setError ( "Error writing the component compressed data chunk size" );
                 }
+                
+                if ( !os.write32 ( compressedLength ) )
+                    return setError ( "Error writing the component data length" );
+                
+                if ( !os.writeBoolean(true) )
+                    return setError ( "Error writing the compression marker" );
+                
+                // Write this buffer original length
+                if ( !os.write32 ( componentLength ) )
+                    return setError ( "Error writing the component data length" );
 
                 // Write the data chunk
                 if ( !os.writeData ( (const char *)buffer, compressedLength, 1 ) )
@@ -300,9 +325,11 @@ bool Model::save(std::ostream& fp)
             }
             else
             {
+                if ( !os.write32 ( componentLength ) )
+                    return setError ( "Error writing the component data length" );
                 if ( !os.writeBoolean(false) )
                     return setError ( "Error writing the compression marker" );
-                if ( !os.writeData ( oss.str().c_str(), len, 1 ) )
+                if ( !os.writeData ( oss.str().c_str(), componentLength, 1 ) )
                     return setError ( "Error writing the data chunk" );
             }
         }
