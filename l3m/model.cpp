@@ -256,7 +256,18 @@ bool Model::save(std::ostream& fp)
             if ( !os.writeData ( oss.str().c_str(), len, 1 ) )
                 return setError ( "Error writing the data chunk" );
         }
-        if ( mCompressionLevel > 0 && m_vecComponents[i]->shouldCompress() == true )
+        
+        // Check if the compression has been forced
+        u32 compressionLevel;
+        bool shouldCompress = m_vecComponents[i]->mustCompress( &compressionLevel );
+        if ( shouldCompress == false )
+        {
+            shouldCompress = mCompressionLevel > 0 && m_vecComponents[i]->shouldCompress() == true;
+            if ( shouldCompress == true )
+                compressionLevel = mCompressionLevel;
+        }
+        
+        if ( shouldCompress == true )
         {
             if ( !os.writeBoolean(true) )
                 return setError ( "Error writing the compression marker" );
@@ -264,7 +275,7 @@ bool Model::save(std::ostream& fp)
             // Compress the buffer
             uLongf bufferLength = compressBound ( len );
             Bytef* buffer = new Bytef [ bufferLength ];
-            if ( compress2 ( buffer, &bufferLength, (Bytef*)oss.str().c_str(), len, mCompressionLevel) != Z_OK )
+            if ( compress2 ( buffer, &bufferLength, (Bytef*)oss.str().c_str(), len, compressionLevel) != Z_OK )
             {
                 delete [] buffer;
                 return setError ( "Error compressing the component data chunk" );

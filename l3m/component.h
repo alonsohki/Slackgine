@@ -49,6 +49,11 @@ public:
     // writing already compressed data).
     virtual bool        shouldCompress  () const { return true; }
     
+    
+    //--------------------------------------------------------------------------
+    // Let a child force its compression
+    virtual bool        mustCompress    ( u32* level ) const { return false; }
+    
 protected:
     bool                setError        ( const char* msg, ... )
     {
