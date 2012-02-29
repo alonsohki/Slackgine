@@ -43,3 +43,12 @@ l3m::IComponent* l3m::ComponentFactory::create(const std::string& type)
         return iter->second ();
     return 0;
 }
+
+bool l3m::ComponentFactory::isValidType(const std::string& type)
+{
+    if ( !ms_initialized )
+        initialize ();
+    
+    typesMap::const_iterator iter = ms_types.find ( type );
+    return ( iter != ms_types.end() );
+}

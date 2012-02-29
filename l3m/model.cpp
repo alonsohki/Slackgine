@@ -139,14 +139,9 @@ bool Model::load(std::istream& fp)
                 return setError ( "Error reading the compressed component original length" );
         }
         
-        // Create the component
-        IComponent* component = ComponentFactory::create( type );
-        if ( component != 0 )
-            m_vecComponents.push_back ( component );
-
         // Reserve memory for the component data
         char* data;
-        if ( component == 0 )
+        if ( ComponentFactory::isValidType(type) == false )
         {
             // Unknown component
             data = new char [ componentLength ];
@@ -185,12 +180,14 @@ bool Model::load(std::istream& fp)
         BufferWrapIStream<char> iss ( data, componentLength );
         IStream dataStream ( &iss, is.flags() );
         
+        // Create the component
+        IComponent* component = ComponentFactory::create( type );
         if ( component == 0 )
         {
             // If we don't know how to handle this component type, create an unknown component.
             component = sgNew l3m::UnknownComponent ( type, version, componentLength, isCompressed, originalLength );
-            m_vecComponents.push_back ( component );
         }
+        m_vecComponents.push_back ( component );
         
         // Load the component data
         if ( component->load ( this, dataStream, version ) == false )
@@ -261,8 +258,9 @@ bool Model::save(std::ostream& fp)
             return setError ( m_vecComponents[i]->error() );
         u32 componentLength = oss.str().length ();
         
-        if ( dynamic_cast<UnknownComponent*>(m_vecComponents[i]) != 0 )
+        if ( ComponentFactory::isValidType(m_vecComponents[i]->type()) == false )
         {
+            // About to write an unknown component
             if ( !os.write32 ( componentLength ) )
                 return setError ( "Error writing the component data length" );
             

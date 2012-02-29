@@ -39,6 +39,12 @@ public:
     // type.
     static IComponent*          create          ( const std::string& type );
     
+    
+    //--------------------------------------------------------------------------
+    // isValidType
+    // Returns true if the given component type is known.
+    static bool                 isValidType     ( const std::string& type );
+    
 private:
     static void                 initialize      ();
     
