@@ -303,15 +303,18 @@ bool Model::save(std::ostream& fp)
                     return setError ( "Error writing the component compressed data chunk size" );
                 }
                 
-                if ( !os.write32 ( compressedLength ) )
-                    return setError ( "Error writing the component data length" );
-                
                 if ( !os.writeBoolean(true) )
+                {
+                    delete [] buffer;
                     return setError ( "Error writing the compression marker" );
+                }
                 
                 // Write this buffer original length
                 if ( !os.write32 ( componentLength ) )
+                {
+                    delete [] buffer;
                     return setError ( "Error writing the component data length" );
+                }
 
                 // Write the data chunk
                 if ( !os.writeData ( (const char *)buffer, compressedLength, 1 ) )
