@@ -165,6 +165,7 @@ bool Model::load(std::istream& fp)
                 delete [] data;
                 return setError ( "Error uncompressing the component data" );
             }
+            componentLength = originalLength;
         }
         else
         {
@@ -289,7 +290,7 @@ bool Model::save(std::ostream& fp)
                 // Compress the buffer
                 uLongf bufferLength = compressBound ( oss.str().length() );
                 Bytef* buffer = new Bytef [ bufferLength ];
-                if ( compress2 ( buffer, &bufferLength, (Bytef*)oss.str().c_str(), oss.str().length(), compressionLevel) != Z_OK )
+                if ( compress2 ( buffer, &bufferLength, (Bytef*)oss.str().c_str(), componentLength, compressionLevel) != Z_OK )
                 {
                     delete [] buffer;
                     return setError ( "Error compressing the component data chunk" );

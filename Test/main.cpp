@@ -85,11 +85,18 @@ void display ( void )
     if ( model == 0 )
     {
         model = sg->getModelManager().requestBlocking ("spherecube.l3m");
-        l3m::Scene* sce = l3m::Util::findScene(model);
-        if ( sce != 0 )
-            glutReshapeWindow( sce->width(), sce->height() );
-        if ( entity != 0 )
-            entity->setModel ( model );
+        if ( model->isOk() == true )
+        {
+            l3m::Scene* sce = l3m::Util::findScene(model);
+            if ( sce != 0 )
+                glutReshapeWindow( sce->width(), sce->height() );
+            if ( entity != 0 )
+                entity->setModel ( model );
+        }
+        else
+        {
+            fprintf ( stderr, "Error loading model: %s\n", model->error() );
+        }
     }
     if ( entity == 0 )
     {
