@@ -325,20 +325,27 @@ l3m::Model* ModelManager::requestBlocking (const std::string& model)
 
 l3m::Model* ModelManager::internalRequestBlocking (const std::string& model)
 {
-    LOG_V ( "ModelManager", "Requesting model '%s'...", model.c_str() );
+    
 
     // Check if the model has already been loaded.
     ModelNode* node = findModelNode ( model );
     if ( node != 0 )
     {
+        if ( node->loaded == true )
+        {
+            dispatchRequest ( node );
+            return node->model;
+        }
+        
+        LOG_V ( "ModelManager", "Requesting model '%s'...", model.c_str() );
         node->requestPriority = PRIORITY_NOW;
-        if ( node->loaded == false )
-            processRequest ( node );
+        processRequest ( node );
         if ( node->refCount == 0 )
             moveFromGraveyard ( node );
     }
     else
     {
+        LOG_V ( "ModelManager", "Requesting model '%s'...", model.c_str() );
         node = createModelNode ( model );
         node->requestPriority = PRIORITY_NOW;
         node->refCount = 1;
