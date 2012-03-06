@@ -340,9 +340,10 @@ l3m::Model* ModelManager::internalRequestBlocking (const std::string& model)
         
         LOG_V ( "ModelManager", "Requesting model '%s'...", model.c_str() );
         node->requestPriority = PRIORITY_NOW;
-        processRequest ( node );
-        if ( node->refCount == 0 )
+        if ( node->isAtGraveyard )
             moveFromGraveyard ( node );
+        else
+            processRequest ( node );
     }
     else
     {
