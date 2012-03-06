@@ -333,6 +333,7 @@ l3m::Model* ModelManager::internalRequestBlocking (const std::string& model)
     {
         if ( node->loaded == true )
         {
+            node->refCount++;
             dispatchRequest ( node );
             return node->model;
         }
