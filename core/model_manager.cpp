@@ -833,7 +833,7 @@ void ModelManager::unlink ( ModelNode* node, bool toTheGraveyard )
             }
             
             // Unlink it from the graveyard
-            if ( node->refCount == 0 )
+            if ( node->isAtGraveyard )
             {
                 if ( m_graveyard.first == node )
                     m_graveyard.first = node->graveyard_next;
