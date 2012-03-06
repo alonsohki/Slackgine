@@ -331,7 +331,7 @@ l3m::Model* ModelManager::internalRequestBlocking (const std::string& model)
     ModelNode* node = findModelNode ( model );
     if ( node != 0 )
     {
-        if ( node->loaded == true )
+        if ( node->loaded == true && node->isAtGraveyard == false )
         {
             node->refCount++;
             dispatchRequest ( node );
@@ -529,6 +529,7 @@ ModelManager::ModelNode* ModelManager::createModelNode (const std::string& model
     node->model = 0;
     node->refCount = 0;
     node->loaded = false;
+    node->isAtGraveyard = false;
     node->graveyard_next = 0;
     node->graveyard_prev = 0;
     node->requestPriority = PRIORITY_NONE;
@@ -878,6 +879,7 @@ void ModelManager::unlink ( ModelNode* node, bool toTheGraveyard )
             m_graveyard.last->graveyard_next = node;
             m_graveyard.last = node;
         }
+        node->isAtGraveyard = true;
     }
 }
 
@@ -895,6 +897,7 @@ void ModelManager::moveFromGraveyard (ModelNode* node)
     if ( node->graveyard_prev )
         node->graveyard_prev->graveyard_next = node->graveyard_next;
     
+    node->isAtGraveyard = false;
     node->refCount++;
 }
 

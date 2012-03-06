@@ -80,6 +80,7 @@ private:
         ModelVector     loadedDeps;
         
         // Graveyard stuff
+        bool            isAtGraveyard;
         ModelNode*      graveyard_next;
         ModelNode*      graveyard_prev;
         
