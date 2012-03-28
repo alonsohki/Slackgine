@@ -701,7 +701,7 @@ public:
                     return thiz;
                 
                 // Swap rows
-                for ( u32 j = 0; j < 4; ++i )
+                for ( u32 j = 0; j < 4; ++j )
                 {
                     Swap ( mat[i][j], mat[pivotRow][j] );
                     Swap ( inverse[i][j], inverse[pivotRow][j] );
