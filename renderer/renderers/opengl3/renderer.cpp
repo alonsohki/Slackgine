@@ -97,7 +97,7 @@ bool OpenGL3_Renderer::beginScene ( const Matrix& matProjection, const Matrix& m
 void OpenGL3_Renderer::setupLighting()
 {
     // For now, use a light attached to the camera
-    Vector3 pos ( 0, -1.5f, 1.5f );
+    Vector3 pos ( 0, 0, 0 );
     Vector3 dir ( 0, 1, 0 );
     pos = m_matLookat * pos;
     dir = Matrix2Transform(m_matLookat).orientation() * dir;
