@@ -50,14 +50,8 @@ void GLES20_Renderer::setProgram ( IProgram* program )
     m_program = program;
 }
 
-bool GLES20_Renderer::beginScene ( const Matrix& matProjection, const Matrix& matLookat, TextureLookupFn texLookup )
+static Matrix getBasisChanger ()
 {
-    //glEnable ( GL_CULL_FACE );
-    glCullFace( GL_BACK );
-    glEnable ( GL_BLEND );
-    glBlendFunc ( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    glEnable ( GL_DEPTH_TEST );
-    
     // Change the basis to the OpenGL basis
     static const f32 m [ 16 ] = {
         1.0f,   0.0f,   0.0f,   0.0f,
@@ -66,6 +60,16 @@ bool GLES20_Renderer::beginScene ( const Matrix& matProjection, const Matrix& ma
         0.0f,   0.0f,   0.0f,   1.0f
     };
     static const Matrix s_matBasisChanger ( m );
+    return s_matBasisChanger;
+}
+
+bool GLES20_Renderer::beginScene ( const Matrix& matProjection, const Matrix& matLookat, TextureLookupFn texLookup )
+{
+    glEnable ( GL_CULL_FACE );
+    glCullFace( GL_BACK );
+    glEnable ( GL_BLEND );
+    glBlendFunc ( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    glEnable ( GL_DEPTH_TEST );
     
     const f32* col0 = &matProjection.m[0][0];
     const f32* col1 = &matProjection.m[1][0];
@@ -79,9 +83,9 @@ bool GLES20_Renderer::beginScene ( const Matrix& matProjection, const Matrix& ma
     };
     
     m_matProjection = Matrix ( projectionM );
-    m_matLookat = s_matBasisChanger * matLookat;
+    m_matLookat = matLookat;
     
-    m_viewVector = Vector3 ( 0.0f, 1.0f, 0.0 ) * m_matLookat;
+    m_viewVector = Vector3 ( 0.0f, 1.0f, 0.0 ) * ( getBasisChanger() * m_matLookat );
     m_viewVector.normalize();
     
     m_texLookup = texLookup;
@@ -120,9 +124,10 @@ bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, b
     
     setupLighting ();
     
+    Matrix lookAt = getBasisChanger() * m_matLookat;
     Matrix mat = Transform2Matrix ( transform );
     Matrix matNormals = MatrixForNormals ( mat );
-    Matrix matGeometry = m_matProjection * m_matLookat * mat;
+    Matrix matGeometry = m_matProjection * getBasisChanger() * lookAt * mat;
 
     // Use vertex buffers
     const Vertex* v = 0;
@@ -170,7 +175,7 @@ bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, b
         if ( !fn || fn(mesh) == true )
         {
             m_program->setUniform("un_ProjectionMatrix", m_matProjection );
-            m_program->setUniform("un_LookatMatrix", m_matLookat );
+            m_program->setUniform("un_LookatMatrix", lookAt );
             m_program->setUniform("un_ModelviewMatrix", mat);
             m_program->setUniform("un_NormalMatrix", matNormals);
             m_program->setUniform("un_Matrix", matGeometry );
@@ -278,9 +283,10 @@ bool GLES20_Renderer::renderGeometryMesh ( Geometry* geometry, Mesh* mesh, const
     
     setupLighting ();
     
+    Matrix lookAt = getBasisChanger() * m_matLookat;
     Matrix mat = Transform2Matrix ( transform );
     Matrix matNormals = MatrixForNormals ( mat );
-    Matrix matGeometry = m_matProjection * m_matLookat * mat;
+    Matrix matGeometry = m_matProjection * lookAt * mat;
 
     // Use vertex buffers
     const Vertex* v = 0;
@@ -325,7 +331,7 @@ bool GLES20_Renderer::renderGeometryMesh ( Geometry* geometry, Mesh* mesh, const
         if ( !fn || fn(mesh) == true )
         {
             m_program->setUniform("un_ProjectionMatrix", m_matProjection );
-            m_program->setUniform("un_LookatMatrix", m_matLookat );
+            m_program->setUniform("un_LookatMatrix", lookAt );
             m_program->setUniform("un_ModelviewMatrix", mat);
             m_program->setUniform("un_NormalMatrix", matNormals);
             m_program->setUniform("un_Matrix", matGeometry );
