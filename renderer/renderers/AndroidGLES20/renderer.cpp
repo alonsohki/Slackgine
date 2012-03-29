@@ -133,7 +133,7 @@ bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, b
     Matrix lookAt = getBasisChanger() * m_matLookat;
     Matrix mat = Transform2Matrix ( transform );
     Matrix matNormals = MatrixForNormals ( mat );
-    Matrix matGeometry = m_matProjection * getBasisChanger() * lookAt * mat;
+    Matrix matGeometry = m_matProjection * lookAt * mat;
 
     // Use vertex buffers
     const Vertex* v = 0;
