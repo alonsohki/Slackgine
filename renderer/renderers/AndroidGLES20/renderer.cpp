@@ -50,8 +50,14 @@ void GLES20_Renderer::setProgram ( IProgram* program )
     m_program = program;
 }
 
-static Matrix getBasisChanger ()
+bool GLES20_Renderer::beginScene ( const Matrix& matProjection, const Matrix& matLookat, TextureLookupFn texLookup )
 {
+    //glEnable ( GL_CULL_FACE );
+    glCullFace( GL_BACK );
+    glEnable ( GL_BLEND );
+    glBlendFunc ( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    glEnable ( GL_DEPTH_TEST );
+    
     // Change the basis to the OpenGL basis
     static const f32 m [ 16 ] = {
         1.0f,   0.0f,   0.0f,   0.0f,
@@ -60,16 +66,6 @@ static Matrix getBasisChanger ()
         0.0f,   0.0f,   0.0f,   1.0f
     };
     static const Matrix s_matBasisChanger ( m );
-    return s_matBasisChanger;
-}
-
-bool GLES20_Renderer::beginScene ( const Matrix& matProjection, const Matrix& matLookat, TextureLookupFn texLookup )
-{
-    glEnable ( GL_CULL_FACE );
-    glCullFace( GL_BACK );
-    glEnable ( GL_BLEND );
-    glBlendFunc ( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    glEnable ( GL_DEPTH_TEST );
     
     const f32* col0 = &matProjection.m[0][0];
     const f32* col1 = &matProjection.m[1][0];
@@ -83,9 +79,9 @@ bool GLES20_Renderer::beginScene ( const Matrix& matProjection, const Matrix& ma
     };
     
     m_matProjection = Matrix ( projectionM );
-    m_matLookat = matLookat;
+    m_matLookat = s_matBasisChanger * matLookat;
     
-    m_viewVector = Vector3 ( 0.0f, 1.0f, 0.0 ) * getBasisChanger() * m_matLookat;
+    m_viewVector = Vector3 ( 0.0f, 1.0f, 0.0 ) * m_matLookat;
     m_viewVector.normalize();
     
     m_texLookup = texLookup;
@@ -95,17 +91,11 @@ bool GLES20_Renderer::beginScene ( const Matrix& matProjection, const Matrix& ma
 
 void GLES20_Renderer::setupLighting()
 {
-    // For now, use a light attached to the camera
-    Vector3 pos ( 0, 0, 0 );
-    Vector3 dir ( 0, 1, 0 );
-    pos = m_matLookat * pos;
-    dir = Matrix2Transform(m_matLookat).orientation() * dir;
-    
     m_program->setUniform("un_Lights[0].diffuse", Color(255, 255, 255, 255), false );
-    m_program->setUniform("un_Lights[0].ambient", Color(20, 30, 35, 255), false );
+    m_program->setUniform("un_Lights[0].ambient", Color(0, 0, 0, 255), false );
     m_program->setUniform("un_Lights[0].specular", Color(255, 255, 255, 255), false );
-    m_program->setUniform("un_Lights[0].position", pos );
-    m_program->setUniform("un_Lights[0].direction", dir );
+    m_program->setUniform("un_Lights[0].position", Vector3(0, -2, 0) );
+    m_program->setUniform("un_Lights[0].direction", Vector3(0, 1, 0) );
 }
 
 bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, bool includeTransparent, MeshRenderFn fn )
@@ -132,7 +122,7 @@ bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, b
     
     Matrix mat = Transform2Matrix ( transform );
     Matrix matNormals = MatrixForNormals ( mat );
-    Matrix matGeometry = m_matProjection * getBasisChanger() * m_matLookat * mat;
+    Matrix matGeometry = m_matProjection * m_matLookat * mat;
 
     // Use vertex buffers
     const Vertex* v = 0;
