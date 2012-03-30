@@ -20,6 +20,7 @@
 #include "math/boundingbox.h"
 #include "math/boundingsphere.h"
 #include "pose.h"
+#include "morph.h"
 
 namespace Renderer
 {
@@ -56,6 +57,7 @@ private:
     BoundingSphere      m_bsphere;
     Vector3             m_centroid;
     Renderer::Pose*     m_pose;
+    Renderer::Morph*    m_morph;
     
 private:
     void        freeVertices    ();
@@ -73,7 +75,7 @@ public:
     template < typename T >
     T*          createVertexLayer       ( const std::string& name, u32 numLevels, T* data = 0 )
     {
-        return reinterpret_cast < T* > ( createVertexLayer ( name, data, sizeof(T) ) );
+        return reinterpret_cast < T* > ( createVertexLayer ( name, numLevels, data, sizeof(T) ) );
     }
     
     void*       createVertexLayer       ( const std::string& name, u32 numLevels, void* data, u32 elementSize )
@@ -104,8 +106,11 @@ public:
         layerMap::iterator iter = m_mapVertexLayers.find ( name );
         if ( iter != m_mapVertexLayers.end() )
         {
-            layerData = reinterpret_cast < char* > ( iter->second.data );
-            layerData = &layerData [ level * numVertices() ];
+            u32 count = iter->second.numLevels;
+            if (level < count) {
+                layerData = reinterpret_cast < char* > ( iter->second.data );
+                layerData = &layerData [ level * numVertices() ];
+            }
         }
         return reinterpret_cast < T* > ( layerData );
     }
@@ -162,6 +167,7 @@ public:
     const BoundingSphere&       boundingSphere  () const { return m_bsphere; }
     const Vector3&              centroid        () const { return m_centroid; }
     const Renderer::Pose*       pose            () const { return m_pose; }
+    const Renderer::Morph*      morph           () const { return m_morph; }
     
     std::string&                name            () { return m_name; }
     Renderer::Vertex*&          vertices        () { return m_vertices; }
@@ -171,6 +177,7 @@ public:
     BoundingSphere&             boundingSphere  () { return m_bsphere; }
     Vector3&                    centroid        () { return m_centroid; }
     Renderer::Pose*&            pose            () { return m_pose; }
+    Renderer::Morph*&           morph           () { return m_morph; }
 };
 
 }

@@ -170,6 +170,58 @@ bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, 
         }
     }
     
+    // Setup the morphing
+    if (geometry->morph() != 0)
+    {      
+      Renderer::Morph &morph = *geometry->morph();
+      const int MAX_ACTIVE_SHAPES = Renderer::Morph::MAX_ACTIVE_SHAPES;
+      char attrNamePos[32];
+      char attrNameNorm[32];
+
+      // weights of the active shapes (will be loaded to the shader as uniform)
+      float weight[MAX_ACTIVE_SHAPES]; 
+      
+      u32 numActiveShapes = 0;
+      for (int i = 0; i<MAX_ACTIVE_SHAPES; i++)
+      {
+        bool isShapeActive = false;
+        snprintf(attrNamePos,  sizeof(attrNamePos),  "in_Shape%d_pos", i);
+        snprintf(attrNameNorm, sizeof(attrNameNorm), "in_Shape%d_norm", i);
+        
+        // for each active shape bind the attribute array from the vertex layers
+        if (i < morph.numActiveShapes())
+        {
+          u32 shapeNum = morph.activeShapes()[i];
+          
+          isShapeActive = true
+            && geometry->bindVertexLayer(m_program, attrNamePos,  "shapes", shapeNum, Geometry::FLOAT, false, 3, (u32)(&v->pos()) )
+            && geometry->bindVertexLayer(m_program, attrNameNorm, "shapes", shapeNum, Geometry::FLOAT, false, 3, (u32)(&v->norm()) );
+
+          if (isShapeActive) {
+            weight[i] = morph.shapeWeights()[shapeNum];
+            numActiveShapes++;
+          }
+        }
+        
+        // unbind the attributes of the innactive shapes
+        if (!isShapeActive)
+        {
+          geometry->unbindAttribute(m_program, attrNamePos);
+          geometry->unbindAttribute(m_program, attrNameNorm);
+          
+          // weight is forced to 0 to ensure that they will have no effect
+          weight[i] = 0.0f;
+        }
+      }
+      
+      // load the weights
+      m_program->setUniform("un_ShapeWeight", weight, MAX_ACTIVE_SHAPES);
+      m_program->setUniform("un_Morphing", (numActiveShapes > 0));
+    }
+    else {
+      m_program->setUniform("un_Morphing", false);
+    }
+    
     for ( Geometry::meshNodeVector::iterator iter = geometry->m_meshNodes.begin();
           iter != geometry->m_meshNodes.end();
           ++iter )
@@ -334,6 +386,59 @@ bool OpenGL3_Renderer::renderGeometryMesh(Geometry* geometry, Mesh* mesh, const 
             }
         }
     }
+    
+    // Setup the morphing
+    if (geometry->morph() != 0)
+    {      
+      Renderer::Morph &morph = *geometry->morph();
+      const int MAX_ACTIVE_SHAPES = Renderer::Morph::MAX_ACTIVE_SHAPES;
+      char attrNamePos[32];
+      char attrNameNorm[32];
+
+      // weights of the active shapes (will be loaded to the shader as uniform)
+      float weight[MAX_ACTIVE_SHAPES]; 
+      
+      u32 numActiveShapes = 0;
+      for (int i = 0; i<MAX_ACTIVE_SHAPES; i++)
+      {
+        bool isShapeActive = false;
+        snprintf(attrNamePos,  sizeof(attrNamePos),  "in_Shape%d_pos", i);
+        snprintf(attrNameNorm, sizeof(attrNameNorm), "in_Shape%d_norm", i);
+        
+        // for each active shape bind the attribute array from the vertex layers
+        if (i < morph.numActiveShapes())
+        {
+          u32 shapeNum = morph.activeShapes()[i];
+          
+          isShapeActive = true
+            && geometry->bindVertexLayer(m_program, attrNamePos,  "shapes", shapeNum, Geometry::FLOAT, false, 3, (u32)(&v->pos()) )
+            && geometry->bindVertexLayer(m_program, attrNameNorm, "shapes", shapeNum, Geometry::FLOAT, false, 3, (u32)(&v->norm()) );
+
+          if (isShapeActive) {
+            weight[i] = morph.shapeWeights()[shapeNum];
+            numActiveShapes++;
+          }
+        }
+        
+        // unbind the attributes of the innactive shapes
+        if (!isShapeActive)
+        {
+          geometry->unbindAttribute(m_program, attrNamePos);
+          geometry->unbindAttribute(m_program, attrNameNorm);
+          
+          // weight is forced to 0 to ensure that they will have no effect
+          weight[i] = 0.0f;
+        }
+      }
+      
+      // load the weights
+      m_program->setUniform("un_ShapeWeight", weight, MAX_ACTIVE_SHAPES);
+      m_program->setUniform("un_Morphing", (numActiveShapes > 0));
+    }
+    else {
+      m_program->setUniform("un_Morphing", false);
+    }
+    
     
     for ( Geometry::meshNodeVector::iterator iter = geometry->m_meshNodes.begin();
           iter != geometry->m_meshNodes.end();

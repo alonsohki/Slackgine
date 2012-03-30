@@ -201,3 +201,14 @@ bool OpenGL3_Program::setUniform(const std::string& name, const Color& col, bool
     eglGetError();
     return true;
 }
+
+bool OpenGL3_Program::setUniform(const std::string& name, f32* values, u32 count)
+{
+    GLint loc = glGetUniformLocation ( handler(), name.c_str() );
+    eglGetError();
+    if ( loc == -1 )
+        return false;
+    glUniform1fv ( loc, count, values );
+    eglGetError();
+    return true;
+}

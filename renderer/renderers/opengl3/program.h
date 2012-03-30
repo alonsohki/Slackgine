@@ -51,6 +51,7 @@ public:
     bool                setUniform              ( const std::string& name, const Matrix& mat );
     bool                setUniform              ( const std::string& name, const Matrix* mat, u32 count );
     bool                setUniform              ( const std::string& name, const Color& col, bool includeAlpha );
+    bool                setUniform              ( const std::string& name, f32* values, u32 count );
     
     bool                ok                      () const { return m_linked && m_handler > 0; }
     void                getError                ( char* dest ) const { strcpy(dest, m_error); }
