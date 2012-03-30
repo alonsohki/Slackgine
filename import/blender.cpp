@@ -124,10 +124,13 @@ extern "C" {
 #include "DNA_mesh_types.h"
 #include "DNA_meshdata_types.h"
 #include "DNA_scene_types.h"
+#include "DNA_key_types.h"
 #include "DNA_packedFile_types.h"
 #include "DNA_modifier_types.h"
 #include "BKE_customdata.h"
 #include "BKE_object.h"
+#include "BKE_deform.h"
+#include "BKE_key.h"
 #include "BLI_math.h"
 #include "shared/platform.h"
 #include "math/vector.h"
@@ -137,6 +140,10 @@ extern "C" {
 #include "l3m/components/components.h"
 #include "renderer/mesh.h"
 #include "renderer/vertex_weight.h"
+
+extern "C" {
+  #include "BKE_DerivedMesh.h"
+}
 
 extern void startup_blender (int argc, const char** argv);
 
@@ -475,7 +482,7 @@ static bool compareVertexWeights ( const Renderer::VertexWeight& a, const Render
     return a.weight > b.weight;
 }
 
-static bool ImportVertexWeight ( u32 vertexIdx, Renderer::VertexWeightSOA* vertexWeight, MDeformVert* dv, std::map<i32, i32>& defToJoint )
+static bool ImportVertexWeight ( u32 vertexIdxx, Renderer::VertexWeightSOA* vertexWeight, MDeformVert* dv, std::map<i32, i32>& defToJoint )
 {
     std::vector<Renderer::VertexWeight> vecWeights;
 
@@ -520,6 +527,216 @@ static bool ImportVertexWeight ( u32 vertexIdx, Renderer::VertexWeightSOA* verte
     }
     
     return true;
+}
+
+static bool ImportShapeKeys( l3m::Geometry* g, Object* ob, l3m::Model* model )
+{
+  Mesh* me = (Mesh *) ob->data;
+  Key* key = me->key;
+
+  if ( key && key->type == KEY_RELATIVE && key->refkey )
+  {
+    int numVert = me->totvert;
+    int numKeys = key->totkey;
+    int numKeysUsed = 0;
+    Renderer::Vertex* curShapeVertex;
+    Renderer::Vertex* curLayerVertex;
+
+    Vector3* refVertexPos = (Vector3*) key->refkey->data;
+    
+    // abort if the reference key has different number of vertex than the mesh.
+    // or if the number of keys is <= 1 (only the base key is defined)
+    if ( key->refkey->totelem != numVert || numKeys <= 1) {
+      return false;
+    }
+    
+    // Create a morph component in the model
+    l3m::Morph* modelMorph = (l3m::Morph *)model->createComponent( "morph" );
+    if (modelMorph == 0) {
+      fprintf(stderr, "error: could not create morph component.\n");
+      return false;
+    }
+    Renderer::Morph& morph = modelMorph->morph();
+    
+    // use the geometry name as name for the morph object
+    morph.name() = get_geometry_id(ob);
+    
+    // storage for the vertices of each shape/key
+    Renderer::Vertex* shapes = (Renderer::Vertex*) sgMalloc( sizeof(Renderer::Vertex) * numVert * numKeys );
+
+    int keyNum = 0;
+    curShapeVertex = shapes;
+    for ( KeyBlock* kb = (KeyBlock*) key->block.first; kb; kb = kb->next, keyNum++ )
+    {
+      Vector3* vertexPos = (Vector3*) kb->data;
+      
+#ifdef DEBUG_SHAPE_KEYS
+      fprintf(stderr, "%d: '%s'\n", keyNum, kb->name);
+      fprintf(stderr, "%16s: %5.3f\n", "value", kb->curval);
+      fprintf(stderr, "%16s: %.3f - %.3f\n", "range", kb->slidermin, kb->slidermax);
+      fprintf(stderr, "%16s: %d\n", "type", kb->type);
+      fprintf(stderr, "%16s: %d\n", "relative", kb->relative);
+      fprintf(stderr, "%16s: %d\n", "num. elem", numVert);
+#endif
+
+      // blender use cardinal keys for meshes. There are two other types
+      // (LINEAR and BSPLINE) that i don't know when it use them.
+      if ( kb->type != KEY_CARDINAL ) {
+        fprintf(stderr, "warning: ignoring shape key of unsupported type!\n");
+        continue;
+      }
+      
+      // keys with a vertex group in blender are defined for every vertex in
+      // the mesh but blender ignore the values outside of the vertex group.
+      // since using vertex groups has no benefits we ignore them for the 
+      // sake of simplicity.
+      if ( kb->vgroup[0] != 0 ) {
+        fprintf(stderr, "warning: ignoring vertex group for shape key!\n");
+      }
+
+      // the key has different number of vertex than the mesh.
+      // as far as i can tell this should never happens
+      if ( kb->totelem != numVert ) {
+        fprintf(stderr, "warning: ignoring incomplete shape key!\n");
+        continue;
+      }
+
+      // the refkey or 'Basis' is ignored because it matches the mesh
+      if ( kb == key->refkey ) {
+        continue;
+      }
+
+      // apply the limit of shapes of the engine
+      if (numKeysUsed >= morph.MAX_SHAPES) {
+        fprintf(stderr, "warning: limit of shapes reached, %d keys ignored!\n",
+          (numKeys - keyNum));
+        break;
+      }
+      
+      // store the shape name and weight in the morph object
+      morph.shapeNames()[numKeysUsed] = kb->name;
+      morph.shapeWeights()[numKeysUsed] = kb->curval;
+      
+      // create absolute vertex positions (if they are relative to the refkey)
+      if ( kb->relative && kb != key->refkey) {
+        for ( int i=0; i<numVert; i++ ) {
+          vertexPos[i] += refVertexPos[i];
+        }
+        kb->relative = 0;
+      }      
+      
+      // create a derived mesh to autogenerate normals
+      DerivedMesh * dme = (DerivedMesh *) 
+        mesh_create_derived (me, ob, (float (*)[3]) kb->data);
+      MVert * vertexArray = (MVert *) DM_get_vert_data_layer(dme, CD_MVERT);
+
+      // loop for all the vertex extracting the relative vertex offsets
+      for ( int i = 0; i < numVert; i++ )
+      {
+        MVert * vert;
+        const float normScale = 1/32767.0f;
+        
+        // position and normal in the current shape key
+        vert = &vertexArray[i];
+        Vector3 pos(vert->co[0], vert->co[1], vert->co[2]);
+        Vector3 norm(vert->no[0], vert->no[1], vert->no[2]);
+        norm *= normScale;
+
+        // actual position and normal of the vertices
+        vert = &me->mvert[i];
+        Vector3 meshPos(vert->co[0], vert->co[1], vert->co[2]);
+        Vector3 meshNorm(vert->no[0], vert->no[1], vert->no[2]);
+        meshNorm *= normScale;
+
+        // the relative value is stored in the current shape
+        curShapeVertex[i].pos() = pos - meshPos;
+        curShapeVertex[i].norm() = norm - meshNorm;
+        
+#ifdef DEBUG_SHAPE_KEYS            
+        // display for debugging
+        const float zeroTol = 0.001;
+        pos -= meshPos;
+        norm -= meshNorm;
+        if ( pos.length() > zeroTol ) {
+          fprintf(stderr, 
+            "\t%3d [% 5.3f, % 5.3f, % 5.3f] [% 5.3f, % 5.3f, % 5.3f]\n", 
+            i, pos.x(), pos.y(), pos.z(), norm.x(), norm.y(), norm.z());
+        }
+#endif
+      }
+      
+      // update pointer to the next shape
+      curShapeVertex = &curShapeVertex[numVert];
+      numKeysUsed++;
+      
+      // release derived mesh
+      DM_release(dme);        
+    }
+    
+    morph.numShapes() = numKeysUsed;
+    morph.numActiveShapes() = 0;
+    
+    for ( int i = 0; i < numKeysUsed && morph.numActiveShapes() < morph.MAX_ACTIVE_SHAPES; i++) {
+      const float zeroTol = 0.001;
+      if (fabs(morph.shapeWeights()[i]) > zeroTol) {
+        morph.activeShapes()[morph.numActiveShapes()++] = i;
+      }
+    }
+    
+    if (numKeysUsed > 0) {      
+      int actualVertexCount = g->geometry().numVertices();
+      u32* vertexIdx = (u32*) sgMalloc(sizeof (u32) * actualVertexCount);     
+      
+      // calculate the indexes of the vertices in 'face order'
+      u32 vertexNum = 0;
+      for ( u32 i = 0; i < me->totface; i++ )
+      {
+        MFace* face = &me->mface[i];
+        vertexIdx[vertexNum++] = face->v1;
+        vertexIdx[vertexNum++] = face->v2;
+        vertexIdx[vertexNum++] = face->v3;
+
+        if ( face->v4 != 0 )
+        {
+          vertexIdx[vertexNum++] = face->v1;
+          vertexIdx[vertexNum++] = face->v3;
+          vertexIdx[vertexNum++] = face->v4;
+        }
+      }
+    
+      Renderer::Vertex * layer = g->geometry().createVertexLayer<Renderer::Vertex>("shapes", numKeysUsed, 0);
+      
+      // loop copying the vertex data to the layer levels
+      //   curLayerVertex has actualVertexCount vertices
+      //   curShapeVertex has numVert unique vertices
+      curLayerVertex = layer;
+      curShapeVertex = shapes;
+      for ( int i=0; i<numKeysUsed; i++ )
+      {
+        for ( vertexNum = 0; vertexNum < actualVertexCount; vertexNum++ )
+        {
+          curLayerVertex[vertexNum] = curShapeVertex[vertexIdx[vertexNum]];
+        }
+        
+        // update pointers to the next level and shape
+        curLayerVertex = &curLayerVertex[actualVertexCount];
+        curShapeVertex = &curShapeVertex[numVert];
+      }
+      
+#ifdef DEBUG_SHAPE_KEYS
+      fprintf(stderr, "A layer with %d levels and %d vertices has been created.\n"
+         "The original mesh had %d vertex and %d shapes (%d usable shapes).\n",
+         g->geometry().getVertexLayerLevelCount("shapes"),
+         actualVertexCount, numVert, numKeys, numKeysUsed);
+#endif
+      
+      sgFree(vertexIdx);
+    }
+    
+    sgFree(shapes);        
+    return (numKeysUsed > 0);
+  }
+  return false;
 }
 
 static bool ImportGeometry ( l3m::Geometry* g, Object* ob, l3m::Model* model )
@@ -682,6 +899,10 @@ static bool ImportGeometry ( l3m::Geometry* g, Object* ob, l3m::Model* model )
         }
     }
     
+    // Load the shape keys
+    ImportShapeKeys(g, ob, model);
+    
+    
     // Load every mesh in this geometry
     if ( !totcol )
         return ImportMesh ( &g->geometry(), g->geometry().name(), 0, ob, model );
@@ -709,7 +930,7 @@ static bool ImportSceneObject ( l3m::Model* model, Object* ob, ::Scene* sce, l3m
             node.url = get_geometry_id(ob);
             
             Matrix preTransform;
-            
+
             if ( is_skinned_mesh(ob) )
             {
                 // Get the object transform, and the armature transform
