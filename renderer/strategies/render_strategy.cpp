@@ -34,6 +34,11 @@ void RenderStrategy::getError(char* error) const
     strcpy ( error, m_error );
 }
 
+void RenderStrategy::setError(const char* error)
+{
+    snprintf ( m_error, sizeof(m_error), "%s", error );
+}
+
 void RenderStrategy::setMeshHandler(MeshRenderFn handler)
 {
     m_meshDelegate = handler;
@@ -43,3 +48,4 @@ void RenderStrategy::resetMeshHandler ()
 {
     setMeshHandler ( &RenderStrategy::defaultMeshHandler );
 }
+

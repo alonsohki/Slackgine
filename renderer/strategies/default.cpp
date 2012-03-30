@@ -39,7 +39,15 @@ bool Default::beginScene (Core::Slackgine* sg, Core::Camera* cam)
     {
         Core::Shader* sh = sg->getShaderManager ().load ( "default" );
         if ( !sh )
+        {
+            setError ( "Unable to load the shader" );
             return false;
+        }
+        if ( sh->vert() == 0 && sh->frag() == 0 )
+        {
+            setError ( "No shaders loaded" );
+            return false;
+        }
 
         m_program = Renderer::Factory::createProgram();
         if ( sh->vert() != 0 )
@@ -48,6 +56,11 @@ bool Default::beginScene (Core::Slackgine* sg, Core::Camera* cam)
             m_program->attachShader ( sh->frag() );
         if ( !m_program->link() )
         {
+            char errmsg [ 512 ];
+            char linkerr [ 512 ];
+            m_program->getError ( linkerr );
+            snprintf ( errmsg, sizeof(errmsg), "Unable to link the shader: %s", linkerr );
+            setError ( errmsg );
             return false;
         }
     }

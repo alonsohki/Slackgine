@@ -45,6 +45,8 @@ public:
     //--------------------------------------------------------------------------
     // Error management
     void            getError                ( char* dest ) const;
+protected:
+    void            setError                ( const char* err );
     
 private:
     //--------------------------------------------------------------------------
