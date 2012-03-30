@@ -16,6 +16,7 @@
 #include "geometry.h"
 #include "material.h"
 #include "pose.h"
+#include "morph.h"
 #include "require.h"
 #include "scene.h"
 #include "texture.h"

@@ -149,6 +149,9 @@ bool Geometry::load(l3m::Model* model, l3m::IStream& fp, float version)
         }
     }
     
+    // find the morph object for this geometry (if there is one)
+    model->registerDeltaResolver( this, Geometry::resolveMorphDelta, 0 );
+    
     return true;
 }
 
@@ -280,6 +283,18 @@ bool Geometry::resolvePoseDelta(IComponent* comp, l3m::Model* model, void*)
     l3m::Pose* pose = l3m::Util::findPose ( model, g->poseUrl() );
     if ( pose != 0 )
         g->geometry().pose() = &pose->pose();
+    
+    return true;
+}
+
+bool Geometry::resolveMorphDelta(IComponent* comp, l3m::Model* model, void*)
+{
+    Geometry* g = (Geometry *)comp;
+    
+    // Find a morph object which name matches the geometry
+    l3m::Morph* morph = l3m::Util::findMorph ( model, g->geometry().name() );
+    if ( morph != 0 )
+        g->geometry().morph() = &morph->morph();
     
     return true;
 }

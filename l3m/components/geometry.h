@@ -47,9 +47,11 @@ private:
     
     //--------------------------------------------------------------------------
     // Delta resolved for the geometry pose
-private:
     static bool     resolvePoseDelta        ( IComponent* comp, l3m::Model* model, void* );
     
+    //--------------------------------------------------------------------------
+    // Delta resolver for the morph object
+    static bool     resolveMorphDelta       ( IComponent* comp, l3m::Model* model, void* );
     
     //--------------------------------------------------------------------------
     // Accessors

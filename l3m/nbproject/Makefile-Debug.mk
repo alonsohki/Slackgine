@@ -36,6 +36,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/components/scene.o \
 	${OBJECTDIR}/components/unknown.o \
+	${OBJECTDIR}/components/morph.o \
 	${OBJECTDIR}/stream.o \
 	${OBJECTDIR}/model.o \
 	${OBJECTDIR}/components/material.o \
@@ -82,6 +83,11 @@ ${OBJECTDIR}/components/unknown.o: components/unknown.cpp
 	${MKDIR} -p ${OBJECTDIR}/components
 	${RM} $@.d
 	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/components/unknown.o components/unknown.cpp
+
+${OBJECTDIR}/components/morph.o: components/morph.cpp 
+	${MKDIR} -p ${OBJECTDIR}/components
+	${RM} $@.d
+	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/components/morph.o components/morph.cpp
 
 ${OBJECTDIR}/stream.o: stream.cpp 
 	${MKDIR} -p ${OBJECTDIR}

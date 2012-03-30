@@ -118,7 +118,24 @@ namespace Util
         
         return 0;
     }
-    
+     
+    //--------------------------------------------------------------------------
+    // Function to find a given morph object in a model given its name.
+    static inline l3m::Morph* findMorph ( Model* model, const std::string& name )
+    {
+        for ( Model::ComponentVector::iterator iter = model->components().begin();
+              iter != model->components().end();
+              ++iter )
+        {
+            if ( (*iter)->type() == "morph" )
+            {
+                l3m::Morph* morph = static_cast<l3m::Morph*>(*iter);
+                if ( morph->morph().name() == name )
+                    return morph;
+            }
+        }        
+        return 0;
+    }
     
     //--------------------------------------------------------------------------
     // Function to remove a geometry and clear all the references to it
