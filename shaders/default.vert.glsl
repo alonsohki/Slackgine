@@ -4,8 +4,17 @@ attribute vec3 in_Normal;
 
 attribute vec2 in_VertexWeight;
 attribute vec2 in_Joint;
+
+attribute vec3 in_Shape0_pos;
+attribute vec3 in_Shape0_norm;
+attribute vec3 in_Shape1_pos;
+attribute vec3 in_Shape1_norm;
+
 uniform bool un_Skinning;
 uniform mat4 un_JointMatrices [ 64 ];
+
+uniform bool  un_Morphing;
+uniform float un_ShapeWeight[2];
 
 uniform mat4 un_Matrix;
 uniform mat4 un_ProjectionMatrix;
@@ -21,7 +30,15 @@ void main(void)
 {
     vec4 in_Position4 = vec4 ( in_Position, 1.0 );
     vec4 in_Normal4 = vec4 ( in_Normal, 0.0 );
-
+    
+    if ( un_Morphing == true ) 
+    {
+      in_Position4 += un_ShapeWeight[0] * vec4 ( in_Shape0_pos,  0.0 );
+      in_Normal4   += un_ShapeWeight[0] * vec4 ( in_Shape0_norm, 0.0 );
+      in_Position4 += un_ShapeWeight[1] * vec4 ( in_Shape1_pos,  0.0 );
+      in_Normal4   += un_ShapeWeight[1] * vec4 ( in_Shape1_norm, 0.0 );
+    }
+    
     if ( un_Skinning == true )
     {
         float totalWeight = 0.0;
