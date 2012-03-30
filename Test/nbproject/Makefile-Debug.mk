@@ -51,7 +51,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=../core/dist/Debug/GNU-Linux-x86/libcore.a ../l3m/dist/Debug/GNU-Linux-x86/libl3m.a ../renderer/dist/Debug/GNU-Linux-x86/librenderer.a ../math/dist/Debug/GNU-Linux-x86/libmath.a ../shared/dist/Debug/GNU-Linux-x86/libshared.a `pkg-config --libs libpng` -lpthread  `pkg-config --libs gl` `pkg-config --libs glu` `pkg-config --libs glew` -lglut  
+LDLIBSOPTIONS=../core/dist/Debug/GNU-Linux-x86/libcore.a ../l3m/dist/Debug/GNU-Linux-x86/libl3m.a ../renderer/dist/Debug/GNU-Linux-x86/librenderer.a ../math/dist/Debug/GNU-Linux-x86/libmath.a ../shared/dist/Debug/GNU-Linux-x86/libshared.a `pkg-config --libs libpng` -lpthread  `pkg-config --libs gl` `pkg-config --libs glu` `pkg-config --libs glew` -lglut -lrt  
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -74,7 +74,7 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/test: ${OBJECTFILES}
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -DDEBUG -DDEBUG_VERY_VERBOSE -I.. `pkg-config --cflags libpng` `pkg-config --cflags gl` `pkg-config --cflags glu` `pkg-config --cflags glew`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -I.. `pkg-config --cflags libpng` `pkg-config --cflags gl` `pkg-config --cflags glu` `pkg-config --cflags glew`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
 
 # Subprojects
 .build-subprojects:

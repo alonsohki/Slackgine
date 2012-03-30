@@ -23,7 +23,6 @@
       </toolsSet>
       <compileType>
         <ccTool>
-          <developmentMode>0</developmentMode>
           <incDir>
             <pElem>..</pElem>
           </incDir>
@@ -101,6 +100,7 @@
             <linkerOptionItem>`pkg-config --libs glu`</linkerOptionItem>
             <linkerOptionItem>`pkg-config --libs glew`</linkerOptionItem>
             <linkerOptionItem>-lglut</linkerOptionItem>
+            <linkerLibLibItem>rt</linkerLibLibItem>
           </linkerLibItems>
         </linkerTool>
         <requiredProjects>
