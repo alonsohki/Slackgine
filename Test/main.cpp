@@ -19,8 +19,8 @@
 #include "l3m/l3m.h"
 #include "renderer/strategies/default.h"
 
-const char * DEFAULT_MODEL_PATH = "models";
-const char * DEFAULT_SHADER_PATH = "shaders";
+const char * DEFAULT_MODEL_PATH = ".";
+const char * DEFAULT_SHADER_PATH = "../shaders";
 const char * DEFAULT_MODEL_FILENAME = "head4.l3m";
 
 void display ( void );
