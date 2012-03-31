@@ -49,6 +49,8 @@ ModelManager::~ModelManager ()
     {
         unlink ( &(m_models.begin()->second), false );
     }
+
+    clearUnlinkedModels ();
 }
 
 #if USE_THREADS
