@@ -21,7 +21,7 @@
 
 const char * DEFAULT_MODEL_PATH = ".";
 const char * DEFAULT_SHADER_PATH = "../shaders";
-const char * DEFAULT_MODEL_FILENAME = "head4.l3m";
+const char * DEFAULT_MODEL_FILENAME = "spherecube.l3m";
 
 void display ( void );
 
@@ -341,7 +341,7 @@ void display ( void )
     }
     
     // do a morphing test
-    doMorphingTest();
+    //doMorphingTest();
     
     glutSwapBuffers ();
     glutPostRedisplay ();

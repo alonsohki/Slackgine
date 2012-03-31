@@ -18,6 +18,7 @@ GeometryBase::GeometryBase ()
 : m_vertices ( 0 )
 , m_numVertices ( 0 )
 , m_pose ( 0 )
+, m_morph ( 0 )
 {
 }
 
