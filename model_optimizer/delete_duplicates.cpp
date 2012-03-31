@@ -137,13 +137,13 @@ static bool process_geometry ( Renderer::Geometry& g, u32* numDuplicates )
         newLayer.elementSize = oldLayer.elementSize;
         newLayer.data = sgMalloc ( newLayer.numLevels * newLayer.elementSize * newVertexCount );
         
-        u32 n = 0;
         for ( u32 l = 0; l < newLayer.numLevels; ++l )
         {
-            u8* oldData = (u8*)oldLayer.data;
-            u8* data = (u8*)newLayer.data;
-            oldData = &oldData [ numVertices * oldLayer.elementSize * l ];
-            data = &data [ newVertexCount * newLayer.elementSize * l ];
+            u8* _oldData = (u8*)oldLayer.data;
+            u8* _data = (u8*)newLayer.data;
+            u8* oldData = &_oldData [ numVertices * oldLayer.elementSize * l ];
+            u8* data = &_data [ newVertexCount * newLayer.elementSize * l ];
+            u32 n = 0;
             
             for ( u32 i = 0; i < numVertices; ++i )
             {
