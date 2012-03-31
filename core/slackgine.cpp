@@ -112,7 +112,12 @@ bool Slackgine::beginScene (Camera* cam)
     Matrix projection = IdentityMatrix ();
 
     if ( m_renderStrategy->beginScene ( this, cam ) == false )
+    {
+        char err [ 512 ];
+        m_renderStrategy->getError ( err );
+        snprintf ( m_error, sizeof(m_error), "Failed to begin the scene in the render strategy: %s", err );
         return false;
+    }
 
     if ( cam != 0 )
     {
