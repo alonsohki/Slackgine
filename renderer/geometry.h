@@ -108,8 +108,9 @@ public:
         {
             u32 count = iter->second.numLevels;
             if (level < count) {
+                u32 elementSize = ( iter->second.elementSize );
                 layerData = reinterpret_cast < char* > ( iter->second.data );
-                layerData = &layerData [ level * numVertices() ];
+                layerData = &layerData [ level * elementSize * numVertices() ];
             }
         }
         return reinterpret_cast < T* > ( layerData );
