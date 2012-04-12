@@ -539,11 +539,9 @@ static bool ImportShapeKeys( l3m::Geometry* g, Object* ob, l3m::Model* model )
     int numVert = me->totvert;
     int numKeys = key->totkey;
     int numKeysUsed = 0;
-    Renderer::Vertex* curShapeVertex;
-    Renderer::Vertex* curLayerVertex;
-
-    Vector3* refVertexPos = (Vector3*) key->refkey->data;
     
+    Vector3* refVertexPos = (Vector3*) key->refkey->data;
+
     // abort if the reference key has different number of vertex than the mesh.
     // or if the number of keys is <= 1 (only the base key is defined)
     if ( key->refkey->totelem != numVert || numKeys <= 1) {
@@ -565,10 +563,15 @@ static bool ImportShapeKeys( l3m::Geometry* g, Object* ob, l3m::Model* model )
     Renderer::Vertex* shapes = (Renderer::Vertex*) sgMalloc( sizeof(Renderer::Vertex) * numVert * numKeys );
 
     int keyNum = 0;
-    curShapeVertex = shapes;
     for ( KeyBlock* kb = (KeyBlock*) key->block.first; kb; kb = kb->next, keyNum++ )
     {
+      if (numKeysUsed > numKeys) {
+        fprintf(stderr, "Warning: model number of keys and actual number of keys do not match");
+        break;
+      }
+      
       Vector3* vertexPos = (Vector3*) kb->data;
+      Renderer::Vertex* curShapeVertex = &shapes[numKeysUsed * numVert];
       
 #ifdef DEBUG_SHAPE_KEYS
       fprintf(stderr, "%d: '%s'\n", keyNum, kb->name);
@@ -654,26 +657,25 @@ static bool ImportShapeKeys( l3m::Geometry* g, Object* ob, l3m::Model* model )
         
 #ifdef DEBUG_SHAPE_KEYS            
         // display for debugging
-        const float zeroTol = 0.001;
-        pos -= meshPos;
-        norm -= meshNorm;
-        if ( pos.length() > zeroTol ) {
+        pos = curShapeVertex[i].pos();
+        norm = curShapeVertex[i].norm();
+        if ( pos.length() > 0.001 ) {
           fprintf(stderr, 
             "\t%3d [% 5.3f, % 5.3f, % 5.3f] [% 5.3f, % 5.3f, % 5.3f]\n", 
             i, pos.x(), pos.y(), pos.z(), norm.x(), norm.y(), norm.z());
         }
 #endif
       }
-      
-      // update pointer to the next shape
-      curShapeVertex = &curShapeVertex[numVert];
-      numKeysUsed++;
-      
+            
       // release derived mesh
       DM_release(dme);        
+      
+      // we have just used one more key
+      numKeysUsed++;
     }
     
-    morph.numShapes() = numKeysUsed;
+    // Calculate the number of shapes actives in the morph object
+    morph.numShapes() = numKeysUsed;    
     morph.numActiveShapes() = 0;
     
     for ( int i = 0; i < numKeysUsed && morph.numActiveShapes() < morph.MAX_ACTIVE_SHAPES; i++) {
@@ -683,51 +685,76 @@ static bool ImportShapeKeys( l3m::Geometry* g, Object* ob, l3m::Model* model )
       }
     }
     
-    if (numKeysUsed > 0) {      
+    // Calculate the indexes of the vertices in 'face order'
+    if (numKeysUsed > 0) {
       int actualVertexCount = g->geometry().numVertices();
       u32* vertexIdx = (u32*) sgMalloc(sizeof (u32) * actualVertexCount);     
       
-      // calculate the indexes of the vertices in 'face order'
       u32 vertexNum = 0;
       for ( u32 i = 0; i < me->totface; i++ )
       {
         MFace* face = &me->mface[i];
-        vertexIdx[vertexNum++] = face->v1;
-        vertexIdx[vertexNum++] = face->v2;
-        vertexIdx[vertexNum++] = face->v3;
-
+        
+        if (vertexNum+3 > actualVertexCount) {
+          fprintf(stderr, "Warning: the geometry doesn't include all the vertices\n");
+          break;
+        }
+        
+        vertexIdx[vertexNum+0] = face->v1;
+        vertexIdx[vertexNum+1] = face->v2;
+        vertexIdx[vertexNum+2] = face->v3;
+        vertexNum += 3;
+        
         if ( face->v4 != 0 )
         {
-          vertexIdx[vertexNum++] = face->v1;
-          vertexIdx[vertexNum++] = face->v3;
-          vertexIdx[vertexNum++] = face->v4;
+          if (vertexNum+3 > actualVertexCount) {
+            fprintf(stderr, "Warning: the geometry doesn't include all the vertices\n");
+            break;
+          }
+          
+          vertexIdx[vertexNum+0] = face->v1;
+          vertexIdx[vertexNum+1] = face->v3;
+          vertexIdx[vertexNum+2] = face->v4;
+          vertexNum += 3;
         }
       }
     
-      Renderer::Vertex * layer = g->geometry().createVertexLayer<Renderer::Vertex>("shapes", numKeysUsed, 0);
+      // Create the vertex layer
+      if (!g->geometry().createVertexLayer<Renderer::Vertex>("shapes", numKeysUsed, 0)) {
+        fprintf(stderr, "Error: could not create the vertex layer 'shapes'!\n");
+      }
       
-      // loop copying the vertex data to the layer levels
-      //   curLayerVertex has actualVertexCount vertices
-      //   curShapeVertex has numVert unique vertices
-      curLayerVertex = layer;
-      curShapeVertex = shapes;
-      for ( int i=0; i<numKeysUsed; i++ )
+      // Copy the vertex data to the vertex layer
+      for ( u32 i=0; i<numKeysUsed; i++ )
       {
-        for ( vertexNum = 0; vertexNum < actualVertexCount; vertexNum++ )
-        {
-          curLayerVertex[vertexNum] = curShapeVertex[vertexIdx[vertexNum]];
+        // layer is the current level of the vertex layer and has actualVertexCount vertices
+        Renderer::Vertex* layer = g->geometry().getVertexLayer<Renderer::Vertex>("shapes", i);
+        
+        // curShapeVertex is the vertex data of the current shape and has numVert unique vertices
+        Renderer::Vertex* curShapeVertex = &shapes[i * numVert];
+        
+        if (!layer) {
+          fprintf(stderr, "Warning: could not get shape %d\n", i);
+          continue;
         }
         
-        // update pointers to the next level and shape
-        curLayerVertex = &curLayerVertex[actualVertexCount];
-        curShapeVertex = &curShapeVertex[numVert];
+        // do the copy
+        for ( u32 n = 0; n < actualVertexCount; n++ )
+        {
+          u32 idx = vertexIdx[n];
+          if (idx > numVert) {
+            fprintf(stderr, "Warning: vertex overflow requesting index %d\n", idx);
+            idx = 0;
+          }          
+          layer[n] = curShapeVertex[idx];
+        }
       }
       
 #ifdef DEBUG_SHAPE_KEYS
       fprintf(stderr, "A layer with %d levels and %d vertices has been created.\n"
-         "The original mesh had %d vertex and %d shapes (%d usable shapes).\n",
-         g->geometry().getVertexLayerLevelCount("shapes"),
-         actualVertexCount, numVert, numKeys, numKeysUsed);
+        "The original mesh had %d vertex and %d shapes (%d usable shapes).\n",
+        g->geometry().getVertexLayerLevelCount("shapes"),
+        actualVertexCount, numVert, numKeys, numKeysUsed);
 #endif
       
       sgFree(vertexIdx);
@@ -919,6 +946,11 @@ static bool ImportGeometry ( l3m::Geometry* g, Object* ob, l3m::Model* model )
     }
 }
 
+void printVector(const char * pre, const Vector3 & v, const char * post = "")
+{
+  fprintf(stderr, "%s[ %5.3f %5.3f %5.3f ]%s", pre, v.x(), v.y(), v.z(), post);
+}
+
 static bool ImportSceneObject ( l3m::Model* model, Object* ob, ::Scene* sce, l3m::Scene* modelScene )
 {
     switch ( ob->type )
@@ -928,9 +960,10 @@ static bool ImportSceneObject ( l3m::Model* model, Object* ob, ::Scene* sce, l3m
             Mesh* me = (Mesh*)ob->data;
             l3m::Scene::Node& node = modelScene->createGeometryNode();
             node.url = get_geometry_id(ob);
-            
-            Matrix preTransform;
 
+            Matrix preTransform;
+            Matrix normalMatrix;
+            
             if ( is_skinned_mesh(ob) )
             {
                 // Get the object transform, and the armature transform
@@ -946,7 +979,9 @@ static bool ImportSceneObject ( l3m::Model* model, Object* ob, ::Scene* sce, l3m
                 node.transform = get_node_transform_ob(ob, &scale);
                 preTransform = scale;
             }
-
+            
+            normalMatrix = MatrixForNormals(preTransform);
+            
             // Apply the transform
             // Find the geometry associated to this url.
             for ( l3m::Model::ComponentVector::iterator miter = model->components().begin();
@@ -957,19 +992,47 @@ static bool ImportSceneObject ( l3m::Model* model, Object* ob, ::Scene* sce, l3m
                 {
                     Renderer::Geometry& g = static_cast<l3m::Geometry *>(*miter)->geometry();
 
-                    // Apply the scaling to every vertex.
+                    // Prepare pre-transformation loops
+                    u32 numVertices = g.numVertices();
+                    u32 numShapes = g.getVertexLayerLevelCount("shapes");                    
+                    Renderer::Vertex * oldVertex = (Renderer::Vertex*) sgMalloc(numVertices * sizeof(Renderer::Vertex));
+
+                    // Apply the transformation to every vertex
                     Renderer::Vertex* v = g.vertices();
-                    for ( u32 i = 0; i < g.numVertices(); ++i )
+                    for ( u32 i = 0; i < numVertices; i++ )
                     {
-                        Vector3 pos = v[i].pos() * preTransform;
-                        v[i].pos() = pos;
-                        Vector3 norm = v[i].norm() * MatrixForNormals(preTransform);
-                        v[i].norm() = norm;
+                        oldVertex[i] = v[i];
+                        
+                        v[i].pos() *= preTransform;
+                        v[i].norm() *= normalMatrix;
                         v[i].norm().normalize();
                     }
+                    
+                    // Apply the transformation to every shape
+                    for ( u32 level = 0; level < numShapes; level++ )
+                    {
+                        Renderer::Vertex * shape = g.getVertexLayer<Renderer::Vertex>("shapes", level);
+                        for ( u32 i = 0; i < numVertices; i++ )
+                        {                          
+                          // make the shape absolute for transformation
+                          shape[i].pos() += oldVertex[i].pos();
+                          shape[i].norm() += oldVertex[i].norm();
+                          
+                          shape[i].pos() *= preTransform;
+                          shape[i].norm() *= normalMatrix;
+                          shape[i].norm().normalize();
+                          
+                          // make the shape relative again
+                          shape[i].pos() -= v[i].pos();
+                          shape[i].norm() -= v[i].norm();
+                        }
+                    }
+                    
+                    // cleanup
+                    sgFree(oldVertex);
                 }
             }
-     
+
             // Import the set of textures
             bool has_uvs = (bool)CustomData_has_layer(&me->fdata, CD_MTFACE);
             if ( has_uvs )
