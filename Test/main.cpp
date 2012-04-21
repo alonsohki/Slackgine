@@ -19,7 +19,7 @@
 #include "l3m/l3m.h"
 #include "renderer/strategies/default.h"
 
-const char * DEFAULT_MODEL_PATH = ".";
+const char * DEFAULT_MODEL_PATH = "..";
 const char * DEFAULT_SHADER_PATH = "../shaders";
 const char * DEFAULT_MODEL_FILENAME = "spherecube.l3m";
 
@@ -33,18 +33,17 @@ static Slackgine* sg = 0;
 static Camera* cam = 0;
 static l3m::Morph* morph = 0;
 static bool singleShapeMode = true;
-static bool autoShapeCircling = true;
+static bool autoShapeCircling = false;
 
 static void morphingTestKeyPress(unsigned char key, int x, int y)
 {
   const u32 MAX_ACTIVE_SHAPES = Renderer::Morph::MAX_ACTIVE_SHAPES;
   bool isDecrem = (glutGetModifiers() & GLUT_ACTIVE_ALT);
-  bool isActive = false;
-  float* weights = morph->morph().shapeWeights();
-  u32* activeShape = morph->morph().activeShapes();
-  u32 numActiveShapes = morph->morph().numActiveShapes();
+
+  Renderer::Morph & mo = morph->morph();
+  u32* activeShape = mo.activeShapes();
+  f32* activeWeights = mo.activeWeights();
   int shape = -1;
-  float weight;
   
   const float dWeight = 0.05f;
   const float zeroTol = 0.001f;
@@ -55,7 +54,7 @@ static void morphingTestKeyPress(unsigned char key, int x, int y)
     case 'a':
     case 'A':
       autoShapeCircling = !autoShapeCircling;
-      printf("Automatic Sape Circling: %s!\n", 
+      printf("Automatic Shape Circling: %s!\n", 
         autoShapeCircling? "enabled" : "disabled");
       break;
       
@@ -69,13 +68,7 @@ static void morphingTestKeyPress(unsigned char key, int x, int y)
     default:
       if ( key >= '1' && key <= '9' ) {
         shape = (key - '1');
-        if (shape < morph->morph().numShapes()) {
-          weight = weights[shape];
-          weight += (isDecrem)? -dWeight : dWeight;
-          weight = (weight > zeroTol)? weight : 0.0f;
-          weight = (weight < oneTol )? weight : 1.0f;
-        }
-        else {
+        if (shape >= mo.numShapes()) {
           shape = -1;
         }
       }
@@ -84,76 +77,73 @@ static void morphingTestKeyPress(unsigned char key, int x, int y)
   if (shape >= 0) {
     autoShapeCircling = false;
       
+    float weight = (isDecrem)? 0.0f:dWeight;
+    int index = mo.findActiveShapeIndex(shape);
+    if (index >= 0)
+    {
+      weight = activeWeights[index];
+      weight += (isDecrem)? -dWeight:dWeight;
+      if (weight > oneTol)
+        weight = 1.0f;
+      else if (weight < zeroTol)
+        weight = 0.0f;
+    }
+        
     // single shape mode: only one shape can be active 
     if (singleShapeMode)
     {
-      if (numActiveShapes > 0) {
+      if (mo.numActiveShapes() == 0)
+      {
+        if (!isDecrem)
+          mo.addActiveShape(shape, weight);
+      }
+      else if (mo.numActiveShapes() > 0)
+      {
+        mo.numActiveShapes() = 1;
+        
         if (activeShape[0] == shape) {
-          weights[shape] = weight;
+          mo.setActiveShapeWeight(0, weight);
         }
-        else {
-          weights[activeShape[0]] -= dWeight;
-          if (weights[activeShape[0]] < zeroTol) {
-            weights[activeShape[0]] = 0.0f;
-            numActiveShapes--;
+        else if (!isDecrem) {
+          activeWeights[0] -= dWeight;
+          if (activeWeights[0] < zeroTol) {
+            activeWeights[0] = 0;
+            mo.reset();
           }
         }
       }
       
-      if (numActiveShapes > 1) {
-        numActiveShapes = 1;
+      if (mo.numActiveShapes() > 0) {
+        printf("Single Shape Mode: %.2f [Shape %d] '%s'\n",
+          activeWeights[0], activeShape[0]+1,
+          mo.shapeNames()[activeShape[0]].c_str());
       }
-      
-      if (numActiveShapes == 0 && !isDecrem) {
-        activeShape[numActiveShapes++] = shape;
-        weights[shape] = dWeight;        
-      }
-
-      morph->morph().numActiveShapes() = numActiveShapes;
-      
-      printf("Single Shape Mode: %.2f [Shape %d] '%s'\n",
-        morph->morph().shapeWeights()[activeShape[0]], activeShape[0]+1,
-        morph->morph().shapeNames()[activeShape[0]].c_str());
-      fflush(stdout);
     }
     else // single shape mode disabled
     {
-      isActive = false;
-      for ( u32 i = 0; i < numActiveShapes; i++ )
-      {
-        if (shape == activeShape[i]) {
-          weights[shape] = weight;
-          isActive = true;
-        }
-        if (weights[activeShape[i]] < zeroTol) {
-          weights[activeShape[i]] = 0.0f;
-          for ( u32 j = i+1; j < numActiveShapes; j++ ) {
-            activeShape[i] = activeShape[j];
-          }
-          numActiveShapes--;
+      if (!mo.setShapeWeight(shape, weight)) {
+        printf("Cannot activate more shapes, limit reached!\n");
+      }
+      
+      for ( u32 i = 0; i < mo.numActiveShapes(); i++ ) {
+        if (activeWeights[i] < zeroTol) {
+          mo.disableActiveShape(i);
         }
       }
 
-      if (!isActive && !isDecrem && numActiveShapes < MAX_ACTIVE_SHAPES) {
-        activeShape[numActiveShapes++] = shape;
-        weights[shape] = dWeight;
-      
-      }
-      morph->morph().numActiveShapes() = numActiveShapes;
-      
-      if (numActiveShapes > 0) {
+      if (mo.numActiveShapes() > 0) {
         printf("Active Shapes:\n");
-        for ( u32 i = 0; i < numActiveShapes; i++ ) {
+        for ( u32 i = 0; i < mo.numActiveShapes(); i++ ) {
           printf("  %d: %.2f [Shape %2d] '%s'\n",
-            i+1, morph->morph().shapeWeights()[activeShape[i]],
-            activeShape[i]+1,
-            morph->morph().shapeNames()[activeShape[i]].c_str());
+            i+1, activeWeights[i], activeShape[i]+1,
+            mo.shapeNames()[activeShape[i]].c_str());
         }
-      }      
+      }
       
     }
   }
 }
+
 
 static void doAutoShapeCircling()
 {
@@ -161,17 +151,16 @@ static void doAutoShapeCircling()
   const float weightThreshold = 0.97f;
   const float dWeightSlow = 0.001f;
   const float dWeight = 0.02f;
-  float* weights = morph->morph().shapeWeights();
-  u32 shape = morph->morph().activeShapes()[0];
+  
+  Renderer::Morph& mo = morph->morph();
   bool shapeCircled = false;
   
-  if (morph->morph().numActiveShapes() < 1) {
-    shape = 0;
-    morph->morph().activeShapes()[0] = shape;
+  mo.numActiveShapes() = 1;
+  if (mo.activeShapes()[0] > mo.numShapes()) {
+    mo.activeShapes()[0] = 0;
   }
-  morph->morph().numActiveShapes() = 1;
-  
-  float weight = weights[shape];    
+    
+  float weight = mo.activeWeights()[0];
   
   if (isIncrementing) {
     if (weight > weightThreshold)
@@ -191,19 +180,18 @@ static void doAutoShapeCircling()
       shapeCircled = true;
     }
   }
-  weights[shape] = weight;
+  mo.activeWeights()[0] = weight;
 
   if (shapeCircled) {
-    shape++;
-    if (shape >= morph->morph().numShapes())
+    u32 shape = mo.activeShapes()[0];
+    if (++shape >= mo.numShapes())
       shape = 0;
-    weights[shape] = 0.0f;
-    morph->morph().activeShapes()[0] = shape;
+
+    mo.activeShapes()[0] = shape;
   }
   
   sg->getTime().sleepMS(10);
 }
-
 
 static void doMorphingTest()
 {  
@@ -221,21 +209,34 @@ static void doMorphingTest()
     }
     
     if (morph) {
+      Renderer::Morph& mo = morph->morph();
+       
       printf("Morph object found:\n");
-      for (int i=0; i<morph->morph().numShapes(); i++) {
-        printf("  Shape %2d: %.3f '%s'\n",
-          i+1, morph->morph().shapeWeights()[i],
-          morph->morph().shapeNames()[i].c_str());
+      for (int i=0; i<mo.numShapes(); i++) {
+        printf("  Shape %2d: '%s'\n",
+          i+1, mo.shapeNames()[i].c_str());
       }
       
-      glutKeyboardFunc(morphingTestKeyPress);
+      for (int i=0; i<mo.numActiveShapes(); i++) {
+        int shape = mo.activeShapes()[i];
+        printf("  Active Shape %2d -> %2d '%s', weight = %.3f\n",
+          i+1, shape+1, mo.shapeNames()[shape].c_str(), mo.activeWeights()[i]);
+      }
+      
+      printf("Control keys:\n"
+             "       a -> Toggle automatic shape circling\n"
+             "       s -> Toggle single shape mode\n"
+             "     1-9 -> Increase weight of shape N\n"
+             " ALT 1-9 -> Decrease weight of shape N\n");
+          
+      glutKeyboardFunc(morphingTestKeyPress);           
     }
     else {
       printf("Morph object not found!\n");
     }
   }
-  
-  if (morph && autoShapeCircling) {
+
+  if (autoShapeCircling && morph) {
     doAutoShapeCircling();
   }
 }
@@ -341,7 +342,7 @@ void display ( void )
     }
     
     // do a morphing test
-    //doMorphingTest();
+    doMorphingTest();
     
     glutSwapBuffers ();
     glutPostRedisplay ();
