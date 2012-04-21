@@ -198,7 +198,7 @@ bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, 
             && geometry->bindVertexLayer(m_program, attrNameNorm, "shapes", shapeNum, Geometry::FLOAT, false, 3, (u32)(&v->norm()) );
 
           if (isShapeActive) {
-            weight[i] = morph.shapeWeights()[shapeNum];
+            weight[i] = morph.activeWeights()[i];
             numActiveShapes++;
           }
         }
@@ -415,7 +415,7 @@ bool OpenGL3_Renderer::renderGeometryMesh(Geometry* geometry, Mesh* mesh, const 
             && geometry->bindVertexLayer(m_program, attrNameNorm, "shapes", shapeNum, Geometry::FLOAT, false, 3, (u32)(&v->norm()) );
 
           if (isShapeActive) {
-            weight[i] = morph.shapeWeights()[shapeNum];
+            weight[i] = morph.activeWeights()[i];
             numActiveShapes++;
           }
         }

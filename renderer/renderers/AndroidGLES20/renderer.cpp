@@ -196,7 +196,7 @@ bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, b
             && geometry->bindVertexLayer(m_program, attrNameNorm, "shapes", shapeNum, Geometry::FLOAT, false, 3, (u32)(&v->norm()) );
 
           if (isShapeActive) {
-            weight[i] = morph.shapeWeights()[shapeNum];
+            weight[i] = morph.activeWeights()[i];
             numActiveShapes++;
           }
         }
@@ -408,7 +408,7 @@ bool GLES20_Renderer::renderGeometryMesh ( Geometry* geometry, Mesh* mesh, const
             && geometry->bindVertexLayer(m_program, attrNameNorm, "shapes", shapeNum, Geometry::FLOAT, false, 3, (u32)(&v->norm()) );
 
           if (isShapeActive) {
-            weight[i] = morph.shapeWeights()[shapeNum];
+            weight[i] = morph.activeWeights()[i];
             numActiveShapes++;
           }
         }
