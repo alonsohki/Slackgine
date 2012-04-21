@@ -566,7 +566,7 @@ static bool ImportShapeKeys( l3m::Geometry* g, Object* ob, l3m::Model* model )
     for ( KeyBlock* kb = (KeyBlock*) key->block.first; kb; kb = kb->next, keyNum++ )
     {
       if (numKeysUsed > numKeys) {
-        fprintf(stderr, "Warning: model number of keys and actual number of keys do not match");
+        fprintf(stderr, "Warning: model number of keys and actual number of keys do not match\n");
         break;
       }
       
@@ -616,9 +616,16 @@ static bool ImportShapeKeys( l3m::Geometry* g, Object* ob, l3m::Model* model )
         break;
       }
       
-      // store the shape name and weight in the morph object
-      morph.shapeNames()[numKeysUsed] = kb->name;
-      morph.shapeWeights()[numKeysUsed] = kb->curval;
+      // Add the shape to the morph object
+      {
+        // store the shape name in the morph object
+        morph.shapeNames()[numKeysUsed] = kb->name;
+
+        // make the shape active if its weight is big enough
+        if (fabs(kb->curval) > 0.01) {
+          morph.addActiveShape(numKeysUsed, kb->curval);
+        }
+      }
       
       // create absolute vertex positions (if they are relative to the refkey)
       if ( kb->relative && kb != key->refkey) {
@@ -655,7 +662,7 @@ static bool ImportShapeKeys( l3m::Geometry* g, Object* ob, l3m::Model* model )
         curShapeVertex[i].pos() = pos - meshPos;
         curShapeVertex[i].norm() = norm - meshNorm;
         
-#ifdef DEBUG_SHAPE_KEYS            
+#ifdef DEBUG_SHAPE_KEYS_EXTRA            
         // display for debugging
         pos = curShapeVertex[i].pos();
         norm = curShapeVertex[i].norm();
@@ -676,15 +683,22 @@ static bool ImportShapeKeys( l3m::Geometry* g, Object* ob, l3m::Model* model )
     
     // Calculate the number of shapes actives in the morph object
     morph.numShapes() = numKeysUsed;    
-    morph.numActiveShapes() = 0;
+    morph.checkAndFix();
     
-    for ( int i = 0; i < numKeysUsed && morph.numActiveShapes() < morph.MAX_ACTIVE_SHAPES; i++) {
-      const float zeroTol = 0.001;
-      if (fabs(morph.shapeWeights()[i]) > zeroTol) {
-        morph.activeShapes()[morph.numActiveShapes()++] = i;
+    #ifdef DEBUG_SHAPE_KEYS
+      fprintf(stderr, "Morph object created:\n");
+      fprintf(stderr, "  numShapes:       %d\n", morph.numShapes());
+      for (int i=0; i<morph.numShapes(); i++) {
+        fprintf(stderr, "    %2d name:    %s\n", 
+          i, morph.shapeNames()[i].c_str());
       }
-    }
-    
+      fprintf(stderr, "  numActiveShapes: %d\n", morph.numActiveShapes());
+      for (int i=0; i<morph.numActiveShapes(); i++) {
+        fprintf(stderr, "    %2d shape:   %d, weight: %.3f\n", 
+          i, morph.activeShapes()[i], morph.activeWeights()[i]);
+      }
+    #endif
+
     // Calculate the indexes of the vertices in 'face order'
     if (numKeysUsed > 0) {
       int actualVertexCount = g->geometry().numVertices();
