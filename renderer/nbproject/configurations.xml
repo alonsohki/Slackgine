@@ -55,6 +55,7 @@
     <itemPath>material.h</itemPath>
     <itemPath>mesh.cpp</itemPath>
     <itemPath>mesh.h</itemPath>
+    <itemPath>morph.cpp</itemPath>
     <itemPath>morph.h</itemPath>
     <itemPath>pose.cpp</itemPath>
     <itemPath>pose.h</itemPath>

@@ -42,6 +42,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/renderers/opengl3/renderer.o \
 	${OBJECTDIR}/mesh.o \
 	${OBJECTDIR}/renderers/opengl3/program.o \
+	${OBJECTDIR}/morph.o \
 	${OBJECTDIR}/renderers/opengl3/geometry.o \
 	${OBJECTDIR}/renderers/opengl3/shader.o \
 	${OBJECTDIR}/pose.o \
@@ -113,6 +114,11 @@ ${OBJECTDIR}/renderers/opengl3/program.o: renderers/opengl3/program.cpp
 	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3
 	${RM} $@.d
 	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DPROFILING -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/renderers/opengl3/program.o renderers/opengl3/program.cpp
+
+${OBJECTDIR}/morph.o: morph.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -DDEBUG -DDEBUG_VERY_VERBOSE -DPROFILING -I.. -MMD -MP -MF $@.d -o ${OBJECTDIR}/morph.o morph.cpp
 
 ${OBJECTDIR}/renderers/opengl3/geometry.o: renderers/opengl3/geometry.cpp 
 	${MKDIR} -p ${OBJECTDIR}/renderers/opengl3
