@@ -7,8 +7,10 @@ attribute vec2 in_Joint;
 
 attribute vec3 in_Shape0_pos;
 attribute vec3 in_Shape0_norm;
+/*
 attribute vec3 in_Shape1_pos;
 attribute vec3 in_Shape1_norm;
+*/
 
 uniform bool un_Skinning;
 uniform mat4 un_JointMatrices [ 64 ];
@@ -35,8 +37,10 @@ void main(void)
     {
       in_Position4 += un_ShapeWeight[0] * vec4 ( in_Shape0_pos,  0.0 );
       in_Normal4   += un_ShapeWeight[0] * vec4 ( in_Shape0_norm, 0.0 );
+      /*
       in_Position4 += un_ShapeWeight[1] * vec4 ( in_Shape1_pos,  0.0 );
       in_Normal4   += un_ShapeWeight[1] * vec4 ( in_Shape1_norm, 0.0 );
+      */
     }
     
     if ( un_Skinning == true )
