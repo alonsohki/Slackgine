@@ -59,10 +59,14 @@ bool GLES20_Program::link()
     GLint linked;
     glGetProgramiv ( m_handler, GL_LINK_STATUS, &linked );
     eglGetError();
-    m_linked = ( linked != GL_FALSE );
+    m_linked = ( linked == GL_TRUE );
 
     if ( !m_linked )
-        glGetShaderInfoLog ( m_handler, sizeof(m_error), 0, m_error );
+    {
+        GLint length;
+        glGetProgramiv ( m_handler, GL_INFO_LOG_LENGTH, &length );
+        glGetProgramInfoLog ( m_handler, sizeof(m_error), &length, m_error );
+    }
     
     return m_linked;
 }

@@ -74,13 +74,13 @@ bool GLES20_Shader::load ( std::istream& fp )
     GLint status;
     glGetShaderiv ( m_handler, GL_COMPILE_STATUS, &status );
     eglGetError();
-    m_loaded = !!status;
+    m_loaded = ( status == GL_TRUE );
 
     if ( !m_loaded )
     {
         GLint length;
         glGetShaderiv ( m_handler, GL_INFO_LOG_LENGTH, &length );
-        glGetShaderInfoLog ( m_handler, length, &length, m_error );
+        glGetShaderInfoLog ( m_handler, sizeof(m_error), &length, m_error );
     }
 
     return m_loaded;

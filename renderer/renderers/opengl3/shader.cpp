@@ -80,7 +80,11 @@ bool OpenGL3_Shader::load ( std::istream& fp )
     m_loaded = ( status == GL_TRUE );
     
     if ( !m_loaded )
-        glGetShaderInfoLog(m_handler, sizeof(m_error), 0, m_error );
+    {
+        GLint length;
+        glGetShaderiv ( m_handler, GL_INFO_LOG_LENGTH, &length );
+        glGetShaderInfoLog ( m_handler, sizeof(m_error), &length, m_error );
+    }
     
     return m_loaded;
 }
