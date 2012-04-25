@@ -59,7 +59,7 @@ bool Geometry::initialize ()
           ++iter )
     {
         m_offsets [ iter->first ] = size;
-        size += numVertices() * iter->second.elementSize;
+        size += numVertices() * iter->second.elementSize * iter->second.numLevels;
     }
 
     // Upload the vertex data
@@ -73,7 +73,7 @@ bool Geometry::initialize ()
           ++iter )
     {
         glBufferSubData ( GL_ARRAY_BUFFER, m_offsets [ iter->first ],
-                          numVertices()*iter->second.elementSize, iter->second.data );
+                          numVertices()*iter->second.elementSize*iter->second.numLevels, iter->second.data );
     }
     
     // Generate the mesh nodes based on the geometry meshes.
