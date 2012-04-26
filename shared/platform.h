@@ -59,4 +59,10 @@ static inline bool detectBigEndian ()
     return ( u.v[0] == 0 );
 }
 
+#ifdef __cplusplus
+#  define OFFSETOF(T, MEMBER) (reinterpret_cast<size_t>(&(reinterpret_cast<T *>(0))->MEMBER))
+#else
+#  define OFFSETOF(T, MEMBER) ((size_t)(&((T)(0))->MEMBER))
+#endif
+
 #include "memory.h"

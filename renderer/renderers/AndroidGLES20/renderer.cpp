@@ -127,7 +127,7 @@ bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, b
     if ( !geometry->initialized() )
         if ( !geometry->initialize() )
             return false;
-    
+       
     setupLighting ();
     
     Matrix lookAt = getBasisChanger() * m_matLookat;
@@ -172,7 +172,7 @@ bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, b
     if (geometry->morph() != 0)
     {      
       Renderer::Morph &morph = *geometry->morph();
-      const int MAX_ACTIVE_SHAPES = Renderer::Morph::MAX_ACTIVE_SHAPES;
+      const u32 MAX_ACTIVE_SHAPES = Renderer::Morph::MAX_ACTIVE_SHAPES;
       char attrNamePos[32];
       char attrNameNorm[32];
 
@@ -180,7 +180,7 @@ bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, b
       float weight[MAX_ACTIVE_SHAPES]; 
       
       u32 numActiveShapes = 0;
-      for (int i = 0; i<MAX_ACTIVE_SHAPES; i++)
+      for (u32 i = 0; i<MAX_ACTIVE_SHAPES; i++)
       {
         bool isShapeActive = false;
         snprintf(attrNamePos,  sizeof(attrNamePos),  "in_Shape%d_pos", i);
@@ -190,10 +190,12 @@ bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, b
         if (i < morph.numActiveShapes())
         {
           u32 shapeNum = morph.activeShapes()[i];
+          u32 offsetPos = (u32) OFFSETOF(Vertex, pos());
+          u32 offsetNorm = (u32) OFFSETOF(Vertex, norm());
           
           isShapeActive = true
-            && geometry->bindVertexLayer(m_program, attrNamePos,  "shapes", shapeNum, Geometry::FLOAT, false, 3, (u32)(&v->pos()) )
-            && geometry->bindVertexLayer(m_program, attrNameNorm, "shapes", shapeNum, Geometry::FLOAT, false, 3, (u32)(&v->norm()) );
+            && geometry->bindVertexLayer(m_program, attrNamePos,  "shapes", shapeNum, Geometry::FLOAT, false, 3, offsetPos)
+            && geometry->bindVertexLayer(m_program, attrNameNorm, "shapes", shapeNum, Geometry::FLOAT, false, 3, offsetNorm);
 
           if (isShapeActive) {
             weight[i] = morph.activeWeights()[i];
@@ -384,7 +386,7 @@ bool GLES20_Renderer::renderGeometryMesh ( Geometry* geometry, Mesh* mesh, const
     if (geometry->morph() != 0)
     {      
       Renderer::Morph &morph = *geometry->morph();
-      const int MAX_ACTIVE_SHAPES = Renderer::Morph::MAX_ACTIVE_SHAPES;
+      const u32 MAX_ACTIVE_SHAPES = Renderer::Morph::MAX_ACTIVE_SHAPES;
       char attrNamePos[32];
       char attrNameNorm[32];
 
@@ -392,7 +394,7 @@ bool GLES20_Renderer::renderGeometryMesh ( Geometry* geometry, Mesh* mesh, const
       float weight[MAX_ACTIVE_SHAPES]; 
       
       u32 numActiveShapes = 0;
-      for (int i = 0; i<MAX_ACTIVE_SHAPES; i++)
+      for (u32 i = 0; i<MAX_ACTIVE_SHAPES; i++)
       {
         bool isShapeActive = false;
         snprintf(attrNamePos,  sizeof(attrNamePos),  "in_Shape%d_pos", i);
@@ -402,10 +404,12 @@ bool GLES20_Renderer::renderGeometryMesh ( Geometry* geometry, Mesh* mesh, const
         if (i < morph.numActiveShapes())
         {
           u32 shapeNum = morph.activeShapes()[i];
+          u32 offsetPos = (u32) OFFSETOF(Vertex, pos());
+          u32 offsetNorm = (u32) OFFSETOF(Vertex, norm());
           
           isShapeActive = true
-            && geometry->bindVertexLayer(m_program, attrNamePos,  "shapes", shapeNum, Geometry::FLOAT, false, 3, (u32)(&v->pos()) )
-            && geometry->bindVertexLayer(m_program, attrNameNorm, "shapes", shapeNum, Geometry::FLOAT, false, 3, (u32)(&v->norm()) );
+            && geometry->bindVertexLayer(m_program, attrNamePos,  "shapes", shapeNum, Geometry::FLOAT, false, 3, offsetPos)
+            && geometry->bindVertexLayer(m_program, attrNameNorm, "shapes", shapeNum, Geometry::FLOAT, false, 3, offsetNorm);
 
           if (isShapeActive) {
             weight[i] = morph.activeWeights()[i];
@@ -525,7 +529,7 @@ bool GLES20_Renderer::renderGeometryMesh ( Geometry* geometry, Mesh* mesh, const
             }
         }
     }
-    
+
     return true;
 }
 

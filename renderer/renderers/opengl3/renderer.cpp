@@ -192,10 +192,12 @@ bool OpenGL3_Renderer::render ( Geometry* geometry, const Transform& transform, 
         if (i < morph.numActiveShapes())
         {
           u32 shapeNum = morph.activeShapes()[i];
+          u32 offsetPos = (u32) OFFSETOF(Vertex, pos());
+          u32 offsetNorm = (u32) OFFSETOF(Vertex, norm());
           
           isShapeActive = true
-            && geometry->bindVertexLayer(m_program, attrNamePos,  "shapes", shapeNum, Geometry::FLOAT, false, 3, (u32)(&v->pos()) )
-            && geometry->bindVertexLayer(m_program, attrNameNorm, "shapes", shapeNum, Geometry::FLOAT, false, 3, (u32)(&v->norm()) );
+            && geometry->bindVertexLayer(m_program, attrNamePos,  "shapes", shapeNum, Geometry::FLOAT, false, 3, offsetPos)
+            && geometry->bindVertexLayer(m_program, attrNameNorm, "shapes", shapeNum, Geometry::FLOAT, false, 3, offsetNorm);
 
           if (isShapeActive) {
             weight[i] = morph.activeWeights()[i];
@@ -409,10 +411,12 @@ bool OpenGL3_Renderer::renderGeometryMesh(Geometry* geometry, Mesh* mesh, const 
         if (i < morph.numActiveShapes())
         {
           u32 shapeNum = morph.activeShapes()[i];
+          u32 offsetPos = (u32) OFFSETOF(Vertex, pos());
+          u32 offsetNorm = (u32) OFFSETOF(Vertex, norm());
           
           isShapeActive = true
-            && geometry->bindVertexLayer(m_program, attrNamePos,  "shapes", shapeNum, Geometry::FLOAT, false, 3, (u32)(&v->pos()) )
-            && geometry->bindVertexLayer(m_program, attrNameNorm, "shapes", shapeNum, Geometry::FLOAT, false, 3, (u32)(&v->norm()) );
+            && geometry->bindVertexLayer(m_program, attrNamePos,  "shapes", shapeNum, Geometry::FLOAT, false, 3, offsetPos)
+            && geometry->bindVertexLayer(m_program, attrNameNorm, "shapes", shapeNum, Geometry::FLOAT, false, 3, offsetNorm);
 
           if (isShapeActive) {
             weight[i] = morph.activeWeights()[i];
