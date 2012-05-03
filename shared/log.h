@@ -14,43 +14,38 @@
 
 #define LOGGING
 
-#ifdef ANDROID
-
-#include <android/log.h>
-
-#   ifdef LOGGING
-#       define LOG_I(tag, msg, ...) __android_log_print(ANDROID_LOG_INFO, tag, msg, ## __VA_ARGS__ )
-#       define LOG_W(tag, msg, ...) __android_log_print(ANDROID_LOG_WARN, tag, msg, ## __VA_ARGS__ )
-#       define LOG_E(tag, msg, ...) __android_log_print(ANDROID_LOG_ERROR, tag, msg, ## __VA_ARGS__ )
-#       define LOG_V(tag, msg, ...) __android_log_print(ANDROID_LOG_VERBOSE, tag, msg, ## __VA_ARGS__ )
-#       define LOG_VV(tag, msg, ...)
-#   endif
-#else
 #ifdef LOGGING
-#       define LOG_I(tag, msg,...) Log("INFO", tag, msg, ## __VA_ARGS__ )
-#       define LOG_W(tag, msg,...) Log("WARNING", tag, msg, ## __VA_ARGS__ )
-#       define LOG_E(tag, msg,...) Log("ERROR", tag, msg, ## __VA_ARGS__ )
-
-#       ifdef DEBUG
-#               define LOG_V(tag, msg,...) Log("VERBOSE", tag, msg, ## __VA_ARGS__ )
-#       else
-#               define LOG_V(...)
-#       endif
-
-#       ifdef DEBUG_VERY_VERBOSE
-#               define LOG_VV(tag, msg,...) Log("VVERBOSE", tag, msg, ## __VA_ARGS__ )
-#       else
-#               define LOG_VV(...)
-#       endif
+# ifdef ANDROID
+#   include <android/log.h>
+#   define LOG_I(tag, msg, ...) __android_log_print(ANDROID_LOG_INFO,    tag, msg, ## __VA_ARGS__ )
+#   define LOG_W(tag, msg, ...) __android_log_print(ANDROID_LOG_WARN,    tag, msg, ## __VA_ARGS__ )
+#   define LOG_E(tag, msg, ...) __android_log_print(ANDROID_LOG_ERROR,   tag, msg, ## __VA_ARGS__ )
+#   define LOG_V(tag, msg, ...) __android_log_print(ANDROID_LOG_VERBOSE, tag, msg, ## __VA_ARGS__ )
+#   define LOG_VV(tag, msg, ...)
+# else
+#   define LOG_I(tag, msg, ...) Log("INFO",      tag, msg, ## __VA_ARGS__ )
+#   define LOG_W(tag, msg, ...) Log("WARNING",   tag, msg, ## __VA_ARGS__ )
+#   define LOG_E(tag, msg, ...) Log("ERROR",     tag, msg, ## __VA_ARGS__ )
+#   ifdef DEBUG
+#     define LOG_V(tag, msg, ...) Log("VERBOSE", tag, msg, ## __VA_ARGS__ )
+#   else
+#     define LOG_V(...)
+#   endif
+#   ifdef DEBUG_VERY_VERBOSE
+#     define LOG_VV(tag, msg, ...) Log("VVERBOSE", tag, msg, ## __VA_ARGS__ )
+#   else
+#     define LOG_VV(...)
+#   endif
+# endif
 #else
-#       define LOG_I(...)
-#       define LOG_W(...)
-#       define LOG_E(...)
-#       define LOG_V(...)
-#       define LOG_VV(...)
+#      define LOG_I(...)
+#      define LOG_W(...)
+#      define LOG_E(...)
+#      define LOG_V(...)
+#      define LOG_VV(...)
 #endif
 
-#endif
+#undef LOGGING
 
 extern void vLog ( const char* level, const char* tag, const char* msg, va_list vl );
 extern void Log ( const char* level, const char* tag, const char* msg, ... );
