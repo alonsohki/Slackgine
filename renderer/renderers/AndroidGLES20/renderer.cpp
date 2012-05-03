@@ -40,7 +40,7 @@ bool GLES20_Renderer::initialize()
     if ( m_initialized )
         return true;
     strcpy ( m_error, "Success" );
-
+       
     m_initialized = ( strcmp(m_error, "Success") == 0 );
     return m_initialized;
 }
@@ -62,6 +62,7 @@ static Matrix getBasisChanger ()
     static const Matrix s_matBasisChanger ( m );
     return s_matBasisChanger;
 }
+
 
 bool GLES20_Renderer::beginScene ( const Matrix& matProjection, const Matrix& matLookat, TextureLookupFn texLookup )
 {
@@ -93,6 +94,7 @@ bool GLES20_Renderer::beginScene ( const Matrix& matProjection, const Matrix& ma
     return true;
 }
 
+
 void GLES20_Renderer::setupLighting()
 {
     // For now, use a light attached to the camera
@@ -108,17 +110,14 @@ void GLES20_Renderer::setupLighting()
     m_program->setUniform("un_Lights[0].direction", dir );
 }
 
-bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, bool includeTransparent, MeshRenderFn fn )
+
+bool GLES20_Renderer::prepareGeometry ( Geometry* geometry, const Transform& transform )
 {
-    if ( m_program == 0 || m_program->ok() == false )
-    {
-        if ( !m_program )
-            strcpy ( m_error, "Invalid program" );
-        else
-            m_program->getError ( m_error );
+    if ( m_program == 0 ) {
+        strcpy ( m_error, "Invalid program" );
         return false;
     }
-    if ( !m_program->use () )
+    if ( !m_program->use() )
     {
         m_program->getError ( m_error );
         return false;
@@ -127,417 +126,252 @@ bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, b
     if ( !geometry->initialized() )
         if ( !geometry->initialize() )
             return false;
-       
-    setupLighting ();
-    
-    Matrix lookAt = getBasisChanger() * m_matLookat;
-    Matrix mat = Transform2Matrix ( transform );
-    Matrix matNormals = MatrixForNormals ( mat );
-    Matrix matGeometry = m_matProjection * lookAt * mat;
 
-    // Use vertex buffers
-    const Vertex* v = 0;
-    glBindBuffer ( GL_ARRAY_BUFFER, geometry->m_vertexBuffer );
     
-    glVertexAttribPointer ( GLES20_Program::POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char *)&(v->pos()) );
-    eglGetError();
-    glVertexAttribPointer ( GLES20_Program::NORMAL, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), (char *)&(v->norm()) );
+    // make sure all the vertex attribute arrays are disabled
+    for ( GLuint index = 0; index < GLES20_Program::MAX_VERTEX_ATTRIBS; index++ ) {
+        glDisableVertexAttribArray(index);
+    }
+    
+    
+    // setup basic vertex attributes
+    glBindBuffer ( GL_ARRAY_BUFFER, geometry->m_vertexBuffer );   
+    glVertexAttribPointer ( GLES20_Program::POSITION, 3, GL_FLOAT, GL_FALSE, 
+                            sizeof(Vertex), (char *) OFFSETOF(Vertex, pos()) );
+    glVertexAttribPointer ( GLES20_Program::NORMAL,   3, GL_FLOAT, GL_TRUE,  
+                            sizeof(Vertex), (char *) OFFSETOF(Vertex, norm()) );
     eglGetError();
     glEnableVertexAttribArray ( GLES20_Program::POSITION );
-    eglGetError();
     glEnableVertexAttribArray ( GLES20_Program::NORMAL );
     eglGetError();
-
-    // Setup the skinning
-    b8 doSkinning = false;
-    Matrix poseMatrices [ Pose::MAX_JOINTS ];
-
-    VertexWeightSOA* weightsSOA = geometry->getVertexLayer<VertexWeightSOA>("weights", 0);
-    if ( geometry->pose() != 0 && weightsSOA != 0 )
+    
+    
+    // setup the matrices
     {
-        u32 weights = 0;
-        u32 joints = sizeof(float) * VertexWeight::MAX_ASSOCIATIONS;
-
-        if ( geometry->bindVertexLayer(m_program, "in_VertexWeight", "weights", 0, Geometry::FLOAT, false, VertexWeight::MAX_ASSOCIATIONS, weights) )
+      Matrix lookAt = getBasisChanger() * m_matLookat;
+      Matrix mat = Transform2Matrix ( transform );
+      Matrix matNormals = MatrixForNormals ( mat );
+      Matrix matGeometry = m_matProjection * lookAt * mat;
+      
+      m_program->setUniform("un_ProjectionMatrix", m_matProjection );
+      m_program->setUniform("un_LookatMatrix",     lookAt );
+      m_program->setUniform("un_ModelviewMatrix",  mat );
+      m_program->setUniform("un_NormalMatrix",     matNormals );
+      m_program->setUniform("un_Matrix",           matGeometry );
+      m_program->setUniform("un_ViewVector",       m_viewVector );
+    }
+    
+    
+    // setup lighting
+    setupLighting ();
+    
+    
+    // setup the texture samplers
+    m_program->setUniform( "un_Sampler0", 0 );
+        
+    
+    // Setup the skinning
+    {
+        bool doSkinning = false;
+        if ( geometry->pose() != 0 )
         {
-            if ( geometry->bindVertexLayer(m_program, "in_Joint", "weights", 0, Geometry::FLOAT, false, VertexWeight::MAX_ASSOCIATIONS, joints ) )
-            {
-                doSkinning = true;
+            Matrix poseMatrices [ Pose::MAX_JOINTS ];
+            u32 offsetWeights = (u32) OFFSETOF(VertexWeightSOA, weight);
+            u32 offsetJoints =  (u32) OFFSETOF(VertexWeightSOA, joint);
+
+            doSkinning = true
+              && geometry->bindVertexLayer(m_program, "in_VertexWeight", "weights", 0, Geometry::FLOAT, false, VertexWeight::MAX_ASSOCIATIONS, offsetWeights)
+              && geometry->bindVertexLayer(m_program, "in_Joint",        "weights", 0, Geometry::FLOAT, false, VertexWeight::MAX_ASSOCIATIONS, offsetJoints);
+
+            if ( doSkinning ) {
                 geometry->pose()->calculateTransforms( &poseMatrices[0] );
+                m_program->setUniform( "un_JointMatrices", &poseMatrices[0], geometry->pose()->numJoints() ); 
             }
         }
+
+        m_program->setUniform("un_Skinning", doSkinning);
     }
+
     
     // Setup the morphing
-    if (geometry->morph() != 0)
-    {      
-      Renderer::Morph &morph = *geometry->morph();
-      const u32 MAX_ACTIVE_SHAPES = Renderer::Morph::MAX_ACTIVE_SHAPES;
-      char attrNamePos[32];
-      char attrNameNorm[32];
+    {
+      bool doMorphing = false; 
+      if ( geometry->morph() != 0 )
+      {      
+        Renderer::Morph &morph = *geometry->morph();
+        const u32 MAX_ACTIVE_SHAPES = Renderer::Morph::MAX_ACTIVE_SHAPES;
+        char attrNamePos[32];
+        char attrNameNorm[32];
 
-      // weights of the active shapes (will be loaded to the shader as uniform)
-      float weight[MAX_ACTIVE_SHAPES]; 
-      
-      u32 numActiveShapes = 0;
-      for (u32 i = 0; i<MAX_ACTIVE_SHAPES; i++)
-      {
-        bool isShapeActive = false;
-        snprintf(attrNamePos,  sizeof(attrNamePos),  "in_Shape%d_pos", i);
-        snprintf(attrNameNorm, sizeof(attrNameNorm), "in_Shape%d_norm", i);
-        
-        // for each active shape bind the attribute array from the vertex layers
-        if (i < morph.numActiveShapes())
+        // weights of the active shapes (will be loaded to the shader as uniform)
+        float weight[MAX_ACTIVE_SHAPES]; 
+
+        u32 numActiveShapes = 0;
+        for (u32 i = 0; i<MAX_ACTIVE_SHAPES; i++)
         {
-          u32 shapeNum = morph.activeShapes()[i];
-          u32 offsetPos = (u32) OFFSETOF(Vertex, pos());
-          u32 offsetNorm = (u32) OFFSETOF(Vertex, norm());
-          
-          isShapeActive = true
-            && geometry->bindVertexLayer(m_program, attrNamePos,  "shapes", shapeNum, Geometry::FLOAT, false, 3, offsetPos)
-            && geometry->bindVertexLayer(m_program, attrNameNorm, "shapes", shapeNum, Geometry::FLOAT, false, 3, offsetNorm);
+          bool isShapeActive = false;
+          snprintf(attrNamePos,  sizeof(attrNamePos),  "in_Shape%d_pos", i);
+          snprintf(attrNameNorm, sizeof(attrNameNorm), "in_Shape%d_norm", i);
 
-          if (isShapeActive) {
-            weight[i] = morph.activeWeights()[i];
-            numActiveShapes++;
+          // for each active shape bind the attribute array from the vertex layers
+          if (i < morph.numActiveShapes())
+          {
+            u32 shapeNum = morph.activeShapes()[i];
+            u32 offsetPos =  (u32) OFFSETOF(Vertex, pos());
+            u32 offsetNorm = (u32) OFFSETOF(Vertex, norm());
+
+            isShapeActive = true
+              && geometry->bindVertexLayer(m_program, attrNamePos,  "shapes", shapeNum, Geometry::FLOAT, false, 3, offsetPos)
+              && geometry->bindVertexLayer(m_program, attrNameNorm, "shapes", shapeNum, Geometry::FLOAT, false, 3, offsetNorm);
+
+            if (isShapeActive) {
+              weight[i] = morph.activeWeights()[i];
+              numActiveShapes++;
+            }
+          }
+
+          // unbind the attributes of the innactive shapes
+          if (!isShapeActive)
+          {
+            geometry->unbindAttribute(m_program, attrNamePos);
+            geometry->unbindAttribute(m_program, attrNameNorm);
+
+            // weight is forced to 0 to ensure that they will have no effect
+            weight[i] = 0.0f;
           }
         }
-        
-        // unbind the attributes of the innactive shapes
-        if (!isShapeActive)
-        {
-          geometry->unbindAttribute(m_program, attrNamePos);
-          geometry->unbindAttribute(m_program, attrNameNorm);
-          
-          // weight is forced to 0 to ensure that they will have no effect
-          weight[i] = 0.0f;
-        }
+
+        // load the weights
+        m_program->setUniform("un_ShapeWeight", weight, MAX_ACTIVE_SHAPES);
+        doMorphing = (numActiveShapes > 0);
       }
-      
-      // load the weights
-      m_program->setUniform("un_ShapeWeight", weight, MAX_ACTIVE_SHAPES);
-      m_program->setUniform("un_Morphing", (numActiveShapes > 0));
-    }
-    else {
-      m_program->setUniform("un_Morphing", false);
-    }
     
-    
-    for ( Geometry::meshNodeVector::iterator iter = geometry->m_meshNodes.begin();
-          iter != geometry->m_meshNodes.end();
-          ++iter )
-    {
-        Mesh* mesh = (*iter).mesh;
-        Material* material = mesh->material();
-        
-        if ( !includeTransparent && material != 0 && material->isTransparent() == true )
-            continue;
-
-        if ( !fn || fn(mesh) == true )
-        {
-            m_program->setUniform("un_ProjectionMatrix", m_matProjection );
-            m_program->setUniform("un_LookatMatrix", lookAt );
-            m_program->setUniform("un_ModelviewMatrix", mat);
-            m_program->setUniform("un_NormalMatrix", matNormals);
-            m_program->setUniform("un_Matrix", matGeometry );
-            m_program->setUniform("un_ViewVector", m_viewVector );
-            
-            // Setup skinning
-            if ( doSkinning )
-            {
-                m_program->setUniform ( "un_JointMatrices", &poseMatrices[0], geometry->pose()->numJoints() ); 
-                m_program->setUniform("un_Skinning", true);
-            }
-            else
-                m_program->setUniform("un_Skinning", false);
-
-            GLenum polyType = GL_INVALID_ENUM;
-            switch ( mesh->polyType() )
-            {
-                case Mesh::TRIANGLES: polyType = GL_TRIANGLES; break;
-                case Mesh::TRIANGLE_STRIP: polyType = GL_TRIANGLE_STRIP; break;
-                case Mesh::TRIANGLE_FAN: polyType = GL_TRIANGLE_FAN; break;
-                default: break;
-            }
-
-            if ( polyType != GL_INVALID_ENUM )
-            {
-                // Set the material
-                i32 textureLevels = 0;
-                if ( material != 0 )
-                {
-                    m_program->setUniform( "un_Material.diffuse", material->diffuse(), true );
-                    m_program->setUniform( "un_Material.ambient", material->ambient(), false );
-                    m_program->setUniform( "un_Material.specular", material->specular(), false );
-                    m_program->setUniform( "un_Material.emission", material->emission(), false );
-                    m_program->setUniform( "un_Material.shininess", material->shininess() );
-                    m_program->setUniform( "un_Material.isShadeless", material->isShadeless() );
-                    
-                    // Setup the texturing
-                    b8 doTexturing = false;
-                    if ( m_texLookup != 0 && material->texture() != "" )
-                    {
-                        ITexture* tex = m_texLookup ( material->texture() );
-                        if ( tex != 0 && tex->bind() &&
-                             geometry->bindVertexLayer(m_program, "in_TexCoord", "uv", 0, Geometry::FLOAT, false, 2, 0) )
-                        {
-                            doTexturing = true;
-                        }
-                    }
-
-                    if ( doTexturing )
-                    {
-                        textureLevels = 1;
-                        m_program->setUniform( "un_Sampler0", 0 );
-                    }
-                    else
-                    {
-                        textureLevels = 0;
-                        geometry->unbindAttribute(m_program, "in_TexCoord");
-                    }
-                }
-                else
-                {
-                    m_program->setUniform( "un_Material.diffuse", Color(255*0.7f, 255*0.7f, 255*0.7f, 255) );
-                    m_program->setUniform( "un_Material.ambient", Vector3(0.7f, 0.7f, 0.7f) );
-                    m_program->setUniform( "un_Material.specular", Vector3(0.0f, 0.0f, 0.0f) );
-                    m_program->setUniform( "un_Material.emission", Vector3(0.0f, 0.0f, 0.0f) );
-                    m_program->setUniform( "un_Material.shininess", 0.0f );
-                    m_program->setUniform( "un_Material.isShadeless", false );
-                    textureLevels = 0;
-                    geometry->unbindAttribute(m_program, "in_TexCoord");
-                }
-
-                m_program->setUniform( "un_TextureLevels", (f32)textureLevels );
-
-                // Bind the indices buffer
-                glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, geometry->m_elementBuffer );
-                eglGetError();
-                glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, reinterpret_cast<const GLvoid *>((*iter).offset * sizeof(u32)) );
-                eglGetError();
-            }
-        }
+      m_program->setUniform("un_Morphing", doMorphing);
     }
     
     return true;
 }
+
+
+bool GLES20_Renderer::drawMeshNode ( Geometry* geometry, u32 meshNum, MeshRenderFn fn )
+{        
+    Geometry::MeshNode& meshNode = geometry->m_meshNodes[meshNum];
+    Mesh* mesh = meshNode.mesh;
+    const void* offsetInElementBuffer = reinterpret_cast<const GLvoid *>( meshNode.offset * sizeof(u32) );
+    
+    // skip meshes that don't pass the MeshRender function
+    if ( fn && ! fn(mesh) ) {
+      return false;
+    }
+    
+    Material* material = mesh->material();
+
+    // Translate the primitive type
+    GLenum polyType = 0;
+    switch ( mesh->polyType() )
+    {
+        case Mesh::TRIANGLES:      polyType = GL_TRIANGLES;      break;
+        case Mesh::TRIANGLE_STRIP: polyType = GL_TRIANGLE_STRIP; break;
+        case Mesh::TRIANGLE_FAN:   polyType = GL_TRIANGLE_FAN;   break;
+        default:
+          // ignore meshes with bad primitive type
+          return false;
+    }
+    
+
+    // Setup the material
+    Material defaultMaterial( 
+        Color(178, 178, 178, 255),  // ambient
+        Color(178, 178, 178, 255)); // difuse
+    
+    if ( material == 0 ) {
+      material = &defaultMaterial;
+    }   
+    m_program->setUniform( "un_Material.diffuse",     material->diffuse(),    true  );
+    m_program->setUniform( "un_Material.ambient",     material->ambient(),    false );
+    m_program->setUniform( "un_Material.specular",    material->specular(),   false );
+    m_program->setUniform( "un_Material.emission",    material->emission(),   false );
+    m_program->setUniform( "un_Material.shininess",   material->shininess()   );
+    m_program->setUniform( "un_Material.isShadeless", material->isShadeless() );
+
+
+    // Setup the texturing
+    {
+        i32 textureLevels = 0;
+        if ( m_texLookup != 0 && !material->texture().empty() )
+        {
+            ITexture* tex = m_texLookup ( material->texture() );
+            if ( tex != 0 && tex->bind()
+              && geometry->bindVertexLayer(m_program, "in_TexCoord", "uv", 0, Geometry::FLOAT, false, 2, 0) )
+            {
+                textureLevels = 1;
+            }
+        }
+
+        if ( textureLevels < 1 )
+        {
+            geometry->unbindAttribute(m_program, "in_TexCoord");
+        }
+        m_program->setUniform( "un_TextureLevels", (f32)textureLevels );
+    }
+
+    // Render the mesh
+    glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, geometry->m_elementBuffer );
+    eglGetError();
+    glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, offsetInElementBuffer );
+    eglGetError();
+    return true;
+}
+
+
+bool GLES20_Renderer::render ( Geometry* geometry, const Transform& transform, bool includeTransparent, MeshRenderFn fn )
+{
+    if ( ! prepareGeometry(geometry, transform) ) {
+        return false;
+    }
+    
+    for ( u32 meshNum=0; meshNum<geometry->m_meshNodes.size(); meshNum++ )
+    {
+        Mesh* mesh = geometry->m_meshNodes[meshNum].mesh;
+        Material* material = mesh->material();
+        
+        // skip transparent models according if includeTransparent is not set
+        if ( !includeTransparent && material != 0 && material->isTransparent() )
+            continue;
+        
+        drawMeshNode( geometry, meshNum, fn );
+    }
+    
+    return true;    
+}
+
 
 bool GLES20_Renderer::renderGeometryMesh ( Geometry* geometry, Mesh* mesh, const Transform& transform, MeshRenderFn fn )
 {
-    if ( m_program == 0 || m_program->ok() == false )
-    {
-        if ( !m_program )
-            strcpy ( m_error, "Invalid program" );
-        else
-            m_program->getError ( m_error );
-        return false;
-    }
-    if ( !m_program->use () )
-    {
-        m_program->getError ( m_error );
+    if ( ! prepareGeometry(geometry, transform) ) {
         return false;
     }
     
-    if ( !geometry->initialized() )
-        if ( !geometry->initialize() )
-            return false;
-    
-    setupLighting ();
-    
-    Matrix lookAt = getBasisChanger() * m_matLookat;
-    Matrix mat = Transform2Matrix ( transform );
-    Matrix matNormals = MatrixForNormals ( mat );
-    Matrix matGeometry = m_matProjection * lookAt * mat;
-
-    // Use vertex buffers
-    const Vertex* v = 0;
-    glBindBuffer ( GL_ARRAY_BUFFER, geometry->m_vertexBuffer );
-    
-    glVertexAttribPointer ( GLES20_Program::POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (char *)&(v->pos()) );
-    eglGetError();
-    glVertexAttribPointer ( GLES20_Program::NORMAL, 3, GL_FLOAT, GL_TRUE, sizeof(Vertex), (char *)&(v->norm()) );
-    eglGetError();
-    glEnableVertexAttribArray ( GLES20_Program::POSITION );
-    eglGetError();
-    glEnableVertexAttribArray ( GLES20_Program::NORMAL );
-    eglGetError();
-
-    // Setup the skinning
-    b8 doSkinning = false;
-    Matrix poseMatrices [ Pose::MAX_JOINTS ];
-
-    VertexWeightSOA* weightsSOA = geometry->getVertexLayer<VertexWeightSOA>("weights", 0);
-    if ( geometry->pose() != 0 && weightsSOA != 0 )
+    for ( u32 meshNum=0; meshNum<geometry->m_meshNodes.size(); meshNum++ )
     {
-        u32 weights = 0;
-        u32 joints = sizeof(float) * VertexWeight::MAX_ASSOCIATIONS;
+        Mesh* curMesh = geometry->m_meshNodes[meshNum].mesh;
 
-        if ( geometry->bindVertexLayer(m_program, "in_VertexWeight", "weights", 0, Geometry::FLOAT, false, VertexWeight::MAX_ASSOCIATIONS, weights) )
-        {
-            if ( geometry->bindVertexLayer(m_program, "in_Joint", "weights", 0, Geometry::FLOAT, false, VertexWeight::MAX_ASSOCIATIONS, joints ) )
-            {
-                doSkinning = true;
-                geometry->pose()->calculateTransforms( &poseMatrices[0] );
-            }
+        if (curMesh == mesh) {
+          drawMeshNode( geometry, meshNum, fn );
+          return true;
         }
     }
     
-    // Setup the morphing
-    if (geometry->morph() != 0)
-    {      
-      Renderer::Morph &morph = *geometry->morph();
-      const u32 MAX_ACTIVE_SHAPES = Renderer::Morph::MAX_ACTIVE_SHAPES;
-      char attrNamePos[32];
-      char attrNameNorm[32];
-
-      // weights of the active shapes (will be loaded to the shader as uniform)
-      float weight[MAX_ACTIVE_SHAPES]; 
-      
-      u32 numActiveShapes = 0;
-      for (u32 i = 0; i<MAX_ACTIVE_SHAPES; i++)
-      {
-        bool isShapeActive = false;
-        snprintf(attrNamePos,  sizeof(attrNamePos),  "in_Shape%d_pos", i);
-        snprintf(attrNameNorm, sizeof(attrNameNorm), "in_Shape%d_norm", i);
-        
-        // for each active shape bind the attribute array from the vertex layers
-        if (i < morph.numActiveShapes())
-        {
-          u32 shapeNum = morph.activeShapes()[i];
-          u32 offsetPos = (u32) OFFSETOF(Vertex, pos());
-          u32 offsetNorm = (u32) OFFSETOF(Vertex, norm());
-          
-          isShapeActive = true
-            && geometry->bindVertexLayer(m_program, attrNamePos,  "shapes", shapeNum, Geometry::FLOAT, false, 3, offsetPos)
-            && geometry->bindVertexLayer(m_program, attrNameNorm, "shapes", shapeNum, Geometry::FLOAT, false, 3, offsetNorm);
-
-          if (isShapeActive) {
-            weight[i] = morph.activeWeights()[i];
-            numActiveShapes++;
-          }
-        }
-        
-        // unbind the attributes of the innactive shapes
-        if (!isShapeActive)
-        {
-          geometry->unbindAttribute(m_program, attrNamePos);
-          geometry->unbindAttribute(m_program, attrNameNorm);
-          
-          // weight is forced to 0 to ensure that they will have no effect
-          weight[i] = 0.0f;
-        }
-      }
-      
-      // load the weights
-      m_program->setUniform("un_ShapeWeight", weight, MAX_ACTIVE_SHAPES);
-      m_program->setUniform("un_Morphing", (numActiveShapes > 0));
-    }
-    else {
-      m_program->setUniform("un_Morphing", false);
-    }
-    
-    
-    for ( Geometry::meshNodeVector::iterator iter = geometry->m_meshNodes.begin();
-          iter != geometry->m_meshNodes.end();
-          ++iter )
-    {
-        Mesh* mesh = (*iter).mesh;
-        Material* material = mesh->material();
-
-        if ( !fn || fn(mesh) == true )
-        {
-            m_program->setUniform("un_ProjectionMatrix", m_matProjection );
-            m_program->setUniform("un_LookatMatrix", lookAt );
-            m_program->setUniform("un_ModelviewMatrix", mat);
-            m_program->setUniform("un_NormalMatrix", matNormals);
-            m_program->setUniform("un_Matrix", matGeometry );
-            m_program->setUniform("un_ViewVector", m_viewVector );
-            
-            // Setup skinning
-            if ( doSkinning )
-            {
-                m_program->setUniform ( "un_JointMatrices", &poseMatrices[0], geometry->pose()->numJoints() ); 
-                m_program->setUniform("un_Skinning", true);
-            }
-            else
-                m_program->setUniform("un_Skinning", false);
-
-            GLenum polyType = GL_INVALID_ENUM;
-            switch ( mesh->polyType() )
-            {
-                case Mesh::TRIANGLES: polyType = GL_TRIANGLES; break;
-                case Mesh::TRIANGLE_STRIP: polyType = GL_TRIANGLE_STRIP; break;
-                case Mesh::TRIANGLE_FAN: polyType = GL_TRIANGLE_FAN; break;
-                default: break;
-            }
-
-            if ( polyType != GL_INVALID_ENUM )
-            {
-                // Set the material
-                i32 textureLevels = 0;
-                if ( material != 0 )
-                {
-                    m_program->setUniform( "un_Material.diffuse", material->diffuse(), true );
-                    m_program->setUniform( "un_Material.ambient", material->ambient(), false );
-                    m_program->setUniform( "un_Material.specular", material->specular(), false );
-                    m_program->setUniform( "un_Material.emission", material->emission(), false );
-                    m_program->setUniform( "un_Material.shininess", material->shininess() );
-                    m_program->setUniform( "un_Material.isShadeless", material->isShadeless() );
-                    
-                    // Setup the texturing
-                    b8 doTexturing = false;
-                    if ( m_texLookup != 0 && material->texture() != "" )
-                    {
-                        ITexture* tex = m_texLookup ( material->texture() );
-                        if ( tex != 0 && tex->bind() &&
-                             geometry->bindVertexLayer(m_program, "in_TexCoord", "uv", 0, Geometry::FLOAT, false, 2, 0) )
-                        {
-                            doTexturing = true;
-                        }
-                    }
-
-                    if ( doTexturing )
-                    {
-                        textureLevels = 1;
-                        m_program->setUniform( "un_Sampler0", 0 );
-                    }
-                    else
-                    {
-                        textureLevels = 0;
-                        geometry->unbindAttribute(m_program, "in_TexCoord");
-                    }
-                }
-                else
-                {
-                    m_program->setUniform( "un_Material.diffuse", Color(255*0.7f, 255*0.7f, 255*0.7f, 255) );
-                    m_program->setUniform( "un_Material.ambient", Vector3(0.7f, 0.7f, 0.7f) );
-                    m_program->setUniform( "un_Material.specular", Vector3(0.0f, 0.0f, 0.0f) );
-                    m_program->setUniform( "un_Material.emission", Vector3(0.0f, 0.0f, 0.0f) );
-                    m_program->setUniform( "un_Material.shininess", 0.0f );
-                    m_program->setUniform( "un_Material.isShadeless", false );
-                    textureLevels = 0;
-                    geometry->unbindAttribute(m_program, "in_TexCoord");
-                }
-
-                m_program->setUniform( "un_TextureLevels", (f32)textureLevels );
-
-                // Bind the indices buffer
-                glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, geometry->m_elementBuffer );
-                eglGetError();
-                glDrawElements ( polyType, mesh->numIndices(), GL_UNSIGNED_INT, reinterpret_cast<const GLvoid *>((*iter).offset * sizeof(u32)) );
-                eglGetError();
-            }
-        }
-    }
-
-    return true;
+    LOG_E("Renderer", "renderGeometryMesh: Mesh not found!");
+    return false;
 }
+
 
 bool GLES20_Renderer::endScene()
 {
-    glUseProgram ( 0 );
     return true;
 }
+
 
 void GLES20_Renderer::pushState ()
 {

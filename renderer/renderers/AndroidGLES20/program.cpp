@@ -72,12 +72,13 @@ bool GLES20_Program::link()
 }
 
 bool GLES20_Program::use ()
-{
-    {
-        glUseProgram ( m_handler );
-        eglGetError();
-    }
-    return ok ();
+{   
+    if ( !ok() )
+      return false;
+    
+    glUseProgram ( m_handler );
+    eglGetError();
+    return true;
 }
 
 bool GLES20_Program::setUniform(const std::string& name, b8 value)

@@ -31,6 +31,7 @@ public:
                         , m_shininess ( shininess )
                         , m_emission ( emission )
                         , m_bIsShadeless ( false )
+                        , m_bIsTransparent ( false )
                         {}
                         ~Material       () {}
     

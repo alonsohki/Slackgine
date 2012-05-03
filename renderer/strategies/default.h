@@ -27,6 +27,7 @@ public:
     
     //--------------------------------------------------------------------------
     // Abstract methods to handle initialization/finalization
+    bool        initialize          ( Core::Slackgine* sg );
     bool        beginScene          ( Core::Slackgine* sg, Core::Camera* cam );
     bool        endScene            ( Core::Slackgine* sg );
     
@@ -67,7 +68,7 @@ private:
     //--------------------------------------------------------------------------
     // Default program
     Renderer::IProgram*     m_program;
-    
+
     //--------------------------------------------------------------------------
     // The lookAt matrix of the camera being used to render right now
     Matrix                  m_matLookAt;

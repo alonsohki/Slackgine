@@ -11,9 +11,10 @@ class GLES20_Program : public IProgram
 public:
     enum DefaultAttributeIndex
     {
-        POSITION        = 0,
-        NORMAL          = 1,
-        TEX2D           = 2
+        POSITION            = 0,
+        NORMAL              = 1,
+        TEX2D               = 2,
+        MAX_VERTEX_ATTRIBS  = 8
     };
     
 private:

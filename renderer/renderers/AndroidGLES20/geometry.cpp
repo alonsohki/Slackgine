@@ -14,6 +14,7 @@
 
 #include "geometry.h"
 #include "renderer.h"
+#include "shared/log.h"
 
 using namespace Renderer;
 
@@ -28,7 +29,7 @@ Geometry::Geometry ()
 Geometry::~Geometry ()
 {
     if ( m_vertexBuffer != 0 )
-    {
+    {      
         glDeleteBuffers ( 1, &m_vertexBuffer );
         eglGetError ();
         m_vertexBuffer = 0;
@@ -68,13 +69,16 @@ bool Geometry::initialize ()
     glBufferData ( GL_ARRAY_BUFFER, size, 0, GL_STATIC_DRAW );
     eglGetError ();
     glBufferSubData ( GL_ARRAY_BUFFER, 0, numVertices()*sizeof(Vertex), vertices() );
+    eglGetError ();
+    
     for ( GeometryBase::layerMap::const_iterator iter = layers.begin();
           iter != layers.end();
           ++iter )
     {
         glBufferSubData ( GL_ARRAY_BUFFER, m_offsets [ iter->first ],
                           numVertices()*iter->second.elementSize*iter->second.numLevels, iter->second.data );
-    }
+        eglGetError ();
+    }    
     
     // Generate the mesh nodes based on the geometry meshes.
     // Precalculate the number of indices.
@@ -97,12 +101,26 @@ bool Geometry::initialize ()
           iter != meshes.end();
           ++iter )
     {
+        Mesh* mesh = *iter;
         glBufferSubData ( GL_ELEMENT_ARRAY_BUFFER, sizeof(u32)*offset,
-                          sizeof(u32)*(*iter)->numIndices(), (*iter)->indices() );
+                          sizeof(u32)*mesh->numIndices(), mesh->indices() );
+        eglGetError ();
+        
+        /*
+        for (u32 i=0; i<mesh->numIndices(); i++) {
+          u32 idx = mesh->indices()[i];
+          if (idx >= numVertices()) {
+            LOG_E("Geometry", "element %d outside of bounds (vertex %d / %d)", i, idx, numVertices());
+          }
+        }
+        */
+        
         MeshNode node;
         node.offset = offset;
-        node.mesh = *iter;
+        node.mesh = mesh;
         m_meshNodes.push_back(node);
+        
+        offset += mesh->numIndices();
     }
     
 

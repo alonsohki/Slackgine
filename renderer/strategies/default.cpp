@@ -19,25 +19,20 @@ using Core::Entity;
 
 Default::Default ()
 {
-    m_program = 0;
+  m_program = 0;
 }
 
 Default::~Default ()
 {
-    if ( m_program != 0 )
-    {
-        sgDelete m_program;
-        m_program = 0;
-    }
+  if (m_program != 0)
+    sgDelete m_program;
 }
 
-bool Default::beginScene (Core::Slackgine* sg, Core::Camera* cam)
-{
-    IRenderer* renderer = sg->getRenderer ();
-    
+bool Default::initialize (Core::Slackgine* sg)
+{    
     if ( m_program == 0 )
     {
-        Core::Shader* sh = sg->getShaderManager ().load ( "default" );
+        Core::Shader* sh = sg->getShaderManager().load ( "default" );
         if ( !sh )
         {
             setError ( "Unable to load the shader" );
@@ -64,12 +59,21 @@ bool Default::beginScene (Core::Slackgine* sg, Core::Camera* cam)
             return false;
         }
     }
+    return true;
+}
+
+bool Default::beginScene (Core::Slackgine* sg, Core::Camera* cam)
+{   
+    if ( !initialize(sg) ) {
+      return false;
+    }
     
+    IRenderer* renderer = sg->getRenderer();
     renderer->setProgram( m_program );
     
     m_matLookAt = LookatMatrix ( cam->transform().orientation(), cam->transform().translation() );
     
-    return true;
+    return this->isOk();
 }
 
 bool Default::forEachEntity(Core::Slackgine* sg, Core::Entity* entity)
@@ -134,12 +138,6 @@ bool Default::endScene ( Core::Slackgine* sg )
     }
     m_listTransparencies.clear ();
     
-    sg->getRenderer()->setProgram(0);
-    if ( m_program != 0 )
-    {
-        sgDelete m_program;
-        m_program = 0;
-    }
     return true;
 }
 

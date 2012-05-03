@@ -45,6 +45,7 @@ public:
     //--------------------------------------------------------------------------
     // Error management
     void            getError                ( char* dest ) const;
+    bool            isOk                    () const { return ( m_error[0] == 0 ); }
 protected:
     void            setError                ( const char* err );
     
