@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////
 //
-// Slackgine - Copyright (C) 2010-2011
+// Slackgine - Copyright (C) 2010-2012
 // The Slackgine development team
 //
 // See the LICENSE file in the top-level directory.
